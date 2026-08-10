@@ -17,7 +17,7 @@ Because you are an agent, you technically possess the file-system permissions to
    - `handoffs/`
    - `reviews/`
    
-3. **The Drop Box:** You may freely write markdown files into the `feedback/` directory to log your findings, complaints, or architectural reviews of the system.
+3. **The Drop Box:** You may freely write markdown files into the `feedback/` directory to log your findings, complaints, architectural reviews, **feature requests**, and **strongly suggested requirements** to improve this system.
 
 4. **Self-Modification (Updating the Engine):** If you *are* dispatched to upgrade the `task_coordinator` itself (e.g., a task tells you to add a new command to `fleet.py`):
    - You must NEVER commit your code directly to the `main` branch. 

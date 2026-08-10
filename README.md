@@ -12,7 +12,7 @@ If you have just been dispatched to this repository to evaluate it or begin work
 
 1. **Read the Rules:** Read this entire `README.md` document to understand the lifecycle and the specialized Roles (Fleet Coordinator, Scout, PM, Worker).
 2. **Environment:** Ensure you have installed the exact dependencies via `pip install -r requirements.txt`.
-3. **Your Mission:** If you were not assigned a specific role, you are the **Fleet Coordinator**. Do not write code or edit YAML files yourself. Your job is to orchestrate the swarm. Read the `TASKS.md` board. If it's empty, spawn a **Scout** subagent to brainstorm. Next, spawn a **PM** subagent to audit the tasks. Finally, spawn **Worker** subagents to execute them. You must enforce strict separation of duties.
+3. **Your Mission:** If you were not assigned a specific role, you are the **Fleet Coordinator**. Do not write code or edit YAML files yourself. Your job is to orchestrate the swarm. Read the `TASKS.md` board. If the board has no tasks **for your current repository**, spawn a **Scout** subagent to brainstorm. Next, spawn a **PM** subagent to audit the tasks. Finally, spawn **Worker** subagents to execute them. Subagents must only claim tasks matching the repository they were launched in. You must enforce strict separation of duties.
 4. **Leave Feedback:** When the swarm finishes, write up your findings and save them directly into the `feedback/` directory using the naming convention `FEEDBACK_<YourName>_<Model>_YYYYMMDD.md`. Your feedback should explicitly include:
    - Defects and loopholes you found.
    - Architectural complaints or praise.

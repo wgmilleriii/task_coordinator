@@ -15,7 +15,7 @@ Evaluate `task_coordinator` by using its own role separation, task records, life
 - Do not modify `bin/`, `schemas/`, `README.md`, `.github/`, or any application logic.
 - Do not implement fixes, even when a defect is confirmed.
 - Limit deliverables to `T-TC-*` fleet records and new Markdown reports in `feedback/`.
-- Preserve unrelated existing work, including `T-MIN-002.yaml`, `T-MIN-003.yaml`, and the untracked `logs/` directory.
+- Preserve unrelated existing work, including all `T-MIN-*` task files and pre-existing entries in the untracked `logs/` directory. CLI-generated self-evaluation events may be appended to the log, but the user-owned log will not be staged in self-evaluation commits.
 - Perform destructive or corrupt-state experiments only in temporary copies under `/tmp`.
 - Use `./bin/fleet` for lifecycle transitions and generated artifacts wherever the CLI provides a command.
 
@@ -25,7 +25,7 @@ Evaluate `task_coordinator` by using its own role separation, task records, life
 2. **Scout:** creates three distinct `OPEN` task records with `repo: task_coordinator`, then runs `fleet lint` and `fleet render`. Direct Scout creation is necessary because the documented CLI has no `create` command; this mismatch is itself evaluation evidence.
 3. **Project Manager:** inspects each task, pins it to the repository SHA, supplies a bounded verification command, and transitions it to `AUDITED` through `fleet audit`.
 4. **Workers:** execute one task at a time because the coordinator enforces a repository-level claim lock. Each Worker claims through the CLI, performs read-only or temporary-copy tests, writes one report, verifies it, fills the generated handoff's required SHA, and submits it for peer review.
-5. **Reviewers:** start a structured review through the CLI, inspect the report and evidence, fill the generated review artifact, and record the verdict. A passing task uses `human_review_required: false` and may advance to `DONE` without pretending to possess human authority.
+5. **Reviewers:** an agent other than the task's Worker starts a structured review through the CLI, inspects the report and evidence, fills the generated review artifact, and records the verdict. A passing task uses `human_review_required: false` and may advance to `DONE` without pretending to possess human authority.
 6. **Fleet Coordinator:** archives completed evaluation tasks through the CLI and synthesizes all findings into the required timestamped self-evaluation document.
 
 ## Evaluation tasks
@@ -71,7 +71,7 @@ The Reviewer checks that conclusions are supported by reproducible evidence, tha
 
 The Coordinator will create:
 
-`feedback/SELF_EVALUATION[Codex-GPT-5-<timestamp>].md`
+`feedback/SELF_EVALUATION[Codex-GPT-5-<completion-timestamp>].md`
 
 The synthesis will rank findings by severity, distinguish confirmed current defects from historical findings, identify process contradictions revealed by dogfooding, summarize strengths, and propose a prioritized future task backlog. It will also document how far every evaluation task progressed through the lifecycle.
 

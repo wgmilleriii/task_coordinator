@@ -22,7 +22,21 @@
     "claimed_at": { "type": ["string", "null"], "format": "date-time" },
     "last_transition": { "type": ["string", "null"], "format": "date-time" },
     "blocked_reason": { "type": ["string", "null"] },
-    "previous_status": { "type": ["string", "null"] }
+    "previous_status": { "type": ["string", "null"] },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "string", "format": "date-time" },
+          "action": { "type": "string" },
+          "actor": { "type": "string" },
+          "details": { "type": "string" }
+        },
+        "required": ["timestamp", "action", "actor"],
+        "additionalProperties": false
+      }
+    }
   },
   "required": ["id", "title", "repo", "priority", "lane", "status", "created_at", "scope", "definition_of_done"],
   "allOf": [

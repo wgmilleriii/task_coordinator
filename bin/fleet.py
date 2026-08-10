@@ -44,6 +44,31 @@ def save_task(task_data):
         yaml.dump(task_data, f, sort_keys=False)
     os.replace(temp_filepath, filepath)
 
+def log_global_event(action, actor, task_id=None, details=None):
+    log_dir = os.path.join(BASE_DIR, 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, 'fleet.jsonl')
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        "action": action,
+        "actor": actor
+    }
+    if task_id: entry["task_id"] = task_id
+    if details: entry["details"] = details
+    with open(log_path, 'a') as f:
+        f.write(json.dumps(entry) + '\n')
+
+def log_task_event(task, action, actor, details=None):
+    if 'events' not in task or task['events'] is None:
+        task['events'] = []
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        "action": action,
+        "actor": actor
+    }
+    if details: entry["details"] = details
+    task['events'].append(entry)
+
 def get_task(task_id):
     for filename, task in load_all_tasks():
         if task.get('id') == task_id:
@@ -229,6 +254,9 @@ def cmd_audit(args):
     task['audited_repo_sha'] = args.repo_sha
     task['verification_command'] = args.command
     
+    log_task_event(task, 'AUDIT', args.auditor, f"Audited against {args.repo_sha}")
+    log_global_event('AUDIT', args.auditor, args.task_id, f"Audited against {args.repo_sha}")
+    
     save_task(task)
     print(f"✅ Task {args.task_id} successfully audited against {args.repo_sha}.")
     cmd_render(argparse.Namespace(quiet=True))
@@ -251,6 +279,10 @@ def cmd_claim(args):
             task['status'] = 'CLAIMED'
             task['owner'] = args.owner
             task['claimed_at'] = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+            
+            log_task_event(task, 'CLAIM', args.owner)
+            log_global_event('CLAIM', args.owner, args.task_id)
+            
             save_task(task)
             print(f"✅ Successfully claimed {args.task_id} for {args.owner}.")
             cmd_render(argparse.Namespace(quiet=True))
@@ -298,9 +330,11 @@ def cmd_verify(args):
         print("-" * 40)
         print(output)
         print("-" * 40)
+        log_global_event('VERIFY_FAIL', args.model, args.task_id, f"Exit code {result.returncode}")
         return 1
         
     print(f"✅ Verification passed.")
+    log_global_event('VERIFY_PASS', args.model, args.task_id)
     
     handoff = {
         "task_id": args.task_id,
@@ -362,6 +396,10 @@ def cmd_submit(args):
         yaml.dump(handoff, f, sort_keys=False)
     
     task['status'] = 'PEER_REVIEW'
+    
+    log_task_event(task, 'SUBMIT', task.get('owner', 'Unknown'))
+    log_global_event('SUBMIT', task.get('owner', 'Unknown'), args.task_id)
+    
     save_task(task)
     print(f"✅ Task {args.task_id} submitted for PEER_REVIEW.")
     cmd_render(argparse.Namespace(quiet=True))
@@ -396,6 +434,8 @@ def cmd_start_review(args):
     review_path = os.path.join(REVIEWS_DIR, f"{args.task_id}_review.yaml")
     with open(review_path, 'w') as f:
         yaml.dump(review, f, sort_keys=False)
+        
+    log_global_event('START_REVIEW', args.reviewer, args.task_id)
         
     print(f"✅ Generated review template at {review_path}")
     print("Please fill in the findings and verdict (PASS, PASS_WITH_CORRECTIONS, FAIL), then run `./bin/fleet record-review`")
@@ -437,6 +477,9 @@ def cmd_record_review(args):
         else:
             task['status'] = 'DONE'
             print(f"✅ Task {args.task_id} passed peer review ({verdict}) and is marked DONE.")
+            
+    log_task_event(task, 'RECORD_REVIEW', review_data.get('reviewer_agent', 'Unknown'), f"Verdict: {verdict}")
+    log_global_event('RECORD_REVIEW', review_data.get('reviewer_agent', 'Unknown'), args.task_id, f"Verdict: {verdict}")
         
     save_task(task)
     cmd_render(argparse.Namespace(quiet=True))
@@ -451,6 +494,10 @@ def cmd_block(args):
     task['previous_status'] = task['status']
     task['status'] = 'BLOCKED'
     task['blocked_reason'] = args.reason
+    
+    log_task_event(task, 'BLOCK', 'Unknown', f"Reason: {args.reason}")
+    log_global_event('BLOCK', 'Unknown', args.task_id, f"Reason: {args.reason}")
+    
     save_task(task)
     print(f"🛑 Task {args.task_id} is now BLOCKED: {args.reason}")
     cmd_render(argparse.Namespace(quiet=True))
@@ -469,6 +516,10 @@ def cmd_unblock(args):
     task['status'] = prev_status
     task['blocked_reason'] = None
     task['previous_status'] = None
+    
+    log_task_event(task, 'UNBLOCK', 'Unknown', f"Reverted to {prev_status}")
+    log_global_event('UNBLOCK', 'Unknown', args.task_id, f"Reverted to {prev_status}")
+    
     save_task(task)
     print(f"✅ Task {args.task_id} is UNBLOCKED and reverted to {prev_status}.")
     cmd_render(argparse.Namespace(quiet=True))
@@ -490,6 +541,10 @@ def cmd_close(args):
             return 1
         
     task['status'] = 'DONE'
+    
+    log_task_event(task, 'CLOSE', args.human)
+    log_global_event('CLOSE', args.human, args.task_id)
+    
     save_task(task)
     print(f"✅ Task {args.task_id} manually closed by {args.human}.")
     cmd_render(argparse.Namespace(quiet=True))

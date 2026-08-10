@@ -1,0 +1,28 @@
+id: T-MIN-004
+title: Zodiac batch brief for the twelve zodiac trump personality studies
+repo: minchiate_tarot
+priority: P1
+lane: claude
+status: CLAIMED
+owner: claude-fable-5
+created_at: '2026-08-10T17:05:00-06:00'
+audited_at: '2026-08-10T23:03:04.229413Z'
+audited_by: claude-fable-5
+audited_repo_sha: 10690e0
+dependencies: []
+scope:
+- Write research/pilots/ZODIAC_BATCH_BRIEF.md following the ELEMENT_BATCH_BRIEF.md
+  pattern.
+- Bind the Stage 4 zodiac family profile; confront CW-7 (cyclical-recurrence convergence).
+- Record the Minchiate zodiac order anomaly (registry sorts 81-92) and the nil-value
+  grading rules.
+- Set replacement requirements for the twelve failed 21-37 line stub studies (TRUMP-24
+  through TRUMP-35).
+definition_of_done:
+- research/pilots/ZODIAC_BATCH_BRIEF.md exists and names all twelve cards with registry
+  sorts.
+- Brief incorporates VIRTUE_BATCH_BRIEF.md rules and the CW-7 confrontation requirement.
+verification_command: test -f research/pilots/ZODIAC_BATCH_BRIEF.md && grep -q 'CW-7'
+  research/pilots/ZODIAC_BATCH_BRIEF.md && grep -q 'TRUMP-35' research/pilots/ZODIAC_BATCH_BRIEF.md
+human_review_required: false
+claimed_at: '2026-08-10T23:04:42.580764Z'

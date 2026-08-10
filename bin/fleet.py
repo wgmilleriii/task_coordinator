@@ -5,7 +5,7 @@ import json
 import yaml
 import jsonschema
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ACTIVE_DIR = os.path.join(BASE_DIR, 'tasks', 'active')
@@ -174,7 +174,7 @@ def cmd_audit(args):
         return 1
     
     task['status'] = 'AUDITED'
-    task['audited_at'] = datetime.utcnow().isoformat() + "Z"
+    task['audited_at'] = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
     task['audited_by'] = args.auditor
     task['audited_repo_sha'] = args.repo_sha
     task['verification_command'] = args.command
@@ -200,7 +200,7 @@ def cmd_claim(args):
             
             task['status'] = 'CLAIMED'
             task['owner'] = args.owner
-            task['claimed_at'] = datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z')
+            task['claimed_at'] = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
             save_task(task)
             print(f"✅ Successfully claimed {args.task_id} for {args.owner}.")
             cmd_render(argparse.Namespace(quiet=True))
@@ -337,7 +337,7 @@ def cmd_start_review(args):
         "reviewed_head_sha": head_sha,
         "verdict": "FAIL",
         "findings": [{"severity": "INFO", "description": "REQUIRED_PLEASE_FILL"}],
-        "reviewed_at": datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z')
+        "reviewed_at": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
     }
     
     os.makedirs(REVIEWS_DIR, exist_ok=True)

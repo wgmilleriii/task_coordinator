@@ -6,6 +6,17 @@ This system replaces the monolithic `TASKS.md` flat-file with a database-backed,
 
 ---
 
+## 🚀 Startup Instructions (For Agents)
+
+If you have just been dispatched to this repository to evaluate it or begin work, follow these instructions immediately:
+
+1. **Pull Latest:** Ensure you are on the `main` branch and have pulled the latest code from the remote.
+2. **Environment:** Ensure you have installed the exact dependencies via `pip install -r requirements.txt`.
+3. **Your Mission:** Attempt to bypass, break, or successfully execute a full lifecycle on `T-MIN-001` using only the `./bin/fleet` commands. 
+4. **Leave Feedback:** When you are finished, write up your findings (defects, loopholes, or praises) and save them directly into the `feedback/` directory using the naming convention `FEEDBACK_<YourName>_<Model>_YYYYMMDD.md`. Do not modify existing feedback files.
+
+---
+
 ## 🏗️ Architecture
 
 - **`tasks/active/`**: The database. Every active task is an isolated `.yaml` file.

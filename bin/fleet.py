@@ -165,6 +165,70 @@ def cmd_claim(args):
     print(f"❌ Task {args.task_id} not found.")
     return 1
 
+def cmd_verify(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] not in ['CLAIMED', 'IN_PROGRESS']:
+        print(f"❌ Cannot verify {args.task_id}. Status is {task['status']}, must be CLAIMED or IN_PROGRESS.")
+        return 1
+        
+    cmd = task.get('verification_command')
+    if not cmd:
+        print(f"❌ Task {args.task_id} has no verification_command defined.")
+        return 1
+        
+    # Assume sibling directory for target repo
+    repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', task['repo']))
+    if not os.path.exists(repo_path):
+        print(f"❌ Target repo path does not exist: {repo_path}")
+        return 1
+
+    print(f"▶️ Running verification in {repo_path}:\n   {cmd}")
+    
+    import subprocess
+    try:
+        result = subprocess.run(cmd, shell=True, cwd=repo_path, capture_output=True, text=True, timeout=300)
+    except subprocess.TimeoutExpired:
+        print("❌ Verification timed out after 5 minutes.")
+        return 1
+
+    output = f"Exit code: {result.returncode}\n\nSTDOUT:\n{result.stdout.strip()}\n\nSTDERR:\n{result.stderr.strip()}"
+    
+    if result.returncode != 0:
+        print(f"❌ Verification failed (exit code {result.returncode}).")
+        print("-" * 40)
+        print(output)
+        print("-" * 40)
+        return 1
+        
+    print(f"✅ Verification passed.")
+    
+    handoff = {
+        "task_id": args.task_id,
+        "agent": task.get('owner', 'Unknown'),
+        "model": "Unknown",
+        "status": "VERIFIED_LOCALLY",
+        "target_repo": task['repo'],
+        "branch": "test",
+        "base_sha": task.get('audited_repo_sha', 'Unknown'),
+        "head_sha": "REQUIRED_PLEASE_FILL",
+        "evidence_output": output,
+        "peer_review_notes": None,
+        "human_action_required": None
+    }
+    
+    handoffs_dir = os.path.join(BASE_DIR, 'handoffs')
+    os.makedirs(handoffs_dir, exist_ok=True)
+    handoff_path = os.path.join(handoffs_dir, f"{args.task_id}_handoff.yaml")
+    with open(handoff_path, 'w') as f:
+        yaml.dump(handoff, f, sort_keys=False)
+        
+    print(f"✅ Captured cryptographic evidence to {handoff_path}")
+    print("Please fill in `head_sha` in the handoff file, then run `./bin/fleet submit`")
+    return 0
+
 def cmd_submit(args):
     task = get_task(args.task_id)
     if not task:
@@ -174,29 +238,25 @@ def cmd_submit(args):
         print(f"❌ Cannot submit {args.task_id}. Status is {task['status']}, must be CLAIMED or IN_PROGRESS.")
         return 1
     
+    handoff_path = os.path.join(BASE_DIR, 'handoffs', f"{args.task_id}_handoff.yaml")
+    if not os.path.exists(handoff_path):
+        print(f"❌ No handoff file found. You must run `./bin/fleet verify {args.task_id}` first.")
+        return 1
+        
+    with open(handoff_path, 'r') as f:
+        handoff = yaml.safe_load(f)
+        
+    if handoff.get('head_sha') == 'REQUIRED_PLEASE_FILL':
+        print(f"❌ You must replace 'REQUIRED_PLEASE_FILL' with the actual Git SHA in {handoff_path}")
+        return 1
+        
+    handoff['status'] = 'PEER_REVIEW'
+    with open(handoff_path, 'w') as f:
+        yaml.dump(handoff, f, sort_keys=False)
+    
     task['status'] = 'PEER_REVIEW'
     save_task(task)
     print(f"✅ Task {args.task_id} submitted for PEER_REVIEW.")
-    
-    handoff = {
-        "task_id": args.task_id,
-        "agent": task.get('owner', 'Unknown'),
-        "model": "Unknown",
-        "status": "PEER_REVIEW",
-        "target_repo": task.get('repo', 'Unknown'),
-        "branch": "test",
-        "base_sha": task.get('audited_repo_sha', 'Unknown'),
-        "head_sha": "REQUIRED",
-        "evidence_output": args.evidence_output
-    }
-    
-    handoffs_dir = os.path.join(BASE_DIR, 'handoffs')
-    os.makedirs(handoffs_dir, exist_ok=True)
-    handoff_path = os.path.join(handoffs_dir, f"{args.task_id}_handoff.yaml")
-    with open(handoff_path, 'w') as f:
-        yaml.dump(handoff, f, sort_keys=False)
-        
-    print(f"✅ Generated handoff template at {handoff_path}")
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
@@ -229,12 +289,14 @@ def main():
     audit_parser.add_argument("--command", required=True)
     
     claim_parser = subparsers.add_parser("claim", help="Claim an AUDITED task")
-    claim_parser.add_argument("task_id")
-    claim_parser.add_argument("--owner", required=True)
+    claim_parser.add_argument("task_id", help="The Task ID (e.g. T-MIN-001)")
+    claim_parser.add_argument("--owner", required=True, help="Platform/Agent name claiming the task")
+    
+    verify_parser = subparsers.add_parser("verify", help="Execute verification command and capture evidence")
+    verify_parser.add_argument("task_id")
     
     submit_parser = subparsers.add_parser("submit", help="Submit a CLAIMED task for review")
     submit_parser.add_argument("task_id")
-    submit_parser.add_argument("--evidence-output", required=True)
     
     close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE")
     close_parser.add_argument("task_id")
@@ -249,6 +311,8 @@ def main():
         sys.exit(cmd_audit(args))
     elif args.command == "claim":
         sys.exit(cmd_claim(args))
+    elif args.command == "verify":
+        sys.exit(cmd_verify(args))
     elif args.command == "submit":
         sys.exit(cmd_submit(args))
     elif args.command == "close":

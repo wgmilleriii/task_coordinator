@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "task_id": { "type": "string", "pattern": "^T-[A-Z0-9]+-[0-9]+$" },
+    "reviewer_agent": { "type": "string", "minLength": 1 },
+    "reviewer_model": { "type": "string", "minLength": 1 },
+    "reviewed_head_sha": { "type": "string", "minLength": 1 },
+    "verdict": { "type": "string", "enum": ["PASS", "PASS_WITH_CORRECTIONS", "FAIL"] },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "severity": { "type": "string", "enum": ["INFO", "MINOR", "MAJOR", "CRITICAL"] },
+          "description": { "type": "string", "minLength": 10 },
+          "file_reference": { "type": ["string", "null"] }
+        },
+        "required": ["severity", "description"]
+      }
+    },
+    "reviewed_at": { "type": "string", "format": "date-time" }
+  },
+  "required": ["task_id", "reviewer_agent", "reviewer_model", "reviewed_head_sha", "verdict", "findings", "reviewed_at"]
+}

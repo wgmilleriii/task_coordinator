@@ -10,6 +10,8 @@ from datetime import datetime
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ACTIVE_DIR = os.path.join(BASE_DIR, 'tasks', 'active')
 SCHEMA_DIR = os.path.join(BASE_DIR, 'schemas')
+HANDOFFS_DIR = os.path.join(BASE_DIR, 'handoffs')
+REVIEWS_DIR = os.path.join(BASE_DIR, 'reviews')
 TASKS_MD = os.path.join(BASE_DIR, 'TASKS.md')
 
 def load_schema(schema_name):
@@ -90,8 +92,36 @@ def cmd_lint(args):
                 print(f"❌ {filename}: Dependency '{dep}' does not exist.")
                 errors += 1
 
+    # D-5: Lint handoffs
+    if os.path.exists(HANDOFFS_DIR):
+        handoff_schema = load_schema('handoff')
+        for filename in os.listdir(HANDOFFS_DIR):
+            if not filename.endswith('.yaml'): continue
+            try:
+                with open(os.path.join(HANDOFFS_DIR, filename), 'r') as f:
+                    data = yaml.safe_load(f)
+                jsonschema.validate(instance=data, schema=handoff_schema, format_checker=jsonschema.FormatChecker())
+            except Exception as e:
+                msg = e.message if hasattr(e, 'message') else str(e)
+                print(f"❌ {filename}: Handoff Schema Error - {msg}")
+                errors += 1
+
+    # D-5: Lint reviews
+    if os.path.exists(REVIEWS_DIR):
+        review_schema = load_schema('review')
+        for filename in os.listdir(REVIEWS_DIR):
+            if not filename.endswith('.yaml'): continue
+            try:
+                with open(os.path.join(REVIEWS_DIR, filename), 'r') as f:
+                    data = yaml.safe_load(f)
+                jsonschema.validate(instance=data, schema=review_schema, format_checker=jsonschema.FormatChecker())
+            except Exception as e:
+                msg = e.message if hasattr(e, 'message') else str(e)
+                print(f"❌ {filename}: Review Schema Error - {msg}")
+                errors += 1
+
     if errors == 0:
-        print("✅ All tasks passed strict schema validation.")
+        print("✅ All active tasks, handoffs, and reviews passed strict schema validation.")
         return 0
     return 1
 
@@ -203,6 +233,10 @@ def cmd_verify(args):
         print("❌ Verification timed out after 5 minutes.")
         return 1
 
+    # Dynamically fetch branch
+    branch_result = subprocess.run("git branch --show-current", shell=True, cwd=repo_path, capture_output=True, text=True)
+    current_branch = branch_result.stdout.strip() if branch_result.returncode == 0 else "Unknown"
+
     output = f"Exit code: {result.returncode}\n\nSTDOUT:\n{result.stdout.strip()}\n\nSTDERR:\n{result.stderr.strip()}"
     
     if result.returncode != 0:
@@ -217,10 +251,10 @@ def cmd_verify(args):
     handoff = {
         "task_id": args.task_id,
         "agent": task.get('owner', 'Unknown'),
-        "model": "Unknown",
+        "model": args.model,
         "status": "VERIFIED_LOCALLY",
         "target_repo": task['repo'],
-        "branch": "test",
+        "branch": current_branch,
         "base_sha": task.get('audited_repo_sha', 'Unknown'),
         "head_sha": "REQUIRED_PLEASE_FILL",
         "evidence_output": output,
@@ -228,9 +262,8 @@ def cmd_verify(args):
         "human_action_required": None
     }
     
-    handoffs_dir = os.path.join(BASE_DIR, 'handoffs')
-    os.makedirs(handoffs_dir, exist_ok=True)
-    handoff_path = os.path.join(handoffs_dir, f"{args.task_id}_handoff.yaml")
+    os.makedirs(HANDOFFS_DIR, exist_ok=True)
+    handoff_path = os.path.join(HANDOFFS_DIR, f"{args.task_id}_handoff.yaml")
     with open(handoff_path, 'w') as f:
         yaml.dump(handoff, f, sort_keys=False)
         
@@ -247,7 +280,7 @@ def cmd_submit(args):
         print(f"❌ Cannot submit {args.task_id}. Status is {task['status']}, must be CLAIMED or IN_PROGRESS.")
         return 1
     
-    handoff_path = os.path.join(BASE_DIR, 'handoffs', f"{args.task_id}_handoff.yaml")
+    handoff_path = os.path.join(HANDOFFS_DIR, f"{args.task_id}_handoff.yaml")
     if not os.path.exists(handoff_path):
         print(f"❌ No handoff file found. You must run `./bin/fleet verify {args.task_id}` first.")
         return 1
@@ -257,6 +290,15 @@ def cmd_submit(args):
         
     if handoff.get('head_sha') == 'REQUIRED_PLEASE_FILL':
         print(f"❌ You must replace 'REQUIRED_PLEASE_FILL' with the actual Git SHA in {handoff_path}")
+        return 1
+        
+    # Validate handoff against schema before allowing submit
+    try:
+        handoff_schema = load_schema('handoff')
+        jsonschema.validate(instance=handoff, schema=handoff_schema, format_checker=jsonschema.FormatChecker())
+    except jsonschema.exceptions.ValidationError as e:
+        print(f"❌ Handoff Schema Error - {e.message}")
+        print("Please fix the handoff file before submitting.")
         return 1
         
     handoff['status'] = 'PEER_REVIEW'
@@ -269,21 +311,76 @@ def cmd_submit(args):
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
-def cmd_peer_pass(args):
+def cmd_start_review(args):
     task = get_task(args.task_id)
     if not task:
         print(f"❌ Task {args.task_id} not found.")
         return 1
     if task['status'] != 'PEER_REVIEW':
-        print(f"❌ Cannot peer-pass {args.task_id}. Status is {task['status']}, must be PEER_REVIEW.")
+        print(f"❌ Cannot start review for {args.task_id}. Status is {task['status']}, must be PEER_REVIEW.")
         return 1
         
-    if task.get('human_review_required', False):
-        task['status'] = 'HUMAN_REVIEW'
-        print(f"✅ Task {args.task_id} passed peer review. Awaiting HUMAN_REVIEW.")
+    handoff_path = os.path.join(HANDOFFS_DIR, f"{args.task_id}_handoff.yaml")
+    head_sha = "Unknown"
+    if os.path.exists(handoff_path):
+        with open(handoff_path, 'r') as f:
+            head_sha = yaml.safe_load(f).get('head_sha', 'Unknown')
+            
+    review = {
+        "task_id": args.task_id,
+        "reviewer_agent": args.reviewer,
+        "reviewer_model": args.model,
+        "reviewed_head_sha": head_sha,
+        "verdict": "FAIL",
+        "findings": [{"severity": "INFO", "description": "REQUIRED_PLEASE_FILL"}],
+        "reviewed_at": datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z')
+    }
+    
+    os.makedirs(REVIEWS_DIR, exist_ok=True)
+    review_path = os.path.join(REVIEWS_DIR, f"{args.task_id}_review.yaml")
+    with open(review_path, 'w') as f:
+        yaml.dump(review, f, sort_keys=False)
+        
+    print(f"✅ Generated review template at {review_path}")
+    print("Please fill in the findings and verdict (PASS, PASS_WITH_CORRECTIONS, FAIL), then run `./bin/fleet record-review`")
+    return 0
+
+def cmd_record_review(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] != 'PEER_REVIEW':
+        print(f"❌ Cannot record review for {args.task_id}. Status is {task['status']}, must be PEER_REVIEW.")
+        return 1
+        
+    review_path = os.path.join(REVIEWS_DIR, f"{args.task_id}_review.yaml")
+    if not os.path.exists(review_path):
+        print(f"❌ No review file found at {review_path}. Run `./bin/fleet start-review {args.task_id}` first.")
+        return 1
+        
+    with open(review_path, 'r') as f:
+        review_data = yaml.safe_load(f)
+        
+    try:
+        review_schema = load_schema('review')
+        jsonschema.validate(instance=review_data, schema=review_schema, format_checker=jsonschema.FormatChecker())
+    except jsonschema.exceptions.ValidationError as e:
+        print(f"❌ Review Schema Error - {e.message}")
+        print("Please fix the review file before recording.")
+        return 1
+        
+    verdict = review_data['verdict']
+    if verdict == 'FAIL':
+        task['status'] = 'IN_PROGRESS'
+        print(f"❌ Task {args.task_id} FAILED peer review. Reverting to IN_PROGRESS.")
     else:
-        task['status'] = 'DONE'
-        print(f"✅ Task {args.task_id} passed peer review and is marked DONE (no human review required).")
+        if task.get('human_review_required', False):
+            task['status'] = 'HUMAN_REVIEW'
+            print(f"✅ Task {args.task_id} passed peer review ({verdict}). Awaiting HUMAN_REVIEW.")
+        else:
+            task['status'] = 'DONE'
+            print(f"✅ Task {args.task_id} passed peer review ({verdict}) and is marked DONE.")
         
     save_task(task)
     cmd_render(argparse.Namespace(quiet=True))
@@ -329,12 +426,18 @@ def main():
     
     verify_parser = subparsers.add_parser("verify", help="Execute verification command and capture evidence")
     verify_parser.add_argument("task_id")
+    verify_parser.add_argument("--model", required=True, help="The AI model capturing the evidence")
     
     submit_parser = subparsers.add_parser("submit", help="Submit a CLAIMED task for review")
     submit_parser.add_argument("task_id")
     
-    peer_pass_parser = subparsers.add_parser("peer-pass", help="Pass a task through peer review")
-    peer_pass_parser.add_argument("task_id")
+    start_review_parser = subparsers.add_parser("start-review", help="Generate a review template for a PEER_REVIEW task")
+    start_review_parser.add_argument("task_id")
+    start_review_parser.add_argument("--reviewer", required=True, help="Agent performing the review")
+    start_review_parser.add_argument("--model", required=True, help="Model performing the review")
+    
+    record_review_parser = subparsers.add_parser("record-review", help="Record the verdict of a peer review")
+    record_review_parser.add_argument("task_id")
     
     close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE (requires human approval if human_review_required is True)")
     close_parser.add_argument("task_id")
@@ -354,8 +457,10 @@ def main():
         sys.exit(cmd_verify(args))
     elif args.command == "submit":
         sys.exit(cmd_submit(args))
-    elif args.command == "peer-pass":
-        sys.exit(cmd_peer_pass(args))
+    elif args.command == "start-review":
+        sys.exit(cmd_start_review(args))
+    elif args.command == "record-review":
+        sys.exit(cmd_record_review(args))
     elif args.command == "close":
         sys.exit(cmd_close(args))
 

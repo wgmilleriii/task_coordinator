@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]
-    T-MIN-004["T-MIN-004<br/>Zodiac batch brief for the twelve zodiac trump personality studies"]:::review
+    T-MIN-004["T-MIN-004<br/>Zodiac batch brief for the twelve zodiac trump personality studies"]:::done
 ```
 
 ---
@@ -35,7 +35,7 @@ graph TD
 *Audited against SHA:* `b51d4e4`
 
 ---
-### ⏳ T-MIN-004 · P1 · claude · PEER_REVIEW
+### ✅ T-MIN-004 · P1 · claude · DONE
 **Zodiac batch brief for the twelve zodiac trump personality studies**
 **Owner:** claude-fable-5
 

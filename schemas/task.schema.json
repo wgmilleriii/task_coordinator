@@ -20,7 +20,9 @@
     "verification_command": { "type": ["string", "null"] },
     "human_review_required": { "type": "boolean" },
     "claimed_at": { "type": ["string", "null"], "format": "date-time" },
-    "last_transition": { "type": ["string", "null"], "format": "date-time" }
+    "last_transition": { "type": ["string", "null"], "format": "date-time" },
+    "blocked_reason": { "type": ["string", "null"] },
+    "previous_status": { "type": ["string", "null"] }
   },
   "required": ["id", "title", "repo", "priority", "lane", "status", "created_at", "scope", "definition_of_done"],
   "allOf": [

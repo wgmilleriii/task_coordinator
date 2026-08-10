@@ -141,9 +141,13 @@ def cmd_render(args):
                 current_repo = task.get('repo')
                 f.write(f"\n## Repo: `{current_repo}`\n\n")
                 
-            status_emoji = "✅" if task['status'] == "DONE" else "⏳" if task['status'] in ["HUMAN_REVIEW", "PEER_REVIEW"] else "🛠" if task['status'] in ["CLAIMED", "IN_PROGRESS"] else "📋"
+            status_emoji = "✅" if task['status'] == "DONE" else "🛑" if task['status'] == "BLOCKED" else "⏳" if task['status'] in ["HUMAN_REVIEW", "PEER_REVIEW"] else "🛠" if task['status'] in ["CLAIMED", "IN_PROGRESS"] else "📋"
             f.write(f"### {status_emoji} {task['id']} · {task['priority']} · {task['lane']} · {task['status']}\n")
             f.write(f"**{task['title']}**\n")
+            
+            if task['status'] == 'BLOCKED':
+                f.write(f"> 🛑 **BLOCKED REASON:** {task.get('blocked_reason', 'Not specified')}\n\n")
+                
             f.write(f"**Owner:** {task.get('owner', 'None')}\n\n")
             f.write("**Scope:**\n")
             for item in task.get('scope', []):
@@ -386,6 +390,38 @@ def cmd_record_review(args):
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
+def cmd_block(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+        
+    task['previous_status'] = task['status']
+    task['status'] = 'BLOCKED'
+    task['blocked_reason'] = args.reason
+    save_task(task)
+    print(f"🛑 Task {args.task_id} is now BLOCKED: {args.reason}")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+    
+def cmd_unblock(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] != 'BLOCKED':
+        print(f"❌ Task {args.task_id} is not BLOCKED.")
+        return 1
+        
+    prev_status = task.get('previous_status') or 'OPEN'
+    task['status'] = prev_status
+    task['blocked_reason'] = None
+    task['previous_status'] = None
+    save_task(task)
+    print(f"✅ Task {args.task_id} is UNBLOCKED and reverted to {prev_status}.")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+
 def cmd_close(args):
     task = get_task(args.task_id)
     if not task:
@@ -439,6 +475,13 @@ def main():
     record_review_parser = subparsers.add_parser("record-review", help="Record the verdict of a peer review")
     record_review_parser.add_argument("task_id")
     
+    block_parser = subparsers.add_parser("block", help="Mark a task as BLOCKED and notify humans")
+    block_parser.add_argument("task_id")
+    block_parser.add_argument("--reason", required=True, help="Reason why work cannot proceed")
+    
+    unblock_parser = subparsers.add_parser("unblock", help="Unblock a task and return it to its previous state")
+    unblock_parser.add_argument("task_id")
+    
     close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE (requires human approval if human_review_required is True)")
     close_parser.add_argument("task_id")
     close_parser.add_argument("--human", default="Unknown", help="Name of the human approving the close")
@@ -470,6 +513,10 @@ def main():
             sys.exit(cmd_start_review(args))
         elif args.command == "record-review":
             sys.exit(cmd_record_review(args))
+        elif args.command == "block":
+            sys.exit(cmd_block(args))
+        elif args.command == "unblock":
+            sys.exit(cmd_unblock(args))
         elif args.command == "close":
             sys.exit(cmd_close(args))
 

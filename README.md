@@ -12,7 +12,7 @@ If you have just been dispatched to this repository to evaluate it or begin work
 
 1. **Read the Rules:** Read this entire `README.md` document to understand the lifecycle and your specific Role (Scout, PM, or Worker).
 2. **Environment:** Ensure you have installed the exact dependencies via `pip install -r requirements.txt`.
-3. **Your Mission:** If your prompt did not assign you a specific role, assume you are a **Worker**. Run `./bin/fleet render`, find an `AUDITED` task, and claim it. 
+3. **Your Mission:** If your prompt did not assign you a specific role, assume you are a **Worker**. Run `./bin/fleet render`, find an `AUDITED` task, and claim it. **If there are no `AUDITED` tasks available, you must automatically flip your role to Scout** and begin writing new `OPEN` tasks into the database.
 4. **Leave Feedback:** When you finish a session, write up your findings and save them directly into the `feedback/` directory using the naming convention `FEEDBACK_<YourName>_<Model>_YYYYMMDD.md`. Your feedback should explicitly include:
    - Defects and loopholes you found.
    - Architectural complaints or praise.

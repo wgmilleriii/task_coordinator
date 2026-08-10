@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "id": { "type": "string", "pattern": "^T-[A-Z0-9]+-[0-9]+$" },
     "title": { "type": "string", "minLength": 5 },
@@ -19,5 +20,24 @@
     "verification_command": { "type": ["string", "null"] },
     "human_review_required": { "type": "boolean" }
   },
-  "required": ["id", "title", "repo", "priority", "lane", "status", "created_at", "scope", "definition_of_done"]
+  "required": ["id", "title", "repo", "priority", "lane", "status", "created_at", "scope", "definition_of_done"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "enum": ["AUDITED", "CLAIMED", "IN_PROGRESS", "PEER_REVIEW", "HUMAN_REVIEW", "DONE"] } }
+      },
+      "then": {
+        "required": ["audited_at", "audited_by", "audited_repo_sha", "verification_command"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "enum": ["CLAIMED", "IN_PROGRESS", "PEER_REVIEW", "HUMAN_REVIEW", "DONE"] } }
+      },
+      "then": {
+        "required": ["owner"],
+        "properties": { "owner": { "type": "string", "minLength": 1 } }
+      }
+    }
+  ]
 }

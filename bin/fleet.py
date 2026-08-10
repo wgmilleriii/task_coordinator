@@ -22,8 +22,16 @@ def load_all_tasks():
         return tasks
     for filename in os.listdir(ACTIVE_DIR):
         if filename.endswith('.yaml') or filename.endswith('.yml'):
-            with open(os.path.join(ACTIVE_DIR, filename), 'r') as f:
-                tasks.append(yaml.safe_load(f))
+            filepath = os.path.join(ACTIVE_DIR, filename)
+            try:
+                with open(filepath, 'r') as f:
+                    data = yaml.safe_load(f)
+                    if not isinstance(data, dict):
+                        print(f"❌ {filename}: Not a valid YAML object.")
+                        continue
+                    tasks.append((filename, data))
+            except Exception as e:
+                print(f"❌ {filename}: Failed to parse YAML - {str(e)}")
     return tasks
 
 def save_task(task_data):
@@ -33,21 +41,55 @@ def save_task(task_data):
 
 def cmd_lint(args):
     schema = load_schema('task')
-    tasks = load_all_tasks()
+    tasks_with_files = load_all_tasks()
+    
     errors = 0
-    for task in tasks:
+    seen_ids = set()
+    
+    for filename, task in tasks_with_files:
+        task_id = task.get('id', 'Unknown')
+        
+        # 1. Check Schema Validity
         try:
-            jsonschema.validate(instance=task, schema=schema)
+            jsonschema.validate(instance=task, schema=schema, format_checker=jsonschema.FormatChecker())
         except jsonschema.exceptions.ValidationError as e:
-            print(f"❌ {task.get('id', 'Unknown')}: {e.message}")
+            print(f"❌ {filename}: Schema Error - {e.message}")
             errors += 1
+            continue
+            
+        # 2. Check for Duplicate IDs
+        if task_id in seen_ids:
+            print(f"❌ {filename}: Duplicate Task ID detected '{task_id}'")
+            errors += 1
+        seen_ids.add(task_id)
+        
+        # 3. Check filename alignment
+        expected_filename = f"{task_id}.yaml"
+        if filename != expected_filename:
+            print(f"❌ {filename}: Filename does not match Task ID '{task_id}'. Expected '{expected_filename}'.")
+            errors += 1
+            
+        # 4. Check dependencies exist
+        deps = task.get('dependencies', [])
+        for dep in deps:
+            # We must check this after collecting all IDs, so we will do a second pass for dependencies.
+            pass
+
+    # Second pass for dependencies
+    for filename, task in tasks_with_files:
+        deps = task.get('dependencies', [])
+        for dep in deps:
+            if dep not in seen_ids:
+                print(f"❌ {filename}: Dependency '{dep}' does not exist.")
+                errors += 1
+
     if errors == 0:
-        print("✅ All tasks passed schema validation.")
+        print("✅ All tasks passed strict schema validation.")
         return 0
     return 1
 
 def cmd_render(args):
-    tasks = load_all_tasks()
+    tasks = [t[1] for t in load_all_tasks()]
     # Sort by repo, then priority, then status
     priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
     tasks.sort(key=lambda x: (x.get('repo', ''), priority_order.get(x.get('priority', 'P3')), x.get('status', '')))
@@ -78,7 +120,7 @@ def cmd_render(args):
     print(f"✅ Rendered {TASKS_MD}")
 
 def cmd_claim(args):
-    tasks = load_all_tasks()
+    tasks = [t[1] for t in load_all_tasks()]
     for task in tasks:
         if task['id'] == args.task_id:
             if task['status'] != 'AUDITED':

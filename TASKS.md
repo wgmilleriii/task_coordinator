@@ -10,7 +10,7 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
-    T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::active
+    T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
 ```
 
 ---
@@ -18,7 +18,7 @@ graph TD
 
 ## Repo: `minchiate_tarot`
 
-### 🛠 T-MIN-001 · P1 · ANY · CLAIMED
+### ⏳ T-MIN-001 · P1 · ANY · PEER_REVIEW
 **Initialize the Virtual Master Sheet Web Grid**
 **Owner:** Worker-1
 

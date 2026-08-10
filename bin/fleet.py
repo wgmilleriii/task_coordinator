@@ -52,6 +52,14 @@ def cmd_lint(args):
     schema = load_schema('task')
     tasks_with_files = load_all_tasks()
     
+    # D-1: Self-test to ensure date-time validation isn't silently ignored
+    try:
+        jsonschema.validate(instance={"d": "NOT-A-DATE"}, schema={"type": "object", "properties": {"d": {"type": "string", "format": "date-time"}}}, format_checker=jsonschema.FormatChecker())
+        print("❌ CRITICAL LINT ERROR: jsonschema FormatChecker is failing silently. Missing rfc3339-validator dependency.")
+        return 1
+    except jsonschema.exceptions.ValidationError:
+        pass
+        
     errors = 0
     seen_ids = set()
     
@@ -158,6 +166,7 @@ def cmd_claim(args):
             
             task['status'] = 'CLAIMED'
             task['owner'] = args.owner
+            task['claimed_at'] = datetime.now(datetime.UTC).isoformat().replace('+00:00', 'Z')
             save_task(task)
             print(f"✅ Successfully claimed {args.task_id} for {args.owner}.")
             cmd_render(argparse.Namespace(quiet=True))
@@ -260,18 +269,44 @@ def cmd_submit(args):
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
+def cmd_peer_pass(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] != 'PEER_REVIEW':
+        print(f"❌ Cannot peer-pass {args.task_id}. Status is {task['status']}, must be PEER_REVIEW.")
+        return 1
+        
+    if task.get('human_review_required', False):
+        task['status'] = 'HUMAN_REVIEW'
+        print(f"✅ Task {args.task_id} passed peer review. Awaiting HUMAN_REVIEW.")
+    else:
+        task['status'] = 'DONE'
+        print(f"✅ Task {args.task_id} passed peer review and is marked DONE (no human review required).")
+        
+    save_task(task)
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+
 def cmd_close(args):
     task = get_task(args.task_id)
     if not task:
         print(f"❌ Task {args.task_id} not found.")
         return 1
-    if task['status'] not in ['PEER_REVIEW', 'HUMAN_REVIEW']:
-        print(f"❌ Cannot close {args.task_id}. Status is {task['status']}, must be in REVIEW.")
-        return 1
+        
+    if task.get('human_review_required', False):
+        if task['status'] != 'HUMAN_REVIEW':
+            print(f"❌ Cannot close {args.task_id}. Status is {task['status']}, must be HUMAN_REVIEW.")
+            return 1
+    else:
+        if task['status'] not in ['PEER_REVIEW', 'HUMAN_REVIEW']:
+            print(f"❌ Cannot close {args.task_id}. Status is {task['status']}, must be in REVIEW.")
+            return 1
         
     task['status'] = 'DONE'
     save_task(task)
-    print(f"✅ Task {args.task_id} successfully marked as DONE.")
+    print(f"✅ Task {args.task_id} successfully marked as DONE by {args.human}.")
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
@@ -298,8 +333,12 @@ def main():
     submit_parser = subparsers.add_parser("submit", help="Submit a CLAIMED task for review")
     submit_parser.add_argument("task_id")
     
-    close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE")
+    peer_pass_parser = subparsers.add_parser("peer-pass", help="Pass a task through peer review")
+    peer_pass_parser.add_argument("task_id")
+    
+    close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE (requires human approval if human_review_required is True)")
     close_parser.add_argument("task_id")
+    close_parser.add_argument("--human", default="Unknown", help="Name of the human approving the close")
     
     args = parser.parse_args()
     
@@ -315,6 +354,8 @@ def main():
         sys.exit(cmd_verify(args))
     elif args.command == "submit":
         sys.exit(cmd_submit(args))
+    elif args.command == "peer-pass":
+        sys.exit(cmd_peer_pass(args))
     elif args.command == "close":
         sys.exit(cmd_close(args))
 

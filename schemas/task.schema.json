@@ -18,7 +18,9 @@
     "scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "definition_of_done": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
     "verification_command": { "type": ["string", "null"] },
-    "human_review_required": { "type": "boolean" }
+    "human_review_required": { "type": "boolean" },
+    "claimed_at": { "type": ["string", "null"], "format": "date-time" },
+    "last_transition": { "type": ["string", "null"], "format": "date-time" }
   },
   "required": ["id", "title", "repo", "priority", "lane", "status", "created_at", "scope", "definition_of_done"],
   "allOf": [

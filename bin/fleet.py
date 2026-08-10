@@ -491,7 +491,24 @@ def cmd_close(args):
         
     task['status'] = 'DONE'
     save_task(task)
-    print(f"✅ Task {args.task_id} successfully marked as DONE by {args.human}.")
+    print(f"✅ Task {args.task_id} manually closed by {args.human}.")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+
+def cmd_archive(args):
+    tasks_with_files = load_all_tasks()
+    archived_count = 0
+    archive_dir = os.path.join(BASE_DIR, 'tasks', 'archive')
+    os.makedirs(archive_dir, exist_ok=True)
+    
+    for filename, task in tasks_with_files:
+        if task['status'] in ['DONE', 'CANCELLED', 'DEFERRED']:
+            source = os.path.join(ACTIVE_DIR, filename)
+            dest = os.path.join(archive_dir, filename)
+            os.replace(source, dest)
+            archived_count += 1
+            
+    print(f"🧹 Archived {archived_count} tasks.")
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
@@ -538,6 +555,8 @@ def main():
     close_parser.add_argument("task_id")
     close_parser.add_argument("--human", default="Unknown", help="Name of the human approving the close")
     
+    archive_parser = subparsers.add_parser("archive", help="Sweep all DONE, CANCELLED, and DEFERRED tasks off the active board into tasks/archive/")
+    
     args = parser.parse_args()
     
     import fcntl
@@ -571,6 +590,8 @@ def main():
             sys.exit(cmd_unblock(args))
         elif args.command == "close":
             sys.exit(cmd_close(args))
+        elif args.command == "archive":
+            sys.exit(cmd_archive(args))
 
 if __name__ == "__main__":
     main()

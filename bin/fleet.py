@@ -126,17 +126,67 @@ def cmd_lint(args):
     return 1
 
 def cmd_render(args):
-    tasks = [t[1] for t in load_all_tasks()]
-    priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
-    tasks.sort(key=lambda x: (x.get('repo', ''), priority_order.get(x.get('priority', 'P3')), x.get('status', '')))
+    tasks_with_files = load_all_tasks()
+    tasks_list = [t[1] for t in tasks_with_files]
+    
+    # Calculate fleet burn rate
+    total_tokens = 0
+    total_cost = 0.0
+    if os.path.exists(HANDOFFS_DIR):
+        for filename in os.listdir(HANDOFFS_DIR):
+            if filename.endswith('.yaml'):
+                try:
+                    with open(os.path.join(HANDOFFS_DIR, filename), 'r') as f:
+                        data = yaml.safe_load(f)
+                        if data.get('token_spend'):
+                            total_tokens += data['token_spend']
+                        if data.get('cost_usd'):
+                            total_cost += data['cost_usd']
+                except Exception:
+                    pass
     
     temp_md = TASKS_MD + ".tmp"
     with open(temp_md, 'w') as f:
-        f.write("# Fleet Task Board (V2 Generated)\n\n")
-        f.write("> **Note:** This file is read-only. Edit tasks via the `bin/fleet` CLI.\n\n")
+        f.write("# 📋 Task Board\n\n")
+        f.write("*(Auto-generated. Do not edit manually. Use `./bin/fleet` commands to transition tasks.)*\n\n")
+        
+        # Add Burn Rate
+        if total_tokens > 0 or total_cost > 0:
+            f.write("## 💸 Fleet Burn Rate (All Time)\n")
+            f.write(f"- **Total Tokens Spent:** {total_tokens:,}\n")
+            f.write(f"- **Total Cost (USD):** ${total_cost:,.2f}\n\n")
+            f.write("---\n\n")
+            
+        # Add Mermaid Graph
+        f.write("## 🕸️ Task Dependency Graph\n\n")
+        f.write("```mermaid\ngraph TD\n")
+        f.write("    classDef done fill:#d4edda,stroke:#28a745,color:#000;\n")
+        f.write("    classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;\n")
+        f.write("    classDef review fill:#fff3cd,stroke:#ffc107,color:#000;\n")
+        f.write("    classDef active fill:#cce5ff,stroke:#007bff,color:#000;\n")
+        
+        for task in tasks_list:
+            safe_title = task['title'].replace('"', "'").replace('[', '(').replace(']', ')')
+            node = f"    {task['id']}[\"{task['id']}<br/>{safe_title}\"]"
+            if task['status'] == 'DONE':
+                node += ":::done"
+            elif task['status'] == 'BLOCKED':
+                node += ":::blocked"
+            elif task['status'] in ['PEER_REVIEW', 'HUMAN_REVIEW']:
+                node += ":::review"
+            elif task['status'] in ['CLAIMED', 'IN_PROGRESS']:
+                node += ":::active"
+            f.write(node + "\n")
+            for dep in task.get('dependencies', []):
+                f.write(f"    {dep} --> {task['id']}\n")
+        f.write("```\n\n---\n\n")
+        
+        # Render lanes
+        priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+        tasks_list.sort(key=lambda x: (x.get('repo', ''), priority_order.get(x.get('priority', 'P3')), x.get('status', '')))
         
         current_repo = None
-        for task in tasks:
+        for task in tasks_list:
             if task.get('repo') != current_repo:
                 current_repo = task.get('repo')
                 f.write(f"\n## Repo: `{current_repo}`\n\n")
@@ -263,7 +313,9 @@ def cmd_verify(args):
         "head_sha": "REQUIRED_PLEASE_FILL",
         "evidence_output": output,
         "peer_review_notes": None,
-        "human_action_required": None
+        "human_action_required": None,
+        "token_spend": None,
+        "cost_usd": None
     }
     
     os.makedirs(HANDOFFS_DIR, exist_ok=True)

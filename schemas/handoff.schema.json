@@ -13,7 +13,9 @@
     "head_sha": { "type": "string", "minLength": 1 },
     "evidence_output": { "type": "string", "minLength": 10 },
     "peer_review_notes": { "type": ["string", "null"] },
-    "human_action_required": { "type": ["string", "null"] }
+    "human_action_required": { "type": ["string", "null"] },
+    "token_spend": { "type": ["integer", "null"] },
+    "cost_usd": { "type": ["number", "null"] }
   },
   "required": ["task_id", "agent", "model", "status", "target_repo", "branch", "base_sha", "head_sha", "evidence_output"]
 }

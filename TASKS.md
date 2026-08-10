@@ -1,6 +1,20 @@
-# Fleet Task Board (V2 Generated)
+# 📋 Task Board
 
-> **Note:** This file is read-only. Edit tasks via the `bin/fleet` CLI.
+*(Auto-generated. Do not edit manually. Use `./bin/fleet` commands to transition tasks.)*
+
+## 🕸️ Task Dependency Graph
+
+```mermaid
+graph TD
+    classDef done fill:#d4edda,stroke:#28a745,color:#000;
+    classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
+    classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
+    classDef active fill:#cce5ff,stroke:#007bff,color:#000;
+    T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]
+    T-MIN-004["T-MIN-004<br/>Zodiac batch brief for the twelve zodiac trump personality studies"]:::active
+```
+
+---
 
 
 ## Repo: `minchiate_tarot`

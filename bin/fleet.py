@@ -445,24 +445,33 @@ def main():
     
     args = parser.parse_args()
     
-    if args.command == "lint":
-        sys.exit(cmd_lint(args))
-    elif args.command == "render":
-        sys.exit(cmd_render(args))
-    elif args.command == "audit":
-        sys.exit(cmd_audit(args))
-    elif args.command == "claim":
-        sys.exit(cmd_claim(args))
-    elif args.command == "verify":
-        sys.exit(cmd_verify(args))
-    elif args.command == "submit":
-        sys.exit(cmd_submit(args))
-    elif args.command == "start-review":
-        sys.exit(cmd_start_review(args))
-    elif args.command == "record-review":
-        sys.exit(cmd_record_review(args))
-    elif args.command == "close":
-        sys.exit(cmd_close(args))
+    import fcntl
+    lock_path = os.path.join(BASE_DIR, '.fleet.lock')
+    with open(lock_path, 'w') as lock_f:
+        try:
+            fcntl.flock(lock_f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            print("❌ Could not acquire lock. Another fleet process is currently running.")
+            sys.exit(1)
+            
+        if args.command == "lint":
+            sys.exit(cmd_lint(args))
+        elif args.command == "render":
+            sys.exit(cmd_render(args))
+        elif args.command == "audit":
+            sys.exit(cmd_audit(args))
+        elif args.command == "claim":
+            sys.exit(cmd_claim(args))
+        elif args.command == "verify":
+            sys.exit(cmd_verify(args))
+        elif args.command == "submit":
+            sys.exit(cmd_submit(args))
+        elif args.command == "start-review":
+            sys.exit(cmd_start_review(args))
+        elif args.command == "record-review":
+            sys.exit(cmd_record_review(args))
+        elif args.command == "close":
+            sys.exit(cmd_close(args))
 
 if __name__ == "__main__":
     main()

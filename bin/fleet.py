@@ -239,6 +239,42 @@ def cmd_render(args):
         print(f"✅ Rendered {TASKS_MD}")
     return 0
 
+def cmd_create(args):
+    repo = args.repo
+    prefix = repo[:3].upper() if len(repo) >= 3 else "TSK"
+    
+    existing_tasks = load_all_tasks()
+    max_num = 0
+    for filename, task in existing_tasks:
+        tid = task.get('id', '')
+        if tid.startswith(f"T-{prefix}-"):
+            try:
+                num = int(tid.split('-')[-1])
+                max_num = max(max_num, num)
+            except ValueError:
+                pass
+                
+    next_num = max_num + 1
+    task_id = f"T-{prefix}-{next_num:03d}"
+    
+    new_task = {
+        "id": task_id,
+        "title": args.title,
+        "repo": repo,
+        "priority": args.priority,
+        "lane": args.lane,
+        "status": "OPEN",
+        "created_at": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        "scope": ["REQUIRED_PLEASE_FILL"],
+        "definition_of_done": ["REQUIRED_PLEASE_FILL"]
+    }
+    
+    save_task(new_task)
+    log_global_event('CREATE', 'Unknown', task_id)
+    print(f"✅ Created new task {task_id}. Please edit its scope and definition_of_done in {ACTIVE_DIR}/{task_id}.yaml")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+
 def cmd_audit(args):
     task = get_task(args.task_id)
     if not task:
@@ -574,6 +610,12 @@ def main():
     subparsers.add_parser("lint", help="Validate all active tasks against the schema")
     subparsers.add_parser("render", help="Generate TASKS.md from YAML files")
     
+    create_parser = subparsers.add_parser("create", help="Create a new OPEN task and generate its YAML file")
+    create_parser.add_argument("--title", required=True, help="Title of the task")
+    create_parser.add_argument("--repo", required=True, help="Target repository (e.g. minchiate_tarot)")
+    create_parser.add_argument("--priority", choices=["P0", "P1", "P2", "P3"], default="P3")
+    create_parser.add_argument("--lane", choices=["ANY", "gemini", "claude", "codex", "HUMAN", "AUDITOR"], default="ANY")
+    
     audit_parser = subparsers.add_parser("audit", help="Audit an OPEN task (PMs only)")
     audit_parser.add_argument("task_id")
     audit_parser.add_argument("--auditor", required=True)
@@ -625,6 +667,8 @@ def main():
             
         if args.command == "lint":
             sys.exit(cmd_lint(args))
+        elif args.command == "create":
+            sys.exit(cmd_create(args))
         elif args.command == "render":
             sys.exit(cmd_render(args))
         elif args.command == "audit":

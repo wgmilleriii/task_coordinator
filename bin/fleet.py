@@ -36,8 +36,17 @@ def load_all_tasks():
 
 def save_task(task_data):
     task_id = task_data['id']
-    with open(os.path.join(ACTIVE_DIR, f"{task_id}.yaml"), 'w') as f:
+    filepath = os.path.join(ACTIVE_DIR, f"{task_id}.yaml")
+    temp_filepath = filepath + ".tmp"
+    with open(temp_filepath, 'w') as f:
         yaml.dump(task_data, f, sort_keys=False)
+    os.replace(temp_filepath, filepath)
+
+def get_task(task_id):
+    for filename, task in load_all_tasks():
+        if task.get('id') == task_id:
+            return task
+    return None
 
 def cmd_lint(args):
     schema = load_schema('task')
@@ -49,7 +58,6 @@ def cmd_lint(args):
     for filename, task in tasks_with_files:
         task_id = task.get('id', 'Unknown')
         
-        # 1. Check Schema Validity
         try:
             jsonschema.validate(instance=task, schema=schema, format_checker=jsonschema.FormatChecker())
         except jsonschema.exceptions.ValidationError as e:
@@ -57,25 +65,16 @@ def cmd_lint(args):
             errors += 1
             continue
             
-        # 2. Check for Duplicate IDs
         if task_id in seen_ids:
             print(f"❌ {filename}: Duplicate Task ID detected '{task_id}'")
             errors += 1
         seen_ids.add(task_id)
         
-        # 3. Check filename alignment
         expected_filename = f"{task_id}.yaml"
         if filename != expected_filename:
             print(f"❌ {filename}: Filename does not match Task ID '{task_id}'. Expected '{expected_filename}'.")
             errors += 1
-            
-        # 4. Check dependencies exist
-        deps = task.get('dependencies', [])
-        for dep in deps:
-            # We must check this after collecting all IDs, so we will do a second pass for dependencies.
-            pass
 
-    # Second pass for dependencies
     for filename, task in tasks_with_files:
         deps = task.get('dependencies', [])
         for dep in deps:
@@ -90,11 +89,11 @@ def cmd_lint(args):
 
 def cmd_render(args):
     tasks = [t[1] for t in load_all_tasks()]
-    # Sort by repo, then priority, then status
     priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
     tasks.sort(key=lambda x: (x.get('repo', ''), priority_order.get(x.get('priority', 'P3')), x.get('status', '')))
     
-    with open(TASKS_MD, 'w') as f:
+    temp_md = TASKS_MD + ".tmp"
+    with open(temp_md, 'w') as f:
         f.write("# Fleet Task Board (V2 Generated)\n\n")
         f.write("> **Note:** This file is read-only. Edit tasks via the `bin/fleet` CLI.\n\n")
         
@@ -117,7 +116,31 @@ def cmd_render(args):
             if task.get('audited_repo_sha'):
                 f.write(f"\n*Audited against SHA:* `{task['audited_repo_sha']}`\n")
             f.write("\n---\n")
-    print(f"✅ Rendered {TASKS_MD}")
+            
+    os.replace(temp_md, TASKS_MD)
+    if not (args and hasattr(args, 'quiet') and args.quiet):
+        print(f"✅ Rendered {TASKS_MD}")
+    return 0
+
+def cmd_audit(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] not in ['OPEN', 'DRAFT']:
+        print(f"❌ Cannot audit {args.task_id}. Status is {task['status']}, must be OPEN.")
+        return 1
+    
+    task['status'] = 'AUDITED'
+    task['audited_at'] = datetime.utcnow().isoformat() + "Z"
+    task['audited_by'] = args.auditor
+    task['audited_repo_sha'] = args.repo_sha
+    task['verification_command'] = args.command
+    
+    save_task(task)
+    print(f"✅ Task {args.task_id} successfully audited against {args.repo_sha}.")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
 
 def cmd_claim(args):
     tasks = [t[1] for t in load_all_tasks()]
@@ -126,7 +149,7 @@ def cmd_claim(args):
             if task['status'] != 'AUDITED':
                 print(f"❌ Cannot claim {args.task_id}. Status is {task['status']}, must be AUDITED.")
                 return 1
-            # Check for repo locks (one agent per repo)
+            
             repo = task['repo']
             for other_task in tasks:
                 if other_task['repo'] == repo and other_task['status'] in ['CLAIMED', 'IN_PROGRESS']:
@@ -137,22 +160,84 @@ def cmd_claim(args):
             task['owner'] = args.owner
             save_task(task)
             print(f"✅ Successfully claimed {args.task_id} for {args.owner}.")
-            cmd_render(None)
+            cmd_render(argparse.Namespace(quiet=True))
             return 0
     print(f"❌ Task {args.task_id} not found.")
     return 1
+
+def cmd_submit(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] not in ['CLAIMED', 'IN_PROGRESS']:
+        print(f"❌ Cannot submit {args.task_id}. Status is {task['status']}, must be CLAIMED or IN_PROGRESS.")
+        return 1
+    
+    task['status'] = 'PEER_REVIEW'
+    save_task(task)
+    print(f"✅ Task {args.task_id} submitted for PEER_REVIEW.")
+    
+    handoff = {
+        "task_id": args.task_id,
+        "agent": task.get('owner', 'Unknown'),
+        "model": "Unknown",
+        "status": "PEER_REVIEW",
+        "target_repo": task.get('repo', 'Unknown'),
+        "branch": "test",
+        "base_sha": task.get('audited_repo_sha', 'Unknown'),
+        "head_sha": "REQUIRED",
+        "evidence_output": args.evidence_output
+    }
+    
+    handoffs_dir = os.path.join(BASE_DIR, 'handoffs')
+    os.makedirs(handoffs_dir, exist_ok=True)
+    handoff_path = os.path.join(handoffs_dir, f"{args.task_id}_handoff.yaml")
+    with open(handoff_path, 'w') as f:
+        yaml.dump(handoff, f, sort_keys=False)
+        
+    print(f"✅ Generated handoff template at {handoff_path}")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
+
+def cmd_close(args):
+    task = get_task(args.task_id)
+    if not task:
+        print(f"❌ Task {args.task_id} not found.")
+        return 1
+    if task['status'] not in ['PEER_REVIEW', 'HUMAN_REVIEW']:
+        print(f"❌ Cannot close {args.task_id}. Status is {task['status']}, must be in REVIEW.")
+        return 1
+        
+    task['status'] = 'DONE'
+    save_task(task)
+    print(f"✅ Task {args.task_id} successfully marked as DONE.")
+    cmd_render(argparse.Namespace(quiet=True))
+    return 0
 
 def main():
     parser = argparse.ArgumentParser(description="Dollers Fleet V2 Task Coordinator")
     subparsers = parser.add_subparsers(dest="command", required=True)
     
-    lint_parser = subparsers.add_parser("lint", help="Validate all active tasks against the schema")
+    subparsers.add_parser("lint", help="Validate all active tasks against the schema")
+    subparsers.add_parser("render", help="Generate TASKS.md from YAML files")
     
-    render_parser = subparsers.add_parser("render", help="Generate TASKS.md from YAML files")
+    audit_parser = subparsers.add_parser("audit", help="Audit an OPEN task (PMs only)")
+    audit_parser.add_argument("task_id")
+    audit_parser.add_argument("--auditor", required=True)
+    audit_parser.add_argument("--repo-sha", required=True)
+    audit_parser.add_argument("--command", required=True)
     
     claim_parser = subparsers.add_parser("claim", help="Claim an AUDITED task")
-    claim_parser.add_argument("task_id", help="The Task ID (e.g. T-MIN-001)")
-    claim_parser.add_argument("--owner", required=True, help="Platform/Agent name claiming the task")
+    claim_parser.add_argument("task_id")
+    claim_parser.add_argument("--owner", required=True)
+    
+    submit_parser = subparsers.add_parser("submit", help="Submit a CLAIMED task for review")
+    submit_parser.add_argument("task_id")
+    submit_parser.add_argument("--evidence-output", required=True)
+    
+    close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE")
+    close_parser.add_argument("task_id")
     
     args = parser.parse_args()
     
@@ -160,8 +245,14 @@ def main():
         sys.exit(cmd_lint(args))
     elif args.command == "render":
         sys.exit(cmd_render(args))
+    elif args.command == "audit":
+        sys.exit(cmd_audit(args))
     elif args.command == "claim":
         sys.exit(cmd_claim(args))
+    elif args.command == "submit":
+        sys.exit(cmd_submit(args))
+    elif args.command == "close":
+        sys.exit(cmd_close(args))
 
 if __name__ == "__main__":
     main()

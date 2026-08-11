@@ -1,0 +1,25 @@
+task_id: T-MIN-010
+reviewer_agent: Reviewer-F11
+reviewer_model: claude-fable-5
+reviewed_head_sha: 86ef0e4057d1d955f57b954c757cc94fb4df3b49
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Diff inspected (0509f691..86ef0e40): single 7-line change confined
+    to render_grid_html in minchiate_reviewer.py, exactly matching scope. Caption
+    now renders "type value" via f"{card_type} {card_value}".strip() when type is
+    present, falling back to original_name when type is empty. No out-of-scope
+    edits.'
+- severity: INFO
+  description: 'Evidence reproduced independently in an isolated worktree at
+    86ef0e40 (shared checkout left on branch test). Verification command output
+    matched the handoff evidence_output byte-for-byte in key facts: "OK: caption
+    includes type+value, unidentified fallback intact", 97 cards, GET / -> 200
+    with identical 15552-byte page, --check exit 0.'
+- severity: INFO
+  description: 'Edge probe beyond the DoD: card with type "Trump" and empty value
+    renders figcaption "Trump" with no trailing space (the .strip() handles it);
+    value=None and entirely missing type/value keys are also handled via the
+    "or \"\"" coalescing and the original_name fallback. Verified by regex
+    extraction of figcaption contents.'
+reviewed_at: '2026-08-11T04:45:06.559651Z'

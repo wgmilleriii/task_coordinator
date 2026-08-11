@@ -3,7 +3,7 @@ title: Fix grid caption dropping card value for identified cards
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: PEER_REVIEW
+status: DONE
 owner: Worker-F10
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:42.450145Z'
@@ -51,3 +51,7 @@ events:
 - timestamp: '2026-08-11T04:43:51.725770Z'
   action: SUBMIT
   actor: Worker-F10
+- timestamp: '2026-08-11T04:45:18.157738Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-F11
+  details: 'Verdict: PASS'

@@ -14,11 +14,11 @@ graph TD
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]
     T-INTY-001["T-INTY-001<br/>Provision Local Database for SFUSD Onboarding"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
-    T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::review
+    T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::done
     T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
-    T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]:::active
+    T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]:::review
     T-INTY-002 --> T-INTY-003
     T-INTY-002["T-INTY-002<br/>Develop CSV Parser and Schema Mapper for SFUSD"]:::done
     T-INTY-001 --> T-INTY-002
@@ -32,23 +32,6 @@ graph TD
 
 ## Repo: `intypiano`
 
-### 🛠 T-INTY-003 · P1 · ANY · CLAIMED
-**Execute Import and Validate Clean Inventory**
-**Owner:** Worker-1
-
-**Scope:**
-- Run the import script from T-INTY-002 against the newly created `sfusd_piano` local database.
-- Validate that relationships between Clients (e.g., A.P. Giannini Middle School), Locations, and Pianos are correctly created.
-- Ensure that active/inactive statuses and tuning intervals are properly stored.
-- Perform a sanity check query to ensure the number of imported pianos matches the CSV and the data is clean.
-
-**Definition of Done:**
-- The `sfusd_piano` database is fully populated with the clean inventory.
-- Spot checks verify that all imported pianos have correct makes, models, and locations.
-
-*Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
-
----
 ### ✅ T-INTY-001 · P1 · ANY · DONE
 **Provision Local Database for SFUSD Onboarding**
 **Owner:** Worker-1
@@ -78,6 +61,23 @@ graph TD
 **Definition of Done:**
 - The script accurately parses all 160+ rows from the CSV.
 - A mapping document or the script itself is ready for execution against the database.
+
+*Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
+
+---
+### ⏳ T-INTY-003 · P1 · ANY · PEER_REVIEW
+**Execute Import and Validate Clean Inventory**
+**Owner:** Worker-1
+
+**Scope:**
+- Run the import script from T-INTY-002 against the newly created `sfusd_piano` local database.
+- Validate that relationships between Clients (e.g., A.P. Giannini Middle School), Locations, and Pianos are correctly created.
+- Ensure that active/inactive statuses and tuning intervals are properly stored.
+- Perform a sanity check query to ensure the number of imported pianos matches the CSV and the data is clean.
+
+**Definition of Done:**
+- The `sfusd_piano` database is fully populated with the clean inventory.
+- Spot checks verify that all imported pianos have correct makes, models, and locations.
 
 *Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
 
@@ -192,6 +192,22 @@ graph TD
 *Audited against SHA:* `c4f389f`
 
 ---
+### ✅ T-MIN-010 · P2 · ANY · DONE
+**Fix grid caption dropping card value for identified cards**
+**Owner:** Worker-F10
+
+**Scope:**
+- In minchiate_reviewer.py (branch test-T-MIN-001, commit 0509f69), render_grid_html builds each card caption as: label = html.escape(card.get("type") or card["original_name"]) — this shows only the type string (e.g. "Swords") and silently drops the value/rank field entirely, even though ledger.json already stores it for 93 of 97 cards (confirmed by inspection: e.g. {"type": "Swords", "value": "6", ...} renders only as "Swords"). Every card of the same suit is indistinguishable in the grid caption, which defeats the anchor-identification workflow described in CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 3 (Contextual Inference relies on being able to read neighboring cards' identities at a glance).
+- Change the label to include both type and value when both are present (e.g. "Swords 6" or "Trump 15"), falling back to original_name only when the card is unidentified.
+
+**Definition of Done:**
+- For a card with type and value populated in the ledger, the rendered grid HTML's figcaption contains both the type and the value.
+- For an unidentified card (empty type), the figcaption still falls back to original_name as before.
+- python3 minchiate_reviewer.py --check still exits 0.
+
+*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
+
+---
 ### 📋 T-MIN-008 · P2 · ANY · OPEN
 **Pin down Bernardi's verzicola boundary from the 1790 rules directly**
 **Owner:** None
@@ -206,22 +222,6 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
-
----
-### ⏳ T-MIN-010 · P2 · ANY · PEER_REVIEW
-**Fix grid caption dropping card value for identified cards**
-**Owner:** Worker-F10
-
-**Scope:**
-- In minchiate_reviewer.py (branch test-T-MIN-001, commit 0509f69), render_grid_html builds each card caption as: label = html.escape(card.get("type") or card["original_name"]) — this shows only the type string (e.g. "Swords") and silently drops the value/rank field entirely, even though ledger.json already stores it for 93 of 97 cards (confirmed by inspection: e.g. {"type": "Swords", "value": "6", ...} renders only as "Swords"). Every card of the same suit is indistinguishable in the grid caption, which defeats the anchor-identification workflow described in CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 3 (Contextual Inference relies on being able to read neighboring cards' identities at a glance).
-- Change the label to include both type and value when both are present (e.g. "Swords 6" or "Trump 15"), falling back to original_name only when the card is unidentified.
-
-**Definition of Done:**
-- For a card with type and value populated in the ledger, the rendered grid HTML's figcaption contains both the type and the value.
-- For an unidentified card (empty type), the figcaption still falls back to original_name as before.
-- python3 minchiate_reviewer.py --check still exits 0.
-
-*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
 ### 📋 T-MIN-009 · P3 · ANY · OPEN

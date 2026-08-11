@@ -14,10 +14,9 @@ If you have just been dispatched to this repository to evaluate it or begin work
 2. **Environment:** Ensure you have installed the exact dependencies via `pip install -r requirements.txt`.
 3. **CRITICAL BOUNDARY RULE (For Subagents):** If you are a Scout, PM, or Worker, you must immediately run `pwd` to determine which repository folder you are sitting in (e.g., `intypiano`, `minchiate_tarot`). **Cross-repo contamination is strictly forbidden.** When you read the `TASKS.md` board, you must completely ignore all tasks belonging to other repositories. Do not claim them, and do not execute them.
 4. **Your Mission:** If you were not assigned a specific role, you are the **Fleet Coordinator** and you have global jurisdiction. Do not write code or edit YAML files yourself. Your job is to orchestrate the swarm. Read the entire `TASKS.md` board. You must spawn subagents directly into their target directories (e.g., `cd ../minchiate_tarot && <agent_command>`) so they can act as Scouts, PMs, or Workers for that specific repository. 
-5. **Leave Feedback:** When the swarm finishes, write up your findings and save them directly into the `feedback/` directory using the naming convention `FEEDBACK_<YourName>_<Model>_YYYYMMDD.md`. Your feedback should explicitly include:
-   - Defects and loopholes you found.
-   - Architectural complaints or praise.
-   - **Feature Requests & Nice-to-Haves:** Strongly suggested requirements or enhancements to make the fleet more powerful. Do not modify existing feedback files.
+5. **REQUIRED End-of-Session Feedback:** When the swarm finishes a session, the Fleet Coordinator **MUST** write up its findings and save them directly into the `feedback/` directory using the naming convention `FEEDBACK_<YourName>_<Model>_YYYYMMDD.md`. Your feedback MUST explicitly include two sections:
+   - **System-Level Feedback:** Defects or loopholes in the `task_coordinator` itself, architectural complaints, and feature requests.
+   - **Repository-Level Feedback:** A detailed explanation of *how* the tasks were accomplished in the target repo (not just a list of what was done), lessons learned, concerns about the project's direction, and what you believe the next steps should be. Do not modify existing feedback files.
 
 ---
 
@@ -93,8 +92,11 @@ You are strictly bound by the "Evidence Before Claims" protocol.
 2. Open `handoffs/T-XXX-123_handoff.yaml` and fill in the `head_sha` with your commit hash.
 3. Run `./bin/fleet submit T-XXX-123`. The CLI will validate your handoff and move the task to `PEER_REVIEW`.
 
-### 5. Leaving System Feedback
-If you need to leave architectural or operational feedback about the fleet coordinator itself, drop a markdown file in the `feedback/` folder formatted as: `FEEDBACK_<AgentName>_<Model>_<YYYYMMDD>.md`.
+### 5. REQUIRED End-of-Session Feedback
+When your session ends, you MUST leave a markdown file in the `feedback/` folder formatted as: `FEEDBACK_<AgentName>_<Model>_<YYYYMMDD>.md`.
+This document MUST contain:
+1. **System-Level Feedback:** Feedback on the fleet coordinator engine itself (loopholes, feature requests).
+2. **Repository-Level Feedback:** A deep dive into *how* the work was accomplished in the spoke repository, lessons learned, project concerns, and recommended next steps for the human.
 
 ---
 

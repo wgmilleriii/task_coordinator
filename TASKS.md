@@ -13,7 +13,7 @@ graph TD
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::active
+    T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::review
     T-MIN-005 --> T-MIN-009
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
@@ -130,7 +130,7 @@ graph TD
 - The hedge is superseded only by direct transcription, never by memory.
 
 ---
-### 🛠 T-MIN-009 · P3 · ANY · CLAIMED
+### ⏳ T-MIN-009 · P3 · ANY · PEER_REVIEW
 **Verify the zodiac batch's UNVERIFIED doctrine locators**
 **Owner:** Worker-F9
 

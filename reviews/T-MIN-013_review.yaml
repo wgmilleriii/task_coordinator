@@ -1,0 +1,134 @@
+task_id: T-MIN-013
+reviewer_agent: Reviewer-F18
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: ff76c87
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: 'Rank-in-suit arithmetic independently recomputed from
+    research/05-registry-and-audit/Stage5_Master_Card_Registry.csv. All four suits
+    are contiguous 14-slot sort_order blocks: Swords 1-14, Batons 15-28, Cups 29-42,
+    Coins 43-56 (verified by reading every row, not just the two pilots). SUIT-COINS-04
+    has sort_order 46, inside the Coins block (43-56): rank-in-suit = 46-43+1 = 4,
+    matching the pilot''s claim. SUIT-CUPS-12 has sort_order 40, inside the Cups
+    block (29-42): rank-in-suit = 40-29+1 = 12, matching the pilot''s claim. The
+    spec''s §2 formula (rank = sort - block_start + 1) generalizes correctly to all
+    54 remaining cards since every suit block is confirmed contiguous with no gaps
+    or reordering.'
+- severity: INFO
+  description: 'Bernardi scoring claims independently checked against the two full
+    dossiers'' own source material. Pilot1_SUIT-COINS-04_Four_of_Coins.md (lines
+    102-105, 134) and Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md (its C-CUPS12-003/-004
+    rows) both source "Kings score 5 intrinsic points, the other thirteen cards of
+    each suit score none" to RULE-1790 printed pp. 5-6/PDF pp. 7-8, direct. The two
+    light-tier pilots claim exactly this and no more -- no suit-card point value is
+    invented, and the combination (verzicola) claim is correctly hedged as "no value
+    demonstrated, no exclusion asserted," sourced to Justice pilot line 92, which
+    was independently opened and matches verbatim ("Bernardi says a verzicola is
+    made from consecutive cards and then gives explicit low-Papi examples from I-V
+    and higher-trump examples beginning around XXVIII..."). No unsourced point amount
+    appears in either pilot.'
+- severity: INFO
+  description: 'IMG-001 iconography confidence is stated honestly and matches the
+    registry verbatim: "Moderate for subject identity; low for detailed morphology"
+    (registry row iconography_confidence field) is carried unchanged in both
+    pilots'' §4, with "0 verified crops" and the IMG-001 blocker named. The
+    [UNVERIFIED]-over-invention rule is visibly and correctly applied in both
+    pilots'' claims tables: CO04-C06 (the BNF-1763 direct pip-count observation,
+    inherited from Pilot1) is graded "Moderate ... [UNVERIFIED] at this tier -- not
+    re-opened," and CU12-C06 (the BM 1896,0501.35 hybrid-anatomy finding, inherited
+    from Pilot2) is graded "High (catalog evidence); [UNVERIFIED] at this tier --
+    records not re-opened." Neither pilot promotes a source it did not itself open
+    to [F]-load-bearing status in its claims table.'
+- severity: MINOR
+  description: 'Internal grading inconsistency, not a correctness or honesty defect:
+    in both pilots'' prose (STANDARD_SUIT-COINS-04 §4, STANDARD_SUIT-CUPS-12 §4),
+    facts carried from the full dossier without this study re-opening the underlying
+    source are tagged inline as `[F]` (e.g. "`[F]` The one direct card-level
+    observation..." and "`[F]` **Binding pattern finding (full dossier):** hybrid
+    or monster-bodied cavaliers are not universal..."), while the claims table for
+    the same claims (CO04-C06, CU12-C06) correctly downgrades them to
+    `[UNVERIFIED] at this tier`. The table -- the document''s authoritative,
+    load-bearing record per spec §3 item 9 -- is conservative and correct; only the
+    inline prose label lags. No claim is inflated beyond what the full dossier
+    supports, no fact is invented, and confidence values are never upgraded past
+    the source dossier''s own grade (CO04-C07/C08 correctly carry the full
+    dossier''s High/Moderate grades unchanged). Worth a cosmetic pass before the
+    format is used at scale across 56 cards, but not blocking: the claims table
+    is what a verifier and a reader actually rely on. Corrected: pushed
+    ff76c87 to test-T-MIN-013 retagging both inline observations `[UNVERIFIED]`
+    with an explicit pointer to the matching claims-table row; re-ran the audited
+    verification command post-fix and it still PASSES; no fact or confidence
+    value changed.'
+- severity: INFO
+  description: 'Fidelity to the full dossiers verified by opening both
+    Pilot1_SUIT-COINS-04_Four_of_Coins.md and Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md
+    directly, not by trusting the comparison doc''s summary. No contradictions
+    found between either light pilot and its full dossier. Both named traps were
+    correctly re-tested: (1) the Gaetano signature split -- the full dossier
+    (CL-SC04-006/-007) and the light pilot (CO04-C07) agree the full maker
+    inscription naming Gaetano and his Via Clavature address is on the Two of
+    Coins, and the Four carries only the shorter "Carte fine All''Aquila" phrase;
+    (2) the hybrid-anatomy non-universality trap -- the full dossier
+    (C-CUPS12-005..008) and the light pilot (CU12-C06..C08) agree BM 1896,0501.35
+    uses ordinary men on horseback in place of monster-bodied cavaliers, that the
+    Cups Cavalier survives in that pack (only the Four and Ten of Cups are listed
+    missing), that BM 1896,0501.103 corroborates within a related pattern family,
+    and that this establishes existence and non-universality only, not frequency
+    or independence -- the relatedness qualification is carried intact, not
+    dropped.'
+- severity: INFO
+  description: 'The court-tier asymmetry claim (comparison doc §4: "COINS-04 lost
+    almost nothing... CUPS-12 is tighter than comfortable... holds only by leaning
+    on an existing full dossier") was independently re-derived rather than trusted,
+    per instruction that a prior partial review pass had asserted this was "verified
+    in the claims tables themselves" before being cut off. Direct inspection
+    confirms: CU12-C06, the pilot''s one load-bearing positive iconographic finding
+    (hybrid-anatomy non-universality), is explicitly graded "[UNVERIFIED] at this
+    tier -- records not re-opened" in its own claims table, meaning the light-tier
+    CUPS-12 pilot does not itself re-verify the BM catalog record and is
+    structurally dependent on Pilot2 having opened it. The qualification chain
+    around this finding (existence-vs-frequency, BM .35/.103 relatedness, the
+    suit-by-suit grid dependency UQ-CUPS12-002/-004) is materially more complex
+    than COINS-04''s equivalent (a single pip-count observation plus one catalog
+    inscription split), so the same reliance produces a thinner margin for courts.
+    The asymmetry claim holds up under independent inspection of the underlying
+    claims tables and full dossiers, not merely the comparison doc''s prose --
+    this is a genuinely load-bearing and decision-critical finding for the human''s
+    format ruling, correctly derived rather than merely asserted.'
+- severity: INFO
+  description: 'RWS/cartomancy quarantine checked by grepping all four deliverables
+    for divinatory bleed-over, upright/reversed language, pentacles, elemental
+    correspondences, and RWS scene templates. Every hit is a quarantine/forbidden-list
+    mention (properly excluded), never a bleed-over usage as a historical claim.
+    The Cavalier pilot''s (Pilot2) negative-concepts list (line 299: RWS Knight of
+    Cups; romantic messenger; elemental Water glyphs; modern fantasy centaur without
+    specimen basis; wrong suit; wrong court rank; queen/king regalia; page/maid
+    rank; printed trump number; hybrid anatomy presented as universal) is verified
+    binding on and fully reproduced by both the spec''s §5 FORBIDDEN list and the
+    STANDARD_SUIT-CUPS-12 pilot''s §7 Boundaries section, with no omissions.'
+- severity: INFO
+  description: 'Spec completeness for a 56-card rollout confirmed: fixed section
+    skeleton (§3, 9 required sections), grading legend identical to the trump
+    studies (§2), a claim namespace (`<SUIT2><RANK2>-C<NN>`, e.g. CO04-C01,
+    CU12-C07) independently confirmed disjoint from every existing namespace in
+    the corpus -- a corpus-wide grep for the `[A-Z]{2}[0-9]{2}-C[0-9]{2,4}` pattern
+    returns only the 20 IDs from these two new pilots; all trump/element/zodiac
+    claim IDs use pure-letter prefixes (AIR-, AQU-, LIB-, JUS-, GAN-, etc.) with
+    no digits, so no collision is possible. Maturity states (Verified/Draft/Stub)
+    and a verification workflow are both explicitly marked PROPOSED / "human
+    decides" (§6), not adopted as decided. The venture dependency is accurately
+    represented: teamwork/VENTURE_BRIEF.md §2 row 7 is quoted correctly and its
+    actual status (LEANING, not DECIDED) is honestly carried in the spec header,
+    and §4''s Verified/Draft/Stub wiki mechanic is quoted accurately.'
+- severity: INFO
+  description: 'Scope and mechanical verification: git diff a3993d7..a71fdae in
+    the review worktree touches exactly the four expected deliverables (444
+    insertions, 0 deletions, no other files). test has advanced to 19c26db since
+    the branch was cut from a3993d7, but git diff a3993d7..19c26db confirms that
+    advance only touches research/pilots/Papi_Fool_Batch_Verification_Report.md
+    and research/pilots/drafts/PERSONALITY_TRUMP-{01,02,03,04,FOOL}*.md -- no
+    suit-card files -- so there is no merge-conflict or staleness risk. The
+    audited verification command was re-run independently in an isolated worktree
+    (branch test-T-MIN-013, head a71fdae) and PASSES.'
+reviewed_at: '2026-08-11T21:09:33.358422Z'

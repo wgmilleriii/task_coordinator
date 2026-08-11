@@ -17,7 +17,14 @@ evidence_output: 'Exit code: 0
   STDERR:
 
   '
-peer_review_notes: null
+peer_review_notes: 'Reviewer-F18 (claude-sonnet-5) reviewed this handoff, independently
+  re-ran the audited verification command in an isolated worktree, and pushed a small
+  grading-consistency correction to test-T-MIN-013 (commit ff76c87, on top of a71fdae)
+  aligning two inline [F] tags with their own claims-table [UNVERIFIED] grading. No
+  fact or confidence value changed; the verification command still PASSES at ff76c87.
+  See reviews/T-MIN-013_review.yaml (reviewed_head_sha ff76c87, verdict
+  PASS_WITH_CORRECTIONS) for full findings. Task correctly routed to HUMAN_REVIEW
+  per human_review_required: true.'
 human_action_required: null
 token_spend: null
 cost_usd: null

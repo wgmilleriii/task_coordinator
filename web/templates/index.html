@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dollers Fleet - My To-Do</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-content">
+            <h1>My To-Do List</h1>
+            <p class="subtitle">Dollers Fleet Task Coordinator</p>
+        </div>
+        <div class="stats">
+            <span id="activeCount">0</span> Active Tasks
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Human Execution Lane -->
+        <section class="task-column">
+            <div class="column-header">
+                <h2>Ready for Execution</h2>
+                <span class="badge" id="todoCount">0</span>
+            </div>
+            <p class="column-desc">Tasks in the HUMAN lane waiting to be claimed or completed by you.</p>
+            <div class="task-list" id="todoList">
+                <div class="loading">Loading tasks...</div>
+            </div>
+        </section>
+
+        <!-- Human Review -->
+        <section class="task-column">
+            <div class="column-header">
+                <h2>Requires Review</h2>
+                <span class="badge" id="reviewCount">0</span>
+            </div>
+            <p class="column-desc">Tasks completed by agents that require your final human sign-off.</p>
+            <div class="task-list" id="reviewList">
+                <div class="loading">Loading tasks...</div>
+            </div>
+        </section>
+
+        <!-- Backlog / Needs Audit -->
+        <section class="task-column">
+            <div class="column-header">
+                <h2>Needs Auditing</h2>
+                <span class="badge" id="auditCount">0</span>
+            </div>
+            <p class="column-desc">New OPEN tasks that need a PM (or you) to write an audit script.</p>
+            <div class="task-list" id="auditList">
+                <div class="loading">Loading tasks...</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

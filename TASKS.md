@@ -65,6 +65,22 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
+### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
+**Initialize the Virtual Master Sheet Web Grid**
+**Owner:** Worker-1
+
+**Scope:**
+- Create the base minchiate_reviewer.py application.
+- Load the 97 extracted images and sort them geographically by their filename prefix.
+- Serve a dynamic web grid layout reflecting the original master sheet.
+
+**Definition of Done:**
+- Server runs locally without errors.
+- Renders a grid of 97 images in their stitched order in the browser.
+
+*Audited against SHA:* `b51d4e4`
+
+---
 ### 📋 T-MIN-005 · P1 · ANY · OPEN
 **Independent adversarial verification of the twelve zodiac personality studies**
 **Owner:** None
@@ -79,22 +95,6 @@ graph TD
 **Definition of Done:**
 - research/pilots/Zodiac_Batch_Verification_Report.md exists with a verdict for each of the twelve cards and a checked cross-file edge matrix.
 - Any FAIL is archived to research/archive/failed-runs/ and the card's disposition recorded, matching the Earth-study precedent.
-
----
-### ⏳ T-MIN-001 · P1 · ANY · PEER_REVIEW
-**Initialize the Virtual Master Sheet Web Grid**
-**Owner:** Worker-1
-
-**Scope:**
-- Create the base minchiate_reviewer.py application.
-- Load the 97 extracted images and sort them geographically by their filename prefix.
-- Serve a dynamic web grid layout reflecting the original master sheet.
-
-**Definition of Done:**
-- Server runs locally without errors.
-- Renders a grid of 97 images in their stitched order in the browser.
-
-*Audited against SHA:* `b51d4e4`
 
 ---
 ### 📋 T-MIN-010 · P2 · ANY · AUDITED

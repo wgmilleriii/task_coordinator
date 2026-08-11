@@ -1,0 +1,67 @@
+task_id: T-MIN-006
+reviewer_agent: Reviewer-F13
+reviewer_model: claude-fable-5
+reviewed_head_sha: f5291eb
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Scope check clean: diff 274b981..f5291eb touches exactly thirteen paths
+    — nine R100 (lossless) renames of the failed drafts into research/archive/failed-runs/
+    with the 2026-08-11 FLEET-STUB naming, the failed-runs README disposition note,
+    and the three deliverables (triage report, ARIE_BATCH_BRIEF, PAPI_FOOL_BATCH_BRIEF).
+    The verification command was re-run and passes. TRUMP-03 remains in drafts/.'
+- severity: INFO
+  description: 'KEEP verified (TRUMP-03): rank arithmetic recomputed independently from
+    Stage5_Master_Card_Registry.csv — sort 60, beats exactly 2 trumps (sorts 58, 59),
+    loses to 37 (61–97), beats all 56 suit cards; 97-row total reconciles (Fool 57 +
+    40 trumps + 56 suit). Registry restatement confirmed against the actual row (Low
+    naming / High numbering, Sovrano, "Western Emperor as original title" avoided).
+    The instruction-as-source defect is real (RUL3-C004/C005 cite FINAL_TRUMPS_BATCH_BRIEF.md)
+    and is recorded as correction item 1 in both the report and PAPI_FOOL_BATCH_BRIEF.'
+- severity: INFO
+  description: 'REWRITE convictions spot-checked and both hold. (a) TRUMP-36 Star:
+    registry names_to_avoid is exactly "XXXVI as printed historical number" with
+    historical_number "unnumbered arie"; the archived file asserts "[F] ... historical
+    number XXXVI ... Identity, number, and name are secure" citing the registry —
+    the registry''s own forbidden claim stated as secure fact, plus the out-of-vocabulary
+    "Superior" type twice. (b) TRUMP-40: Quarantine Register carries QC-085–089 and
+    CW-10 for the Trumpets (register L665–682, L953+); the archived file stamps
+    "Quarantine Addressed" while dispositioning none of them, mints QC-TRUMP40-01/02,
+    cites a "CW" to FINAL_TRUMPS_BATCH_BRIEF, and its "commanding 10 points" has no
+    corpus witness — the only sources of "10" are the brief''s own L36 and a sibling
+    fleet guidebook draft (same unsourced provenance). The Moon conviction''s anchor
+    also verified: the committed Wheel study (drafts/PERSONALITY_TRUMP-09_Wheel_of_Fortune.md
+    L305–306) formally withdrew the "origins" coinage the Moon draft re-enacts as
+    "QC-081 resolved".'
+- severity: INFO
+  description: 'Acquittal-risk re-read (TRUMP-02, 57 lines, the most substantive
+    REWRITE): I judged it independently and concur with REWRITE over KEEP-with-corrections.
+    The failure is concentrated in the identity layer — invented H1 title "Papa Due"
+    (registry: Trionfo II — Sovrano), unsourced "[F] the Ruler carries its number (II)
+    on the card ... secure and printed", undated "late additions" claim, Low naming
+    confidence never disclosed, QC-namespace minting — and identity is precisely
+    what a Low-naming-confidence card study exists to handle. What survives is
+    brief-derived paradox prose. This matches the zodiac precedent (register-contradicting
+    files rewrite). No file was wrongly condemned and nothing was wrongly kept.'
+- severity: INFO
+  description: 'Both batch briefs follow the ZODIAC_BATCH_BRIEF pattern (recompute-don''t-trust
+    registry table, ordered required reading, register-row confrontation with the
+    withdrawn-coinage warnings quoted, claim namespaces with a no-QC-minting rule,
+    output spec with §0/§4/§5 and split-confidence claims tables). PAPI_FOOL_BATCH_BRIEF
+    handles pricing honestly: Fool "5 points" explicitly flagged as having no corpus
+    source, Bernardi transcription bounded at XXVII (verified against Pilot3 L80),
+    Minucci exemplary-list-no-amounts caveat carried. ARIE_BATCH_BRIEF grades all
+    arie amounts [UNVERIFIED] pending a direct high-trump schedule transcription.'
+- severity: MINOR
+  description: 'Follow-up gap, not a defect of this task: the same fleet sweep left
+    ten GUIDEBOOK_TRUMP-*.md drafts in research/pilots/drafts/ (e.g. GUIDEBOOK_TRUMP-40_Trumpets.md)
+    that repeat the convicted defects verbatim — "10 points", rank-40-as-fact, the
+    enacted final-sounding frame. They were outside T-MIN-006''s scope (the ten
+    PERSONALITY drafts) but are now the only uncaught carriers of the failed brief''s
+    claims; a Scout should open a triage task for them before anything cites them.'
+- severity: MINOR
+  description: 'Nit: the triage report cites "CANDIDATE_CORPUS_british_sheets.md L86"
+    for the unnumbered-arie convention; the passage sits at L85–87 of
+    research/evidence/CANDIDATE_CORPUS_british_sheets.md. Substance of the citation
+    is accurate. Not worth a branch commit.'
+reviewed_at: '2026-08-11T15:06:01.433515Z'

@@ -23,6 +23,7 @@
     "last_transition": { "type": ["string", "null"], "format": "date-time" },
     "blocked_reason": { "type": ["string", "null"] },
     "previous_status": { "type": ["string", "null"] },
+    "requires_doc_update": { "type": "boolean", "default": false },
     "events": {
       "type": "array",
       "items": {

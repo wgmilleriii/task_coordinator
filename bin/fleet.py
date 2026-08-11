@@ -611,6 +611,20 @@ def cmd_archive(args):
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
+def cmd_mark_docs_updated(args):
+    repo_name = args.repo
+    target_repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', repo_name))
+    if not os.path.exists(target_repo_path):
+        print(f"❌ Target repo path does not exist: {target_repo_path}")
+        return 1
+        
+    janitor_file = os.path.join(target_repo_path, '.fleet_doc_last_updated')
+    with open(janitor_file, 'w') as f:
+        f.write(datetime.now(timezone.utc).isoformat())
+        
+    print(f"✅ Reset the 24-hour documentation janitor timer for {repo_name}.")
+    return 0
+
 def cmd_onboard(args):
     repo_name = args.repo
     target_repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', repo_name))
@@ -655,6 +669,43 @@ def cmd_onboard(args):
         context.append("## 3. Chord Expertise System")
         context.append("❌ Chord `chord-kb` directory not found. Consider running `/chord-config` or `/chord-create-expert` if this is a complex domain.\n")
         
+    # 4. Janitor Protocol (Time-Based + Major Feature Flag)
+    janitor_file = os.path.join(target_repo_path, '.fleet_doc_last_updated')
+    last_updated = 0
+    if os.path.exists(janitor_file):
+        last_updated = os.path.getmtime(janitor_file)
+        
+    import time
+    now = time.time()
+    hours_since_update = (now - last_updated) / 3600
+    
+    if hours_since_update > 24:
+        needs_update = False
+        all_tasks = load_all_tasks(include_archive=True)
+        for fn, t in all_tasks:
+            if t.get('repo') == repo_name and t.get('status') == 'DONE' and t.get('requires_doc_update', False):
+                task_path = os.path.join(ACTIVE_DIR, fn)
+                if not os.path.exists(task_path):
+                    task_path = os.path.join(BASE_DIR, 'tasks', 'archive', fn)
+                if os.path.exists(task_path) and os.path.getmtime(task_path) > last_updated:
+                    needs_update = True
+                    break
+                    
+        if needs_update:
+            context.append("## 4. 🧹 Janitor Protocol: DOCUMENTATION UPDATE REQUIRED")
+            context.append("⚠️ **CRITICAL:** It has been over 24 hours since the last documentation sweep, and major features have landed.")
+            context.append("You MUST pause your regular work and act as the Documentation Janitor.")
+            context.append("1. Run `/chord-tune` to update expert pages.")
+            context.append("2. Update the relevant `Obsidian` project notes with recent architectural changes.")
+            context.append("3. Run `./bin/fleet mark-docs-updated " + repo_name + "` to reset the 24-hour timer.")
+            context.append("Do not proceed with your assigned task until this is complete.\n")
+        else:
+            context.append("## 4. 🧹 Janitor Protocol")
+            context.append(f"It has been {hours_since_update:.1f} hours since the last doc update, but no major features require documentation updates. You are clear to proceed.\n")
+    else:
+        context.append("## 4. 🧹 Janitor Protocol")
+        context.append(f"Documentation was updated {hours_since_update:.1f} hours ago (less than 24h limit). You are clear to proceed.\n")
+
     out_file = os.path.join(target_repo_path, '.fleet_context.md')
     with open(out_file, 'w') as f:
         f.write('\n'.join(context))
@@ -711,6 +762,9 @@ def main():
     onboard_parser = subparsers.add_parser("onboard", help="Initialize a repository onboarding context for an agent")
     onboard_parser.add_argument("repo", help="Name of the repository to onboard (e.g. minchiate_tarot)")
     
+    mark_docs_parser = subparsers.add_parser("mark-docs-updated", help="Reset the 24-hour Janitor Protocol timer for a repository")
+    mark_docs_parser.add_argument("repo", help="Name of the repository")
+    
     args = parser.parse_args()
     
     import fcntl
@@ -750,6 +804,8 @@ def main():
             sys.exit(cmd_archive(args))
         elif args.action == "onboard":
             sys.exit(cmd_onboard(args))
+        elif args.action == "mark-docs-updated":
+            sys.exit(cmd_mark_docs_updated(args))
 
 if __name__ == "__main__":
     main()

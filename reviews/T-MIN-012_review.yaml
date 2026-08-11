@@ -1,0 +1,128 @@
+task_id: T-MIN-012
+reviewer_agent: Reviewer-F17
+reviewer_model: claude-fable-5
+reviewed_head_sha: 103061a52c33b608612a288cb5ed67fe45a11b27
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: 'RANKS (check 1): PASS - all five recomputed from Stage5_Master_Card_Registry.csv
+    sort_order in an isolated worktree at 103061a5. Fool 57 (bookkeeping; family
+    Special; unnumbered), Ganellino 58 (beats 0 trumps / loses 39; the file states
+    exactly that, with the Fool expressly outside the ranked ladder), Rulers 59/60/61
+    (1/38, 2/37, 3/36); every file''s sum check (n+1+m=40) and beats-all-56-suit-cards
+    claim verified (56 SUIT- rows counted in the CSV). The archived TRUMP-04 "sort
+    order 45" error class is absent: fresh header reads 61 and quotes the archived
+    45 only as a convicted error. The TRUMP-01 "priced exception" claim verified
+    against the Justice pilot''s transcription: JUS-C006 at pilot L80 reads "among
+    I-XXVII he assigns five points to I, X, XIII, XX and three points to II-V" -
+    I is the only low-block card in the five-point tier, exactly as GAN-C003 states,
+    with the XXVII bound carried everywhere the schedule is used.'
+- severity: INFO
+  description: 'TRUMP-03 CORRECTIONS (check 2): PASS - all five verified against
+    Fleet_Sweep_Personality_Triage_Report.md "TRUMP-03 Ruler - KEEP" items 1-5.
+    (1) grep FINAL_TRUMPS_BATCH_BRIEF: 0 hits; RUL3-C004 re-anchored to Justice
+    pilot L92 (fetched: "explicit low-Papi examples from I-V" - lands exactly),
+    RUL3-C005 to the file''s own arithmetic + JUS-C006 + DEA-C004 (both fetched
+    and matching), RUL3-C006 additionally re-anchored beyond the letter of the correction
+    (recorded in the batch report). (2) The Papi-membership wobble ("I-V (or II-V)"
+    / "The Papi (I, II, IV)") is genuinely replaced by four sourced usage facts
+    stated once (glossary I-V; 3-pt tier II-V; verzicola examples I-V; numbered
+    usage through XII per JUS-C005/C007) with the boundary expressly left "partly
+    open" - not silently re-decided; consolidated as RUL3-C009. (3) Minucci record
+    added (DEA-C004) with exemplary-list caveat, no amounts, explicit no-silence-argument
+    line. (4) Capture/sacrifice claim now [SI] with "game-play inference... not
+    a transcribed rule". (5) 102 -> 245 lines, inside the 210-271 committed standard;
+    RUL3- namespace and original authorship header preserved.'
+- severity: INFO
+  description: 'NAMING/TITLES (check 3): PASS - grep for "Papa Due"/"Papo" across
+    all five fresh/corrected files and the batch report: zero hits. Per-card naming
+    confidence quoted verbatim against the registry identity_confidence_detail field:
+    TRUMP-01 "naming: Low-Moderate; numbering: High"; TRUMP-02/03/04 "naming: Low;
+    numbering: High"; Fool "naming: High; numbering: High that unnumbered". Avoid-names
+    (Magician / Grand Duke / Western Emperor / Eastern Emperor / "0 as historical
+    number") each appear only inside avoid/quarantine framing. TRUMP-02''s archived
+    "printed II" [F] is corrected to [U] and is consistent with CANDIDATE_CORPUS_british_sheets.md
+    (fetched: legible numerals IIII, VII, XI, IIX, XIII... - I, II, III all absent;
+    IIII present and handled by TRUMP-04 as [U] pending provenance, quoting the
+    corpus''s own "what must happen before any of this is used" bar). TRUMP-04''s
+    Stage 2 ("Fourth Papa / Pope", F/SI) vs registry (Eastern Emperor variants,
+    Low) tension is recorded in section 1, RUL4-C006, and open question 2 - kept
+    open, not resolved; the registry''s Low governs the file.'
+- severity: INFO
+  description: 'FOOL PRICING (check 4): PASS - grep of the Fool file for point amounts
+    finds exactly four sites: header (archived draft''s "worth 5 points" [F] quoted
+    as overturned), section 1 (the [UNVERIFIED] record itself), open question 2
+    ("5 points" remains [UNVERIFIED]), and FOO-C005 (the negative finding). No amount
+    appears as a claim anywhere in the batch outside those quoted-error/[UNVERIFIED]
+    contexts. Minucci''s amount-free special value stated correctly (verified against
+    DEA-C004 and Stage 2 Foundation L95, which lists the valued cards and gives
+    no amounts); Bernardi''s transcription correctly noted as not reaching the Fool,
+    with no nil argument. The three position statements (unnumbered-on-card / outside-the-ranked-ladder
+    / sort-57-bookkeeping) are genuinely distinct, each with its own ground (registry
+    historical_number + misconception table; family Special + Minucci enumeration
+    56+40+1; sort key "may be 0" blocking note).'
+- severity: INFO
+  description: 'CW-5 / QC-043..050 DISPOSITION MATRIX (check 5): PASS - one owner
+    per row throughout. TRUMP-01 owns QC-051/052; corrected TRUMP-03 owns the collective
+    QC-053/054 (RUL3-C007) with TRUMP-02 (RUL2-C009) and TRUMP-04 (RUL4-C009) citing-not-re-dispositioning
+    (element M-2 rule held); the Fool owns CW-5 (split: structural placelessness
+    kept, mechanical immunity refused) and all eight QC-043..050 rows individually.
+    TRUMP-03''s prior QC-053/054 ownership undisturbed. Spot-checks against committed
+    CURRENT text: (a) QC-052 - committed Love file L244 reads "Ganellino is worth
+    more; Love is worth understanding" - the author''s W1-1 catch (register summary
+    "worth having" vs file "worth more") is real and the fresh TRUMP-01 quotes the
+    file correctly; (b) QC-049 - committed Devil second pass confirmed: heading
+    corrected from "the immune party" to the controlled "opposite", grounded on
+    "the Fool''s structural placelessness rather than on any faculty''s imagined
+    immunity" - the Fool file reciprocates that corrected version; (c) QC-044 (reviewer''s
+    choice) - committed Wheel text confirmed: "by exemption" demoted to prose gloss,
+    sort 57 flagged as bookkeeping, contrast built on Minucci naming the Fool where
+    no witness values IX - matches the Fool section 0 row exactly. CW-5 register
+    text ("inherits an entire personality...") quoted accurately.'
+- severity: INFO
+  description: 'WITHIN-BATCH EDGES (check 6): PASS - II->I predecessor reciprocal
+    (RUL2-C010/GAN-C010) and IV->III predecessor (RUL4-C010 matching RUL3-C010)
+    consistent in type, direction, and sequence-fact-only restraint. Committed-edge
+    answers verified: the committed Fire study section 3 expressly asserts "No typed
+    edge... for Ganellino or the tier as a set" and TRUMP-01''s GAN-C011 reciprocates
+    that restraint accurately; the committed Justice study section 3 declines edges
+    to "the other lower papi individually (I-IV)" and to the Fool - all four ruler-side
+    files plus the Fool respect/reciprocate the decline without initiating a Justice
+    record. Vocabulary sweep: only predecessor/companion/rival/opposite in typed
+    positions.'
+- severity: INFO
+  description: 'CLONE/INHERITANCE (check 7): PASS - comm -12 on sorted unique non-blank
+    lines, fresh vs research/archive/failed-runs counterparts: TRUMP-01 0 shared,
+    TRUMP-02 9, TRUMP-04 11, FOOL 7 - inspection confirms every shared line is the
+    corpus-wide evidence-label legend or a bare section heading; zero shared substantive
+    prose, claims, or table rows. Section 2 territories distinct across the five
+    (prize-at-the-bottom / anonymous-office / station-without-agency / seniority-without-difference
+    / worth-without-a-where). Each archived draft''s convicted content is specifically
+    overturned in its successor.'
+- severity: INFO
+  description: 'SYNC, SCOPE, VERIFICATION (check 8): PASS - prose-to-claims sync
+    checked line-by-line on TRUMP-01 and the Fool (full reads; every section 0/1/2/3
+    assertion has a matching claims-table row and grade). Scope: git diff f8bb1b8..103061a5
+    touches exactly the six in-scope files (4 fresh studies + TRUMP-03 + batch report),
+    1469 insertions / 33 deletions. The audited verification command re-run verbatim
+    in the isolated worktree: PASS. Wave commits a001827/3267bc5 named in the report
+    exist on the branch.'
+- severity: MINOR
+  description: 'CORRECTION APPLIED (14a0fff, pushed to test-T-MIN-012): the batch
+    report''s edge matrix cited the Fool->House row to "FOO-C012->C011 context (QC-050)"
+    - wrong claim IDs (FOO-C012 is the Justice decline, C011 is QC-049/Devil). QC-050
+    is dispositioned in FOO-C009, which the study file itself gets right; report-only
+    slip, fixed to "FOO-C009 (QC-050)". Sole defect found.'
+- severity: INFO
+  description: 'ARIE DEFERRALS CONFIRMED AS RECORDED, QUEUED FOLLOW-UP: the author
+    correctly did NOT reconcile against the then-unmerged arie batch (test has since
+    advanced to a3993d7). Explicit "arie batch in flight (T-MIN-011), reconciliation
+    deferred" notes verified at every tempting edge site: TRUMP-01 section 3 + GAN-C012;
+    TRUMP-02 section 3 + RUL2-C012; TRUMP-04 section 3 + RUL4-C013; Fool section
+    3 + FOO-C014 (the Fool/Trumpets temptation named and declined on the AIR-C011
+    offered-not-imposed model, nothing offered from the Fool side). Queued follow-up
+    after merge: (1) reconcile/offer arie edges for all five cards against the now-merged
+    a3993d7 texts, especially Fool<->Trumpets; (2) register maintenance for QC-043..054
+    disposition lines and the stale QC-049 "immune party" heading (queued in the
+    batch report section 7, per the triage report''s out-of-scope note).'
+reviewed_at: '2026-08-11T19:51:45.869455Z'

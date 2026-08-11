@@ -4,7 +4,7 @@ title: "Author the Papi/Fool batch \u2014 TRUMP-01/02/04 and the Fool fresh, TRU
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: PEER_REVIEW
+status: DONE
 owner: Worker-F12
 created_at: '2026-08-11T09:32:00-06:00'
 dependencies: []
@@ -82,4 +82,8 @@ events:
 - timestamp: '2026-08-11T19:44:24.712239Z'
   action: SUBMIT
   actor: Worker-F12
+- timestamp: '2026-08-11T19:52:47.114103Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-F17
+  details: 'Verdict: PASS_WITH_CORRECTIONS'
 claimed_at: '2026-08-11T19:22:41.901299Z'

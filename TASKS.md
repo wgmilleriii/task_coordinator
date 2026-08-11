@@ -14,11 +14,11 @@ graph TD
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::active
+    T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
-    T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::review
+    T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]
 ```
@@ -87,23 +87,7 @@ graph TD
 *Audited against SHA:* `f8bb1b8`
 
 ---
-### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
-**Initialize the Virtual Master Sheet Web Grid**
-**Owner:** Worker-1
-
-**Scope:**
-- Create the base minchiate_reviewer.py application.
-- Load the 97 extracted images and sort them geographically by their filename prefix.
-- Serve a dynamic web grid layout reflecting the original master sheet.
-
-**Definition of Done:**
-- Server runs locally without errors.
-- Renders a grid of 97 images in their stitched order in the browser.
-
-*Audited against SHA:* `b51d4e4`
-
----
-### ⏳ T-MIN-012 · P1 · ANY · PEER_REVIEW
+### ✅ T-MIN-012 · P1 · ANY · DONE
 **Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied**
 **Owner:** Worker-F12
 
@@ -124,24 +108,20 @@ graph TD
 *Audited against SHA:* `f8bb1b8`
 
 ---
-### 🛠 T-MIN-013 · P2 · ANY · CLAIMED
-**Design the light-tier suit-card study format (spec + two pilot cards)**
-**Owner:** Worker-F13
+### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
+**Initialize the Virtual Master Sheet Web Grid**
+**Owner:** Worker-1
 
 **Scope:**
-- Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study format for the 56 suit cards. Required sections: registry facts (restated, never improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where sourced (bounded-transcription caveat carried), iconography baseline, a brief project reading, and a mini claims table — every claim provenance-graded with the same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies.
-- This is the venture plan's dependency: teamwork/VENTURE_BRIEF.md §2 line 7 (trumps at full verified depth, 56 suit cards at a lighter standard tier so "research complete" is a reachable pre-launch milestone). The format must be cheap enough to produce 56 times but carry the same honesty discipline — [UNVERIFIED] over invention, no padding to look thorough.
-- Write TWO pilot cards to the new format — suggested SUIT-COINS-04 (Four of Coins) and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check against. This redundancy is intentional: the light-tier pilots must not contradict the full dossiers, and any divergence found is itself a finding to record.
-- Deliver a short comparison of the two light-tier pilots against their two existing full dossiers, stating what the light tier keeps, what it drops, and whether anything dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub maturity mechanic in the venture brief).
-- The format decision itself is the human's — this task produces the proposal and evidence, not a fleet-wide rollout; do not begin authoring the remaining 54 cards.
+- Create the base minchiate_reviewer.py application.
+- Load the 97 extracted images and sort them geographically by their filename prefix.
+- Serve a dynamic web grid layout reflecting the original master sheet.
 
 **Definition of Done:**
-- research/pilots/SUIT_CARD_FORMAT_SPEC.md exists and defines the compact format with all required sections and the provenance-grading rules.
-- Two pilot suit-card studies written to the spec exist in research/pilots/ (or a drafts/ subpath the spec designates), each internally consistent with its existing full pilot dossier or with divergences explicitly recorded.
-- A short comparison document (or a comparison section in the spec) evaluates the light tier against the two full dossiers and states the trade-offs for the human's format decision.
-- human_review_required is honored — the task ends at HUMAN_REVIEW with the format proposal, not with additional suit cards authored.
+- Server runs locally without errors.
+- Renders a grid of 97 images in their stitched order in the browser.
 
-*Audited against SHA:* `f8bb1b8`
+*Audited against SHA:* `b51d4e4`
 
 ---
 ### ✅ T-MIN-006 · P2 · ANY · DONE
@@ -193,6 +173,26 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
+
+---
+### ⏳ T-MIN-013 · P2 · ANY · PEER_REVIEW
+**Design the light-tier suit-card study format (spec + two pilot cards)**
+**Owner:** Worker-F13
+
+**Scope:**
+- Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study format for the 56 suit cards. Required sections: registry facts (restated, never improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where sourced (bounded-transcription caveat carried), iconography baseline, a brief project reading, and a mini claims table — every claim provenance-graded with the same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies.
+- This is the venture plan's dependency: teamwork/VENTURE_BRIEF.md §2 line 7 (trumps at full verified depth, 56 suit cards at a lighter standard tier so "research complete" is a reachable pre-launch milestone). The format must be cheap enough to produce 56 times but carry the same honesty discipline — [UNVERIFIED] over invention, no padding to look thorough.
+- Write TWO pilot cards to the new format — suggested SUIT-COINS-04 (Four of Coins) and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check against. This redundancy is intentional: the light-tier pilots must not contradict the full dossiers, and any divergence found is itself a finding to record.
+- Deliver a short comparison of the two light-tier pilots against their two existing full dossiers, stating what the light tier keeps, what it drops, and whether anything dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub maturity mechanic in the venture brief).
+- The format decision itself is the human's — this task produces the proposal and evidence, not a fleet-wide rollout; do not begin authoring the remaining 54 cards.
+
+**Definition of Done:**
+- research/pilots/SUIT_CARD_FORMAT_SPEC.md exists and defines the compact format with all required sections and the provenance-grading rules.
+- Two pilot suit-card studies written to the spec exist in research/pilots/ (or a drafts/ subpath the spec designates), each internally consistent with its existing full pilot dossier or with divergences explicitly recorded.
+- A short comparison document (or a comparison section in the spec) evaluates the light tier against the two full dossiers and states the trade-offs for the human's format decision.
+- human_review_required is honored — the task ends at HUMAN_REVIEW with the format proposal, not with additional suit cards authored.
+
+*Audited against SHA:* `f8bb1b8`
 
 ---
 ### ✅ T-MIN-009 · P3 · ANY · DONE

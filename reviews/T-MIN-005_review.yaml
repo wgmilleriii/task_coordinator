@@ -1,0 +1,46 @@
+task_id: T-MIN-005
+reviewer_agent: Reviewer-F12
+reviewer_model: claude-fable-5
+reviewed_head_sha: ae9bca3cb9875e1d1b4a01ebe248ccc69684e44f
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Second-order review of Verifier-F5''s zodiac batch verification (report:
+    research/pilots/Zodiac_Batch_Verification_Report.md at ae9bca3c). MAJOR finding
+    M-1 (Gemini) independently confirmed: the committed Love study (PERSONALITY_TRUMP-05_Love.md
+    L314-322) really does decline the most-easily-confused type in its closing parenthetical;
+    the pre-correction Gemini text ("honored and completed", "what the Love study''s
+    own reasoning calls for") misrepresented that record; the corrected Gemini file
+    now quotes the parenthetical, records an open on-the-record dispute in section 0,
+    and GEM-C011''s claims-table row matches the new prose. The MAJOR is real and
+    correctly repaired.'
+- severity: INFO
+  description: 'Clean-bill probes all reproduced. (a) Rank arithmetic recomputed from
+    Stage5_Master_Card_Registry.csv (97 rows, trumps at sorts 58-97): Aquarius sort
+    89 beats 31 / loses to 8 with exactly three signs above (90/91/92); Taurus 33/6;
+    Gemini 34/5 with Star at 93 - all match the report table and the study files''
+    own claims (e.g. AQU-C002). (b) Temperance section 3 Aquarius resolver (L344-352)
+    fetched: "composes two liquids into one cup / empties one vessel / pouring alone
+    fails" quoted accurately in AQU-C011. (c) Nine-file numeral correction (m-2) verified
+    applied: old exhaustive phrasing absent from all twelve studies, new "seven lower-trump
+    numerals are also legible" phrasing present in exactly the nine named files and
+    absent from Sagittarius/Cancer/Pisces as claimed; CANDIDATE_CORPUS_british_sheets.md
+    L58-60 confirms IIII, VII, XI, IIX, XIII, XIIII, XV legible (seven lower-trump
+    numerals).'
+- severity: INFO
+  description: 'DoD and scope satisfied. Verification command premise re-run: grep
+    of TRUMP-(24..35) ids in the report yields exactly 12 unique ids; per-card verdict
+    table covers all twelve; same-model-subagent provenance disclosure is present
+    in the report header (L10-14). Diff c4f389f..ae9bca3c touches only the new report
+    plus nine study files (the nine corrected ones; Gemini carries the M-1/m-1 edits)
+    - nothing out of scope. No FAIL verdicts, so the archive-to-failed-runs DoD clause
+    is vacuously satisfied.'
+- severity: MINOR
+  description: 'Two nits, neither affecting the verdict: the report cites the Temperance
+    resolver at "L344-350" where the quoted material actually runs to ~L352, and the
+    Love decline citation "L314-322" starts one line into the paragraph (the record
+    heading is at L314); both locators land on the right passages. The verifier''s
+    doctrine spot-checks (Sacrobosco, Tetrabiblos, etc.) were against reviewer knowledge
+    rather than external fetches, but every such claim is hedged [UNVERIFIED] in the
+    studies, so this is acceptable per the batch''s own standards.'
+reviewed_at: '2026-08-11T04:58:28.910659Z'

@@ -18,22 +18,36 @@ def load_schema(schema_name):
     with open(os.path.join(SCHEMA_DIR, f"{schema_name}.schema.json"), 'r') as f:
         return json.load(f)
 
-def load_all_tasks():
+def load_all_tasks(include_archive=False):
     tasks = []
-    if not os.path.exists(ACTIVE_DIR):
-        return tasks
-    for filename in os.listdir(ACTIVE_DIR):
-        if filename.endswith('.yaml') or filename.endswith('.yml'):
-            filepath = os.path.join(ACTIVE_DIR, filename)
-            try:
-                with open(filepath, 'r') as f:
-                    data = yaml.safe_load(f)
-                    if not isinstance(data, dict):
-                        print(f"❌ {filename}: Not a valid YAML object.")
-                        continue
-                    tasks.append((filename, data))
-            except Exception as e:
-                print(f"❌ {filename}: Failed to parse YAML - {str(e)}")
+    has_errors = False
+    dirs_to_check = [ACTIVE_DIR]
+    if include_archive:
+        archive_dir = os.path.join(BASE_DIR, 'tasks', 'archive')
+        if os.path.exists(archive_dir):
+            dirs_to_check.append(archive_dir)
+            
+    for d in dirs_to_check:
+        if not os.path.exists(d):
+            continue
+        for filename in os.listdir(d):
+            if filename.endswith('.yaml') or filename.endswith('.yml'):
+                filepath = os.path.join(d, filename)
+                try:
+                    with open(filepath, 'r') as f:
+                        data = yaml.safe_load(f)
+                        if not isinstance(data, dict):
+                            print(f"❌ {filename}: Not a valid YAML object.")
+                            has_errors = True
+                            continue
+                        tasks.append((filename, data))
+                except Exception as e:
+                    print(f"❌ {filename}: Failed to parse YAML - {str(e)}")
+                    has_errors = True
+                    
+    if has_errors:
+        print("❌ CRITICAL: Store contains malformed YAML. Aborting to prevent data corruption.")
+        sys.exit(1)
     return tasks
 
 def save_task(task_data):
@@ -110,11 +124,14 @@ def cmd_lint(args):
             print(f"❌ {filename}: Filename does not match Task ID '{task_id}'. Expected '{expected_filename}'.")
             errors += 1
 
+    all_known_tasks = load_all_tasks(include_archive=True)
+    all_seen_ids = {t.get('id') for fn, t in all_known_tasks}
+    
     for filename, task in tasks_with_files:
         deps = task.get('dependencies', [])
         for dep in deps:
-            if dep not in seen_ids:
-                print(f"❌ {filename}: Dependency '{dep}' does not exist.")
+            if dep not in all_seen_ids:
+                print(f"❌ {filename}: Dependency '{dep}' does not exist (not active or archived).")
                 errors += 1
 
     # D-5: Lint handoffs
@@ -275,6 +292,15 @@ def cmd_claim(args):
                 if other_task['repo'] == repo and other_task['status'] in ['CLAIMED', 'IN_PROGRESS']:
                     print(f"❌ Cannot claim {args.task_id}. Repo '{repo}' is locked by {other_task['id']} ({other_task['owner']}).")
                     return 1
+                    
+            deps = task.get('dependencies', [])
+            if deps:
+                all_tasks = {t.get('id'): t for fn, t in load_all_tasks(include_archive=True)}
+                for dep in deps:
+                    dep_task = all_tasks.get(dep)
+                    if not dep_task or dep_task.get('status') != 'DONE':
+                        print(f"❌ Cannot claim {args.task_id}. Dependency '{dep}' is not DONE.")
+                        return 1
             
             task['status'] = 'CLAIMED'
             task['owner'] = args.owner
@@ -569,7 +595,7 @@ def cmd_archive(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Dollers Fleet V2 Task Coordinator")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="action", required=True)
     
     subparsers.add_parser("lint", help="Validate all active tasks against the schema")
     subparsers.add_parser("render", help="Generate TASKS.md from YAML files")
@@ -623,29 +649,31 @@ def main():
             print("❌ Could not acquire lock. Another fleet process is currently running.")
             sys.exit(1)
             
-        if args.command == "lint":
+        if args.action == "lint":
             sys.exit(cmd_lint(args))
-        elif args.command == "render":
+        elif args.action == "create":
+            sys.exit(cmd_create(args))
+        elif args.action == "render":
             sys.exit(cmd_render(args))
-        elif args.command == "audit":
+        elif args.action == "audit":
             sys.exit(cmd_audit(args))
-        elif args.command == "claim":
+        elif args.action == "claim":
             sys.exit(cmd_claim(args))
-        elif args.command == "verify":
+        elif args.action == "verify":
             sys.exit(cmd_verify(args))
-        elif args.command == "submit":
+        elif args.action == "submit":
             sys.exit(cmd_submit(args))
-        elif args.command == "start-review":
+        elif args.action == "start-review":
             sys.exit(cmd_start_review(args))
-        elif args.command == "record-review":
+        elif args.action == "record-review":
             sys.exit(cmd_record_review(args))
-        elif args.command == "block":
+        elif args.action == "block":
             sys.exit(cmd_block(args))
-        elif args.command == "unblock":
+        elif args.action == "unblock":
             sys.exit(cmd_unblock(args))
-        elif args.command == "close":
+        elif args.action == "close":
             sys.exit(cmd_close(args))
-        elif args.command == "archive":
+        elif args.action == "archive":
             sys.exit(cmd_archive(args))
 
 if __name__ == "__main__":

@@ -61,6 +61,13 @@ The fleet operates using specialized agent roles to safely separate "thinking" f
 
 If you are an agent reading this to understand how to claim work, follow these exact steps:
 
+### 0. Onboarding (Required)
+Before exploring a codebase or interacting with tasks, you MUST run the onboarding command for your target repository (e.g., `minchiate_tarot`):
+```bash
+./bin/fleet onboard <repo_name>
+```
+Read the generated `.fleet_context.md` file in the target repository's root. It contains critical instructions on how to use `Graphify` and `Chord` for that codebase to gain an authoritative understanding before you begin work.
+
 ### 1. Find a Task
 Run the render command to ensure the board is up to date:
 ```bash

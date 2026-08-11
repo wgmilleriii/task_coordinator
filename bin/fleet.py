@@ -593,6 +593,58 @@ def cmd_archive(args):
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 
+def cmd_onboard(args):
+    repo_name = args.repo
+    target_repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', repo_name))
+    
+    if not os.path.exists(target_repo_path):
+        print(f"❌ Target repo path does not exist: {target_repo_path}")
+        return 1
+        
+    print(f"🚀 Starting onboarding for repository: {repo_name}...")
+    
+    context = []
+    context.append(f"# Fleet Context: {repo_name}\n")
+    
+    # 1. Check Obsidian Vault
+    obsidian_path = os.path.abspath(os.path.join(BASE_DIR, '..', 'Obsidian'))
+    if os.path.exists(obsidian_path):
+        context.append("## 1. Vault Context (Obsidian)")
+        context.append("Vault is present. Ensure you check `00-09 System/00 Meta/Projects.md` or relevant project notes for high-level intent.\n")
+    
+    # 2. Check Graphify
+    graphify_report = os.path.join(target_repo_path, 'graphify-out', 'GRAPH_REPORT.md')
+    if os.path.exists(graphify_report):
+        context.append("## 2. Graphify Structural Map")
+        context.append(f"✅ `graphify-out/GRAPH_REPORT.md` found. You MUST read it to understand the file structure.")
+        context.append("To ensure it's fresh, run: `graphify update .` in the target repo.\n")
+    else:
+        context.append("## 2. Graphify Structural Map")
+        context.append(f"❌ `graphify-out/GRAPH_REPORT.md` NOT found.")
+        context.append("You should run `graphify` at the root of the repo to establish the structural baseline.\n")
+        
+    # 3. Check Chord Experts
+    has_chord = False
+    chord_kb = os.path.join(target_repo_path, 'chord-kb')
+    if os.path.exists(chord_kb):
+        has_chord = True
+        
+    if has_chord:
+        context.append("## 3. Chord Expertise System")
+        context.append("✅ Chord is installed in this repository.")
+        context.append("You MUST check for expert pages and run `/chord expert=NAME` to synthesize domain knowledge before mutating code.\n")
+    else:
+        context.append("## 3. Chord Expertise System")
+        context.append("❌ Chord `chord-kb` directory not found. Consider running `/chord-config` or `/chord-create-expert` if this is a complex domain.\n")
+        
+    out_file = os.path.join(target_repo_path, '.fleet_context.md')
+    with open(out_file, 'w') as f:
+        f.write('\n'.join(context))
+        
+    print(f"✅ Context compiled to {out_file}")
+    print(f"👉 Agent: Run `cat {out_file}` to read your briefing, then follow its instructions.")
+    return 0
+
 def main():
     parser = argparse.ArgumentParser(description="Dollers Fleet V2 Task Coordinator")
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -638,6 +690,9 @@ def main():
     
     archive_parser = subparsers.add_parser("archive", help="Sweep all DONE, CANCELLED, and DEFERRED tasks off the active board into tasks/archive/")
     
+    onboard_parser = subparsers.add_parser("onboard", help="Initialize a repository onboarding context for an agent")
+    onboard_parser.add_argument("repo", help="Name of the repository to onboard (e.g. minchiate_tarot)")
+    
     args = parser.parse_args()
     
     import fcntl
@@ -675,6 +730,8 @@ def main():
             sys.exit(cmd_close(args))
         elif args.action == "archive":
             sys.exit(cmd_archive(args))
+        elif args.action == "onboard":
+            sys.exit(cmd_onboard(args))
 
 if __name__ == "__main__":
     main()

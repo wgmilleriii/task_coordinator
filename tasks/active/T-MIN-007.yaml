@@ -3,27 +3,36 @@ title: Triage the eleven GUIDEBOOK files from the fleet sweep
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-10T18:07:00-06:00'
 dependencies: []
 scope:
-- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/
-  (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking
-  authoritative but are unverified fleet output.
+- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01
+  through -05, -08, -36 through -40), which sit on main and test looking authoritative
+  but are unverified fleet output.
 - Establish first what a GUIDEBOOK file is supposed to be - no committed spec appears
   to exist; check the sweep's originating brief and whether the format duplicates,
   summarizes, or contradicts the personality studies.
 - Check each file for the three known disguises (wrong-but-fluent, stub-with-a-label,
   clone-with-a-costume) with diffs against the personality studies and each other;
   recompute any rank or scoring claims against the registry.
-- Recommend a disposition for the format itself - keep as a distinct deliverable
-  (write the missing spec), fold into the personality studies, or archive - and
-  per-file bins consistent with that recommendation.
+- Recommend a disposition for the format itself - keep as a distinct deliverable (write
+  the missing spec), fold into the personality studies, or archive - and per-file
+  bins consistent with that recommendation.
 definition_of_done:
 - A triage report in research/pilots/ covers all eleven files with per-file bins and
   a reasoned recommendation on the GUIDEBOOK format's future.
-- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a
-  disposition note.
-verification_command: ls research/pilots/ | grep -qi 'guidebook'
+- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition
+  note.
+verification_command: grep -qli "GUIDEBOOK_TRUMP-01" research/pilots/*.md && grep
+  -qli "GUIDEBOOK_TRUMP-40" research/pilots/*.md
 human_review_required: true
+audited_at: '2026-08-11T04:44:28.973255Z'
+audited_by: PM-F2
+audited_repo_sha: c4f389f
+events:
+- timestamp: '2026-08-11T04:44:28.973488Z'
+  action: AUDIT
+  actor: PM-F2
+  details: Audited against c4f389f

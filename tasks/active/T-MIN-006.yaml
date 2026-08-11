@@ -3,7 +3,7 @@ title: Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-10T18:06:00-06:00'
 dependencies: []
@@ -16,17 +16,26 @@ scope:
   fluent rank claims, and clones. Diff every file against the evidence pilot, the
   committed studies, and each other before reading on its own terms.
 - 'Sort each file into one of three bins: KEEP (verify and correct to the committed
-  standard), REWRITE (fail it, archive to research/archive/failed-runs/, and write a
-  batch brief on the ZODIAC_BATCH_BRIEF model), or DEFER (record why).'
+  standard), REWRITE (fail it, archive to research/archive/failed-runs/, and write
+  a batch brief on the ZODIAC_BATCH_BRIEF model), or DEFER (record why).'
 - Mind the standing cautions - registry family field reads Trump for all trumps; the
-  arie are commonly unnumbered so XXXVI-XL are editorial ranks; TRUMP-40 naming is only
-  Moderate confidence (Trombe/Fame/Judgment variants; no Judgement-as-original-title).
-- Do not rewrite the studies inside this task; produce the triage report and any
-  needed batch briefs so authoring can be scoped as follow-up tasks.
+  arie are commonly unnumbered so XXXVI-XL are editorial ranks; TRUMP-40 naming is
+  only Moderate confidence (Trombe/Fame/Judgment variants; no Judgement-as-original-title).
+- Do not rewrite the studies inside this task; produce the triage report and any needed
+  batch briefs so authoring can be scoped as follow-up tasks.
 definition_of_done:
 - A triage report in research/pilots/ assigns every one of the ten files a bin with
   evidence (diffs run, ranks recomputed, citations spot-fetched).
-- Any file failed as a clone or stub is archived with a disposition note, matching the
-  Justice-clone precedent.
-verification_command: ls research/pilots/ | grep -qi 'triage'
+- Any file failed as a clone or stub is archived with a disposition note, matching
+  the Justice-clone precedent.
+verification_command: grep -li "fool" research/pilots/*.md | grep -qi triage && grep
+  -li "TRUMP-40" research/pilots/*.md | grep -qi triage
 human_review_required: false
+audited_at: '2026-08-11T04:44:28.798451Z'
+audited_by: PM-F2
+audited_repo_sha: c4f389f
+events:
+- timestamp: '2026-08-11T04:44:28.798768Z'
+  action: AUDIT
+  actor: PM-F2
+  details: Audited against c4f389f

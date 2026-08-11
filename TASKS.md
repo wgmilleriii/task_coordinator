@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
-    T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::active
+    T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::review
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]
@@ -87,7 +87,23 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 🛠 T-MIN-011 · P1 · ANY · CLAIMED
+### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
+**Initialize the Virtual Master Sheet Web Grid**
+**Owner:** Worker-1
+
+**Scope:**
+- Create the base minchiate_reviewer.py application.
+- Load the 97 extracted images and sort them geographically by their filename prefix.
+- Serve a dynamic web grid layout reflecting the original master sheet.
+
+**Definition of Done:**
+- Server runs locally without errors.
+- Renders a grid of 97 images in their stitched order in the browser.
+
+*Audited against SHA:* `b51d4e4`
+
+---
+### ⏳ T-MIN-011 · P1 · ANY · PEER_REVIEW
 **Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)**
 **Owner:** Worker-F11
 
@@ -106,22 +122,6 @@ graph TD
 - A batch verification report in research/pilots/ records the adversarial per-wave pass, including diffs against the archived failed drafts confirming no clone text.
 
 *Audited against SHA:* `f8bb1b8`
-
----
-### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
-**Initialize the Virtual Master Sheet Web Grid**
-**Owner:** Worker-1
-
-**Scope:**
-- Create the base minchiate_reviewer.py application.
-- Load the 97 extracted images and sort them geographically by their filename prefix.
-- Serve a dynamic web grid layout reflecting the original master sheet.
-
-**Definition of Done:**
-- Server runs locally without errors.
-- Renders a grid of 97 images in their stitched order in the browser.
-
-*Audited against SHA:* `b51d4e4`
 
 ---
 ### 📋 T-MIN-013 · P2 · ANY · AUDITED

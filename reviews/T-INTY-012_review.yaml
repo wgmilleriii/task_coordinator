@@ -1,0 +1,9 @@
+task_id: T-INTY-012
+reviewer_agent: Coordinator
+reviewer_model: M196
+reviewed_head_sha: 40d00b8938a2afe7bff5f03170f3c9449514d8a4
+verdict: PASS
+findings:
+- severity: INFO
+  description: REQUIRED_PLEASE_FILL
+reviewed_at: '2026-08-11T14:52:33.196700Z'

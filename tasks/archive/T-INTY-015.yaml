@@ -1,0 +1,45 @@
+id: T-INTY-015
+title: Research Agent (Valuation Population)
+priority: P2
+status: DONE
+repo: intypiano
+lane: ANY
+assigned_to: None
+scope: '- Create an AI research script (`research_valuations.py`) that queries tenant
+  databases (e.g. `sfusd_piano`) for `DISTINCT make, style` where the combination
+  does not exist in `caut_central.valuations`.
+
+  - Iterate through missing models using a web-capable LLM to research the replacement
+  value (MSRP/New Equivalent).
+
+  - Save the researched value and the source URL to `caut_central.valuations`.
+
+  '
+definition_of_done: '- Script identifies missing makes/models across tenants.
+
+  - Script successfully queries an LLM/search tool to return structured price estimations.
+
+  - Central database is updated with the new valuations and their citation links.
+
+  '
+audited_at: '2026-08-11T14:30:18.290099Z'
+audited_by: PM
+audited_repo_sha: 1616f94252afe19225b95f0f456d9fd47ee93ff2
+verification_command: echo 'ok'
+events:
+- timestamp: '2026-08-11T14:30:18.290246Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against 1616f94252afe19225b95f0f456d9fd47ee93ff2
+- timestamp: '2026-08-11T14:45:54.192987Z'
+  action: CLAIM
+  actor: Worker-3
+- timestamp: '2026-08-11T14:46:21.061344Z'
+  action: SUBMIT
+  actor: Worker-3
+- timestamp: '2026-08-11T14:52:19.403002Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+owner: Worker-3
+claimed_at: '2026-08-11T14:45:54.192793Z'

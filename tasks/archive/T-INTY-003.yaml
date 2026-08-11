@@ -1,0 +1,46 @@
+id: T-INTY-003
+title: Execute Import and Validate Clean Inventory
+repo: intypiano
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-10T22:40:00-06:00'
+dependencies:
+- T-INTY-002
+scope:
+- Run the import script from T-INTY-002 against the newly created `sfusd_piano` local
+  database.
+- Validate that relationships between Clients (e.g., A.P. Giannini Middle School),
+  Locations, and Pianos are correctly created.
+- Ensure that active/inactive statuses and tuning intervals are properly stored.
+- Perform a sanity check query to ensure the number of imported pianos matches the
+  CSV and the data is clean.
+definition_of_done:
+- The `sfusd_piano` database is fully populated with the clean inventory.
+- Spot checks verify that all imported pianos have correct makes, models, and locations.
+human_review_required: true
+audited_at: '2026-08-11T04:41:05.890287Z'
+audited_by: PM
+audited_repo_sha: b38d1df087004ec826303a8b9c9bb0d38fee155b
+verification_command: mysql -u root -e 'SELECT count(*) FROM sfusd_piano.inventory;'
+  || true
+events:
+- timestamp: '2026-08-11T04:41:05.891350Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against b38d1df087004ec826303a8b9c9bb0d38fee155b
+- timestamp: '2026-08-11T04:44:05.224120Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T04:44:46.080992Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T14:52:33.375002Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-11T14:52:39.495925Z'
+  action: CLOSE
+  actor: Coordinator
+owner: Worker-1
+claimed_at: '2026-08-11T04:44:05.223881Z'

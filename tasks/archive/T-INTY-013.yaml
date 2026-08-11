@@ -1,0 +1,53 @@
+id: T-INTY-013
+title: Auto-Calculation and Overrides for Piano Valuation/Age
+priority: P1
+status: DONE
+repo: intypiano
+lane: ANY
+assigned_to: None
+scope: '- Query the `caut_central` database when a new piano is added to a tenant''s
+  inventory to fetch the year (based on Make/Serial lookup) and the value (based on
+  Make/Model).
+
+  - Add `value_override` (int) and `age_override` (int) columns to the tenant `inventory`
+  schema.
+
+  - UI updates: Display the calculated central values, but allow technicians to input
+  overrides. If an override exists, display it with a "Manual Override" badge on the
+  UI and reports.
+
+  - Provide a sync script to re-import global data from `caut_central` and update
+  all calculated values, specifically skipping rows where `_override` columns are
+  not null.
+
+  '
+definition_of_done: '- Override columns exist on the tenant inventory table.
+
+  - Adding a piano automatically calculates value/age from the central DB.
+
+  - UI allows technician to set/clear an override, which properly flags on reports.
+
+  - Sync script updates non-overridden pianos.
+
+  '
+audited_at: '2026-08-11T14:30:17.886335Z'
+audited_by: PM
+audited_repo_sha: 1616f94252afe19225b95f0f456d9fd47ee93ff2
+verification_command: echo 'ok'
+events:
+- timestamp: '2026-08-11T14:30:17.886639Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against 1616f94252afe19225b95f0f456d9fd47ee93ff2
+- timestamp: '2026-08-11T14:30:29.625018Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T14:33:52.768854Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T14:52:19.000389Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+owner: Worker-1
+claimed_at: '2026-08-11T14:30:29.623091Z'

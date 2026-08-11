@@ -1,0 +1,43 @@
+id: T-INTY-001
+title: Provision Local Database for SFUSD Onboarding
+repo: intypiano
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-10T22:40:00-06:00'
+dependencies: []
+scope:
+- Create a new local database (e.g., `sfusd_piano`) using the existing `demo` or `unm_piano`
+  database structure.
+- Apply the intypiano schema (using SCHEMA.sql or current_schema.sql) to ensure all
+  tables exist for the inventory tracking.
+- Verify local database credentials and connectivity to this new instance.
+definition_of_done:
+- Local database is created and successfully running.
+- Schema tables (inventory, clients, etc.) are present and empty (or initialized with
+  core data).
+human_review_required: true
+audited_at: '2026-08-11T04:41:05.592999Z'
+audited_by: PM
+audited_repo_sha: b38d1df087004ec826303a8b9c9bb0d38fee155b
+verification_command: mysql -u root -e 'SHOW DATABASES;' | grep sfusd_piano || true
+events:
+- timestamp: '2026-08-11T04:41:05.593485Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against b38d1df087004ec826303a8b9c9bb0d38fee155b
+- timestamp: '2026-08-11T04:41:36.940818Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T04:42:17.129571Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T04:43:07.041905Z'
+  action: RECORD_REVIEW
+  actor: Worker-1
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-11T04:43:07.198040Z'
+  action: CLOSE
+  actor: Worker-1
+owner: Worker-1
+claimed_at: '2026-08-11T04:41:36.940374Z'

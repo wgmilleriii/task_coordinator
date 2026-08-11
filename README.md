@@ -21,6 +21,35 @@ If you have just been dispatched to this repository to evaluate it or begin work
 
 ---
 
+## 📚 Dewey Decimal Documentation Protocol
+
+To prevent spoke repositories from becoming littered with loose `planning.md` or `scratch.md` files, all agents MUST adhere to the Dewey Decimal index for documentation. 
+
+Any `.md` file created in a spoke repository (excluding standard files like `README.md` or `.fleet_context.md`) **MUST** be placed in a `docs/` folder using the following category numbers:
+
+- `00-Meta/` (Project management, agent notes, task context)
+- `10-Product/` (Requirements, UX, design docs, user journeys)
+- `20-Architecture/` (System design, database schemas, API specs)
+- `30-Engineering/` (Setup guides, dev logs, code conventions)
+- `40-Operations/` (Deployment, CI/CD, infrastructure, runbooks)
+- `90-Archive/` (Archived files, deprecated notes)
+
+**YAML Frontmatter Requirement:**
+Every `.md` file in `docs/` must contain standard YAML frontmatter exactly matching `schemas/doc_frontmatter.schema.json`. At minimum, it must have:
+```yaml
+---
+title: "Document Title"
+created_at: "YYYY-MM-DDTHH:MM:SSZ"
+last_modified: "YYYY-MM-DDTHH:MM:SSZ"
+author: "AgentName"
+status: "active" # or draft, archived, deprecated
+category: "20-Architecture"
+---
+```
+Do NOT write edit history logs in the markdown. Rely on `git log` for change history.
+
+---
+
 ## 🏗️ Architecture
 
 - **`tasks/active/`**: The database. Every active task is an isolated `.yaml` file.

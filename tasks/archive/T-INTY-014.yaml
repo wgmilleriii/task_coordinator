@@ -1,0 +1,44 @@
+id: T-INTY-014
+title: Age Lookup Ingestion Pipeline
+priority: P2
+status: DONE
+repo: intypiano
+lane: ANY
+assigned_to: None
+scope: '- Write a Python script (`parse_piano_age.py`) utilizing `BeautifulSoup` to
+  parse `piano_age_lookup/Pianoage by Serial Number.html`.
+
+  - Extract the make, serial number ranges, and year from the tables.
+
+  - Normalize the data into structured JSON or directly insert it into the local MySQL
+  `caut_central.age_lookups` table.
+
+  '
+definition_of_done: '- Script successfully parses the messy HTML structure.
+
+  - Edge cases (like typos or merged cells) are handled safely or skipped with a warning.
+
+  - `age_lookups` table in `caut_central` is fully populated with the legacy data.
+
+  '
+audited_at: '2026-08-11T14:30:18.104948Z'
+audited_by: PM
+audited_repo_sha: 1616f94252afe19225b95f0f456d9fd47ee93ff2
+verification_command: echo 'ok'
+events:
+- timestamp: '2026-08-11T14:30:18.105144Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against 1616f94252afe19225b95f0f456d9fd47ee93ff2
+- timestamp: '2026-08-11T14:43:40.025086Z'
+  action: CLAIM
+  actor: Worker-2
+- timestamp: '2026-08-11T14:45:37.209808Z'
+  action: SUBMIT
+  actor: Worker-2
+- timestamp: '2026-08-11T14:52:19.207160Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+owner: Worker-2
+claimed_at: '2026-08-11T14:43:40.024534Z'

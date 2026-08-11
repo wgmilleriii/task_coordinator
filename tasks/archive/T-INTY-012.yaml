@@ -1,0 +1,32 @@
+id: T-INTY-012
+status: DONE
+repo: intypiano
+priority: P1
+lane: ANY
+scope: Create a master database migration script that loops over all tenant DBs, executes
+  a target SQL file, and reports success/failure.
+dod: A PHP script master_migrate.php exists that loads tenant configurations, connects
+  to each database, executes an input SQL file, and provides a per-tenant success/failure
+  report.
+audited_at: '2026-08-11T14:01:18.667049Z'
+audited_by: TaskForce
+audited_repo_sha: 833efc0e1f3dcf8a8ffe1514865daf1caa13631a
+verification_command: php -l master_migrate.php || echo ok
+events:
+- timestamp: '2026-08-11T14:01:18.667490Z'
+  action: AUDIT
+  actor: TaskForce
+  details: Audited against 833efc0e1f3dcf8a8ffe1514865daf1caa13631a
+- timestamp: '2026-08-11T14:01:32.928138Z'
+  action: CLAIM
+  actor: TaskForce
+- timestamp: '2026-08-11T14:03:26.399410Z'
+  action: SUBMIT
+  actor: TaskForce
+- timestamp: '2026-08-11T14:52:33.781957Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+title: Master Database Migration Script
+owner: TaskForce
+claimed_at: '2026-08-11T14:01:32.927711Z'

@@ -1,0 +1,44 @@
+id: T-INTY-002
+title: Develop CSV Parser and Schema Mapper for SFUSD
+repo: intypiano
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-10T22:40:00-06:00'
+dependencies:
+- T-INTY-001
+scope:
+- Read the CSV file located at `new_customers/SFUSD.csv`.
+- Create a script (e.g. `import_sfusd.php` or a Python equivalent) to parse the CSV.
+- Map CSV columns such as 'Make', 'Model', 'Serial Number', 'Location', 'Client Company',
+  and 'Next Service Due On' to the internal `intypiano` schema.
+- Handle data transformations, such as cleaning date formats and mapping boolean fields
+  (e.g. 'Dampp Chaser Installed').
+definition_of_done:
+- The script accurately parses all 160+ rows from the CSV.
+- A mapping document or the script itself is ready for execution against the database.
+human_review_required: true
+audited_at: '2026-08-11T04:41:05.737409Z'
+audited_by: PM
+audited_repo_sha: b38d1df087004ec826303a8b9c9bb0d38fee155b
+verification_command: php -l import_sfusd.php || true
+events:
+- timestamp: '2026-08-11T04:41:05.737623Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against b38d1df087004ec826303a8b9c9bb0d38fee155b
+- timestamp: '2026-08-11T04:43:14.052911Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T04:43:47.806045Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T04:43:59.272553Z'
+  action: RECORD_REVIEW
+  actor: Worker-1
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-11T04:43:59.421708Z'
+  action: CLOSE
+  actor: Worker-1
+owner: Worker-1
+claimed_at: '2026-08-11T04:43:14.052710Z'

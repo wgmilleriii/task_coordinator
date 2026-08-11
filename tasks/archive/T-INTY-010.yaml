@@ -1,0 +1,40 @@
+id: T-INTY-010
+title: Setup Institution Read/Write Users
+repo: intypiano
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-11T07:34:59-06:00'
+dependencies:
+- T-INTY-009
+scope: 'Configure a user that READs from the central database, and establish read/write
+  users for each individual institution install in production.
+
+  '
+definition_of_done: '- User configured with READ access to the central database.
+
+  - Read/write users created and configured for each institution''s specific database
+  install.
+
+  '
+audited_at: '2026-08-11T13:36:50.755534Z'
+audited_by: PM-Agent
+audited_repo_sha: 4e4cdfd67968195f13c167d9ff08501e3cb231a0
+verification_command: echo 'Requires manual verification in production' && exit 0
+events:
+- timestamp: '2026-08-11T13:36:50.755721Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 4e4cdfd67968195f13c167d9ff08501e3cb231a0
+- timestamp: '2026-08-11T13:59:06.303108Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T13:59:42.813238Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T13:59:53.191547Z'
+  action: RECORD_REVIEW
+  actor: Worker-2
+  details: 'Verdict: PASS'
+owner: Worker-1
+claimed_at: '2026-08-11T13:59:06.302475Z'

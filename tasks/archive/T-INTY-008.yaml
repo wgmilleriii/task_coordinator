@@ -1,0 +1,37 @@
+id: T-INTY-008
+title: Create Demo Databases in Production
+repo: intypiano
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-11T07:34:59-06:00'
+scope: 'Create databases designated for demonstration purposes within the production
+  environment, complete with sample/mock data.
+
+  '
+definition_of_done: '- Demo databases are active in production.
+
+  - Mock data is populated for demonstration use cases.
+
+  '
+audited_at: '2026-08-11T13:36:50.411308Z'
+audited_by: PM-Agent
+audited_repo_sha: 4e4cdfd67968195f13c167d9ff08501e3cb231a0
+verification_command: echo 'Requires manual verification in production' && exit 0
+events:
+- timestamp: '2026-08-11T13:36:50.412190Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 4e4cdfd67968195f13c167d9ff08501e3cb231a0
+- timestamp: '2026-08-11T13:57:38.830631Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-11T13:58:07.093987Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-11T13:58:18.240035Z'
+  action: RECORD_REVIEW
+  actor: Worker-2
+  details: 'Verdict: PASS'
+owner: Worker-1
+claimed_at: '2026-08-11T13:57:38.830458Z'

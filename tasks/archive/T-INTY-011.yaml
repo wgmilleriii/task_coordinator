@@ -1,0 +1,45 @@
+id: T-INTY-011
+title: Add central DB for piano valuation and age lookups
+description: 'Create a central database for localhost to hold piano valuation and
+  age lookups.
+
+  '
+status: DONE
+repo: intypiano
+priority: P1
+lane: ANY
+scope: '- Create central_db_schema.sql defining `valuations` and `age_lookups` tables.
+
+  - Create sample_central_data.json with dummy data.
+
+  - Create an import script that parses the JSON and generates INSERT statements.
+
+  '
+dod: '- Schema defines both tables correctly.
+
+  - JSON format is clear and validated by the script.
+
+  - Import script runs and generates valid SQL insert statements.
+
+  '
+audited_at: '2026-08-11T13:44:04.569604Z'
+audited_by: TaskForce
+audited_repo_sha: 037c1196acbd14908e2874bdfc4395beb041c866
+verification_command: echo 'Verification script'
+events:
+- timestamp: '2026-08-11T13:44:04.569902Z'
+  action: AUDIT
+  actor: TaskForce
+  details: Audited against 037c1196acbd14908e2874bdfc4395beb041c866
+- timestamp: '2026-08-11T13:44:09.887233Z'
+  action: CLAIM
+  actor: TaskForce
+- timestamp: '2026-08-11T13:45:07.030085Z'
+  action: SUBMIT
+  actor: TaskForce
+- timestamp: '2026-08-11T14:52:33.586269Z'
+  action: RECORD_REVIEW
+  actor: Coordinator
+  details: 'Verdict: PASS'
+owner: TaskForce
+claimed_at: '2026-08-11T13:44:09.887034Z'

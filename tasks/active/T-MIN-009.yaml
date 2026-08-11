@@ -3,7 +3,7 @@ title: Verify the zodiac batch's UNVERIFIED doctrine locators
 repo: minchiate_tarot
 priority: P3
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-10T18:09:00-06:00'
 dependencies:
@@ -11,22 +11,45 @@ dependencies:
 scope:
 - The twelve zodiac studies deliberately hedge their classical-doctrine citations
   rather than invent locators. Resolve each to a real locator or downgrade the claim;
-  'Ptolemy Tetrabiblos Book I aspects-of-the-signs chapter (used for all six
-  diametrical opposite edges); Aratus Phaenomena lines for the Chelae/Claws material
-  (Libra/Scorpio) and the Parthenos grain-ear (Virgo); Sacrobosco De sphaera cap. II
-  zodiac description and the tropics (Capricorn/Cancer); Isidore Etymologiae III
-  day-equals-night gloss (Libra); the sun-domicile scheme (Leo); Hydrochoos and
-  winter-rains (Aquarius); Dioscuri star-lore (Gemini).'
+  'Ptolemy Tetrabiblos Book I aspects-of-the-signs chapter (used for all six diametrical
+  opposite edges); Aratus Phaenomena lines for the Chelae/Claws material (Libra/Scorpio)
+  and the Parthenos grain-ear (Virgo); Sacrobosco De sphaera cap. II zodiac description
+  and the tropics (Capricorn/Cancer); Isidore Etymologiae III day-equals-night gloss
+  (Libra); the sun-domicile scheme (Leo); Hydrochoos and winter-rains (Aquarius);
+  Dioscuri star-lore (Gemini).'
 - Every resolution must come from an opened source with a page/line/chapter locator,
-  never from memory - the citation audit's 208 untraceable references are the
-  cautionary tale.
-- Update the twelve claims tables and prose gradings in place (Moderate-pending-
-  locators to High, or downgrade to [UNVERIFIED] wholesale where the source does not
-  bear the claim); keep prose and tables in sync.
+  never from memory - the citation audit's 208 untraceable references are the cautionary
+  tale.
+- 'PM scope clarification (PM-F3, 2026-08-11): external source access IS in scope
+  and required - workers may open web editions and library APIs (e.g. archive.org,
+  Perseus/Scaife, LacusCurtius, digitized incunabula of Sacrobosco/Isidore) to read
+  Ptolemy, Aratus, Sacrobosco, and Isidore; resolving locators from memory remains
+  forbidden.'
+- 'PM scope clarification (PM-F3, 2026-08-11): write the locator-resolution note as
+  research/pilots/Zodiac_Locator_Resolution_Note.md (matching Zodiac_Locator_Resolution*.md)
+  and name each of the twelve ids TRUMP-24 through TRUMP-35 in it.'
+- Update the twelve claims tables and prose gradings in place (Moderate-pending- locators
+  to High, or downgrade to [UNVERIFIED] wholesale where the source does not bear the
+  claim); keep prose and tables in sync.
 definition_of_done:
 - No zodiac study contains the phrase 'locator UNVERIFIED' without either a resolved
   citation or an explicit downgrade recorded in its claims table.
 - A short locator-resolution note records which sources were opened and what each
   yielded.
-verification_command: grep -c 'UNVERIFIED' research/pilots/drafts/PERSONALITY_TRUMP-24_Libra.md
+verification_command: 'bash -c ''hedges=$(grep -lE "\[[^][]+ UNVERIFIED[^][]*\]|locators?
+  (marked )?UNVERIFIED" research/pilots/drafts/PERSONALITY_TRUMP-2[4-9]_*.md research/pilots/drafts/PERSONALITY_TRUMP-3[0-5]_*.md
+  2>/dev/null); if [ -n "$hedges" ]; then echo "FAIL: unresolved locator hedges in:";
+  echo "$hedges"; exit 1; fi; note=$(ls research/pilots/Zodiac_Locator_Resolution*.md
+  2>/dev/null | head -1); if [ -z "$note" ]; then echo "FAIL: no research/pilots/Zodiac_Locator_Resolution*.md
+  note"; exit 1; fi; for n in 24 25 26 27 28 29 30 31 32 33 34 35; do grep -q "TRUMP-$n"
+  "$note" || { echo "FAIL: note missing TRUMP-$n"; exit 1; }; done; echo "PASS: no
+  locator hedges remain; $note names all twelve trumps"'''
 human_review_required: false
+audited_at: '2026-08-11T14:50:23.324854Z'
+audited_by: PM-F3
+audited_repo_sha: 274b981
+events:
+- timestamp: '2026-08-11T14:50:23.325452Z'
+  action: AUDIT
+  actor: PM-F3
+  details: Audited against 274b981

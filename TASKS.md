@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
-    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]
+    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::active
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
@@ -79,9 +79,9 @@ graph TD
 *Audited against SHA:* `b51d4e4`
 
 ---
-### 📋 T-MIN-007 · P2 · ANY · AUDITED
+### 🛠 T-MIN-007 · P2 · ANY · CLAIMED
 **Triage the eleven GUIDEBOOK files from the fleet sweep**
-**Owner:** None
+**Owner:** Worker-F7
 
 **Scope:**
 - Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking authoritative but are unverified fleet output.

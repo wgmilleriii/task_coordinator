@@ -3,8 +3,8 @@ title: Triage the eleven GUIDEBOOK files from the fleet sweep
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F7
 created_at: '2026-08-10T18:07:00-06:00'
 dependencies: []
 scope:
@@ -36,3 +36,7 @@ events:
   action: AUDIT
   actor: PM-F2
   details: Audited against c4f389f
+- timestamp: '2026-08-11T15:03:19.328428Z'
+  action: CLAIM
+  actor: Worker-F7
+claimed_at: '2026-08-11T15:03:19.327941Z'

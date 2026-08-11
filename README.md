@@ -97,7 +97,12 @@ Before exploring a codebase or interacting with tasks, you MUST run the onboardi
 ```
 Read the generated `.fleet_context.md` file in the target repository's root. It contains critical instructions on how to use `Graphify` and `Chord` for that codebase to gain an authoritative understanding before you begin work. 
 
-**Janitor Protocol:** If the `.fleet_context.md` file contains a "DOCUMENTATION UPDATE REQUIRED" warning, you MUST pause your regular assignment. Act as the Documentation Janitor, run `/chord-tune`, update Obsidian notes, and run `./bin/fleet mark-docs-updated <repo_name>`. Do not proceed until this is complete.
+**Janitor Protocol:** If the `.fleet_context.md` file contains a "DOCUMENTATION UPDATE REQUIRED" warning, you MUST pause your regular assignment. Act as the Documentation Janitor: 
+1. Run `./bin/fleet sweep-docs <repo_name>` to find scattered `.md` files or missing frontmatter. Move them into `docs/` using the Dewey Decimal protocol.
+2. Run `/chord-tune` to update expert pages.
+3. Update relevant Obsidian notes with architectural changes.
+4. Run `./bin/fleet mark-docs-updated <repo_name>` to reset the 24-hour timer.
+Do not proceed until this is complete.
 
 ### 1. Find a Task
 Run the render command to ensure the board is up to date:

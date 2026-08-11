@@ -714,6 +714,91 @@ def cmd_onboard(args):
     print(f"👉 Agent: Run `cat {out_file}` to read your briefing, then follow its instructions.")
     return 0
 
+def cmd_sweep_docs(args):
+    repo_name = args.repo
+    target_repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', repo_name))
+    
+    if not os.path.exists(target_repo_path):
+        print(f"❌ Target repo path does not exist: {target_repo_path}")
+        return 1
+        
+    print(f"🧹 Sweeping documentation for repository: {repo_name}...")
+    
+    schema_path = os.path.join(BASE_DIR, 'schemas', 'doc_frontmatter.schema.json')
+    try:
+        import json
+        with open(schema_path, 'r') as f:
+            doc_schema = json.load(f)
+    except Exception as e:
+        print(f"❌ Could not load doc schema: {e}")
+        return 1
+        
+    from jsonschema import validate, ValidationError
+    import yaml
+    
+    all_md_files = []
+    for root, dirs, files in os.walk(target_repo_path):
+        dirs[:] = [d for d in dirs if d not in ['.git', '.venv', 'node_modules', 'tasks', 'feedback', 'graphify-out', 'chord-kb', 'build', 'dist', '__pycache__']]
+        for file in files:
+            if file.endswith('.md'):
+                if file in ['README.md', 'GRAPH_REPORT.md', '.fleet_context.md', 'TASKS.md', 'HOW_CHORD_WORKS.md'] and root == target_repo_path:
+                    continue
+                all_md_files.append(os.path.join(root, file))
+                
+    errors = 0
+    for filepath in all_md_files:
+        rel_path = os.path.relpath(filepath, target_repo_path)
+        
+        if not rel_path.startswith('docs/'):
+            print(f"⚠️  [Misplaced] {rel_path} is outside the docs/ folder.")
+            errors += 1
+            continue
+            
+        try:
+            with open(filepath, 'r') as f:
+                content = f.read()
+                
+            if not content.startswith('---'):
+                print(f"⚠️  [No Frontmatter] {rel_path} lacks YAML frontmatter.")
+                errors += 1
+                continue
+                
+            parts = content.split('---', 2)
+            if len(parts) < 3:
+                print(f"⚠️  [Invalid Frontmatter] {rel_path} has malformed YAML frontmatter.")
+                errors += 1
+                continue
+                
+            frontmatter_str = parts[1]
+            frontmatter = yaml.safe_load(frontmatter_str)
+            
+            if not isinstance(frontmatter, dict):
+                print(f"⚠️  [Invalid Frontmatter] {rel_path} frontmatter is not a dictionary.")
+                errors += 1
+                continue
+                
+            validate(instance=frontmatter, schema=doc_schema)
+            
+            cat = frontmatter.get('category')
+            expected_prefix = f"docs/{cat}/"
+            if not rel_path.startswith(expected_prefix):
+                print(f"⚠️  [Misaligned] {rel_path} is in the wrong folder. Category is {cat}.")
+                errors += 1
+                
+        except ValidationError as e:
+            print(f"❌ [Schema Error] {rel_path}: {e.message}")
+            errors += 1
+        except Exception as e:
+            print(f"❌ [Error] {rel_path}: {e}")
+            errors += 1
+            
+    if errors > 0:
+        print(f"\n❌ Found {errors} documentation issues that need sweeping.")
+        return 1
+        
+    print("✅ Documentation sweep complete. No loose files or invalid frontmatter found.")
+    return 0
+
 def main():
     parser = argparse.ArgumentParser(description="Dollers Fleet V2 Task Coordinator")
     subparsers = parser.add_subparsers(dest="action", required=True)
@@ -765,6 +850,9 @@ def main():
     mark_docs_parser = subparsers.add_parser("mark-docs-updated", help="Reset the 24-hour Janitor Protocol timer for a repository")
     mark_docs_parser.add_argument("repo", help="Name of the repository")
     
+    sweep_docs_parser = subparsers.add_parser("sweep-docs", help="Check for loose .md files and validate Dewey Decimal schema")
+    sweep_docs_parser.add_argument("repo", help="Name of the repository to sweep")
+    
     args = parser.parse_args()
     
     import fcntl
@@ -806,6 +894,8 @@ def main():
             sys.exit(cmd_onboard(args))
         elif args.action == "mark-docs-updated":
             sys.exit(cmd_mark_docs_updated(args))
+        elif args.action == "sweep-docs":
+            sys.exit(cmd_sweep_docs(args))
 
 if __name__ == "__main__":
     main()

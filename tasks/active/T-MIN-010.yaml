@@ -1,0 +1,47 @@
+id: T-MIN-010
+title: Fix grid caption dropping card value for identified cards
+repo: minchiate_tarot
+priority: P2
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-10T23:53:38Z'
+audited_at: '2026-08-10T23:58:42.450145Z'
+audited_by: PM-1
+audited_repo_sha: 0509f6914e201ba192717c7a90c3c4154e5120fc
+dependencies: []
+scope:
+- "In minchiate_reviewer.py (branch test-T-MIN-001, commit 0509f69), render_grid_html\
+  \ builds each card caption as: label = html.escape(card.get(\"type\") or card[\"\
+  original_name\"]) \u2014 this shows only the type string (e.g. \"Swords\") and silently\
+  \ drops the value/rank field entirely, even though ledger.json already stores it\
+  \ for 93 of 97 cards (confirmed by inspection: e.g. {\"type\": \"Swords\", \"value\"\
+  : \"6\", ...} renders only as \"Swords\"). Every card of the same suit is indistinguishable\
+  \ in the grid caption, which defeats the anchor-identification workflow described\
+  \ in CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 3 (Contextual Inference relies\
+  \ on being able to read neighboring cards' identities at a glance)."
+- Change the label to include both type and value when both are present (e.g. "Swords
+  6" or "Trump 15"), falling back to original_name only when the card is unidentified.
+definition_of_done:
+- For a card with type and value populated in the ledger, the rendered grid HTML's
+  figcaption contains both the type and the value.
+- For an unidentified card (empty type), the figcaption still falls back to original_name
+  as before.
+- python3 minchiate_reviewer.py --check still exits 0.
+verification_command: "python3 -c \"\nimport minchiate_reviewer as m\nout = m.render_grid_html([\n\
+  \    {'current_name': 'Swords_6.jpg', 'original_name': 'x.jpg', 'type': 'Swords',\
+  \ 'value': '6'},\n    {'current_name': 'y.jpg', 'original_name': 'y.jpg', 'type':\
+  \ '', 'value': ''},\n])\nassert 'Swords' in out and '6' in out, 'caption missing\
+  \ type or value for identified card'\nassert 'y.jpg' in out, 'fallback to original_name\
+  \ broken for unidentified card'\nprint('OK: caption includes type+value, unidentified\
+  \ fallback intact')\n\" && python3 minchiate_reviewer.py --check"
+human_review_required: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-10T23:58:42.450395Z'
+  action: AUDIT
+  actor: PM-1
+  details: Audited against 0509f6914e201ba192717c7a90c3c4154e5120fc

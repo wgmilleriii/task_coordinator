@@ -13,11 +13,11 @@ graph TD
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
+    T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]
     T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
-    T-MIN-004["T-MIN-004<br/>Fix grid caption dropping card value for identified cards"]
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]
 ```
@@ -97,7 +97,7 @@ graph TD
 *Audited against SHA:* `b51d4e4`
 
 ---
-### 📋 T-MIN-004 · P2 · ANY · AUDITED
+### 📋 T-MIN-010 · P2 · ANY · AUDITED
 **Fix grid caption dropping card value for identified cards**
 **Owner:** None
 

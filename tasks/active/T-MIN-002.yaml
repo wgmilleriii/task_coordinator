@@ -1,0 +1,53 @@
+id: T-MIN-002
+title: Add card-identification write path to minchiate_reviewer.py
+repo: minchiate_tarot
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-10T23:53:38Z'
+audited_at: '2026-08-10T23:58:30.640903Z'
+audited_by: PM-1
+audited_repo_sha: 0509f6914e201ba192717c7a90c3c4154e5120fc
+dependencies: []
+scope:
+- "On branch test-T-MIN-001, minchiate_reviewer.py was rewritten from Flask to stdlib\
+  \ http.server (commits 1eb6550, 0509f69). The rewrite dropped the old Flask app's\
+  \ /api/update and /api/confirm POST routes entirely \u2014 the new ReviewerHandler\
+  \ implements only do_GET, no do_POST \u2014 so the running server is now read-only."
+- CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 2-4 and its "Next Steps" section explicitly
+  define the reviewer app's purpose as letting a user click a card in the grid, assign
+  its identity (Suit/Rank or Trump number), persist that judgment to ledger.json,
+  and rename the underlying file to its archival name (e.g. Cups_03.jpg). None of
+  that is implemented in the current read-only build.
+- "Add a do_POST handler (or equivalent) to ReviewerHandler exposing at least an update-identity\
+  \ endpoint that accepts an original_name/current_name plus type+value, validates\
+  \ against a target filename collision, renames the file under research/evidence/cards_raw/,\
+  \ updates ledger.json (identified, type, value, current_name), and returns JSON\
+  \ \u2014 matching the semantics the old Flask /api/update route had, but implemented\
+  \ stdlib-only per this branch's existing \"no Flask/Jinja2\" design constraint stated\
+  \ in the module docstring."
+- Wire minimal client-side interaction in render_grid_html's output (a click handler
+  / small inline form per card, or a simple prompt-based flow) so the identification
+  can actually be entered from the browser, not only via curl.
+definition_of_done:
+- POST request to the new endpoint with a valid original_name/type/value updates ledger.json's
+  identified/type/value fields and renames the file on disk, verified by re-reading
+  ledger.json and os.path.exists on the new name.
+- A request naming a target filename that already exists on disk is rejected (no rename
+  performed, no file clobbered) with a non-200 response.
+- Grid page loaded after an update reflects the new identity without manual ledger
+  editing.
+- python3 minchiate_reviewer.py --check still exits 0 (existing read-path behavior
+  is not broken).
+verification_command: python3 minchiate_reviewer.py --check
+human_review_required: true
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-10T23:58:30.641411Z'
+  action: AUDIT
+  actor: PM-1
+  details: Audited against 0509f6914e201ba192717c7a90c3c4154e5120fc

@@ -71,7 +71,7 @@ The Reviewer checks that conclusions are supported by reproducible evidence, tha
 
 The Coordinator will create:
 
-`feedback/SELF_EVALUATION[Codex-GPT-5-<completion-timestamp>].md`
+`feedback/SELF_EVALUATION[Codex-GPT-5-20260810T175405-0600].md`
 
 The synthesis will rank findings by severity, distinguish confirmed current defects from historical findings, identify process contradictions revealed by dogfooding, summarize strengths, and propose a prioritized future task backlog. It will also document how far every evaluation task progressed through the lifecycle.
 

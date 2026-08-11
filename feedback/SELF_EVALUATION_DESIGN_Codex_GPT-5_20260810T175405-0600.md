@@ -4,7 +4,9 @@
 **Model:** GPT-5  
 **Approved approach:** Full dogfood lifecycle  
 **Approved scope:** Evaluation only  
-**Working branch:** `test/self-evaluation-20260810T175405-0600`
+**Design branch:** `test/self-evaluation-20260810T175405-0600`
+
+**Execution branch:** `test/self-evaluation-execution-20260810T175405-0600`
 
 ## Purpose
 

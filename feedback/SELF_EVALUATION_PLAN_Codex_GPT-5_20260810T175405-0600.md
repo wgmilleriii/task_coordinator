@@ -29,6 +29,7 @@
 
 - Never modify `bin/`, `schemas/`, `README.md`, `.github/`, or `AGENTS.md`.
 - Never stage `TASKS.md`, `logs/`, or any `T-MIN-*` artifact.
+- Never stage the worktree-local `.venv` symlink used to run the CLI.
 - Use `apply_patch` for report and generated-YAML completion edits.
 - Run corrupt-state, collision, or concurrency experiments only in a temporary copy created with `mktemp -d`.
 - Use the live repository only for read-only inspection and the intended `fleet` lifecycle commands.
@@ -55,7 +56,7 @@ git log -6 --oneline --decorate
 ./bin/fleet create --help
 ```
 
-Expected: branch `test/self-evaluation-20260810T175405-0600`; commits `b3bd27e` and `9244092` are present; `create` requires `--title` and `--repo`.
+Expected: branch `test/self-evaluation-execution-20260810T175405-0600`; commits `b3bd27e` and `9244092` are present; `create` requires `--title` and `--repo`.
 
 - [ ] **Step 2: Confirm fleet state is valid before evaluation**
 
@@ -461,19 +462,19 @@ Run:
 
 ```bash
 git diff --check
-git diff --name-only aa2a1de -- bin schemas README.md .github AGENTS.md
+git diff --name-only 9d48816 -- bin schemas README.md .github AGENTS.md
 rg --files feedback handoffs reviews tasks/archive | rg 'T-TAS-00[1-3]|SELF_EVALUATION\[Codex-GPT-5-20260810T175405-0600\]'
 git status --short
 ```
 
-Expected: no restricted-zone path changed after `aa2a1de`; all three reports, handoffs, reviews, task records, and final synthesis are present; only known unrelated user artifacts and the generated board remain unstaged.
+Expected: no restricted-zone path changed after the isolated baseline `9d48816`; all three reports, handoffs, reviews, task records, and final synthesis are present; only the worktree-local `.venv` symlink and generated board remain unstaged.
 
 - [ ] **Step 3: Review commits**
 
 Run:
 
 ```bash
-git log --oneline aa2a1de..HEAD
+git log --oneline 9d48816..HEAD
 ```
 
 Expected: discrete commits for task creation, audit, each Worker submission, each peer review, archival when safe, and final synthesis.

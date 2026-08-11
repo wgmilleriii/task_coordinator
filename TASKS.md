@@ -10,21 +10,37 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
+    T-INTY-011["T-INTY-011<br/>Add central DB for piano valuation and age lookups"]:::review
+    T-INTY-007["T-INTY-007<br/>Create New Databases in Production"]:::done
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
+    T-INTY-006["T-INTY-006<br/>Setup Logins for SFUSD Database"]:::done
+    T-INTY-004 --> T-INTY-006
+    T-INTY-010["T-INTY-010<br/>Setup Institution Read/Write Users"]:::done
+    T-INTY-009 --> T-INTY-010
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]
     T-INTY-001["T-INTY-001<br/>Provision Local Database for SFUSD Onboarding"]:::done
-    T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
+    T-INTY-016["T-INTY-016<br/>Unknown Model API Endpoint"]:::review
+    T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::active
     T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::done
     T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]:::done
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
     T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]:::review
     T-INTY-002 --> T-INTY-003
+    T-INTY-015["T-INTY-015<br/>Research Agent (Valuation Population)"]:::review
+    T-INTY-014["T-INTY-014<br/>Age Lookup Ingestion Pipeline"]:::review
     T-INTY-002["T-INTY-002<br/>Develop CSV Parser and Schema Mapper for SFUSD"]:::done
     T-INTY-001 --> T-INTY-002
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
+    T-INTY-005["T-INTY-005<br/>QC SFUSD Deployment"]:::done
+    T-INTY-004 --> T-INTY-005
+    T-INTY-013["T-INTY-013<br/>Auto-Calculation and Overrides for Piano Valuation/Age"]:::review
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
+    T-INTY-009["T-INTY-009<br/>Setup Central Database and Master User"]:::done
+    T-INTY-008["T-INTY-008<br/>Create Demo Databases in Production"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]
+    T-INTY-012["T-INTY-012<br/>Master Database Migration Script"]:::review
+    T-INTY-004["T-INTY-004<br/>Deploy SFUSD Database to Production"]:::done
 ```
 
 ---
@@ -32,6 +48,720 @@ graph TD
 
 ## Repo: `intypiano`
 
+### ✅ T-INTY-007 · P1 · ANY · DONE
+**Create New Databases in Production**
+**Owner:** Worker-1
+
+**Scope:**
+- P
+- r
+- o
+- v
+- i
+- s
+- i
+- o
+- n
+-  
+- a
+- n
+- d
+-  
+- i
+- n
+- i
+- t
+- i
+- a
+- l
+- i
+- z
+- e
+-  
+- a
+- d
+- d
+- i
+- t
+- i
+- o
+- n
+- a
+- l
+-  
+- r
+- e
+- q
+- u
+- i
+- r
+- e
+- d
+-  
+- n
+- e
+- w
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- s
+-  
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- e
+- n
+- v
+- i
+- r
+- o
+- n
+- m
+- e
+- n
+- t
+-  
+- b
+- a
+- s
+- e
+- d
+-  
+- o
+- n
+-  
+- c
+- u
+- r
+- r
+- e
+- n
+- t
+-  
+- r
+- e
+- q
+- u
+- i
+- r
+- e
+- m
+- e
+- n
+- t
+- s
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- T
+- a
+- r
+- g
+- e
+- t
+-  
+- n
+- e
+- w
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- s
+-  
+- a
+- r
+- e
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+- .
+- 
+
+- -
+-  
+- S
+- c
+- h
+- e
+- m
+- a
+- s
+-  
+- a
+- r
+- e
+-  
+- i
+- n
+- i
+- t
+- i
+- a
+- l
+- i
+- z
+- e
+- d
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ✅ T-INTY-006 · P1 · ANY · DONE
+**Setup Logins for SFUSD Database**
+**Owner:** Worker-1
+
+**Scope:**
+- C
+- o
+- n
+- f
+- i
+- g
+- u
+- r
+- e
+-  
+- n
+- e
+- c
+- e
+- s
+- s
+- a
+- r
+- y
+-  
+- u
+- s
+- e
+- r
+-  
+- l
+- o
+- g
+- i
+- n
+- s
+-  
+- a
+- n
+- d
+-  
+- r
+- o
+- l
+- e
+- s
+-  
+- f
+- o
+- r
+-  
+- a
+- c
+- c
+- e
+- s
+- s
+- i
+- n
+- g
+-  
+- t
+- h
+- e
+-  
+- S
+- F
+- U
+- S
+- D
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- L
+- o
+- g
+- i
+- n
+- s
+-  
+- f
+- o
+- r
+-  
+- S
+- F
+- U
+- S
+- D
+-  
+- a
+- r
+- e
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+- .
+- 
+
+- -
+-  
+- C
+- o
+- r
+- r
+- e
+- c
+- t
+-  
+- p
+- e
+- r
+- m
+- i
+- s
+- s
+- i
+- o
+- n
+- s
+-  
+- a
+- n
+- d
+-  
+- r
+- o
+- l
+- e
+- s
+-  
+- a
+- r
+- e
+-  
+- a
+- s
+- s
+- i
+- g
+- n
+- e
+- d
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- l
+- o
+- g
+- i
+- n
+- s
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ✅ T-INTY-010 · P1 · ANY · DONE
+**Setup Institution Read/Write Users**
+**Owner:** Worker-1
+
+**Scope:**
+- C
+- o
+- n
+- f
+- i
+- g
+- u
+- r
+- e
+-  
+- a
+-  
+- u
+- s
+- e
+- r
+-  
+- t
+- h
+- a
+- t
+-  
+- R
+- E
+- A
+- D
+- s
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- ,
+-  
+- a
+- n
+- d
+-  
+- e
+- s
+- t
+- a
+- b
+- l
+- i
+- s
+- h
+-  
+- r
+- e
+- a
+- d
+- /
+- w
+- r
+- i
+- t
+- e
+-  
+- u
+- s
+- e
+- r
+- s
+-  
+- f
+- o
+- r
+-  
+- e
+- a
+- c
+- h
+-  
+- i
+- n
+- d
+- i
+- v
+- i
+- d
+- u
+- a
+- l
+-  
+- i
+- n
+- s
+- t
+- i
+- t
+- u
+- t
+- i
+- o
+- n
+-  
+- i
+- n
+- s
+- t
+- a
+- l
+- l
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- U
+- s
+- e
+- r
+-  
+- c
+- o
+- n
+- f
+- i
+- g
+- u
+- r
+- e
+- d
+-  
+- w
+- i
+- t
+- h
+-  
+- R
+- E
+- A
+- D
+-  
+- a
+- c
+- c
+- e
+- s
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+- -
+-  
+- R
+- e
+- a
+- d
+- /
+- w
+- r
+- i
+- t
+- e
+-  
+- u
+- s
+- e
+- r
+- s
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+-  
+- a
+- n
+- d
+-  
+- c
+- o
+- n
+- f
+- i
+- g
+- u
+- r
+- e
+- d
+-  
+- f
+- o
+- r
+-  
+- e
+- a
+- c
+- h
+-  
+- i
+- n
+- s
+- t
+- i
+- t
+- u
+- t
+- i
+- o
+- n
+- '
+- s
+-  
+- s
+- p
+- e
+- c
+- i
+- f
+- i
+- c
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- n
+- s
+- t
+- a
+- l
+- l
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
 ### ✅ T-INTY-001 · P1 · ANY · DONE
 **Provision Local Database for SFUSD Onboarding**
 **Owner:** Worker-1
@@ -65,6 +795,1274 @@ graph TD
 *Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
 
 ---
+### ✅ T-INTY-005 · P1 · ANY · DONE
+**QC SFUSD Deployment**
+**Owner:** Worker-1
+
+**Scope:**
+- P
+- e
+- r
+- f
+- o
+- r
+- m
+-  
+- Q
+- u
+- a
+- l
+- i
+- t
+- y
+-  
+- C
+- o
+- n
+- t
+- r
+- o
+- l
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- n
+- e
+- w
+- l
+- y
+-  
+- d
+- e
+- p
+- l
+- o
+- y
+- e
+- d
+-  
+- S
+- F
+- U
+- S
+- D
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- t
+- o
+-  
+- e
+- n
+- s
+- u
+- r
+- e
+-  
+- a
+- l
+- l
+-  
+- t
+- a
+- b
+- l
+- e
+- s
+- ,
+-  
+- v
+- i
+- e
+- w
+- s
+- ,
+-  
+- a
+- n
+- d
+-  
+- d
+- a
+- t
+- a
+-  
+- i
+- n
+- t
+- e
+- g
+- r
+- i
+- t
+- y
+-  
+- c
+- o
+- n
+- s
+- t
+- r
+- a
+- i
+- n
+- t
+- s
+-  
+- a
+- r
+- e
+-  
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+- l
+- y
+-  
+- e
+- s
+- t
+- a
+- b
+- l
+- i
+- s
+- h
+- e
+- d
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- Q
+- u
+- a
+- l
+- i
+- t
+- y
+-  
+- c
+- o
+- n
+- t
+- r
+- o
+- l
+-  
+- c
+- h
+- e
+- c
+- k
+- l
+- i
+- s
+- t
+-  
+- i
+- s
+-  
+- c
+- o
+- m
+- p
+- l
+- e
+- t
+- e
+- d
+- .
+- 
+
+- -
+-  
+- N
+- o
+-  
+- c
+- r
+- i
+- t
+- i
+- c
+- a
+- l
+-  
+- i
+- s
+- s
+- u
+- e
+- s
+-  
+- f
+- o
+- u
+- n
+- d
+-  
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- s
+- c
+- h
+- e
+- m
+- a
+-  
+- o
+- r
+-  
+- d
+- a
+- t
+- a
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ✅ T-INTY-009 · P1 · ANY · DONE
+**Setup Central Database and Master User**
+**Owner:** Worker-1
+
+**Scope:**
+- S
+- e
+- t
+-  
+- u
+- p
+-  
+- a
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- c
+- o
+- n
+- t
+- a
+- i
+- n
+- i
+- n
+- g
+-  
+- v
+- a
+- l
+- i
+- d
+- a
+- t
+- i
+- o
+- n
+-  
+- a
+- n
+- d
+-  
+- y
+- e
+- a
+- r
+-  
+- d
+- a
+- t
+- a
+- .
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- a
+-  
+- '
+- m
+- a
+- s
+- t
+- e
+- r
+-  
+- u
+- s
+- e
+- r
+- '
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- w
+- i
+- t
+- h
+-  
+- r
+- e
+- a
+- d
+-  
+- a
+- c
+- c
+- e
+- s
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- i
+- s
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- C
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- s
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+-  
+- a
+- n
+- d
+-  
+- p
+- o
+- p
+- u
+- l
+- a
+- t
+- e
+- d
+-  
+- w
+- i
+- t
+- h
+-  
+- v
+- a
+- l
+- i
+- d
+- a
+- t
+- i
+- o
+- n
+-  
+- a
+- n
+- d
+-  
+- y
+- e
+- a
+- r
+-  
+- d
+- a
+- t
+- a
+- .
+- 
+
+- -
+-  
+- M
+- a
+- s
+- t
+- e
+- r
+-  
+- u
+- s
+- e
+- r
+-  
+- i
+- s
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+- .
+- 
+
+- -
+-  
+- M
+- a
+- s
+- t
+- e
+- r
+-  
+- u
+- s
+- e
+- r
+-  
+- h
+- a
+- s
+-  
+- R
+- E
+- A
+- D
+-  
+- a
+- c
+- c
+- e
+- s
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ✅ T-INTY-008 · P1 · ANY · DONE
+**Create Demo Databases in Production**
+**Owner:** Worker-1
+
+**Scope:**
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- s
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+- a
+- t
+- e
+- d
+-  
+- f
+- o
+- r
+-  
+- d
+- e
+- m
+- o
+- n
+- s
+- t
+- r
+- a
+- t
+- i
+- o
+- n
+-  
+- p
+- u
+- r
+- p
+- o
+- s
+- e
+- s
+-  
+- w
+- i
+- t
+- h
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- e
+- n
+- v
+- i
+- r
+- o
+- n
+- m
+- e
+- n
+- t
+- ,
+-  
+- c
+- o
+- m
+- p
+- l
+- e
+- t
+- e
+-  
+- w
+- i
+- t
+- h
+-  
+- s
+- a
+- m
+- p
+- l
+- e
+- /
+- m
+- o
+- c
+- k
+-  
+- d
+- a
+- t
+- a
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- D
+- e
+- m
+- o
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- s
+-  
+- a
+- r
+- e
+-  
+- a
+- c
+- t
+- i
+- v
+- e
+-  
+- i
+- n
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+- .
+- 
+
+- -
+-  
+- M
+- o
+- c
+- k
+-  
+- d
+- a
+- t
+- a
+-  
+- i
+- s
+-  
+- p
+- o
+- p
+- u
+- l
+- a
+- t
+- e
+- d
+-  
+- f
+- o
+- r
+-  
+- d
+- e
+- m
+- o
+- n
+- s
+- t
+- r
+- a
+- t
+- i
+- o
+- n
+-  
+- u
+- s
+- e
+-  
+- c
+- a
+- s
+- e
+- s
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ✅ T-INTY-004 · P1 · ANY · DONE
+**Deploy SFUSD Database to Production**
+**Owner:** Worker-1
+
+**Scope:**
+- D
+- e
+- p
+- l
+- o
+- y
+-  
+- t
+- h
+- e
+-  
+- n
+- e
+- w
+-  
+- S
+- F
+- U
+- S
+- D
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- s
+- c
+- h
+- e
+- m
+- a
+-  
+- a
+- n
+- d
+-  
+- i
+- n
+- i
+- t
+- i
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- e
+- n
+- v
+- i
+- r
+- o
+- n
+- m
+- e
+- n
+- t
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- S
+- F
+- U
+- S
+- D
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- s
+-  
+- s
+- u
+- c
+- c
+- e
+- s
+- s
+- f
+- u
+- l
+- l
+- y
+-  
+- d
+- e
+- p
+- l
+- o
+- y
+- e
+- d
+-  
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- e
+- n
+- v
+- i
+- r
+- o
+- n
+- m
+- e
+- n
+- t
+- .
+- 
+
+- -
+-  
+- S
+- c
+- h
+- e
+- m
+- a
+-  
+- i
+- s
+-  
+- a
+- p
+- p
+- l
+- i
+- e
+- d
+-  
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+- l
+- y
+-  
+- w
+- i
+- t
+- h
+- o
+- u
+- t
+-  
+- e
+- r
+- r
+- o
+- r
+- s
+- .
+- 
+
+
+*Audited against SHA:* `4e4cdfd67968195f13c167d9ff08501e3cb231a0`
+
+---
+### ⏳ T-INTY-011 · P1 · ANY · PEER_REVIEW
+**Add central DB for piano valuation and age lookups**
+**Owner:** TaskForce
+
+**Scope:**
+- -
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- _
+- d
+- b
+- _
+- s
+- c
+- h
+- e
+- m
+- a
+- .
+- s
+- q
+- l
+-  
+- d
+- e
+- f
+- i
+- n
+- i
+- n
+- g
+-  
+- `
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- s
+- `
+-  
+- a
+- n
+- d
+-  
+- `
+- a
+- g
+- e
+- _
+- l
+- o
+- o
+- k
+- u
+- p
+- s
+- `
+-  
+- t
+- a
+- b
+- l
+- e
+- s
+- .
+- 
+
+- -
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- s
+- a
+- m
+- p
+- l
+- e
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- _
+- d
+- a
+- t
+- a
+- .
+- j
+- s
+- o
+- n
+-  
+- w
+- i
+- t
+- h
+-  
+- d
+- u
+- m
+- m
+- y
+-  
+- d
+- a
+- t
+- a
+- .
+- 
+
+- -
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- a
+- n
+-  
+- i
+- m
+- p
+- o
+- r
+- t
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- t
+- h
+- a
+- t
+-  
+- p
+- a
+- r
+- s
+- e
+- s
+-  
+- t
+- h
+- e
+-  
+- J
+- S
+- O
+- N
+-  
+- a
+- n
+- d
+-  
+- g
+- e
+- n
+- e
+- r
+- a
+- t
+- e
+- s
+-  
+- I
+- N
+- S
+- E
+- R
+- T
+-  
+- s
+- t
+- a
+- t
+- e
+- m
+- e
+- n
+- t
+- s
+- .
+- 
+
+
+**Definition of Done:**
+
+*Audited against SHA:* `037c1196acbd14908e2874bdfc4395beb041c866`
+
+---
 ### ⏳ T-INTY-003 · P1 · ANY · PEER_REVIEW
 **Execute Import and Validate Clean Inventory**
 **Owner:** Worker-1
@@ -80,6 +2078,2743 @@ graph TD
 - Spot checks verify that all imported pianos have correct makes, models, and locations.
 
 *Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
+
+---
+### ⏳ T-INTY-013 · P1 · ANY · PEER_REVIEW
+**Auto-Calculation and Overrides for Piano Valuation/Age**
+**Owner:** Worker-1
+
+**Scope:**
+- -
+-  
+- Q
+- u
+- e
+- r
+- y
+-  
+- t
+- h
+- e
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- `
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- w
+- h
+- e
+- n
+-  
+- a
+-  
+- n
+- e
+- w
+-  
+- p
+- i
+- a
+- n
+- o
+-  
+- i
+- s
+-  
+- a
+- d
+- d
+- e
+- d
+-  
+- t
+- o
+-  
+- a
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+- '
+- s
+-  
+- i
+- n
+- v
+- e
+- n
+- t
+- o
+- r
+- y
+-  
+- t
+- o
+-  
+- f
+- e
+- t
+- c
+- h
+-  
+- t
+- h
+- e
+-  
+- y
+- e
+- a
+- r
+-  
+- (
+- b
+- a
+- s
+- e
+- d
+-  
+- o
+- n
+-  
+- M
+- a
+- k
+- e
+- /
+- S
+- e
+- r
+- i
+- a
+- l
+-  
+- l
+- o
+- o
+- k
+- u
+- p
+- )
+-  
+- a
+- n
+- d
+-  
+- t
+- h
+- e
+-  
+- v
+- a
+- l
+- u
+- e
+-  
+- (
+- b
+- a
+- s
+- e
+- d
+-  
+- o
+- n
+-  
+- M
+- a
+- k
+- e
+- /
+- M
+- o
+- d
+- e
+- l
+- )
+- .
+- 
+
+- -
+-  
+- A
+- d
+- d
+-  
+- `
+- v
+- a
+- l
+- u
+- e
+- _
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- `
+-  
+- (
+- i
+- n
+- t
+- )
+-  
+- a
+- n
+- d
+-  
+- `
+- a
+- g
+- e
+- _
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- `
+-  
+- (
+- i
+- n
+- t
+- )
+-  
+- c
+- o
+- l
+- u
+- m
+- n
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+-  
+- `
+- i
+- n
+- v
+- e
+- n
+- t
+- o
+- r
+- y
+- `
+-  
+- s
+- c
+- h
+- e
+- m
+- a
+- .
+- 
+
+- -
+-  
+- U
+- I
+-  
+- u
+- p
+- d
+- a
+- t
+- e
+- s
+- :
+-  
+- D
+- i
+- s
+- p
+- l
+- a
+- y
+-  
+- t
+- h
+- e
+-  
+- c
+- a
+- l
+- c
+- u
+- l
+- a
+- t
+- e
+- d
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- v
+- a
+- l
+- u
+- e
+- s
+- ,
+-  
+- b
+- u
+- t
+-  
+- a
+- l
+- l
+- o
+- w
+-  
+- t
+- e
+- c
+- h
+- n
+- i
+- c
+- i
+- a
+- n
+- s
+-  
+- t
+- o
+-  
+- i
+- n
+- p
+- u
+- t
+-  
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- s
+- .
+-  
+- I
+- f
+-  
+- a
+- n
+-  
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+-  
+- e
+- x
+- i
+- s
+- t
+- s
+- ,
+-  
+- d
+- i
+- s
+- p
+- l
+- a
+- y
+-  
+- i
+- t
+-  
+- w
+- i
+- t
+- h
+-  
+- a
+-  
+- "
+- M
+- a
+- n
+- u
+- a
+- l
+-  
+- O
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- "
+-  
+- b
+- a
+- d
+- g
+- e
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- U
+- I
+-  
+- a
+- n
+- d
+-  
+- r
+- e
+- p
+- o
+- r
+- t
+- s
+- .
+- 
+
+- -
+-  
+- P
+- r
+- o
+- v
+- i
+- d
+- e
+-  
+- a
+-  
+- s
+- y
+- n
+- c
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- t
+- o
+-  
+- r
+- e
+- -
+- i
+- m
+- p
+- o
+- r
+- t
+-  
+- g
+- l
+- o
+- b
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+-  
+- f
+- r
+- o
+- m
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- `
+-  
+- a
+- n
+- d
+-  
+- u
+- p
+- d
+- a
+- t
+- e
+-  
+- a
+- l
+- l
+-  
+- c
+- a
+- l
+- c
+- u
+- l
+- a
+- t
+- e
+- d
+-  
+- v
+- a
+- l
+- u
+- e
+- s
+- ,
+-  
+- s
+- p
+- e
+- c
+- i
+- f
+- i
+- c
+- a
+- l
+- l
+- y
+-  
+- s
+- k
+- i
+- p
+- p
+- i
+- n
+- g
+-  
+- r
+- o
+- w
+- s
+-  
+- w
+- h
+- e
+- r
+- e
+-  
+- `
+- _
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- `
+-  
+- c
+- o
+- l
+- u
+- m
+- n
+- s
+-  
+- a
+- r
+- e
+-  
+- n
+- o
+- t
+-  
+- n
+- u
+- l
+- l
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- O
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+-  
+- c
+- o
+- l
+- u
+- m
+- n
+- s
+-  
+- e
+- x
+- i
+- s
+- t
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+-  
+- i
+- n
+- v
+- e
+- n
+- t
+- o
+- r
+- y
+-  
+- t
+- a
+- b
+- l
+- e
+- .
+- 
+
+- -
+-  
+- A
+- d
+- d
+- i
+- n
+- g
+-  
+- a
+-  
+- p
+- i
+- a
+- n
+- o
+-  
+- a
+- u
+- t
+- o
+- m
+- a
+- t
+- i
+- c
+- a
+- l
+- l
+- y
+-  
+- c
+- a
+- l
+- c
+- u
+- l
+- a
+- t
+- e
+- s
+-  
+- v
+- a
+- l
+- u
+- e
+- /
+- a
+- g
+- e
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- D
+- B
+- .
+- 
+
+- -
+-  
+- U
+- I
+-  
+- a
+- l
+- l
+- o
+- w
+- s
+-  
+- t
+- e
+- c
+- h
+- n
+- i
+- c
+- i
+- a
+- n
+-  
+- t
+- o
+-  
+- s
+- e
+- t
+- /
+- c
+- l
+- e
+- a
+- r
+-  
+- a
+- n
+-  
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- e
+- ,
+-  
+- w
+- h
+- i
+- c
+- h
+-  
+- p
+- r
+- o
+- p
+- e
+- r
+- l
+- y
+-  
+- f
+- l
+- a
+- g
+- s
+-  
+- o
+- n
+-  
+- r
+- e
+- p
+- o
+- r
+- t
+- s
+- .
+- 
+
+- -
+-  
+- S
+- y
+- n
+- c
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- u
+- p
+- d
+- a
+- t
+- e
+- s
+-  
+- n
+- o
+- n
+- -
+- o
+- v
+- e
+- r
+- r
+- i
+- d
+- d
+- e
+- n
+-  
+- p
+- i
+- a
+- n
+- o
+- s
+- .
+- 
+
+
+*Audited against SHA:* `1616f94252afe19225b95f0f456d9fd47ee93ff2`
+
+---
+### ⏳ T-INTY-012 · P1 · ANY · PEER_REVIEW
+**Master Database Migration Script**
+**Owner:** TaskForce
+
+**Scope:**
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- a
+-  
+- m
+- a
+- s
+- t
+- e
+- r
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- m
+- i
+- g
+- r
+- a
+- t
+- i
+- o
+- n
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- t
+- h
+- a
+- t
+-  
+- l
+- o
+- o
+- p
+- s
+-  
+- o
+- v
+- e
+- r
+-  
+- a
+- l
+- l
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+-  
+- D
+- B
+- s
+- ,
+-  
+- e
+- x
+- e
+- c
+- u
+- t
+- e
+- s
+-  
+- a
+-  
+- t
+- a
+- r
+- g
+- e
+- t
+-  
+- S
+- Q
+- L
+-  
+- f
+- i
+- l
+- e
+- ,
+-  
+- a
+- n
+- d
+-  
+- r
+- e
+- p
+- o
+- r
+- t
+- s
+-  
+- s
+- u
+- c
+- c
+- e
+- s
+- s
+- /
+- f
+- a
+- i
+- l
+- u
+- r
+- e
+- .
+
+**Definition of Done:**
+
+*Audited against SHA:* `833efc0e1f3dcf8a8ffe1514865daf1caa13631a`
+
+---
+### ⏳ T-INTY-015 · P2 · ANY · PEER_REVIEW
+**Research Agent (Valuation Population)**
+**Owner:** Worker-3
+
+**Scope:**
+- -
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- a
+- n
+-  
+- A
+- I
+-  
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- (
+- `
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+- _
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- s
+- .
+- p
+- y
+- `
+- )
+-  
+- t
+- h
+- a
+- t
+-  
+- q
+- u
+- e
+- r
+- i
+- e
+- s
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- s
+-  
+- (
+- e
+- .
+- g
+- .
+-  
+- `
+- s
+- f
+- u
+- s
+- d
+- _
+- p
+- i
+- a
+- n
+- o
+- `
+- )
+-  
+- f
+- o
+- r
+-  
+- `
+- D
+- I
+- S
+- T
+- I
+- N
+- C
+- T
+-  
+- m
+- a
+- k
+- e
+- ,
+-  
+- s
+- t
+- y
+- l
+- e
+- `
+-  
+- w
+- h
+- e
+- r
+- e
+-  
+- t
+- h
+- e
+-  
+- c
+- o
+- m
+- b
+- i
+- n
+- a
+- t
+- i
+- o
+- n
+-  
+- d
+- o
+- e
+- s
+-  
+- n
+- o
+- t
+-  
+- e
+- x
+- i
+- s
+- t
+-  
+- i
+- n
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- .
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- s
+- `
+- .
+- 
+
+- -
+-  
+- I
+- t
+- e
+- r
+- a
+- t
+- e
+-  
+- t
+- h
+- r
+- o
+- u
+- g
+- h
+-  
+- m
+- i
+- s
+- s
+- i
+- n
+- g
+-  
+- m
+- o
+- d
+- e
+- l
+- s
+-  
+- u
+- s
+- i
+- n
+- g
+-  
+- a
+-  
+- w
+- e
+- b
+- -
+- c
+- a
+- p
+- a
+- b
+- l
+- e
+-  
+- L
+- L
+- M
+-  
+- t
+- o
+-  
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+-  
+- t
+- h
+- e
+-  
+- r
+- e
+- p
+- l
+- a
+- c
+- e
+- m
+- e
+- n
+- t
+-  
+- v
+- a
+- l
+- u
+- e
+-  
+- (
+- M
+- S
+- R
+- P
+- /
+- N
+- e
+- w
+-  
+- E
+- q
+- u
+- i
+- v
+- a
+- l
+- e
+- n
+- t
+- )
+- .
+- 
+
+- -
+-  
+- S
+- a
+- v
+- e
+-  
+- t
+- h
+- e
+-  
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+- e
+- d
+-  
+- v
+- a
+- l
+- u
+- e
+-  
+- a
+- n
+- d
+-  
+- t
+- h
+- e
+-  
+- s
+- o
+- u
+- r
+- c
+- e
+-  
+- U
+- R
+- L
+-  
+- t
+- o
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- .
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- s
+- `
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- S
+- c
+- r
+- i
+- p
+- t
+-  
+- i
+- d
+- e
+- n
+- t
+- i
+- f
+- i
+- e
+- s
+-  
+- m
+- i
+- s
+- s
+- i
+- n
+- g
+-  
+- m
+- a
+- k
+- e
+- s
+- /
+- m
+- o
+- d
+- e
+- l
+- s
+-  
+- a
+- c
+- r
+- o
+- s
+- s
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+- s
+- .
+- 
+
+- -
+-  
+- S
+- c
+- r
+- i
+- p
+- t
+-  
+- s
+- u
+- c
+- c
+- e
+- s
+- s
+- f
+- u
+- l
+- l
+- y
+-  
+- q
+- u
+- e
+- r
+- i
+- e
+- s
+-  
+- a
+- n
+-  
+- L
+- L
+- M
+- /
+- s
+- e
+- a
+- r
+- c
+- h
+-  
+- t
+- o
+- o
+- l
+-  
+- t
+- o
+-  
+- r
+- e
+- t
+- u
+- r
+- n
+-  
+- s
+- t
+- r
+- u
+- c
+- t
+- u
+- r
+- e
+- d
+-  
+- p
+- r
+- i
+- c
+- e
+-  
+- e
+- s
+- t
+- i
+- m
+- a
+- t
+- i
+- o
+- n
+- s
+- .
+- 
+
+- -
+-  
+- C
+- e
+- n
+- t
+- r
+- a
+- l
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+-  
+- i
+- s
+-  
+- u
+- p
+- d
+- a
+- t
+- e
+- d
+-  
+- w
+- i
+- t
+- h
+-  
+- t
+- h
+- e
+-  
+- n
+- e
+- w
+-  
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- a
+- n
+- d
+-  
+- t
+- h
+- e
+- i
+- r
+-  
+- c
+- i
+- t
+- a
+- t
+- i
+- o
+- n
+-  
+- l
+- i
+- n
+- k
+- s
+- .
+- 
+
+
+*Audited against SHA:* `1616f94252afe19225b95f0f456d9fd47ee93ff2`
+
+---
+### ⏳ T-INTY-014 · P2 · ANY · PEER_REVIEW
+**Age Lookup Ingestion Pipeline**
+**Owner:** Worker-2
+
+**Scope:**
+- -
+-  
+- W
+- r
+- i
+- t
+- e
+-  
+- a
+-  
+- P
+- y
+- t
+- h
+- o
+- n
+-  
+- s
+- c
+- r
+- i
+- p
+- t
+-  
+- (
+- `
+- p
+- a
+- r
+- s
+- e
+- _
+- p
+- i
+- a
+- n
+- o
+- _
+- a
+- g
+- e
+- .
+- p
+- y
+- `
+- )
+-  
+- u
+- t
+- i
+- l
+- i
+- z
+- i
+- n
+- g
+-  
+- `
+- B
+- e
+- a
+- u
+- t
+- i
+- f
+- u
+- l
+- S
+- o
+- u
+- p
+- `
+-  
+- t
+- o
+-  
+- p
+- a
+- r
+- s
+- e
+-  
+- `
+- p
+- i
+- a
+- n
+- o
+- _
+- a
+- g
+- e
+- _
+- l
+- o
+- o
+- k
+- u
+- p
+- /
+- P
+- i
+- a
+- n
+- o
+- a
+- g
+- e
+-  
+- b
+- y
+-  
+- S
+- e
+- r
+- i
+- a
+- l
+-  
+- N
+- u
+- m
+- b
+- e
+- r
+- .
+- h
+- t
+- m
+- l
+- `
+- .
+- 
+
+- -
+-  
+- E
+- x
+- t
+- r
+- a
+- c
+- t
+-  
+- t
+- h
+- e
+-  
+- m
+- a
+- k
+- e
+- ,
+-  
+- s
+- e
+- r
+- i
+- a
+- l
+-  
+- n
+- u
+- m
+- b
+- e
+- r
+-  
+- r
+- a
+- n
+- g
+- e
+- s
+- ,
+-  
+- a
+- n
+- d
+-  
+- y
+- e
+- a
+- r
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- t
+- a
+- b
+- l
+- e
+- s
+- .
+- 
+
+- -
+-  
+- N
+- o
+- r
+- m
+- a
+- l
+- i
+- z
+- e
+-  
+- t
+- h
+- e
+-  
+- d
+- a
+- t
+- a
+-  
+- i
+- n
+- t
+- o
+-  
+- s
+- t
+- r
+- u
+- c
+- t
+- u
+- r
+- e
+- d
+-  
+- J
+- S
+- O
+- N
+-  
+- o
+- r
+-  
+- d
+- i
+- r
+- e
+- c
+- t
+- l
+- y
+-  
+- i
+- n
+- s
+- e
+- r
+- t
+-  
+- i
+- t
+-  
+- i
+- n
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- l
+- o
+- c
+- a
+- l
+-  
+- M
+- y
+- S
+- Q
+- L
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- .
+- a
+- g
+- e
+- _
+- l
+- o
+- o
+- k
+- u
+- p
+- s
+- `
+-  
+- t
+- a
+- b
+- l
+- e
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- S
+- c
+- r
+- i
+- p
+- t
+-  
+- s
+- u
+- c
+- c
+- e
+- s
+- s
+- f
+- u
+- l
+- l
+- y
+-  
+- p
+- a
+- r
+- s
+- e
+- s
+-  
+- t
+- h
+- e
+-  
+- m
+- e
+- s
+- s
+- y
+-  
+- H
+- T
+- M
+- L
+-  
+- s
+- t
+- r
+- u
+- c
+- t
+- u
+- r
+- e
+- .
+- 
+
+- -
+-  
+- E
+- d
+- g
+- e
+-  
+- c
+- a
+- s
+- e
+- s
+-  
+- (
+- l
+- i
+- k
+- e
+-  
+- t
+- y
+- p
+- o
+- s
+-  
+- o
+- r
+-  
+- m
+- e
+- r
+- g
+- e
+- d
+-  
+- c
+- e
+- l
+- l
+- s
+- )
+-  
+- a
+- r
+- e
+-  
+- h
+- a
+- n
+- d
+- l
+- e
+- d
+-  
+- s
+- a
+- f
+- e
+- l
+- y
+-  
+- o
+- r
+-  
+- s
+- k
+- i
+- p
+- p
+- e
+- d
+-  
+- w
+- i
+- t
+- h
+-  
+- a
+-  
+- w
+- a
+- r
+- n
+- i
+- n
+- g
+- .
+- 
+
+- -
+-  
+- `
+- a
+- g
+- e
+- _
+- l
+- o
+- o
+- k
+- u
+- p
+- s
+- `
+-  
+- t
+- a
+- b
+- l
+- e
+-  
+- i
+- n
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- `
+-  
+- i
+- s
+-  
+- f
+- u
+- l
+- l
+- y
+-  
+- p
+- o
+- p
+- u
+- l
+- a
+- t
+- e
+- d
+-  
+- w
+- i
+- t
+- h
+-  
+- t
+- h
+- e
+-  
+- l
+- e
+- g
+- a
+- c
+- y
+-  
+- d
+- a
+- t
+- a
+- .
+- 
+
+
+*Audited against SHA:* `1616f94252afe19225b95f0f456d9fd47ee93ff2`
+
+---
+### ⏳ T-INTY-016 · P3 · ANY · PEER_REVIEW
+**Unknown Model API Endpoint**
+**Owner:** Worker-4
+
+**Scope:**
+- -
+-  
+- B
+- u
+- i
+- l
+- d
+-  
+- a
+- n
+-  
+- A
+- P
+- I
+-  
+- e
+- n
+- d
+- p
+- o
+- i
+- n
+- t
+-  
+- (
+- `
+- a
+- p
+- i
+- /
+- v
+- 1
+- /
+- r
+- e
+- p
+- o
+- r
+- t
+- _
+- m
+- i
+- s
+- s
+- i
+- n
+- g
+- _
+- v
+- a
+- l
+- u
+- a
+- t
+- i
+- o
+- n
+- .
+- p
+- h
+- p
+- `
+- )
+-  
+- f
+- o
+- r
+-  
+- t
+- e
+- n
+- a
+- n
+- t
+-  
+- a
+- p
+- p
+- l
+- i
+- c
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- t
+- o
+-  
+- h
+- i
+- t
+- .
+- 
+
+- -
+-  
+- W
+- h
+- e
+- n
+-  
+- a
+- n
+-  
+- i
+- n
+- s
+- t
+- i
+- t
+- u
+- t
+- i
+- o
+- n
+-  
+- e
+- n
+- t
+- e
+- r
+- s
+-  
+- a
+-  
+- p
+- i
+- a
+- n
+- o
+-  
+- m
+- a
+- k
+- e
+- /
+- m
+- o
+- d
+- e
+- l
+-  
+- t
+- h
+- a
+- t
+-  
+- f
+- a
+- i
+- l
+- s
+-  
+- a
+-  
+- l
+- o
+- c
+- a
+- l
+-  
+- l
+- o
+- o
+- k
+- u
+- p
+- ,
+-  
+- i
+- t
+-  
+- P
+- O
+- S
+- T
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- i
+- s
+-  
+- e
+- n
+- d
+- p
+- o
+- i
+- n
+- t
+- .
+- 
+
+- -
+-  
+- T
+- h
+- e
+-  
+- e
+- n
+- d
+- p
+- o
+- i
+- n
+- t
+-  
+- l
+- o
+- g
+- s
+-  
+- t
+- h
+- e
+-  
+- m
+- i
+- s
+- s
+- i
+- n
+- g
+-  
+- m
+- o
+- d
+- e
+- l
+-  
+- i
+- n
+- t
+- o
+-  
+- a
+-  
+- `
+- p
+- e
+- n
+- d
+- i
+- n
+- g
+- _
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+- `
+-  
+- t
+- a
+- b
+- l
+- e
+-  
+- i
+- n
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- `
+- .
+- 
+
+
+**Definition of Done:**
+- -
+-  
+- `
+- p
+- e
+- n
+- d
+- i
+- n
+- g
+- _
+- r
+- e
+- s
+- e
+- a
+- r
+- c
+- h
+- `
+-  
+- s
+- c
+- h
+- e
+- m
+- a
+-  
+- c
+- r
+- e
+- a
+- t
+- e
+- d
+-  
+- i
+- n
+-  
+- `
+- c
+- a
+- u
+- t
+- _
+- c
+- e
+- n
+- t
+- r
+- a
+- l
+- `
+- .
+- 
+
+- -
+-  
+- E
+- n
+- d
+- p
+- o
+- i
+- n
+- t
+-  
+- s
+- e
+- c
+- u
+- r
+- e
+- l
+- y
+-  
+- a
+- c
+- c
+- e
+- p
+- t
+- s
+-  
+- P
+- O
+- S
+- T
+-  
+- r
+- e
+- q
+- u
+- e
+- s
+- t
+- s
+-  
+- a
+- n
+- d
+-  
+- l
+- o
+- g
+- s
+-  
+- t
+- h
+- e
+-  
+- m
+- i
+- s
+- s
+- i
+- n
+- g
+-  
+- m
+- o
+- d
+- e
+- l
+- .
+- 
+
+- -
+-  
+- L
+- o
+- g
+- i
+- c
+-  
+- i
+- s
+-  
+- i
+- n
+-  
+- p
+- l
+- a
+- c
+- e
+-  
+- t
+- o
+-  
+- i
+- g
+- n
+- o
+- r
+- e
+-  
+- d
+- u
+- p
+- l
+- i
+- c
+- a
+- t
+- e
+-  
+- r
+- e
+- q
+- u
+- e
+- s
+- t
+- s
+-  
+- f
+- o
+- r
+-  
+- t
+- h
+- e
+-  
+- s
+- a
+- m
+- e
+-  
+- m
+- a
+- k
+- e
+- /
+- m
+- o
+- d
+- e
+- l
+- .
+- 
+
+
+*Audited against SHA:* `1616f94252afe19225b95f0f456d9fd47ee93ff2`
 
 ---
 
@@ -174,9 +4909,9 @@ graph TD
 *Audited against SHA:* `c4f389f`
 
 ---
-### 📋 T-MIN-006 · P2 · ANY · AUDITED
+### 🛠 T-MIN-006 · P2 · ANY · CLAIMED
 **Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)**
-**Owner:** None
+**Owner:** Worker-F6
 
 **Scope:**
 - Verification-triage the ten fleet-sweep personality drafts no verifier has touched; the four ruler studies (PERSONALITY_TRUMP-01 through TRUMP-04, 24-102 lines), the Fool (63 lines), and the five arie (PERSONALITY_TRUMP-36 through TRUMP-40, 31-63 lines).

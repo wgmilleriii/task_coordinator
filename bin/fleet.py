@@ -573,6 +573,24 @@ def cmd_close(args):
     
     save_task(task)
     print(f"✅ Task {args.task_id} manually closed by {args.human}.")
+    
+    # Trigger Task Lifecycle automated documentation updates
+    repo_name = task.get('repo')
+    if repo_name:
+        target_repo_path = os.path.abspath(os.path.join(BASE_DIR, '..', repo_name))
+        if os.path.exists(target_repo_path):
+            print(f"🔄 Task lifecycle: Triggering automated documentation updates for {repo_name}...")
+            import subprocess
+            try:
+                # Try to run graphify update
+                result = subprocess.run("graphify update .", shell=True, cwd=target_repo_path, capture_output=True, text=True, timeout=60)
+                if result.returncode == 0:
+                    print(f"✅ Graphify updated successfully for {repo_name}.")
+                else:
+                    print(f"⚠️ Graphify update skipped or failed for {repo_name} (ensure graphify is installed and initialized).")
+            except Exception as e:
+                print(f"⚠️ Could not update Graphify for {repo_name}: {e}")
+                
     cmd_render(argparse.Namespace(quiet=True))
     return 0
 

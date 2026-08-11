@@ -1,0 +1,17 @@
+id: T-TAS-001
+title: Evaluate protocol and role consistency
+repo: task_coordinator
+priority: P1
+lane: codex
+status: OPEN
+created_at: '2026-08-11T00:05:08.268496Z'
+dependencies: []
+scope:
+- Compare AGENTS.md, README.md, fleet CLI help, schemas, and current lifecycle artifacts.
+- Map every documented agent role to executable commands and identify contradictions, missing steps, unsafe manual edits, and ambiguous authority.
+- Evaluate the new fleet create workflow, including ID generation and required post-creation YAML edits.
+definition_of_done:
+- feedback/EVALUATION_T-TAS-001_PROTOCOL.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
+- Every defect claim cites a file, command output, or reproducible observation from the current repository.
+- No restricted-zone file is modified by the evaluation.
+human_review_required: false

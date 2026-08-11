@@ -1,0 +1,17 @@
+id: T-TAS-003
+title: Evaluate operational and concurrency safety
+repo: task_coordinator
+priority: P1
+lane: codex
+status: OPEN
+created_at: '2026-08-11T00:05:12.346440Z'
+dependencies: []
+scope:
+- Evaluate locking, shared-worktree isolation, generated-board contention, verification environments, packaging, logging, recovery, and observability.
+- Assess the difference between single-machine locking and multi-machine fleet coordination.
+- Use temporary copies for any concurrency or failure-injection experiment.
+definition_of_done:
+- feedback/EVALUATION_T-TAS-003_OPERATIONS.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
+- Operational claims are supported by current code references, command output, or safe temporary-copy experiments.
+- No restricted-zone file or unrelated task artifact is modified by the evaluation.
+human_review_required: false

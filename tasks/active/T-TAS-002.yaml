@@ -1,0 +1,17 @@
+id: T-TAS-002
+title: Evaluate state-machine and evidence enforcement
+repo: task_coordinator
+priority: P1
+lane: codex
+status: OPEN
+created_at: '2026-08-11T00:05:10.353246Z'
+dependencies: []
+scope:
+- Inspect lifecycle and schema enforcement for create, audit, claim, verify, submit, peer review, human review, block, close, and archive behavior.
+- Reproduce suspected bypasses only in a temporary repository copy under /tmp.
+- Evaluate dependency readiness, stale audit handling, verification provenance, fabricated artifacts, and transition failure behavior.
+definition_of_done:
+- feedback/EVALUATION_T-TAS-002_STATE_MACHINE.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
+- Each current defect has direct static evidence or a safe temporary-copy reproduction with command output.
+- The live engine and unrelated fleet records remain unmodified except for intended T-TAS lifecycle artifacts.
+human_review_required: false

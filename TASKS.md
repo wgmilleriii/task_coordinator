@@ -12,11 +12,16 @@ graph TD
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]
+    T-INTY-001["T-INTY-001<br/>Provision Local Database for SFUSD Onboarding"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
-    T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]
+    T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::active
     T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
+    T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]
+    T-INTY-002 --> T-INTY-003
+    T-INTY-002["T-INTY-002<br/>Develop CSV Parser and Schema Mapper for SFUSD"]
+    T-INTY-001 --> T-INTY-002
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]
@@ -24,6 +29,59 @@ graph TD
 
 ---
 
+
+## Repo: `intypiano`
+
+### 📋 T-INTY-003 · P1 · ANY · AUDITED
+**Execute Import and Validate Clean Inventory**
+**Owner:** None
+
+**Scope:**
+- Run the import script from T-INTY-002 against the newly created `sfusd_piano` local database.
+- Validate that relationships between Clients (e.g., A.P. Giannini Middle School), Locations, and Pianos are correctly created.
+- Ensure that active/inactive statuses and tuning intervals are properly stored.
+- Perform a sanity check query to ensure the number of imported pianos matches the CSV and the data is clean.
+
+**Definition of Done:**
+- The `sfusd_piano` database is fully populated with the clean inventory.
+- Spot checks verify that all imported pianos have correct makes, models, and locations.
+
+*Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
+
+---
+### 📋 T-INTY-002 · P1 · ANY · AUDITED
+**Develop CSV Parser and Schema Mapper for SFUSD**
+**Owner:** None
+
+**Scope:**
+- Read the CSV file located at `new_customers/SFUSD.csv`.
+- Create a script (e.g. `import_sfusd.php` or a Python equivalent) to parse the CSV.
+- Map CSV columns such as 'Make', 'Model', 'Serial Number', 'Location', 'Client Company', and 'Next Service Due On' to the internal `intypiano` schema.
+- Handle data transformations, such as cleaning date formats and mapping boolean fields (e.g. 'Dampp Chaser Installed').
+
+**Definition of Done:**
+- The script accurately parses all 160+ rows from the CSV.
+- A mapping document or the script itself is ready for execution against the database.
+
+*Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
+
+---
+### ✅ T-INTY-001 · P1 · ANY · DONE
+**Provision Local Database for SFUSD Onboarding**
+**Owner:** Worker-1
+
+**Scope:**
+- Create a new local database (e.g., `sfusd_piano`) using the existing `demo` or `unm_piano` database structure.
+- Apply the intypiano schema (using SCHEMA.sql or current_schema.sql) to ensure all tables exist for the inventory tracking.
+- Verify local database credentials and connectivity to this new instance.
+
+**Definition of Done:**
+- Local database is created and successfully running.
+- Schema tables (inventory, clients, etc.) are present and empty (or initialized with core data).
+
+*Audited against SHA:* `b38d1df087004ec826303a8b9c9bb0d38fee155b`
+
+---
 
 ## Repo: `minchiate_tarot`
 
@@ -97,9 +155,9 @@ graph TD
 - Any FAIL is archived to research/archive/failed-runs/ and the card's disposition recorded, matching the Earth-study precedent.
 
 ---
-### 📋 T-MIN-010 · P2 · ANY · AUDITED
+### 🛠 T-MIN-010 · P2 · ANY · CLAIMED
 **Fix grid caption dropping card value for identified cards**
-**Owner:** None
+**Owner:** Worker-F10
 
 **Scope:**
 - In minchiate_reviewer.py (branch test-T-MIN-001, commit 0509f69), render_grid_html builds each card caption as: label = html.escape(card.get("type") or card["original_name"]) — this shows only the type string (e.g. "Swords") and silently drops the value/rank field entirely, even though ledger.json already stores it for 93 of 97 cards (confirmed by inspection: e.g. {"type": "Swords", "value": "6", ...} renders only as "Swords"). Every card of the same suit is indistinguishable in the grid caption, which defeats the anchor-identification workflow described in CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 3 (Contextual Inference relies on being able to read neighboring cards' identities at a glance).

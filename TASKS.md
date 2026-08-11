@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
-    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::active
+    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
@@ -79,23 +79,6 @@ graph TD
 *Audited against SHA:* `b51d4e4`
 
 ---
-### 🛠 T-MIN-007 · P2 · ANY · CLAIMED
-**Triage the eleven GUIDEBOOK files from the fleet sweep**
-**Owner:** Worker-F7
-
-**Scope:**
-- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking authoritative but are unverified fleet output.
-- Establish first what a GUIDEBOOK file is supposed to be - no committed spec appears to exist; check the sweep's originating brief and whether the format duplicates, summarizes, or contradicts the personality studies.
-- Check each file for the three known disguises (wrong-but-fluent, stub-with-a-label, clone-with-a-costume) with diffs against the personality studies and each other; recompute any rank or scoring claims against the registry.
-- Recommend a disposition for the format itself - keep as a distinct deliverable (write the missing spec), fold into the personality studies, or archive - and per-file bins consistent with that recommendation.
-
-**Definition of Done:**
-- A triage report in research/pilots/ covers all eleven files with per-file bins and a reasoned recommendation on the GUIDEBOOK format's future.
-- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition note.
-
-*Audited against SHA:* `c4f389f`
-
----
 ### ✅ T-MIN-006 · P2 · ANY · DONE
 **Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)**
 **Owner:** Worker-F6
@@ -128,6 +111,23 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
+
+---
+### ⏳ T-MIN-007 · P2 · ANY · PEER_REVIEW
+**Triage the eleven GUIDEBOOK files from the fleet sweep**
+**Owner:** Worker-F7
+
+**Scope:**
+- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking authoritative but are unverified fleet output.
+- Establish first what a GUIDEBOOK file is supposed to be - no committed spec appears to exist; check the sweep's originating brief and whether the format duplicates, summarizes, or contradicts the personality studies.
+- Check each file for the three known disguises (wrong-but-fluent, stub-with-a-label, clone-with-a-costume) with diffs against the personality studies and each other; recompute any rank or scoring claims against the registry.
+- Recommend a disposition for the format itself - keep as a distinct deliverable (write the missing spec), fold into the personality studies, or archive - and per-file bins consistent with that recommendation.
+
+**Definition of Done:**
+- A triage report in research/pilots/ covers all eleven files with per-file bins and a reasoned recommendation on the GUIDEBOOK format's future.
+- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition note.
+
+*Audited against SHA:* `c4f389f`
 
 ---
 ### 📋 T-MIN-009 · P3 · ANY · AUDITED

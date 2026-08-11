@@ -15,7 +15,7 @@ graph TD
     T-INTY-001["T-INTY-001<br/>Provision Local Database for SFUSD Onboarding"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
     T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::done
-    T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]
+    T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]:::active
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
     T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]:::review
@@ -85,24 +85,6 @@ graph TD
 
 ## Repo: `minchiate_tarot`
 
-### 📋 T-MIN-005 · P1 · ANY · AUDITED
-**Independent adversarial verification of the twelve zodiac personality studies**
-**Owner:** None
-
-**Scope:**
-- Verify all twelve zodiac studies (research/pilots/drafts/PERSONALITY_TRUMP-24 through TRUMP-35, commits 2c233c4/c58e0f8/20ab16e/c4f389f on test) against the standard set by Element_Batch_Verification_Report.md and the Justice verification reports.
-- The verifier must be a different agent/session from the batch author (Claude Fable 5, session of 10 Aug 2026); the author's inline mechanical checks do not count as the independent pass.
-- Recompute every rank claim from the registry; fetch every load-bearing citation (JUS-C006/C008 reciprocations, Temperance and Fortitude resolvers, QC-075/QC-076 dispositions, Death/Devil/Love current records); diff each file against its wave siblings, the brief, and the failed stubs for clone symptoms.
-- Check the cross-file edge matrix - all reciprocal records (LIB/VIR/SCO/ARI/CAP/SAG/ CAN/PIS/AQU/LEO/TAU/GEM claim tables) must agree in type, grading, and direction.
-- Write Zodiac_Batch_Verification_Report.md in research/pilots/ with per-card verdicts (PASS / PASS_WITH_CORRECTIONS / FAIL) and apply corrections for anything found.
-
-**Definition of Done:**
-- research/pilots/Zodiac_Batch_Verification_Report.md exists with a verdict for each of the twelve cards and a checked cross-file edge matrix.
-- Any FAIL is archived to research/archive/failed-runs/ and the card's disposition recorded, matching the Earth-study precedent.
-
-*Audited against SHA:* `c4f389f`
-
----
 ### 📋 T-MIN-003 · P1 · ANY · AUDITED
 **Apply the 93 pending card renames already recorded in ledger.json**
 **Owner:** None
@@ -139,6 +121,24 @@ graph TD
 - python3 minchiate_reviewer.py --check still exits 0 (existing read-path behavior is not broken).
 
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
+
+---
+### 🛠 T-MIN-005 · P1 · ANY · CLAIMED
+**Independent adversarial verification of the twelve zodiac personality studies**
+**Owner:** Verifier-F5
+
+**Scope:**
+- Verify all twelve zodiac studies (research/pilots/drafts/PERSONALITY_TRUMP-24 through TRUMP-35, commits 2c233c4/c58e0f8/20ab16e/c4f389f on test) against the standard set by Element_Batch_Verification_Report.md and the Justice verification reports.
+- The verifier must be a different agent/session from the batch author (Claude Fable 5, session of 10 Aug 2026); the author's inline mechanical checks do not count as the independent pass.
+- Recompute every rank claim from the registry; fetch every load-bearing citation (JUS-C006/C008 reciprocations, Temperance and Fortitude resolvers, QC-075/QC-076 dispositions, Death/Devil/Love current records); diff each file against its wave siblings, the brief, and the failed stubs for clone symptoms.
+- Check the cross-file edge matrix - all reciprocal records (LIB/VIR/SCO/ARI/CAP/SAG/ CAN/PIS/AQU/LEO/TAU/GEM claim tables) must agree in type, grading, and direction.
+- Write Zodiac_Batch_Verification_Report.md in research/pilots/ with per-card verdicts (PASS / PASS_WITH_CORRECTIONS / FAIL) and apply corrections for anything found.
+
+**Definition of Done:**
+- research/pilots/Zodiac_Batch_Verification_Report.md exists with a verdict for each of the twelve cards and a checked cross-file edge matrix.
+- Any FAIL is archived to research/archive/failed-runs/ and the card's disposition recorded, matching the Earth-study precedent.
+
+*Audited against SHA:* `c4f389f`
 
 ---
 ### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW

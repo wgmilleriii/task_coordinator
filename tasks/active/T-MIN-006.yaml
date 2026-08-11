@@ -3,7 +3,7 @@ title: Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F6
 created_at: '2026-08-10T18:06:00-06:00'
 dependencies: []
@@ -41,5 +41,8 @@ events:
   details: Audited against c4f389f
 - timestamp: '2026-08-11T14:49:21.533834Z'
   action: CLAIM
+  actor: Worker-F6
+- timestamp: '2026-08-11T15:00:28.911765Z'
+  action: SUBMIT
   actor: Worker-F6
 claimed_at: '2026-08-11T14:49:21.532533Z'

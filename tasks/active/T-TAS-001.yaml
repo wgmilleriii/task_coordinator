@@ -10,8 +10,16 @@ scope:
 - Compare AGENTS.md, README.md, fleet CLI help, schemas, and current lifecycle artifacts.
 - Map every documented agent role to executable commands and identify contradictions, missing steps, unsafe manual edits, and ambiguous authority.
 - Evaluate the new fleet create workflow, including ID generation and required post-creation YAML edits.
+- Own documentation, role-authority, CLI-interface, and documented-vs-executable consistency findings.
+- Use static inspection and the already-created Scout evidence by default for fleet-create evaluation; any additional mutating create experiment must use a unique repository copy created with mktemp -d.
+- Limit live-repository writes to feedback/EVALUATION_T-TAS-001_PROTOCOL.md and T-TAS-001 lifecycle artifacts.
+- Cross-reference the owning T-TAS task for any out-of-domain finding instead of duplicating that finding.
 definition_of_done:
 - feedback/EVALUATION_T-TAS-001_PROTOCOL.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
 - Every defect claim cites a file, command output, or reproducible observation from the current repository.
 - No restricted-zone file is modified by the evaluation.
+- The report includes a scope-coverage table with every scoped topic and, for each topic, the method, files/commands inspected, result, supporting evidence, and tested/not-tested disposition.
+- The report records the repository SHA and evaluation timestamp, and assigns a severity classification to every finding.
+- The prior-feedback corpus for the report consists exactly of the seven pre-evaluation files feedback/AUDIT_ClaudeFable_20260810T1640-0600.md, feedback/AUDIT_Codex_GPT5_20260810T164505-0600.md, feedback/FEEDBACK_Antigravity.md, feedback/FEEDBACK_ClaudeFable.md, feedback/FEEDBACK_ClaudeFable_claude-fable-5_20260810.md, feedback/FEEDBACK_Codex_GPT5_20260810T163242-0600.md, and feedback/FEEDBACK_Worker1_ClaudeSonnet5_20260810.md.
+- Every domain-relevant prior finding from that corpus is listed as fixed, partially fixed, still present, or not retested with supporting evidence; every out-of-domain prior finding cross-references the owning T-TAS task.
 human_review_required: false

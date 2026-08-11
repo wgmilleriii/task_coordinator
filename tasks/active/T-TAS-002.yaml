@@ -10,8 +10,14 @@ scope:
 - Inspect lifecycle and schema enforcement for create, audit, claim, verify, submit, peer review, human review, block, close, and archive behavior.
 - Reproduce suspected bypasses only in a temporary repository copy under /tmp.
 - Evaluate dependency readiness, stale audit handling, verification provenance, fabricated artifacts, and transition failure behavior.
+- Own lifecycle-transition enforcement and evidence-integrity gate findings.
+- Cross-reference the owning T-TAS task for any out-of-domain finding instead of duplicating that finding.
 definition_of_done:
 - feedback/EVALUATION_T-TAS-002_STATE_MACHINE.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
 - Each current defect has direct static evidence or a safe temporary-copy reproduction with command output.
 - The live engine and unrelated fleet records remain unmodified except for intended T-TAS lifecycle artifacts.
+- The report includes a scope-coverage table with every scoped topic and, for each topic, the method, files/commands inspected, result, supporting evidence, and tested/not-tested disposition.
+- The report records the repository SHA and evaluation timestamp, and assigns a severity classification to every finding.
+- The prior-feedback corpus for the report consists exactly of the seven pre-evaluation files feedback/AUDIT_ClaudeFable_20260810T1640-0600.md, feedback/AUDIT_Codex_GPT5_20260810T164505-0600.md, feedback/FEEDBACK_Antigravity.md, feedback/FEEDBACK_ClaudeFable.md, feedback/FEEDBACK_ClaudeFable_claude-fable-5_20260810.md, feedback/FEEDBACK_Codex_GPT5_20260810T163242-0600.md, and feedback/FEEDBACK_Worker1_ClaudeSonnet5_20260810.md.
+- Every domain-relevant prior finding from that corpus is listed as fixed, partially fixed, still present, or not retested with supporting evidence; every out-of-domain prior finding cross-references the owning T-TAS task.
 human_review_required: false

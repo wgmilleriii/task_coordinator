@@ -10,8 +10,14 @@ scope:
 - Evaluate locking, shared-worktree isolation, generated-board contention, verification environments, packaging, logging, recovery, and observability.
 - Assess the difference between single-machine locking and multi-machine fleet coordination.
 - Use temporary copies for any concurrency or failure-injection experiment.
+- Own runtime isolation, environment/deployment behavior, concurrency, and local-vs-distributed coordination findings.
+- Cross-reference the owning T-TAS task for any out-of-domain finding instead of duplicating that finding.
 definition_of_done:
 - feedback/EVALUATION_T-TAS-003_OPERATIONS.md exists with Executive verdict, Scope and evidence, Confirmed strengths, Findings, Prior feedback disposition, Recommendations, and Domain verdict sections.
 - Operational claims are supported by current code references, command output, or safe temporary-copy experiments.
 - No restricted-zone file or unrelated task artifact is modified by the evaluation.
+- The report includes a scope-coverage table with every scoped topic and, for each topic, the method, files/commands inspected, result, supporting evidence, and tested/not-tested disposition.
+- The report records the repository SHA and evaluation timestamp, and assigns a severity classification to every finding.
+- The prior-feedback corpus for the report consists exactly of the seven pre-evaluation files feedback/AUDIT_ClaudeFable_20260810T1640-0600.md, feedback/AUDIT_Codex_GPT5_20260810T164505-0600.md, feedback/FEEDBACK_Antigravity.md, feedback/FEEDBACK_ClaudeFable.md, feedback/FEEDBACK_ClaudeFable_claude-fable-5_20260810.md, feedback/FEEDBACK_Codex_GPT5_20260810T163242-0600.md, and feedback/FEEDBACK_Worker1_ClaudeSonnet5_20260810.md.
+- Every domain-relevant prior finding from that corpus is listed as fixed, partially fixed, still present, or not retested with supporting evidence; every out-of-domain prior finding cross-references the owning T-TAS task.
 human_review_required: false

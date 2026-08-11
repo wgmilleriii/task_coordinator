@@ -1,0 +1,32 @@
+id: T-MIN-005
+title: Independent adversarial verification of the twelve zodiac personality studies
+repo: minchiate_tarot
+priority: P1
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-10T18:05:00-06:00'
+dependencies: []
+scope:
+- Verify all twelve zodiac studies (research/pilots/drafts/PERSONALITY_TRUMP-24 through
+  TRUMP-35, commits 2c233c4/c58e0f8/20ab16e/c4f389f on test) against the standard set
+  by Element_Batch_Verification_Report.md and the Justice verification reports.
+- The verifier must be a different agent/session from the batch author (Claude Fable 5,
+  session of 10 Aug 2026); the author's inline mechanical checks do not count as the
+  independent pass.
+- Recompute every rank claim from the registry; fetch every load-bearing citation
+  (JUS-C006/C008 reciprocations, Temperance and Fortitude resolvers, QC-075/QC-076
+  dispositions, Death/Devil/Love current records); diff each file against its wave
+  siblings, the brief, and the failed stubs for clone symptoms.
+- Check the cross-file edge matrix - all reciprocal records (LIB/VIR/SCO/ARI/CAP/SAG/
+  CAN/PIS/AQU/LEO/TAU/GEM claim tables) must agree in type, grading, and direction.
+- Write Zodiac_Batch_Verification_Report.md in research/pilots/ with per-card verdicts
+  (PASS / PASS_WITH_CORRECTIONS / FAIL) and apply corrections for anything found.
+definition_of_done:
+- research/pilots/Zodiac_Batch_Verification_Report.md exists with a verdict for each of
+  the twelve cards and a checked cross-file edge matrix.
+- Any FAIL is archived to research/archive/failed-runs/ and the card's disposition
+  recorded, matching the Earth-study precedent.
+verification_command: test -f research/pilots/Zodiac_Batch_Verification_Report.md &&
+  grep -q 'TRUMP-35' research/pilots/Zodiac_Batch_Verification_Report.md
+human_review_required: false

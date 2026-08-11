@@ -1,0 +1,32 @@
+id: T-MIN-008
+title: Pin down Bernardi's verzicola boundary from the 1790 rules directly
+repo: minchiate_tarot
+priority: P2
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-10T18:08:00-06:00'
+dependencies: []
+scope:
+- Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola
+  combination example, replacing the Justice pilot's hedge ('I-V and beginning around
+  XXVIII', pilot line 92) with an exact list.
+- Thirteen committed studies currently lean on that hedge; the zodiac batch flags it
+  as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge
+  names), and the element batch left 'whether XX-XXIII can form a verzicola' as a
+  standing open question in all four files.
+- Record whether the examples are exhaustive or exemplary in Bernardi's own text; do
+  not convert examples into rules - the deliverable is the transcription plus locators
+  (chapter and printed page), not an interpretation.
+- If the boundary resolves, list the follow-up amendments needed (zodiac files
+  XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot
+  cross-references) as a reconciliation queue; apply them only if the audit scopes
+  that in.
+definition_of_done:
+- A sourced note in research/02-source-audit/ or research/pilots/ transcribes the
+  verzicola examples with exact locators and states what the record can and cannot
+  support.
+- The reconciliation queue of affected files is listed with per-file line references.
+- The hedge is superseded only by direct transcription, never by memory.
+verification_command: grep -rqi 'verzicola' research/02-source-audit/ research/pilots/
+human_review_required: false

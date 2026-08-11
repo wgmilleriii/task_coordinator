@@ -15,7 +15,7 @@ graph TD
     T-INTY-001["T-INTY-001<br/>Provision Local Database for SFUSD Onboarding"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]
     T-MIN-010["T-MIN-010<br/>Fix grid caption dropping card value for identified cards"]:::done
-    T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]:::active
+    T-MIN-005["T-MIN-005<br/>Independent adversarial verification of the twelve zodiac personality studies"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]
     T-MIN-005 --> T-MIN-009
     T-INTY-003["T-INTY-003<br/>Execute Import and Validate Clean Inventory"]:::review
@@ -123,7 +123,23 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 🛠 T-MIN-005 · P1 · ANY · CLAIMED
+### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
+**Initialize the Virtual Master Sheet Web Grid**
+**Owner:** Worker-1
+
+**Scope:**
+- Create the base minchiate_reviewer.py application.
+- Load the 97 extracted images and sort them geographically by their filename prefix.
+- Serve a dynamic web grid layout reflecting the original master sheet.
+
+**Definition of Done:**
+- Server runs locally without errors.
+- Renders a grid of 97 images in their stitched order in the browser.
+
+*Audited against SHA:* `b51d4e4`
+
+---
+### ⏳ T-MIN-005 · P1 · ANY · PEER_REVIEW
 **Independent adversarial verification of the twelve zodiac personality studies**
 **Owner:** Verifier-F5
 
@@ -139,22 +155,6 @@ graph TD
 - Any FAIL is archived to research/archive/failed-runs/ and the card's disposition recorded, matching the Earth-study precedent.
 
 *Audited against SHA:* `c4f389f`
-
----
-### ⏳ T-MIN-001 · P1 · ANY · HUMAN_REVIEW
-**Initialize the Virtual Master Sheet Web Grid**
-**Owner:** Worker-1
-
-**Scope:**
-- Create the base minchiate_reviewer.py application.
-- Load the 97 extracted images and sort them geographically by their filename prefix.
-- Serve a dynamic web grid layout reflecting the original master sheet.
-
-**Definition of Done:**
-- Server runs locally without errors.
-- Renders a grid of 97 images in their stitched order in the browser.
-
-*Audited against SHA:* `b51d4e4`
 
 ---
 ### 📋 T-MIN-007 · P2 · ANY · AUDITED

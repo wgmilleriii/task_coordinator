@@ -1,0 +1,68 @@
+task_id: T-MIN-007
+reviewer_agent: Reviewer-F14
+reviewer_model: claude-fable-5
+reviewed_head_sha: 58f3a6e
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Wrongful-acquittal check on GB-08 Justice (KEEP): verified against committed
+    PERSONALITY_TRUMP-08_Justice.md. Scoring/naming claims match the witnesses
+    (VI-XII called Papi per JUS-C005; no special value, five points to I/X/XIII/XX
+    and three to II-V per JUS-C006/JUSP-C004). Both out-of-vocabulary "Subordinate"
+    edges confirmed in the guidebook; committed Chariot type is rival (rec 8) and
+    the Old Man edge was rejected (QC-023, no record). Report Sec 3.4 flags both
+    and Sec 5 queues the corrections exactly as claimed. KEEP-with-corrections is
+    the right bin.
+- severity: INFO
+  description: >-
+    Wrongful-conviction checks on GB-01 and GB-36 (FAIL): recomputed from
+    Stage5_Master_Card_Registry.csv. Trump I sort_order 58 beats all 56 suit cards
+    plus the Fool, so GB-01's "cannot win a fight against anyone" is false as the
+    report says; GB-01 also never states the Bernardi 5-point value. GB-36 asserts
+    "The Star (XXXVI)" against names_to_avoid ("XXXVI as printed historical
+    number"), "Mentor to the Old Man" against the committed Old Man study's
+    explicit "no typed relationship" (line 329), and "Superior" twice out of
+    vocabulary; the 5-point amount traces only to FINAL_TRUMPS_BATCH_BRIEF.md L35,
+    which cites nothing. Both convictions sound. GB-05 keeper also re-verified:
+    all four edges type-exact against the committed Love study.
+- severity: INFO
+  description: >-
+    Format recommendation verified. .agents/skills/minchiate-interpretation/SKILL.md
+    exists (40 lines) and matches the report's characterization exactly: three
+    named tiers, structure/voice, Militant Quarantine, and no verification gate,
+    sourcing rule, controlled-vocabulary reference, confidence disclosure, or
+    audit-log prohibition. GUIDEBOOK_FORMAT_SPEC.md carries all five required
+    gates (existence gate Sec 2; no uncorpused amounts Sec 4.1; 15-type controlled
+    vocabulary Sec 4.3; naming-confidence disclosure Sec 4.4; no self-audit logs
+    Sec 5) and each is stated enforceably. Registry naming-confidence claims
+    verified (TRUMP-02/03/04 Low, TRUMP-40 Moderate).
+- severity: MINOR
+  description: >-
+    Spec Sec 4.4 states "TRUMP-01-04 Low" but the registry detail for TRUMP-01 is
+    "naming: Low-Moderate" - the triage report Sec 3.5 itself has it right. One-word
+    spec fix for the human to note when ruling on the spec.
+- severity: MINOR
+  description: >-
+    Spec Sec 6 gates regeneration on ARIE_BATCH_BRIEF.md / PAPI_FOOL_BATCH_BRIEF.md,
+    which exist only on branch test-T-MIN-006 (f5291eb), not on this branch or test.
+    Dangling cross-branch reference until T-MIN-006 merges - a sequencing note for
+    the human, not a defect of this task.
+- severity: MINOR
+  description: >-
+    The three keepers still contain self-authored "Audit Log" sections, which the
+    new spec Sec 5 forbids, and the Sec 5 correction queue does not explicitly
+    include removing them (GB-08's unsourced "Reversals are disabled" line IS
+    queued). The audit-log removal should be added to the keeper correction pass.
+- severity: INFO
+  description: >-
+    Archive and scope integrity: eight archives present as R100 renames (contents
+    preserved verbatim) with a substantive disposition note appended to
+    research/archive/failed-runs/README.md; drafts/ retains exactly the three
+    keepers. The second commit's untracking (.fleet_context.md,
+    INITIAL_VISION/initial_vision.md) preserved working-tree contents in the shared
+    checkout (vision note byte-identical; fleet context differs only in its
+    auto-regenerated hours counter). Diff 274b981..58f3a6e touches only in-scope
+    paths. Audited verification command re-run in an isolated worktree at 58f3a6e:
+    PASS.
+reviewed_at: '2026-08-11T15:15:40.884065Z'

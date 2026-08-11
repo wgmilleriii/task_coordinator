@@ -97,23 +97,7 @@ graph TD
 *Audited against SHA:* `c4f389f`
 
 ---
-### 📋 T-MIN-008 · P2 · ANY · OPEN
-**Pin down Bernardi's verzicola boundary from the 1790 rules directly**
-**Owner:** None
-
-**Scope:**
-- Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola combination example, replacing the Justice pilot's hedge ('I-V and beginning around XXVIII', pilot line 92) with an exact list.
-- Thirteen committed studies currently lean on that hedge; the zodiac batch flags it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element batch left 'whether XX-XXIII can form a verzicola' as a standing open question in all four files.
-- Record whether the examples are exhaustive or exemplary in Bernardi's own text; do not convert examples into rules - the deliverable is the transcription plus locators (chapter and printed page), not an interpretation.
-- If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot cross-references) as a reconciliation queue; apply them only if the audit scopes that in.
-
-**Definition of Done:**
-- A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
-- The reconciliation queue of affected files is listed with per-file line references.
-- The hedge is superseded only by direct transcription, never by memory.
-
----
-### ⏳ T-MIN-007 · P2 · ANY · PEER_REVIEW
+### ⏳ T-MIN-007 · P2 · ANY · HUMAN_REVIEW
 **Triage the eleven GUIDEBOOK files from the fleet sweep**
 **Owner:** Worker-F7
 
@@ -128,6 +112,22 @@ graph TD
 - No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition note.
 
 *Audited against SHA:* `c4f389f`
+
+---
+### 📋 T-MIN-008 · P2 · ANY · OPEN
+**Pin down Bernardi's verzicola boundary from the 1790 rules directly**
+**Owner:** None
+
+**Scope:**
+- Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola combination example, replacing the Justice pilot's hedge ('I-V and beginning around XXVIII', pilot line 92) with an exact list.
+- Thirteen committed studies currently lean on that hedge; the zodiac batch flags it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element batch left 'whether XX-XXIII can form a verzicola' as a standing open question in all four files.
+- Record whether the examples are exhaustive or exemplary in Bernardi's own text; do not convert examples into rules - the deliverable is the transcription plus locators (chapter and printed page), not an interpretation.
+- If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot cross-references) as a reconciliation queue; apply them only if the audit scopes that in.
+
+**Definition of Done:**
+- A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
+- The reconciliation queue of affected files is listed with per-file line references.
+- The hedge is superseded only by direct transcription, never by memory.
 
 ---
 ### 🛠 T-MIN-009 · P3 · ANY · CLAIMED

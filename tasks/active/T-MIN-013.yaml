@@ -3,33 +3,34 @@ title: Design the light-tier suit-card study format (spec + two pilot cards)
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-11T09:34:00-06:00'
 dependencies: []
 scope:
-- 'Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study
-  format for the 56 suit cards. Required sections: registry facts (restated, never
-  improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where
-  sourced (bounded-transcription caveat carried), iconography baseline, a brief
-  project reading, and a mini claims table — every claim provenance-graded with the
-  same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies.'
-- 'This is the venture plan''s dependency: teamwork/VENTURE_BRIEF.md §2 line 7 (trumps
-  at full verified depth, 56 suit cards at a lighter standard tier so "research
-  complete" is a reachable pre-launch milestone). The format must be cheap enough to
-  produce 56 times but carry the same honesty discipline — [UNVERIFIED] over
-  invention, no padding to look thorough.'
-- 'Write TWO pilot cards to the new format — suggested SUIT-COINS-04 (Four of Coins)
-  and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers
-  (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check
-  against. This redundancy is intentional: the light-tier pilots must not contradict
-  the full dossiers, and any divergence found is itself a finding to record.'
+- "Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study\
+  \ format for the 56 suit cards. Required sections: registry facts (restated, never\
+  \ improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where\
+  \ sourced (bounded-transcription caveat carried), iconography baseline, a brief\
+  \ project reading, and a mini claims table \u2014 every claim provenance-graded\
+  \ with the same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies."
+- "This is the venture plan's dependency: teamwork/VENTURE_BRIEF.md \xA72 line 7 (trumps\
+  \ at full verified depth, 56 suit cards at a lighter standard tier so \"research\
+  \ complete\" is a reachable pre-launch milestone). The format must be cheap enough\
+  \ to produce 56 times but carry the same honesty discipline \u2014 [UNVERIFIED]\
+  \ over invention, no padding to look thorough."
+- "Write TWO pilot cards to the new format \u2014 suggested SUIT-COINS-04 (Four of\
+  \ Coins) and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers\
+  \ (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check\
+  \ against. This redundancy is intentional: the light-tier pilots must not contradict\
+  \ the full dossiers, and any divergence found is itself a finding to record."
 - Deliver a short comparison of the two light-tier pilots against their two existing
-  full dossiers, stating what the light tier keeps, what it drops, and whether
-  anything dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub
-  maturity mechanic in the venture brief).
-- The format decision itself is the human's — this task produces the proposal and
-  evidence, not a fleet-wide rollout; do not begin authoring the remaining 54 cards.
+  full dossiers, stating what the light tier keeps, what it drops, and whether anything
+  dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub maturity
+  mechanic in the venture brief).
+- "The format decision itself is the human's \u2014 this task produces the proposal\
+  \ and evidence, not a fleet-wide rollout; do not begin authoring the remaining 54\
+  \ cards."
 definition_of_done:
 - research/pilots/SUIT_CARD_FORMAT_SPEC.md exists and defines the compact format with
   all required sections and the provenance-grading rules.
@@ -39,7 +40,25 @@ definition_of_done:
 - A short comparison document (or a comparison section in the spec) evaluates the
   light tier against the two full dossiers and states the trade-offs for the human's
   format decision.
-- human_review_required is honored — the task ends at HUMAN_REVIEW with the format
-  proposal, not with additional suit cards authored.
-verification_command: test -f research/pilots/SUIT_CARD_FORMAT_SPEC.md && grep -qi 'claims' research/pilots/SUIT_CARD_FORMAT_SPEC.md
+- "human_review_required is honored \u2014 the task ends at HUMAN_REVIEW with the\
+  \ format proposal, not with additional suit cards authored."
+verification_command: 'bash -c ''spec=research/pilots/SUIT_CARD_FORMAT_SPEC.md; test
+  -f "$spec" || { echo "FAIL: spec missing"; exit 1; }; grep -q "UNVERIFIED" "$spec"
+  || { echo "FAIL: spec lacks the provenance-grading rules"; exit 1; }; grep -qi "claims"
+  "$spec" || { echo "FAIL: spec lacks a claims-table section"; exit 1; }; p1=$(find
+  research/pilots -name "*SUIT-COINS-04*.md" ! -name "Pilot1_*" | head -1); p2=$(find
+  research/pilots -name "*SUIT-CUPS-12*.md" ! -name "Pilot2_*" | head -1); test -n
+  "$p1" || { echo "FAIL: no light-tier SUIT-COINS-04 pilot"; exit 1; }; test -n "$p2"
+  || { echo "FAIL: no light-tier SUIT-CUPS-12 pilot"; exit 1; }; cmp=$(grep -lE "Pilot1_SUIT-COINS-04"
+  research/pilots/*.md 2>/dev/null | xargs grep -lE "Pilot2_SUIT-CUPS-12" 2>/dev/null
+  | grep -v "/Pilot[12]_" | head -1); test -n "$cmp" || { echo "FAIL: no comparison
+  doc referencing both full dossiers"; exit 1; }; echo PASS'''
 human_review_required: true
+audited_at: '2026-08-11T15:52:41.541877Z'
+audited_by: PM-F5
+audited_repo_sha: f8bb1b8
+events:
+- timestamp: '2026-08-11T15:52:41.542065Z'
+  action: AUDIT
+  actor: PM-F5
+  details: Audited against f8bb1b8

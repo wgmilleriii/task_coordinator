@@ -1,0 +1,100 @@
+task_id: T-MIN-011
+reviewer_agent: Reviewer-F16
+reviewer_model: claude-fable-5
+reviewed_head_sha: 8c69b9f
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: 'RANK ARITHMETIC RECOMPUTED (check 1): all five cards verified against
+    Stage5_Master_Card_Registry.csv sort_order (40 numbered trumps at sorts 58-97;
+    Fool 57). Star 93: 35/4; Moon 94: 36/3; Sun 95: 37/2; World 96: 38/1; Trumpets
+    97: 39/0 - every file''s claim matches. F-1 ascending-ordinal standardization
+    confirmed consistent across all five files (Star junior/1st, Moon "second of
+    five, counting upward", Sun third, World fourth, Trumpets "fifth and last").
+    World''s only-loses-to-exactly-one superlative and Trumpets'' highest-by-sort
+    superlative both verified unique and per-card; "highest card in the deck" bare
+    appears only in the Trumpets file (the World hit is the substring of "second-highest").'
+- severity: INFO
+  description: 'PRICING RULE (check 2): PASS - the batch''s biggest hazard is clean.
+    Grep of all five files finds no point amount attached to any arie card. The
+    only amounts present are the bounded Bernardi transcription itself (5 pts I/X/XIII/XX,
+    3 pts II-V, bounded at XXVII) and the Trumpets file''s quotation of the archived
+    draft''s convicted "10 points" (explicitly no-corpus-witness). All five carry
+    the outside-the-bounded-transcription formulation ("no tier reading available
+    in either direction"), NOT the zodiac nil-reading formula - "nil" appears in
+    the five files only in the contrastive clause "Unlike the zodiac cards XXIV-XXVII...".
+    Boundary claim confirmed against Justice pilot L80 (JUS-C006, "among I-XXVII...")
+    and L92 (verzicola "beginning around XXVIII") - both locators land exactly.'
+- severity: INFO
+  description: 'NUMBERING (check 3): PASS - no file asserts XXXVI-XL as a printed/historical
+    number. Registry names_to_avoid quoted verbatim per file; every bare numeral
+    occurrence outside quotations is covered by the per-file blanket statement
+    ("Everywhere this file writes ... it means that editorial rank") or appears
+    inside quoted committed text / the section-5 checklist. Headers all read "unnumbered
+    arie (editorial ...)". Sheet 830161001 IIII-XXXI evidence cited as bounds pending
+    human verification, not as exhaustive.'
+- severity: INFO
+  description: 'CW-10 AT THE TRUMPETS (check 4): PASS - register CW-10 and QC-085..089
+    rows read in full and compared. TRUMP-40 section-0 dispositions the summons/eschatology
+    reading (contaminant, four committed withdrawals cited by name) without enacting
+    it: sweep for the structure (summons/final sounding/terminates/hard stop/ending/call/verdict)
+    finds those words only inside quoted withdrawn glosses and their dispositions.
+    All five naming variants (Le Trombe/Trumpets/Fame/Fama/Last Judgment) disclosed
+    at Moderate confidence; no universal-title assertion for any variant, Trombe
+    included. SYM-TRUMPET verified via openpyxl against the Stage 3 workbook Symbols
+    sheet: "BM .34 catalog explicitly notes trumpets", BM P_1896-0501-34, High identification,
+    "narrative frame remains flexible", Partially verified - quoted accurately;
+    it is the only arie symbol row in the sheet. Iconographic Matrix rows for all
+    five cards also verified against the workbook - quoted accurately.'
+- severity: INFO
+  description: 'REGISTER DISPOSITION MATRIX (check 5): PASS - one owner per row,
+    no double-claims, no orphans. QC-077 Star/STA-C012 (Sun cites via SUN-C016);
+    QC-078 Sun/SUN-C012 (Star, Moon follow); QC-079 World/WOR-C011 (all follow;
+    Trumpets cites for QC-088); QC-080 Star/STA-C013; QC-081 Moon/MOO-C012; QC-082
+    Sun/SUN-C013; QC-083 Sun/SUN-C014; QC-084 World/WOR-C012 (archived draft''s
+    QC-083 double-claim explicitly NOT repeated); QC-085/086/087 Trumpets/TRO-C013/14/15;
+    QC-088+089 Trumpets/TRO-C017; QC-107 Star/STA-C014; CW-10 Trumpets/TRO-C012;
+    GEM-C016 Star/STA-C015. "Origins" grep: appears only inside quoted-withdrawal
+    dispositions; the withdrawn coinage is not revived anywhere; no "Superior",
+    no QC-### minting, namespaces STA-/MOO-/SUN-/WOR-/TRO- only. Committed-study
+    current-text locators spot-checked and exact: Wheel L305-314, Chariot L336-343,
+    Devil L341-346, House L348-355, Old Man L329-336 and L338-346, Hanged L401-410
+    and L219-220, Death L328-336, Love L326-328.'
+- severity: INFO
+  description: 'COMMITTED-EDGE ANSWERS (check 6): PASS - GEM-C016 verified in the
+    committed Gemini study (adjacency-only structural note, offered accept/retype/decline,
+    asymmetry recorded); the Star file answers it explicitly (accepted, retyped
+    predecessor on the Air/Libra model, asymmetry closed) and honors the clean-field
+    handling. Second spot-check: the committed Fire study''s declined XX-to-Sun
+    pairing (FIR-C020, Fire section-3 current L342-346, De caelo fifth-body ground)
+    is confirmed declined by SUN-C015 with the doctrinal ground quoted accurately.
+    Cross-wave SUN-C019/WOR-C014 companion offer-and-answer reconciled with matched
+    typing and grading.'
+- severity: INFO
+  description: 'CLONE/INHERITANCE (check 7): PASS - comm -12 shared-line diffs recomputed
+    against research/archive/failed-runs/: Star 5 lines (evidence-label legend,
+    rule, one heading - corpus boilerplate, matching the report''s D-1), Moon 0,
+    Sun 0, World 0, Trumpets 2 (rule + table separator). Matches the report''s table
+    exactly; no prose sentence shared. Convicted-phrase sweep clean. The five section-2
+    territories are genuinely distinct and card-derived (first light past counting
+    / light held on loan / source in the middle / whole that is not the end / precedence
+    that does not explain itself).'
+- severity: INFO
+  description: 'SCOPE, SYNC, VERIFICATION (check 8): PASS - diff f8bb1b8..8c69b9f
+    touches exactly the five studies plus the verification report (1794 insertions,
+    0 deletions elsewhere). Prose-to-claims-table sync checked on Star and Trumpets
+    (full read of all five): rank figures, dispositions, and edge records in each
+    claims table match the file''s prose. The audited verification command re-run
+    in the review worktree at 8c69b9f: PASS.'
+- severity: MINOR
+  description: 'CORRECTION APPLIED (commit a3993d7 on test-T-MIN-011): the Star
+    file''s STA-C015 claims row wrote the predecessor edge as "Star XXXVI (ed.)
+    -> Gemini XXXV: predecessor" - arrow order opposite to the committed convention
+    (AIR-C011/Libra writes the predecessor first: "Air -> Libra: predecessor" =
+    Air precedes Libra), and unlike the section-3 prose the claims row carried no
+    disambiguating clause, so read alone it could be taken as "Star precedes Gemini".
+    Fixed by adding "(Gemini precedes the Star, per the committed AIR-C011/Libra
+    direction convention)" to the claims row; prose already correct. Second trivial
+    fix in the same commit: Moon section-5 first checklist item had a stray mid-sentence
+    line wrap. Both cosmetic/clarifying; no substantive content changed.'
+reviewed_at: '2026-08-11T19:28:39.798200Z'

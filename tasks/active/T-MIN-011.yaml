@@ -4,7 +4,7 @@ title: "Author the arie batch fresh \u2014 five celestial trump personality stud
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: PEER_REVIEW
+status: DONE
 owner: Worker-F11
 created_at: '2026-08-11T09:30:00-06:00'
 dependencies: []
@@ -72,4 +72,8 @@ events:
 - timestamp: '2026-08-11T16:18:10.876498Z'
   action: SUBMIT
   actor: Worker-F11
+- timestamp: '2026-08-11T19:29:29.349482Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-F16
+  details: 'Verdict: PASS_WITH_CORRECTIONS'
 claimed_at: '2026-08-11T15:55:25.988538Z'

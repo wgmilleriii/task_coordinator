@@ -3,7 +3,7 @@ title: Add card-identification write path to minchiate_reviewer.py
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F14
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:30.640903Z'
@@ -53,4 +53,7 @@ events:
   details: Audited against 0509f6914e201ba192717c7a90c3c4154e5120fc
 - timestamp: '2026-08-12T04:10:12.858879Z'
   action: CLAIM
+  actor: Worker-F14
+- timestamp: '2026-08-12T04:12:56.466876Z'
+  action: SUBMIT
   actor: Worker-F14

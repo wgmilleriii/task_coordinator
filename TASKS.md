@@ -28,7 +28,7 @@ graph TD
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
-    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::active
+    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::review
 ```
 
 ---
@@ -475,25 +475,6 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 🛠 T-MIN-002 · P1 · ANY · CLAIMED
-**Add card-identification write path to minchiate_reviewer.py**
-**Owner:** Worker-F14
-
-**Scope:**
-- On branch test-T-MIN-001, minchiate_reviewer.py was rewritten from Flask to stdlib http.server (commits 1eb6550, 0509f69). The rewrite dropped the old Flask app's /api/update and /api/confirm POST routes entirely — the new ReviewerHandler implements only do_GET, no do_POST — so the running server is now read-only.
-- CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 2-4 and its "Next Steps" section explicitly define the reviewer app's purpose as letting a user click a card in the grid, assign its identity (Suit/Rank or Trump number), persist that judgment to ledger.json, and rename the underlying file to its archival name (e.g. Cups_03.jpg). None of that is implemented in the current read-only build.
-- Add a do_POST handler (or equivalent) to ReviewerHandler exposing at least an update-identity endpoint that accepts an original_name/current_name plus type+value, validates against a target filename collision, renames the file under research/evidence/cards_raw/, updates ledger.json (identified, type, value, current_name), and returns JSON — matching the semantics the old Flask /api/update route had, but implemented stdlib-only per this branch's existing "no Flask/Jinja2" design constraint stated in the module docstring.
-- Wire minimal client-side interaction in render_grid_html's output (a click handler / small inline form per card, or a simple prompt-based flow) so the identification can actually be entered from the browser, not only via curl.
-
-**Definition of Done:**
-- POST request to the new endpoint with a valid original_name/type/value updates ledger.json's identified/type/value fields and renames the file on disk, verified by re-reading ledger.json and os.path.exists on the new name.
-- A request naming a target filename that already exists on disk is rejected (no rename performed, no file clobbered) with a non-200 response.
-- Grid page loaded after an update reflects the new identity without manual ledger editing.
-- python3 minchiate_reviewer.py --check still exits 0 (existing read-path behavior is not broken).
-
-*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
-
----
 ### ✅ T-MIN-011 · P1 · ANY · DONE
 **Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)**
 **Owner:** Worker-F11
@@ -550,6 +531,25 @@ graph TD
 - Renders a grid of 97 images in their stitched order in the browser.
 
 *Audited against SHA:* `b51d4e4`
+
+---
+### ⏳ T-MIN-002 · P1 · ANY · PEER_REVIEW
+**Add card-identification write path to minchiate_reviewer.py**
+**Owner:** Worker-F14
+
+**Scope:**
+- On branch test-T-MIN-001, minchiate_reviewer.py was rewritten from Flask to stdlib http.server (commits 1eb6550, 0509f69). The rewrite dropped the old Flask app's /api/update and /api/confirm POST routes entirely — the new ReviewerHandler implements only do_GET, no do_POST — so the running server is now read-only.
+- CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 2-4 and its "Next Steps" section explicitly define the reviewer app's purpose as letting a user click a card in the grid, assign its identity (Suit/Rank or Trump number), persist that judgment to ledger.json, and rename the underlying file to its archival name (e.g. Cups_03.jpg). None of that is implemented in the current read-only build.
+- Add a do_POST handler (or equivalent) to ReviewerHandler exposing at least an update-identity endpoint that accepts an original_name/current_name plus type+value, validates against a target filename collision, renames the file under research/evidence/cards_raw/, updates ledger.json (identified, type, value, current_name), and returns JSON — matching the semantics the old Flask /api/update route had, but implemented stdlib-only per this branch's existing "no Flask/Jinja2" design constraint stated in the module docstring.
+- Wire minimal client-side interaction in render_grid_html's output (a click handler / small inline form per card, or a simple prompt-based flow) so the identification can actually be entered from the browser, not only via curl.
+
+**Definition of Done:**
+- POST request to the new endpoint with a valid original_name/type/value updates ledger.json's identified/type/value fields and renames the file on disk, verified by re-reading ledger.json and os.path.exists on the new name.
+- A request naming a target filename that already exists on disk is rejected (no rename performed, no file clobbered) with a non-200 response.
+- Grid page loaded after an update reflects the new identity without manual ledger editing.
+- python3 minchiate_reviewer.py --check still exits 0 (existing read-path behavior is not broken).
+
+*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
 ### ✅ T-MIN-006 · P2 · ANY · DONE

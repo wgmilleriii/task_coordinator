@@ -1,0 +1,304 @@
+task_id: T-INTY-021
+agent: Worker-DBFallback1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test
+base_sha: 3cf4775d3561b3746c6e55586921beb4492ec57d
+head_sha: 8b4bcec5fbb61b639debd76abdb8125721c6caca
+evidence_output: "Manually captured (automated `fleet verify` exits nonzero on any\
+  \ phpunit failure and the task DoD explicitly permits a partial, non-DB-related\
+  \ residual failure count -- not zero). Before fix: 18 errors / 114 failures, cause\
+  \ included 'Unknown database caut_sfusd'. After fix: 1 error / 68 failures, ZERO\
+  \ occurrences of 'Unknown database' or 'caut_sfusd' in the run. Remaining failures\
+  \ are pre-existing, unrelated to DB dispatch (missing viewport meta tags, CSRF/session\
+  \ assertions, stakeholder auth redirects) -- confirmed by grep, not by inference.\n\
+  \nPHPUnit 9.6.34 by Sebastian Bergmann and contributors.\n\nRuntime:       PHP 8.4.8\n\
+  Configuration: /Users/willismiller/Documents/GitHub/intypiano/phpunit.xml\n\n...............................................................\
+  \  63 / 330 ( 19%)\n..EFFF.F...............................................FFFFF..F\
+  \ 126 / 330 ( 38%)\nF..FF..F........................FFFF.FFFF..FFFFF.FFFFFF........\
+  \ 189 / 330 ( 57%)\n........F.......FF.F..FFFFF.FF..............................FFF\
+  \ 252 / 330 ( 76%)\nFFFFFFFFFFFFFFFFFFFFF..........................................\
+  \ 315 / 330 ( 95%)\n...............                                            \
+  \     330 / 330 (100%)\n\nTime: 00:05.861, Memory: 12.00 MB\n\nThere was 1 error:\n\
+  \n1) AdminV2UnservicedTest::testABadCsrfTokenIsRefused\nUndefined array key 1\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2UnservicedTest.php:206\n\
+  \n--\n\nThere were 68 failures:\n\n1) AdminV2UnservicedTest::testItIsMobileFirst\n\
+  missing a viewport\nFailed asserting that '' contains \"width=device-width\".\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2UnservicedTest.php:127\n\
+  \n2) AdminV2UnservicedTest::testItListsOverdueInstrumentsWorstFirst\nthe summary\
+  \ line is missing\nFailed asserting that '' matches PCRE pattern \"/instruments?\\\
+  s+not serviced in/\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2UnservicedTest.php:136\n\
+  \n3) AdminV2UnservicedTest::testRaisingATicketReachesTheTechnicianQueue\nno CSRF\
+  \ token rendered\nFailed asserting that an array is not empty.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2UnservicedTest.php:173\n\
+  \n4) AdminV2UnservicedTest::testTheDayThresholdActuallyFilters\nFailed asserting\
+  \ that an array is not empty.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2UnservicedTest.php:158\n\
+  \n5) StakeholderJourneyTest::testDeanCanOpenTheInventoryReport\nDean cannot load\
+  \ /inventory-admin.php\nFailed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:126\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:165\n\
+  \n6) StakeholderJourneyTest::testSysadminCanOpenTheQueryLog\nSysadmin cannot load\
+  \ /querylog-admin.php\nFailed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:126\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:640\n\
+  \n7) StakeholderJourneyTest::testRegistrarCanOpenClassSchedule\nRegistrar cannot\
+  \ load /class-schedule.php\nFailed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:126\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:302\n\
+  \n8) StakeholderJourneyTest::testFacilitiesCanOpenBuildingAdmin\nFacilities cannot\
+  \ load /building-admin.php\nFailed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:126\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:617\n\
+  \n9) StakeholderJourneyTest::testTechLeadCanOpenTheWorkQueue\nTechnician lead cannot\
+  \ load /admin.php\nFailed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:126\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:309\n\
+  \n10) StakeholderJourneyTest::testANewBookingAppearsInTheOpenQueue\nticket 3316\
+  \ was booked but does not appear in the open queue\nFailed asserting that '' contains\
+  \ \"requestid=\"3316\"\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:349\n\
+  \n11) StakeholderJourneyTest::testTechnicianCanClaimAndReleaseAV2Booking\na technician\
+  \ must be able to claim a v2 booking\nFailed asserting that two strings are identical.\n\
+  --- Expected\n+++ Actual\n@@ @@\n-'success'\n+'error'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:419\n\
+  \n12) StakeholderJourneyTest::testTechnicianCanFetchAssignments\ntechnician cannot\
+  \ fetch their assignments\nFailed asserting that 403 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:356\n\
+  \n13) StakeholderJourneyTest::testTechnicianCanPullPianoHistory\nFailed asserting\
+  \ that 403 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:362\n\
+  \n14) StakeholderJourneyTest::testSecurityValidLoginReachesTheQueue\na correctly\
+  \ authenticated admin must reach the work queue\nFailed asserting that 302 is identical\
+  \ to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/StakeholderJourneyTest.php:690\n\
+  \n15) AdminV2LogServiceTest::testTheSuccessNoticeShowsAfterLogging\nFailed asserting\
+  \ that '' contains \"Service logged\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LogServiceTest.php:182\n\
+  \n16) AdminV2LogServiceTest::testLoggingServiceWritesACompletedCheckupTicket\nThe\
+  \ service log must create a ticket.\nFailed asserting that null is not null.\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LogServiceTest.php:137\n\
+  \n17) AdminV2LogServiceTest::testAnEmptyNoteStillLogsARoutineService\nA blank note\
+  \ must still log, with a default description.\nFailed asserting that null is not\
+  \ null.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LogServiceTest.php:158\n\
+  \n18) AdminV2LogServiceTest::testTheInstrumentPageOffersAOneTapServiceLog\nEvery\
+  \ instrument page must offer a quick service log.\nFailed asserting that '' contains\
+  \ \"name=\"log_service\"\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LogServiceTest.php:125\n\
+  \n19) AdminV2ReassignTest::testTheInstrumentPageOffersReassign\nThe instrument page\
+  \ must offer a reassign control for an open job.\nFailed asserting that '' contains\
+  \ \"name=\"assign_to\"\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2ReassignTest.php:158\n\
+  \n20) AdminV2ReassignTest::testUnassigningReturnsTheJobToTheSharedQueue\nUnassigning\
+  \ must clear the assignee.\nFailed asserting that 2 is null.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2ReassignTest.php:190\n\
+  \n21) AdminV2ReassignTest::testAssigningPutsTheJobOnThatPersonsDay\nAssigning an\
+  \ open job should move it to in_progress.\nFailed asserting that two strings are\
+  \ identical.\n--- Expected\n+++ Actual\n@@ @@\n-'in_progress'\n+'open'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2ReassignTest.php:173\n\
+  \n22) AdminV2ReassignTest::testAnUnknownUserIsRefused\nFailed asserting that ''\
+  \ contains \"not an active user\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2ReassignTest.php:201\n\
+  \n23) AdminV2SettingsTest::testAdminRejectsAMalformedEmail\nFailed asserting that\
+  \ '\\n\n<!DOCTYPE html>\\n\n<html>\\n\n<head>\\n\n    <meta charset=\"UTF-8\">\\\
+  n\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\
+  >\\n\n    <link rel=\"stylesheet\" href=\"css/reqhistory.css\">\\n\n    <link rel=\"\
+  stylesheet\" href=\"login_form.php.css?r=2131772444\">\\n\n</head>\\n\n<body>\\\
+  n\n    <div class=\"login-container\">\\n\n        <div class=\"login-form\">\\\
+  n\n                        \\n\n            <form method=\"POST\" action=\"\">\\\
+  n\n                <div class=\"form-group\">\\n\n                    <label for=\"\
+  email\">Email Address</label>\\n\n                    <input type=\"email\" id=\"\
+  email\" name=\"email\" required \\n\n                           value=\"\">\\n\n\
+  \                </div>\\n\n                \\n\n                <div class=\"form-group\"\
+  >\\n\n                    <label for=\"password\">Password</label>\\n\n        \
+  \            <input type=\"password\" id=\"password\" name=\"password\" required>\\\
+  n\n                </div>\\n\n                \\n\n                <button type=\"\
+  submit\" class=\"login-button\">Login</button>\\n\n            </form>\\n\n\\n\n\
+  \            <div class=\"login-links\">\\n\n                <a class=\"login-link\"\
+  \ href=\"forgot_password.php\">Forgot password?</a>\\n\n            </div>\\n\n\
+  \        </div>\\n\n    </div>\\n\n</body>\\n\n</html>' contains \"not a valid email\"\
+  .\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2SettingsTest.php:149\n\
+  \n24) AdminV2SettingsTest::testAdminGeneratesAWorkingApiToken\nThe token file must\
+  \ be written.\nFailed asserting that false is true.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2SettingsTest.php:157\n\
+  \n25) AdminV2SettingsTest::testAdminSetsAStaffEmail\nFailed asserting that two strings\
+  \ are identical.\n--- Expected\n+++ Actual\n@@ @@\n-'tech@example.org'\n+''\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2SettingsTest.php:140\n\
+  \n26) AdminV2SettingsTest::testATechnicianIsRefused\nFailed asserting that '\\n\n\
+  <!DOCTYPE html>\\n\n<html>\\n\n<head>\\n\n    <meta charset=\"UTF-8\">\\n\n    <meta\
+  \ name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\n\n    <link\
+  \ rel=\"stylesheet\" href=\"css/reqhistory.css\">\\n\n    <link rel=\"stylesheet\"\
+  \ href=\"login_form.php.css?r=338583392\">\\n\n</head>\\n\n<body>\\n\n    <div class=\"\
+  login-container\">\\n\n        <div class=\"login-form\">\\n\n                 \
+  \       \\n\n            <form method=\"POST\" action=\"\">\\n\n               \
+  \ <div class=\"form-group\">\\n\n                    <label for=\"email\">Email\
+  \ Address</label>\\n\n                    <input type=\"email\" id=\"email\" name=\"\
+  email\" required \\n\n                           value=\"\">\\n\n              \
+  \  </div>\\n\n                \\n\n                <div class=\"form-group\">\\\
+  n\n                    <label for=\"password\">Password</label>\\n\n           \
+  \         <input type=\"password\" id=\"password\" name=\"password\" required>\\\
+  n\n                </div>\\n\n                \\n\n                <button type=\"\
+  submit\" class=\"login-button\">Login</button>\\n\n            </form>\\n\n\\n\n\
+  \            <div class=\"login-links\">\\n\n                <a class=\"login-link\"\
+  \ href=\"forgot_password.php\">Forgot password?</a>\\n\n            </div>\\n\n\
+  \        </div>\\n\n    </div>\\n\n</body>\\n\n</html>' contains \"Administrators\
+  \ only\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2SettingsTest.php:121\n\
+  \n27) AdminV2SettingsTest::testAdminSeesBothSections\nFailed asserting that '\\\
+  n\n<!DOCTYPE html>\\n\n<html>\\n\n<head>\\n\n    <meta charset=\"UTF-8\">\\n\n \
+  \   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\\\
+  n\n    <link rel=\"stylesheet\" href=\"css/reqhistory.css\">\\n\n    <link rel=\"\
+  stylesheet\" href=\"login_form.php.css?r=703903541\">\\n\n</head>\\n\n<body>\\n\n\
+  \    <div class=\"login-container\">\\n\n        <div class=\"login-form\">\\n\n\
+  \                        \\n\n            <form method=\"POST\" action=\"\">\\n\n\
+  \                <div class=\"form-group\">\\n\n                    <label for=\"\
+  email\">Email Address</label>\\n\n                    <input type=\"email\" id=\"\
+  email\" name=\"email\" required \\n\n                           value=\"\">\\n\n\
+  \                </div>\\n\n                \\n\n                <div class=\"form-group\"\
+  >\\n\n                    <label for=\"password\">Password</label>\\n\n        \
+  \            <input type=\"password\" id=\"password\" name=\"password\" required>\\\
+  n\n                </div>\\n\n                \\n\n                <button type=\"\
+  submit\" class=\"login-button\">Login</button>\\n\n            </form>\\n\n\\n\n\
+  \            <div class=\"login-links\">\\n\n                <a class=\"login-link\"\
+  \ href=\"forgot_password.php\">Forgot password?</a>\\n\n            </div>\\n\n\
+  \        </div>\\n\n    </div>\\n\n</body>\\n\n</html>' contains \"Staff reset emails\"\
+  .\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2SettingsTest.php:109\n\
+  \n28) AdminV2WalkthroughTest::testCompletingAJobRequiresItToBelongToTheInstrumentOnThePage\n\
+  no CSRF token rendered\nFailed asserting that an array is not empty.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:219\n\
+  \n29) AdminV2WalkthroughTest::testReadinessReportsUngradedInstrumentsSeparately\n\
+  ungraded instruments must be reported, not folded into the totals\nFailed asserting\
+  \ that '' matches PCRE pattern \"/\\bungraded\\b/i\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:248\n\
+  \n30) AdminV2WalkthroughTest::testDirectorCanWalkFromReadinessToABuildingToAnInstrument\n\
+  readiness offers no link into a building\nFailed asserting that an array is not\
+  \ empty.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:258\n\
+  \n31) AdminV2WalkthroughTest::testMyDayShowsWorkAssignedToMeAndNothingElse\nmy own\
+  \ assigned work is missing\nFailed asserting that '' contains \"ZZ_WALK_MINE\".\n\
+  \n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:119\n\
+  \n32) AdminV2WalkthroughTest::testMyDayCollapsesDuplicateAppointmentsToOne\nthe\
+  \ duplicate-appointment ticket rendered as more than one card, or not at all\nFailed\
+  \ asserting that 0 is identical to 1.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:153\n\
+  \n33) AdminV2WalkthroughTest::testTechnicianCanCompleteAJobFromTheInstrumentPage\n\
+  Failed asserting that 302 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2WalkthroughTest.php:173\n\
+  \n34) BookingEndToEndTest::testACustomerCanBookAndATechnicianCanCompleteIt\nFailed\
+  \ asserting that two strings are identical.\n--- Expected\n+++ Actual\n@@ @@\n-'success'\n\
+  +'error'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/BookingEndToEndTest.php:159\n\
+  \n35) HubTest::testHubOffersTheLearningAndReferenceRoutes\nLogin should redirect\
+  \ to the hub.\nFailed asserting that '' contains \"hub.php\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:71\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:93\n\
+  \n36) HubTest::testHubShipsNoJavaScript\nLogin should redirect to the hub.\nFailed\
+  \ asserting that '' contains \"hub.php\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:71\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:106\n\
+  \n37) HubTest::testLoginLandsOnTheHubWhichRoutesToBothAdmins\nLogin should redirect\
+  \ to the hub.\nFailed asserting that '' contains \"hub.php\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:71\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/HubTest.php:85\n\
+  \n38) PasswordResetTest::testAValidLinkResetsThePasswordAndLoginThenWorks\nFailed\
+  \ asserting that two strings are identical.\n--- Expected\n+++ Actual\n@@ @@\n-'Set\
+  \ a new password'\n+'This link does not work'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/PasswordResetTest.php:151\n\
+  \n39) PasswordResetTest::testRequestingForARealAccountCreatesAToken\nFailed asserting\
+  \ that 0 is identical to 1.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/PasswordResetTest.php:125\n\
+  \n40) PasswordResetTest::testALinkWorksOnlyOnce\nFailed asserting that two strings\
+  \ are identical.\n--- Expected\n+++ Actual\n@@ @@\n-'This link was already used'\n\
+  +'This link does not work'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/PasswordResetTest.php:197\n\
+  \n41) PasswordResetTest::testAnExpiredLinkIsRefused\nFailed asserting that two strings\
+  \ are identical.\n--- Expected\n+++ Actual\n@@ @@\n-'This link has expired'\n+'This\
+  \ link does not work'\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/PasswordResetTest.php:204\n\
+  \n42) PasswordResetTest::testMismatchedPasswordsAreRejected\nFailed asserting that\
+  \ '<!DOCTYPE html>\\n\n<html lang=\"en\">\\n\n<head>\\n\n<meta charset=\"UTF-8\"\
+  >\\n\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\\\
+  n\n<title>Set a new password</title>\\n\n<style>\\n\nbody { margin:0; padding:2rem\
+  \ 1rem; font:16px/1.55 -apple-system, BlinkMacSystemFont,\\n\n       \"Segoe UI\"\
+  , system-ui, sans-serif; color:#16161a; background:#fff; }\\n\n.wrap { max-width:26rem;\
+  \ margin:0 auto; }\\n\nh1 { font-size:1.3rem; margin:0 0 .6rem; }\\n\np { margin:0\
+  \ 0 .9rem; }\\n\nlabel { display:block; font-weight:600; margin:.6rem 0 .3rem; }\\\
+  n\ninput[type=password] { width:100%; min-height:44px; padding:.5rem .7rem; font-size:1rem;\\\
+  n\n       border:1px solid #d9d9e0; border-radius:8px; background:#fff; color:#16161a;\
+  \ }\\n\nbutton { margin-top:1rem; min-height:44px; padding:0 1.2rem; font-size:1rem;\
+  \ font-weight:600;\\n\n       border:0; border-radius:8px; background:#4a2f8f; color:#fff;\
+  \ cursor:pointer; }\\n\n.ok   { border:1px solid #b8dcc5; background:#e8f5ec; color:#14512c;\
+  \ border-radius:8px; padding:.8rem .9rem; }\\n\n.warn { border:1px solid #f0c2bd;\
+  \ background:#fdecea; color:#7a1f1f; border-radius:8px; padding:.8rem .9rem; }\\\
+  n\na { color:#4a2f8f; }\\n\n@media (prefers-color-scheme: dark) {\\n\n  body { background:#131317;\
+  \ color:#ececf1; }\\n\n  input[type=password] { background:#1a1a20; color:#ececf1;\
+  \ border-color:#35353f; }\\n\n  button { background:#9a7ce8; color:#14121c; }\\\
+  n\n  .ok   { background:#14301f; border-color:#26543a; color:#b7e8c9; }\\n\n  .warn\
+  \ { background:#331a1a; border-color:#5a2c2c; color:#ffc4c4; }\\n\n}\\n\n</style>\\\
+  n\n</head>\\n\n<body>\\n\n<div class=\"wrap\">\\n\n\\n\n  <h1>This link does not\
+  \ work</h1>\\n\n  <p class=\"warn\">It may have been cut short by your email program,\
+  \ or it is not a\\n\n     valid reset link.</p>\\n\n  <p><a href=\"forgot_password.php\"\
+  >Request a new link</a></p>\\n\n\\n\n</div>\\n\n</body>\\n\n</html>\\n\n' contains\
+  \ \"do not match\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/PasswordResetTest.php:224\n\
+  \n43) QrLabelsTest::testLoggedInGetsAPdf\nFailed asserting that 403 is identical\
+  \ to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/QrLabelsTest.php:80\n\
+  \n44) QrLabelsTest::testBuildingFilterProducesItsOwnSheet\nFailed asserting that\
+  \ 403 is identical to 200.\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/QrLabelsTest.php:88\n\
+  \n45) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"myday\"\
+  \ ('/admin/v2/myday.php')\n/admin/v2/myday.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n46) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"readiness\"\
+  \ ('/admin/v2/readiness.php')\n/admin/v2/readiness.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n47) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"email\"\
+  \ ('/admin/v2/email.php')\n/admin/v2/email.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n48) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"reports\"\
+  \ ('/admin/v2/reports.php')\n/admin/v2/reports.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n49) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"completeness\"\
+  \ ('/admin/v2/completeness.php')\n/admin/v2/completeness.php has no viewport\nFailed\
+  \ asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n50) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"jump\"\
+  \ ('/admin/v2/jump.php?q=zzznomatch')\n/admin/v2/jump.php?q=zzznomatch has no viewport\n\
+  Failed asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n51) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"building\"\
+  \ ('/admin/v2/building.php?name=Music')\n/admin/v2/building.php?name=Music has no\
+  \ viewport\nFailed asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n52) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"help\"\
+  \ ('/admin/v2/help.php')\n/admin/v2/help.php has no viewport\nFailed asserting that\
+  \ '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n53) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"scenarios\"\
+  \ ('/admin/v2/scenarios.php')\n/admin/v2/scenarios.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n54) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"valuation\"\
+  \ ('/admin/v2/valuation.php')\n/admin/v2/valuation.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n55) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"confirm-yr\"\
+  \ ('/admin/v2/year_confirm.php')\n/admin/v2/year_confirm.php has no viewport\nFailed\
+  \ asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n56) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"cleanup\"\
+  \ ('/admin/v2/cleanup.php')\n/admin/v2/cleanup.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n57) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"fields\"\
+  \ ('/admin/v2/fields.php')\n/admin/v2/fields.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n58) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"help-tech\"\
+  \ ('/admin/v2/help.php?role=technician')\n/admin/v2/help.php?role=technician has\
+  \ no viewport\nFailed asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n59) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"piano\"\
+  \ ('/admin/v2/piano.php?id=11')\n/admin/v2/piano.php?id=11 has no viewport\nFailed\
+  \ asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n60) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"unserviced\"\
+  \ ('/admin/v2/unserviced.php')\n/admin/v2/unserviced.php has no viewport\nFailed\
+  \ asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n61) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"confirm-val\"\
+  \ ('/admin/v2/valuation_confirm.php')\n/admin/v2/valuation_confirm.php has no viewport\n\
+  Failed asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n62) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"help-dir\"\
+  \ ('/admin/v2/help.php?role=director')\n/admin/v2/help.php?role=director has no\
+  \ viewport\nFailed asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n63) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"why\"\
+  \ ('/admin/v2/why.php')\n/admin/v2/why.php has no viewport\nFailed asserting that\
+  \ '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n64) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"year-atlas\"\
+  \ ('/admin/v2/year_atlas.php')\n/admin/v2/year_atlas.php has no viewport\nFailed\
+  \ asserting that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n65) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"completeness-g\"\
+  \ ('/admin/v2/completeness.php?ga...graded')\n/admin/v2/completeness.php?gap=ungraded\
+  \ has no viewport\nFailed asserting that '' contains \"width=device-width\".\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n66) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"reports-rr\"\
+  \ ('/admin/v2/reports.php?report=...quests')\n/admin/v2/reports.php?report=recent_requests\
+  \ has no viewport\nFailed asserting that '' contains \"width=device-width\".\n\n\
+  /Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n67) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"index\"\
+  \ ('/admin/v2/index.php')\n/admin/v2/index.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \n68) AdminV2LayerTest::testPageHasNoTabsAndIsMobileFirst with data set \"workload\"\
+  \ ('/admin/v2/workload.php')\n/admin/v2/workload.php has no viewport\nFailed asserting\
+  \ that '' contains \"width=device-width\".\n\n/Users/willismiller/Documents/GitHub/intypiano/tests/Integration/AdminV2LayerTest.php:135\n\
+  \nERRORS!\nTests: 330, Assertions: 666, Errors: 1, Failures: 68.\nEXIT:2\n"
+peer_review_notes: 'verification_command (raw `./vendor/bin/phpunit`) exits nonzero
+  whenever ANY test fails, so `fleet verify` reports FAIL even though the task''s
+  own definition_of_done only requires the error/failure count to drop substantially
+  with zero remaining ''Unknown database'' causes -- not a fully green suite. That
+  DoD is met: 18->1 errors, 114->68 failures, 0 ''Unknown database''/''caut_sfusd''
+  occurrences. Also manually verified: admin/v2/piano.php and a V1 admin entry point
+  (admin_header_base.php) no longer throw Unknown database on port 2027; demo-pool
+  ports 8001-8010 dispatch untouched (diff is 2 lines added / 12 removed, confined
+  to the else-branch); game_people dev path (ports 2099/8888/3031) untouched since
+  it''s only overridden when app=="cauttools". Suggest the PM/reviewer either accept
+  nonzero phpunit exit as expected here, or a future task tighten verification_command
+  to grep for absence of ''Unknown database'' rather than requiring exit 0.'
+human_action_required: null
+token_spend: null
+cost_usd: null

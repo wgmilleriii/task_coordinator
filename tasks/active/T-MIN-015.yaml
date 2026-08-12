@@ -1,0 +1,66 @@
+id: T-MIN-015
+title: Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is
+  merged
+repo: minchiate_tarot
+priority: P2
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-11T20:16:00-06:00'
+dependencies: []
+scope:
+- 'Read the four explicit deferral notes first, exact claim IDs: GAN-C012 (research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md,
+  claims table + its Sec.3 prose "no typed edge — arie batch in flight, reconciliation
+  deferred"), RUL2-C012 (PERSONALITY_TRUMP-02_Ruler.md, same pattern), RUL4-C013
+  (PERSONALITY_TRUMP-04_Ruler.md, "no committed text to reconcile against"), and
+  FOO-C014 (PERSONALITY_TRUMP-FOOL_Fool.md, "arie batch in flight (T-MIN-011, unmerged),
+  AIR-C011 offered-not-imposed model noted"). All four cite T-MIN-011 as the blocker;
+  T-MIN-011 is now merged to test (five files: PERSONALITY_TRUMP-36_Star.md through
+  -40_Trumpets.md).'
+- 'Ganellino/Rulers side (GAN-C012, RUL2-C012, RUL4-C013): check all five committed
+  arie files for any mention of Ganellino, Papi, or Rulers — as of the merge, none
+  of the five arie files assert or imply such an edge (confirmed absent by grep).
+  Per the scope-forbid clause below, this means the correct close is most likely
+  an explicit mutual decline with stated grounds, not an invented edge; but re-verify
+  the arie files yourself before concluding that, since study text can have moved.'
+- 'Fool/Trumpets side (FOO-C014 and the Trumpets file''s TRO-C018): TRO-C018 reads
+  "No Fool edge: the Fool/papi batch is briefed in parallel; the structural contrast
+  is queued (Sec.4) and left to that batch to offer" — this is a live, still-open
+  invitation on the arie side, not a decline. Decide whether the Fool study now
+  types this edge (the AIR-C011 offered-not-imposed model FOO-C014 names is the
+  precedent: one side asserts, offered to the other, asymmetry recorded until reciprocated)
+  or explicitly declines it with grounds. If typed, update BOTH PERSONALITY_TRUMP-FOOL_Fool.md
+  and PERSONALITY_TRUMP-40_Trumpets.md claims tables and prose in sync (matching
+  type, direction, grading); TRO-C018''s "left to that batch to offer" language must
+  not survive unchanged either way — replace it with the resolution.'
+- Scope forbids inventing any relationship not implied by either existing file's
+  current text — no new thematic reading connecting the low block to the celestial
+  arie may be introduced; if no textual hook exists, record the mutual decline and
+  say so plainly rather than manufacturing a connection.
+- Do not touch TRUMP-02/TRUMP-04's other claims, TRUMP-36/37/38/39's files, or any
+  other study file beyond the four named plus TRUMP-40 (only if the Fool/Trumpets
+  edge is typed).
+definition_of_done:
+- GAN-C012, RUL2-C012, and RUL4-C013 no longer read as open deferrals; each carries
+  either a typed low-block-to-arie edge (updated in sync with the relevant arie
+  file) or an explicit mutual decline with stated grounds.
+- FOO-C014 and PERSONALITY_TRUMP-40_Trumpets.md's TRO-C018 are resolved in sync
+  with each other, not just on the Fool side.
+- No new relationship is asserted that is not implied by the existing text of either
+  side; any decline states its grounds rather than being a silent removal.
+- git diff --name-only against the audited sha touches only PERSONALITY_TRUMP-01_Ganellino.md,
+  PERSONALITY_TRUMP-02_Ruler.md, PERSONALITY_TRUMP-04_Ruler.md, PERSONALITY_TRUMP-FOOL_Fool.md,
+  and (only if the Fool/Trumpets edge is typed) PERSONALITY_TRUMP-40_Trumpets.md.
+verification_command: 'bash -c ''set -e; files="research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md
+  research/pilots/drafts/PERSONALITY_TRUMP-02_Ruler.md research/pilots/drafts/PERSONALITY_TRUMP-04_Ruler.md
+  research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md"; for f in $files; do test
+  -f "$f" || { echo "FAIL: missing $f"; exit 1; }; grep -qiE "arie batch in flight|reconciliation
+  deferred|batch in flight \(T-MIN-011" "$f" && { echo "FAIL: $f still carries an
+  unresolved arie deferral"; exit 1; }; done; grep -qi "left to that batch to offer"
+  research/pilots/drafts/PERSONALITY_TRUMP-40_Trumpets.md && { echo "FAIL: Trumpets
+  TRO-C018 not updated with the Fool batch resolution"; exit 1; }; for pair in "GAN-C012:research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md"
+  "RUL2-C012:research/pilots/drafts/PERSONALITY_TRUMP-02_Ruler.md" "RUL4-C013:research/pilots/drafts/PERSONALITY_TRUMP-04_Ruler.md"
+  "FOO-C014:research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md"; do id="${pair%%:*}";
+  f="${pair#*:}"; grep -q "$id" "$f" || { echo "FAIL: $id row missing from $f";
+  exit 1; }; done; echo PASS'''
+human_review_required: false

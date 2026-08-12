@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
-    T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]
+    T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::active
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::review
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
@@ -966,9 +966,9 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-008 · P2 · ANY · AUDITED
+### 🛠 T-PTG-008 · P2 · ANY · CLAIMED
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
-**Owner:** None
+**Owner:** Worker-PTG-FeatureRequest1
 
 **Scope:**
 - PROBLEM: Every message today runs through one pipeline: index.php UI -> AJAX POST -> api/ask.php -> Authorization::requireRole() -> Csrf::validate() -> UsagePolicy::checkAllowance() -> JournalAnswerService::ask() -> OpenAI File Search against the vector store -> citation/page-marker resolution -> messages/usage_events rows -> JSON response with citations[] and is_grounded. The product owner wants a second conversation type for feature requests that a member explicitly tags in their own message text (their design decision, e.g. a leading '/feature request' marker -- explicit tagging was chosen specifically over auto-intent-classification, which would misfire on genuinely ambiguous messages like 'does PTG have a source on X, or is that a gap'). A tagged message must skip the RAG pipeline entirely: no getActiveVectorStoreId()/callOpenAIResponsesApi() call, no resolveCitationsFromChunks(), no fallbackExtractCitationsFromAnswer(), no citations[] or is_grounded badge in the response (there is nothing to cite). Instead it enters a conversational triage flow: the assistant acknowledges the idea and asks clarifying questions (who runs into this, how often, what would the feature look like) across multiple turns, the way a human PM/Scout would triage an idea, until 'enough' detail exists.

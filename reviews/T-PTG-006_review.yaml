@@ -1,0 +1,44 @@
+task_id: T-PTG-006
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: e81d2887f8a63c9195752325c8576e3e3b4094c2
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    tests/manual_conversation_matrix.php correctly generalizes the T-PTG-005 harness:
+    accepts an arbitrary scenario JSON, runs each turn sequentially in the same
+    conversation_id, and carries the scenario's declared type/expect_grounded through to
+    the output for downstream analysis. Confirmed reusable by design — no hardcoded
+    question text in the harness itself.
+  file_reference: journalgpt/tests/manual_conversation_matrix.php
+- severity: INFO
+  description: >-
+    The core finding is well-evidenced, not asserted: debug_logs.raw_answer was queried
+    directly to confirm the "discarded good answer" claim (the model's actual turn-3 text
+    was captured and shown to genuinely be a well-hedged, citation-backed speculative
+    answer before the fix, proving PTJ-013's policy was discarding good content, not that
+    the model was refusing). This is a materially stronger evidentiary standard than
+    eyeballing the final displayed answer alone.
+  file_reference: null
+- severity: INFO
+  description: >-
+    The fix (forcing tool_choice universally) is well-scoped: it does not touch
+    docs/answer-policy.md's grounding language or the PTJ-013 withholding logic at all —
+    it only changes whether the model is forced to search before answering, which
+    increases the odds a good answer has real citations to survive the existing policy
+    unchanged. This is the right layer to fix at, and the commit message correctly
+    explains why the policy language itself wasn't touched (a real-person-speculation
+    tension the reviewer/task author explicitly declined to resolve unilaterally,
+    surfacing it to the human instead).
+  file_reference: journalgpt/lib/OpenAIClient.php
+- severity: MINOR
+  description: >-
+    The "gpt-4o-mini occasionally omits citation markers despite retrieving relevant
+    chunks" observation is correctly classified as a non-blocking, pre-existing model
+    behavior rather than folded into the headline fix — verified by checking a second,
+    independently-run debug_logs entry for the same question that DID carry citations
+    with matching facts, supporting the "variance, not regression" conclusion rather than
+    just asserting it.
+  file_reference: null
+reviewed_at: '2026-08-12T18:20:00Z'

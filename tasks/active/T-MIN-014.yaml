@@ -4,8 +4,8 @@ title: Write back resolved dispositions into the Quarantine Register (CW-5/6/7/1
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F15
 created_at: '2026-08-11T20:15:00-06:00'
 dependencies: []
 scope:
@@ -75,3 +75,7 @@ events:
   action: AUDIT
   actor: PM-F6
   details: Audited against 19c26db
+- timestamp: '2026-08-12T04:21:59.047986Z'
+  action: CLAIM
+  actor: Worker-F15
+claimed_at: '2026-08-12T04:21:59.047811Z'

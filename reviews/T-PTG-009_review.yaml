@@ -1,0 +1,73 @@
+task_id: T-PTG-009
+reviewer_agent: Reviewer-TagFix1
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 05c03c9387e91b93500249c39e55c7322661f967
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Diff is exactly two one-line regex changes in journalgpt/lib/FeatureRequestService.php
+    ([- ] -> [- ]? in both isTagged() and stripTag()) plus the new test file, nothing
+    else -- confirmed via git diff --stat against audited_repo_sha 04842d7e9120bd559464f6cc1586e8c52c72c5f1.'
+- severity: INFO
+  description: 'Read journalgpt/tests/FeatureRequestServiceTest.php in full (145 lines,
+    6 sub-tests). Assertions are meaningful, not tautological: each test constructs
+    real input strings and calls the actual isTagged()/stripTag() static methods,
+    throwing on mismatch. Covers the exact production string, all three separator
+    variants, case-insensitivity, leading-whitespace tolerance, the T-PTG-008 false-positive
+    regression (4 mid-sentence "feature request" mentions, including a no-space and
+    a hyphenated mid-sentence variant), and stripTag() correctness for 5 input/output
+    pairs.'
+- severity: INFO
+  description: 'Ran php journalgpt/tests/FeatureRequestServiceTest.php myself against
+    head_sha: exit 0, all 6 sub-tests OK. Independently verified the TDD claim: git
+    checkout 04842d7e9120bd559464f6cc1586e8c52c72c5f1 -- journalgpt/lib/FeatureRequestService.php
+    (isolating just that file to pre-fix), reran the same test file -- got exit 1
+    with "[FAIL] REGRESSION NOT FIXED: isTagged() still returns false for the no-space
+    variant" on TEST 1, exactly as claimed. Restored the fix (cp from a saved copy),
+    confirmed git diff was clean against head_sha, reran -- exit 0 again. Worktree
+    left clean.'
+- severity: INFO
+  description: 'Ran the other three suites myself against journal_ai_test on 127.0.0.1
+    (DB reachable, pre-existing local MySQL instance): AskEndpointTest.php exit 0
+    (3/3 OK: anonymous denial, CSRF validation, JSON/secret-leakage check), UsagePolicyTest.php
+    exit 0 (5/5 OK: quota enforcement, admin exemption, org budget cap, atomic allowance
+    check, usage ledger), JournalAnswerServiceTest.php exit 0 (all sub-tests OK including
+    citation grounding, uncertainty signaling, refusal behavior, bounded context).
+    No regression to the RAG lane.'
+- severity: INFO
+  description: 'Independently reproduced both key behaviors via a standalone PHP script
+    calling FeatureRequestService directly (not just running the Worker''s test file):
+    isTagged(''/featurerequest different color schemes'') = true, stripTag() of the
+    same = ''different color schemes'' (clean, no leftover fragment), and isTagged(''Is
+    a feature request needed to change the pinblock spec, or is that already covered?'')
+    = false. Matches the Worker''s claimed evidence_output exactly.'
+- severity: INFO
+  description: 'Checked the regex-risk claim (item 7 in the review brief) with a battery
+    of adjacent strings run through the exact post-fix pattern: /featureXrequest (false,
+    correct -- X is not in the [- ]? class), /feature_request (false, correct), /feature  request
+    with a double space (false, correct -- the class still only consumes zero-or-one
+    separator char, a second space is not consumed and breaks the match), /featurerequestfoo
+    with no boundary after "request" (false, correct, the lookahead (?=[\s]|$) still
+    gates it). The `?` only makes the existing character class optional; it introduces
+    no new false-positive surface, confirmed by direct execution rather than assumption.'
+- severity: INFO
+  description: 'Confirmed the ask.php call site is unchanged in shape: journalgpt/api/ask.php:113
+    still calls FeatureRequestService::isTagged($question) once as a single boolean-returning
+    static call before tier/preset resolution. FeatureRequestService::ask() still
+    calls self::stripTag($rawMessage) internally at line 124.'
+- severity: MINOR
+  description: 'Did not independently re-run the Worker''s claimed end-to-end mock-OpenAI
+    server + DB row reproduction (feature_request_details.idea_summary row insert)
+    -- relied on the standalone script-level reproduction (isTagged/stripTag) plus
+    the passing DB-backed JournalAnswerServiceTest/AskEndpointTest/UsagePolicyTest
+    suites as sufficient independent evidence that the DB and application wiring
+    are sound. This does not change the verdict; the unit-level fix is unambiguous
+    and small enough that the full mock-server path is not load-bearing for correctness
+    here.'
+- severity: INFO
+  description: 'The ./bin/fleet verify tooling gap described in peer_review_notes
+    is real and separate from this task -- verified handoffs/T-PTG-009_handoff.yaml
+    branch (test-T-PTG-009) and head_sha (05c03c9) exist only on the review worktree,
+    not the primary checkout, which is consistent with the Worker''s explanation.
+    Not a defect in the fix itself.'
+reviewed_at: '2026-08-12T21:51:17.929058Z'

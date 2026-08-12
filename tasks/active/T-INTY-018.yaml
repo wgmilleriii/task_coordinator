@@ -3,7 +3,7 @@ title: Add dedicated gazelle_id column, decoupled from piano_code
 repo: intypiano
 priority: P1
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-Gazelle1
 created_at: '2026-08-12T00:00:00-06:00'
 dependencies: []
@@ -99,5 +99,8 @@ events:
   details: Audited against 3cf4775d3561b3746c6e55586921beb4492ec57d
 - timestamp: '2026-08-12T18:20:36.300718Z'
   action: CLAIM
+  actor: Worker-Gazelle1
+- timestamp: '2026-08-12T18:32:07.598436Z'
+  action: SUBMIT
   actor: Worker-Gazelle1
 claimed_at: '2026-08-12T18:20:36.299107Z'

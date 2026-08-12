@@ -1,0 +1,89 @@
+task_id: T-INTY-018
+agent: Worker-Gazelle1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test-T-INTY-018
+base_sha: 8b4bcec5fbb61b639debd76abdb8125721c6caca
+head_sha: 6d955d9962a89d24af8a5d8052eb1d67b1ea0186
+evidence_output: "Manually captured (automated `fleet verify` re-runs the app's own\
+  \ repo checkout,\nnot this worker's isolated worktree at ../intypiano-t018 -- it\
+  \ hit \"Address\nalready in use\" on port 2027 against a stale process and produced\
+  \ a spurious\n1/74 result from the wrong tree. All evidence below was captured directly\
+  \ in\n../intypiano-t018 against intypiano_demo, per CLAUDE.md's protected-database\
+  \ rule).\n\n=== Migration ===\n$ php scripts/migrate.php --db=intypiano_demo --run\n\
+  Database: intypiano_demo\nCurrent version: 145\nPending versions: 146\n  running\
+  \  ddl/146/001_pianos_gazelle_id.sql\n  ok       ddl/146/001_pianos_gazelle_id.sql\n\
+  \  running  ddl/146/002_inventory_gazelle_id.sql\n  ok       ddl/146/002_inventory_gazelle_id.sql\n\
+  \  running  ddl/146/003_backfill_pianos_gazelle_id.sql\n  ok       ddl/146/003_backfill_pianos_gazelle_id.sql\n\
+  \  running  ddl/146/004_backfill_inventory_gazelle_id.sql\n  ok       ddl/146/004_backfill_inventory_gazelle_id.sql\n\
+  \  running  ddl/146/005_verify.php\n  ddl/146 pianos.gazelle_id in place, backfilled\
+  \ 42/42 Gazelle-ID-shaped rows, 0 overreach\n  ddl/146 inventory.gazelle_id in place,\
+  \ backfilled 42/42 Gazelle-ID-shaped rows, 0 overreach\n  ddl/146 gazelle_id column\
+  \ added to pianos and inventory\n  ok       ddl/146/005_verify.php\nddl/146: 5 applied,\
+  \ 0 skipped, 4 statements\nVersion is now 146\n\n$ php scripts/migrate.php --db=intypiano_demo\
+  \ --status\nDatabase: intypiano_demo\nCurrent version: 146\nNo pending migrations.\n\
+  \n=== piano_code unchanged proof ===\nCaptured `SELECT id, piano_code FROM pianos\
+  \ ORDER BY id` and\n`SELECT inventoryid, piano_code FROM inventory ORDER BY inventoryid`\
+  \ before\nrunning ddl/146, and again after. `diff` on both before/after pairs (127\n\
+  rows each, header + 126 data rows) produced ZERO lines of output -- byte-for-\n\
+  byte identical, re-confirmed with a third capture after the phpunit run below.\n\
+  \n=== QR resolution spot-check (piano/index.php, which reads v1 inventory) ===\n\
+  Server: php -S localhost:2027 -t . (in ../intypiano-t018)\n110641 (Gazelle-numeric\
+  \ code)  -> HTTP 200, page renders\nALUMNI (hand-assigned code)    -> HTTP 200,\
+  \ page renders\nB22644 (hand-assigned code)    -> HTTP 200, page renders\n\n===\
+  \ Backfill accuracy ===\nInvestigation before writing DDL found the task's own scope\
+  \ assumption\nwrong: only 42 of 126 pianos.piano_code / inventory.piano_code values\
+  \ are\nactually Gazelle-ID-shaped (all-digit, e.g. '110641', '110801', '152964').\n\
+  The other 84 are hand-assigned legacy codes ('ALUMNI', 'YAMAHA', 'B22644',\n'PJH567',\
+  \ 'WURLIT', 'HODGIN', 'UNMHOS', etc.) that were never issued by\nGazelle. ddl/146/005_verify.php\
+  \ asserts, per table: every all-digit\npiano_code has a matching gazelle_id (missed=0)\
+  \ AND no gazelle_id was set\nfrom a non-Gazelle-shaped piano_code (overreach=0).\
+  \ Both tables verified\n42/42 backfilled, 0 missed, 0 overreach.\n\n=== phpunit\
+  \ ===\nPHPUnit 9.6.34 by Sebastian Bergmann and contributors.\n\nRuntime:      \
+  \ PHP 8.4.8\nConfiguration: /Users/willismiller/Documents/GitHub/intypiano-t018/phpunit.xml\n\
+  \n.....................................................EFFFF....F  63 / 330 ( 19%)\n\
+  FFF.FFFF..FFFFF.FFFFFFFFFF.FFFFF...FF.FFFFFFFFFF............... 126 / 330 ( 38%)\n\
+  .........................FFFFFFFFFFFFFFFFFFFFFFFF.............. 189 / 330 ( 57%)\n\
+  ............................................................... 252 / 330 ( 76%)\n\
+  ............................................................... 315 / 330 ( 95%)\n\
+  ...............                                                 330 / 330 (100%)\n\
+  \nTime: 00:06.238, Memory: 12.00 MB\n\nERRORS!\nTests: 330, Assertions: 666, Errors:\
+  \ 1, Failures: 68.\n\nThis is the SAME 330/1/68 shape as the T-INTY-021 post-DB-fallback-fix\n\
+  baseline (see handoffs/T-INTY-021_handoff.yaml). Verified not just by count\nbut\
+  \ by NAME: extracted every \"N) TestClass::testMethod\" line from this run\nand\
+  \ from the T-INTY-021 evidence_output, sorted both, and diffed them --\nzero differences.\
+  \ No test newly failed and no test newly passed. The 1\nerror (AdminV2UnservicedTest::testABadCsrfTokenIsRefused)\
+  \ and all 68\nfailures are the same pre-existing, unrelated set documented in T-021\n\
+  (missing viewport meta tags, CSRF/session assertions, stakeholder auth\nredirects)\
+  \ -- none reference gazelle_id, piano_code, inventory, or\nimport_sfusd.\n"
+peer_review_notes: "`fleet verify` ran the verification_command against the wrong\
+  \ checkout\n(/Users/willismiller/Documents/GitHub/intypiano, not this worker's isolated\n\
+  worktree at ../intypiano-t018) and also collided with a leftover `php -S\nlocalhost:2027`\
+  \ process, producing a bogus 330/1/74 result. This is the\nsame tooling gap T-INTY-021's\
+  \ handoff flagged: `fleet verify` re-runs\n`verification_command` from wherever\
+  \ it's configured to look, not from an\narbitrary worker worktree, and a raw `./vendor/bin/phpunit`\
+  \ exit code fails\nthe harness on any nonzero exit even when the DoD explicitly\
+  \ tolerates a\nknown, named baseline of pre-existing failures. Recommend a future\
+  \ task\neither (a) point `fleet verify` at the worker's worktree path, or (b) let\n\
+  verification_command grep for \"no NEW failures beyond <baseline file>\"\nrather\
+  \ than requiring a clean phpunit exit.\n\nDoD checklist:\n- ddl/146 adds gazelle_id\
+  \ to both pianos and inventory (inventory is in\n  scope: import_sfusd.php writes\
+  \ there, and there is no ongoing sync into\n  v2 pianos -- reconfirmed by grep,\
+  \ matching the prior audit's finding).\n- piano_code provably unchanged: before/after\
+  \ diff on both tables, zero\n  changed rows; 3 real codes (1 Gazelle-numeric, 2\
+  \ hand-assigned) still\n  resolve via piano/index.php.\n- gazelle_id backfilled\
+  \ for exactly the rows that are actually\n  Gazelle-ID-shaped (42/126, not the assumed\
+  \ 126/126) -- verified by\n  005_verify.php's missed=0/overreach=0 assertions, not\
+  \ just a row count.\n- import_sfusd.php writes gazelle_id going forward. Explicit\
+  \ product\n  decision documented in the commit message and inline comment: piano_code\n\
+  \  keeps mirroring the Gazelle Piano ID on new imports (continuity with the\n  deployed\
+  \ QR scheme); gazelle_id is populated alongside it with the same\n  value so future\
+  \ code has a non-overloaded place to read/write the\n  Gazelle identity.\n- phpunit:\
+  \ 330/1/68, name-for-name identical failure set to the T-INTY-021\n  baseline --\
+  \ no regressions.\n- docs/experts/schema-catalog.md updated (requires_doc_update:\
+  \ true):\n  corrects the piano_code-is-always-a-Gazelle-ID assumption and documents\n\
+  \  ddl/146 plus the inventory/pianos non-sync finding.\n"
+human_action_required: null
+token_spend: null
+cost_usd: null

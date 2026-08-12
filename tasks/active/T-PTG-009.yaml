@@ -1,0 +1,153 @@
+id: T-PTG-009
+title: Feature-request tag router misses no-space variant, misrouting real member
+  intent into RAG
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-12T00:00:00Z'
+audited_at: '2026-08-12T20:33:37.881456Z'
+audited_by: PM-TagFix1
+audited_repo_sha: 04842d7e9120bd559464f6cc1586e8c52c72c5f1
+dependencies: []
+scope:
+- 'PROBLEM (confirmed via live production evidence, not re-derived): T-PTG-008 shipped
+  the tag-triggered feature-request lane in journalgpt/api/ask.php and journalgpt/lib/FeatureRequestService.php,
+  and it was pushed to origin/main earlier today. Within 40 minutes, a real member''s
+  first attempt to use it failed. They typed `/featurerequest different color schemes`
+  (no space between "feature" and "request"). Confirmed via https://newmexicoptg.org/journalgpt/api/debug_logs.php?id=22:
+  because the router requires an exact `/feature request` (or `/feature-request`)
+  string with a separator character present, this message fell through to the normal
+  RAG pipeline (JournalAnswerService), searched the piano-journal corpus for "color
+  schemes", found nothing relevant, and returned a confusing non-answer ("The pilot
+  Journal corpus does not contain information regarding different color schemes.").
+  The member''s actual intent -- reporting a feature idea -- was never triaged.'
+- 'EXACT ROOT CAUSE (read directly from journalgpt/lib/FeatureRequestService.php,
+  the sole place the tag is detected): `public static function isTagged(string $message):
+  bool { return (bool)preg_match(''/^\/feature[- ]request(?=[\s]|$)/i'', ltrim($message));
+  }`. The character class `[- ]` matches exactly one of a hyphen or a space between
+  "feature" and "request" -- it has no zero-width/optional alternative. `/feature
+  request ...` matches (space consumed by `[- ]`) and `/feature-request ...` matches
+  (hyphen consumed), but `/featurerequest ...` does NOT match: there is no character
+  between "feature" and "request" for `[- ]` to consume, so the whole preg_match fails
+  and the message falls through to `$tier`/`$preset` resolution and JournalAnswerService::ask()
+  in journalgpt/api/ask.php exactly as any ordinary technical question would. `FeatureRequestService::stripTag()`
+  has the identical `[- ]` (non-optional) pattern and would have the same no-space
+  gap if it were ever reached for this input, though in practice it is never called
+  because `isTagged()` gates the call to `stripTag()`/`ask()` in api/ask.php.'
+- 'LEADING WHITESPACE: already handled correctly today -- both `isTagged()` and `stripTag()`
+  call `ltrim($message)` before the regex, and the regex itself is anchored with `^`
+  against that ltrimmed string. No change needed there; call this out in the Worker''s
+  diff review so they do not "fix" something that already works and accidentally regress
+  it.'
+- 'NO EXISTING TEST COVERAGE (confirmed by direct search, not assumed): journalgpt/tests/AskEndpointTest.php
+  has zero references to isTagged, stripTag, FeatureRequestService, or feature-request
+  tag variants anywhere in the file -- it only tests anonymous-access denial, CSRF
+  validation, and basic valid-JSON-response shape for the RAG lane, and never instantiates
+  FeatureRequestService at all. There is also no FeatureRequestServiceTest.php or
+  equivalent file anywhere under journalgpt/tests/ (directory listing confirmed).
+  T-PTG-008''s DoD proved the happy-path multi-turn conversation flow end-to-end against
+  a running server, but never exercised tag-matching edge cases (no-space, hyphen-vs-space
+  equivalence, or the false-positive-avoidance case) with an assertion -- this is
+  a real coverage gap, not a process failure by that task, since first-token exact-string
+  matching was explicitly the simplest option chosen at the time.'
+- 'FIX SCOPE, per the product owner''s (Chip) explicit direction: the router must
+  match ALL of `/feature request ...` (space), `/featurerequest ...` (no space), and
+  `/feature-request ...` (hyphen), all case-insensitively, tolerant of a leading space
+  or two before the leading slash (already handled via ltrim -- do not touch that
+  part). This is a small, mechanical regex change to the separator between "feature"
+  and "request" (e.g. making `[- ]` optional/zero-or-one, such as `[- ]?`) in BOTH
+  `isTagged()` and `stripTag()` in journalgpt/lib/FeatureRequestService.php -- the
+  same character-class fix belongs in both methods since they must stay in agreement
+  about what counts as tagged, and `stripTag()`''s current pattern has the identical
+  gap even though it happens not to be reachable for this exact failure today.'
+- 'EXPLICITLY OUT OF SCOPE, per the same conversation with the product owner: fuzzy/typo
+  matching (e.g. tolerating `/feture request` or other misspellings) and detecting
+  the tag phrase anywhere in the message body (rather than as the first token). Both
+  were deliberately ruled out because they would reopen the false-positive risk that
+  T-PTG-008''s own PM audit closed: a genuine technical question that happens to mention
+  "feature request" mid-sentence (e.g. "is a feature request needed to change the
+  pinblock spec, or is that already covered?") must keep routing to the citation-grounded
+  RAG lane, not the triage lane. The Worker must keep the match to this short, fixed
+  set of normalized-first-token variants -- do not generalize into intent detection,
+  Levenshtein-distance matching, or a substring search of the full message.'
+- 'REGRESSION SURFACE: journalgpt/api/ask.php''s router calls `FeatureRequestService::isTagged($question)`
+  once, before tier/preset/model resolution -- confirm the fix does not change that
+  call site''s shape (still a single boolean-returning static call). journalgpt/lib/FeatureRequestService.php''s
+  `ask()` method also calls `stripTag()` internally to compute `$cleanedText` from
+  `$rawMessage` -- confirm a no-space or hyphenated tag still strips cleanly, leaving
+  the member''s actual message content (e.g. "different color schemes") in `$cleanedText`,
+  not leftover tag fragments.'
+definition_of_done:
+- 'A new automated test file, journalgpt/tests/FeatureRequestServiceTest.php (does
+  not exist yet -- confirmed by directory listing), CLI-runnable via `php journalgpt/tests/FeatureRequestServiceTest.php`
+  following this repo''s existing tests/ convention (see AskEndpointTest.php''s self-runner
+  pattern), reproduces the real production failure and proves it fixed: `FeatureRequestService::isTagged(''/featurerequest
+  different color schemes'')` returns true after the fix (it returns false today --
+  confirm the test fails against the pre-fix code before implementing, per this repo''s
+  TDD convention). This file is referenced directly in this task''s verification_command.'
+- 'All three variants route correctly and case-insensitively: `/feature request ...`,
+  `/featurerequest ...`, and `/feature-request ...` (and at least one mixed-case example,
+  e.g. `/FeatureRequest ...` or `/Feature-Request ...`) all make `isTagged()` return
+  true.'
+- 'The T-PTG-008 false-positive-avoidance guarantee still holds and is covered by
+  an explicit regression test: a message where "feature request" (or a no-space/hyphenated
+  variant) appears mid-sentence rather than as the first token -- e.g. "Is a feature
+  request needed to change the pinblock spec, or is that already covered?" -- must
+  still make `isTagged()` return false and route to the RAG pipeline, not the triage
+  lane. This is the exact case T-PTG-008''s PM audit was careful about and this fix
+  must not reopen it.'
+- '`stripTag()` is fixed consistently with `isTagged()` (same separator-matching change)
+  and a test confirms a no-space or hyphenated tag strips cleanly, leaving the member''s
+  actual message content intact (e.g. `stripTag(''/featurerequest different color
+  schemes'')` yields `''different color schemes''`, not a leftover fragment like `''request
+  different color schemes''` or `''different color schemes''` with stray tag remnants).'
+- Leading-whitespace tolerance (already working via ltrim) is confirmed still working
+  post-fix with at least one test case (e.g. `'  /featurerequest different color schemes'`
+  with two leading spaces still routes to the triage lane) -- a guard against an accidental
+  regression while touching this code, not new functionality to build.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php,
+  journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php
+  all run clean (0 failures) via the DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/<File>.php pattern, confirming no regression to
+  the RAG lane or the existing feature-request happy path.
+- No fuzzy/typo matching and no anywhere-in-message-body detection was introduced
+  -- the fix is confirmed (by reading the diff) to be limited to making the existing
+  fixed-separator character class optional/zero-or-one in isTagged() and stripTag(),
+  not a rewrite into general intent detection.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/AskEndpointTest.php && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/UsagePolicyTest.php && DB_HOST=127.0.0.1
+  DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/JournalAnswerServiceTest.php
+  && php journalgpt/tests/FeatureRequestServiceTest.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-12T00:00:00Z'
+  action: SCOUT
+  actor: Claude-Scout-PTG-TagFix1
+  details: Investigated the live production misrouting bug reported by the product
+    owner (member typed `/featurerequest different color schemes`, no space, confirmed
+    via debug_logs.php?id=22 that it fell through to the RAG pipeline and returned
+    a confusing non-answer). Read journalgpt/lib/FeatureRequestService.php::isTagged()
+    directly and confirmed the exact root cause -- the regex `/^\/feature[- ]request(?=[\s]|$)/i`
+    requires the character class `[- ]` to consume exactly one separator character
+    (space or hyphen) between "feature" and "request", with no zero-width option,
+    so a concatenated `/featurerequest` never matches. Confirmed the identical gap
+    exists in stripTag(). Searched journalgpt/tests/AskEndpointTest.php and the full
+    tests/ directory and confirmed zero existing test coverage of isTagged()/stripTag()
+    tag-variant matching -- T-PTG-008's DoD proved the happy-path conversation flow
+    but never asserted against tag-matching edge cases. Scoped the fix to the exact
+    set of variants the product owner confirmed (space / no-space / hyphen, case-insensitive,
+    leading-whitespace-tolerant) and explicitly excluded fuzzy/typo matching and anywhere-in-body
+    detection per the product owner's direction, to avoid reopening the false-positive
+    risk T-PTG-008's PM audit closed.
+- timestamp: '2026-08-12T20:33:37.882011Z'
+  action: AUDIT
+  actor: PM-TagFix1
+  details: Audited against 04842d7e9120bd559464f6cc1586e8c52c72c5f1

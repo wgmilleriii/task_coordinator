@@ -1,0 +1,63 @@
+id: T-PTG-007
+title: Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: Claude-FleetCommander
+created_at: '2026-08-12T18:40:00Z'
+audited_at: '2026-08-12T18:40:00Z'
+audited_by: Claude-PM
+audited_repo_sha: ae296aee492b1d0ed245b4497027c43f0907e902
+dependencies: []
+scope:
+- 'journalgpt/tests/scenarios/frequent_contributors_aggregate.json (new) — real production conversation
+  (2026-08-12, conversation_id=47, user_id=1) found via the reviewing-production-conversations skill:
+  ''who writes the most articles?'' -> ''enuermate the top 10 most frequent contributoprs'' (typos preserved
+  verbatim) -> ''list the names of their articles along with them''.'
+- 'This is a genuinely new cognitive mode beyond the 4 T-PTG-006 covers (factual retrieval / synthesis
+  / speculative / sentiment aggregation): a question that requires a COUNT or RANKING across the entire
+  corpus, which a single ~20-chunk semantic retrieval architecturally cannot produce reliably — it only
+  ever sees a small, unrepresentative sample, never the full corpus.'
+- Production evidence (debug_logs id=15) shows the model DID verbally hedge ('did not specify a definitive
+  list... a comprehensive ranking... is not available in the provided excerpts') but still printed a confident-looking
+  numbered 1-10 list beneath that caveat — the visual formatting undercuts the verbal honesty.
+definition_of_done:
+- Scenario executed across enough preset/tier combinations to know whether the hedge-but-still-rank behavior
+  is consistent or occasional (model-specific).
+- 'Determine whether the current verbal caveat is sufficient, or whether a concrete change is warranted:
+  e.g. system-instruction guidance requiring the model to state the sample-vs-corpus limitation BEFORE
+  presenting any list for a count/ranking question, or to avoid a definitively-numbered list format entirely
+  when the underlying data is acknowledged incomplete.'
+- If a fix is implemented, verify it doesn't regress the 4 existing cognitive modes (T-PTG-005/006 coverage)
+  or the citation-format checks.
+- Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion
+  is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed'
+  is a valid outcome.
+verification_command: cd journalgpt && php tests/manual_conversation_matrix.php tests/scenarios/frequent_contributors_aggregate.json
+  scholarly quick
+human_review_required: false
+claimed_at: '2026-08-12T18:37:47.715306Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+requires_doc_update: false
+events:
+- timestamp: '2026-08-12T18:40:00Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Found via reviewing-production-conversations skill (pulled last 10 real production conversations,
+    id 11-20). Chip confirmed he wants this investigated and mined into a new test scenario rather than
+    left as-is.
+- timestamp: '2026-08-12T18:37:47.715937Z'
+  action: CLAIM
+  actor: Claude-FleetCommander
+- timestamp: '2026-08-12T19:29:36.418231Z'
+  action: SUBMIT
+  actor: Claude-FleetCommander
+- timestamp: '2026-08-12T19:07:00Z'
+  action: RECORD_REVIEW
+  actor: Claude-Reviewer
+  details: 'Verdict: PASS. Set status directly rather than via fleet record-review because the shared
+    store currently has unrelated malformed YAML from another concurrent agent (T-PTG-008, not authored
+    by this session) blocking the CLI global lint gate.'

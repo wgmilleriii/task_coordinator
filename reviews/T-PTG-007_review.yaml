@@ -1,0 +1,43 @@
+task_id: T-PTG-007
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 2915a622d26b0dfa151f5da6070cad4c9688d3ae
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    The before/after comparison is genuinely evidenced, not asserted: the pre-fix matrix
+    run (3 combos, saved before the code change) shows gpt-4o's turn 2 with a fully
+    unhedged numbered top-10 list and gpt-4o-mini stating "Ed Sutton... over 60 articles"
+    as unqualified fact. The post-fix re-run of the identical scenario against the
+    identical 3 combos shows 9/9 turns now stating the sampling limitation before any
+    list. This is a real controlled before/after, not just a single post-fix success
+    story.
+  file_reference: null
+- severity: INFO
+  description: >-
+    The fix is correctly scoped as additive: mandate 6 only adds a new constraint (hedge
+    before listing for aggregate/ranking questions), doesn't relax or contradict any of
+    the existing 5 mandates. Full automated regression suite (tests/JournalAnswerServiceTest.php)
+    confirmed passing after the change.
+  file_reference: journalgpt/lib/JournalAnswerService.php
+- severity: INFO
+  description: >-
+    Correctly did not unilaterally re-approve docs/answer-policy.md as a formally
+    "Approved" governance document — added the new section but explicitly marked it
+    pending Steering Group re-approval, matching this session's established pattern of
+    surfacing policy-adjacent tensions to the human rather than resolving them silently
+    in code. This is the right call for a document that claims external organizational
+    approval.
+  file_reference: journalgpt/docs/answer-policy.md
+- severity: MINOR
+  description: >-
+    The fix addresses phrasing/honesty (don't present a partial sample as a verified
+    ranking) but doesn't address the underlying retrieval limitation itself (a true
+    exhaustive corpus-wide count is still architecturally impossible with single-pass
+    top-K semantic search). The task's own scope correctly frames this as the deliberate,
+    proportionate choice for a pilot rather than an oversight — worth revisiting only if
+    aggregate/ranking questions turn out to be a frequent real member need, not a defect
+    to fix now.
+  file_reference: null
+reviewed_at: '2026-08-12T19:05:00Z'

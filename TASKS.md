@@ -27,7 +27,7 @@ graph TD
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
-    T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::active
+    T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::blocked
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::review
@@ -458,8 +458,10 @@ graph TD
 
 ## Repo: `minchiate_tarot`
 
-### 🛠 T-MIN-003 · P1 · ANY · CLAIMED
+### 🛑 T-MIN-003 · P1 · ANY · BLOCKED
 **Apply the 93 pending card renames already recorded in ledger.json**
+> 🛑 **BLOCKED REASON:** Script (finalize_identifications.py) works correctly and is committed on test-T-MIN-003 (head ad18b35ca2bac83a60b169f76b3e69fc93343a6d): renamed 92/93 pending cards, confirmed idempotent (ledger.json + dir-listing md5sums unchanged across a second run), confirmed --check still passes. The audited verification_command's strict 'zero pending' assert cannot pass: production ledger.json has a genuine collision, not a synthetic edge case -- 830140001_card_08.jpg and 830154001_card_05.jpg are BOTH independently identified/human_confirmed as Trump 27 (Aries) (dhash Hamming distance 7, same engraving visually, likely the same physical card double-extracted from CARD_REVIEW_PROCESS_AND_IDENTIFYING.md's overlapping tile geometry, missed by dedupe_cards.py before identification). Resolving this requires a data-curation decision (e.g. move the duplicate scan to cards_raw/duplicates/ and update ledger.json) outside a one-shot rename script's scope, or a PM relaxing verification_command to tolerate this one known real collision. See feedback/FEEDBACK_Worker-F17_claude-sonnet-5_20260811.md for full detail.
+
 **Owner:** Worker-F17
 
 **Scope:**

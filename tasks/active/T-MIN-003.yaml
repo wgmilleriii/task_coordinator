@@ -3,7 +3,7 @@ title: Apply the 93 pending card renames already recorded in ledger.json
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: CLAIMED
+status: BLOCKED
 owner: Worker-F17
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:40.150761Z'
@@ -54,8 +54,21 @@ verification_command: "python3 finalize_identifications.py && python3 finalize_i
 human_review_required: true
 claimed_at: '2026-08-12T04:40:48.878759Z'
 last_transition: null
-blocked_reason: null
-previous_status: null
+blocked_reason: 'Script (finalize_identifications.py) works correctly and is committed
+  on test-T-MIN-003 (head ad18b35ca2bac83a60b169f76b3e69fc93343a6d): renamed 92/93
+  pending cards, confirmed idempotent (ledger.json + dir-listing md5sums unchanged
+  across a second run), confirmed --check still passes. The audited verification_command''s
+  strict ''zero pending'' assert cannot pass: production ledger.json has a genuine
+  collision, not a synthetic edge case -- 830140001_card_08.jpg and 830154001_card_05.jpg
+  are BOTH independently identified/human_confirmed as Trump 27 (Aries) (dhash Hamming
+  distance 7, same engraving visually, likely the same physical card double-extracted
+  from CARD_REVIEW_PROCESS_AND_IDENTIFYING.md''s overlapping tile geometry, missed
+  by dedupe_cards.py before identification). Resolving this requires a data-curation
+  decision (e.g. move the duplicate scan to cards_raw/duplicates/ and update ledger.json)
+  outside a one-shot rename script''s scope, or a PM relaxing verification_command
+  to tolerate this one known real collision. See feedback/FEEDBACK_Worker-F17_claude-sonnet-5_20260811.md
+  for full detail.'
+previous_status: CLAIMED
 events:
 - timestamp: '2026-08-10T23:58:40.151037Z'
   action: AUDIT
@@ -64,3 +77,20 @@ events:
 - timestamp: '2026-08-12T04:40:48.880222Z'
   action: CLAIM
   actor: Worker-F17
+- timestamp: '2026-08-12T04:48:08.988914Z'
+  action: BLOCK
+  actor: Unknown
+  details: 'Reason: Script (finalize_identifications.py) works correctly and is committed
+    on test-T-MIN-003 (head ad18b35ca2bac83a60b169f76b3e69fc93343a6d): renamed 92/93
+    pending cards, confirmed idempotent (ledger.json + dir-listing md5sums unchanged
+    across a second run), confirmed --check still passes. The audited verification_command''s
+    strict ''zero pending'' assert cannot pass: production ledger.json has a genuine
+    collision, not a synthetic edge case -- 830140001_card_08.jpg and 830154001_card_05.jpg
+    are BOTH independently identified/human_confirmed as Trump 27 (Aries) (dhash Hamming
+    distance 7, same engraving visually, likely the same physical card double-extracted
+    from CARD_REVIEW_PROCESS_AND_IDENTIFYING.md''s overlapping tile geometry, missed
+    by dedupe_cards.py before identification). Resolving this requires a data-curation
+    decision (e.g. move the duplicate scan to cards_raw/duplicates/ and update ledger.json)
+    outside a one-shot rename script''s scope, or a PM relaxing verification_command
+    to tolerate this one known real collision. See feedback/FEEDBACK_Worker-F17_claude-sonnet-5_20260811.md
+    for full detail.'

@@ -1,0 +1,112 @@
+task_id: T-MIN-016
+reviewer_agent: Reviewer-F23
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 02092c3
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: 'Re-ran the CURRENT audited verification_command (as PM-F8 corrected
+    it, not the original self-contradictory version) verbatim in an isolated
+    worktree (git worktree add at 3ac0db7, the worker''s submitted head; never
+    touched the shared minchiate_tarot checkout, which stayed on branch test
+    throughout). Result: PASS, both before and after the correction described
+    below.'
+- severity: INFO
+  description: 'SOUNDNESS OF THE CORRECTED COMMAND -- the critical check given
+    this task''s history. Proved the command actually discriminates good from
+    bad state, not just passes by accident, with three independent regression
+    tests, each applied then reverted with git checkout: (1) reverted
+    Stage5_Master_Card_Registry.csv''s SPECIAL-FOOL row card_id back to
+    TRUMP-FOOL -> command correctly FAILED ("SPECIAL-FOOL not primary card_id
+    in registry CSV"); (2) blanked the aliases column on the CSV''s SPECIAL-FOOL
+    row -> command correctly FAILED ("SPECIAL-FOOL row in CSV missing
+    TRUMP-FOOL in aliases column"); (3) deleted the aliases array from
+    Card_Dossier_Skeletons.json''s SPECIAL-FOOL administrative_identity block
+    -> command correctly FAILED ("aliases missing from skeletons"). All three
+    reverts were restored via git checkout before continuing. The corrected
+    command genuinely distinguishes "TRUMP-FOOL as primary identifier"
+    (forbidden, checked via anchored ^TRUMP-FOOL, patterns and exact
+    card_id/dossier_id/database_id JSON key matches) from "TRUMP-FOOL inside
+    the aliases field" (required, checked via row-scoped/array-scoped greps) in
+    all three data files. This is a materially different, working command --
+    PM-F8''s fix was correct, not a lucky pass.'
+- severity: INFO
+  description: 'ALIASES FIELD GENERICITY (important for T-MIN-017, which reuses
+    this exact mechanism for the Knight alias). Confirmed the field is a real,
+    generic array-of-strings in all four locations, not Fool-specific: (1)
+    registry CSV -- trailing `aliases` column, semicolon-reserved format,
+    populated only for the SPECIAL-FOOL row, blank for all 96 other rows; (2)
+    registry JSON -- `"aliases": ["TRUMP-FOOL"]` as a genuine JSON array,
+    present only on the SPECIAL-FOOL object (grep -c "\"aliases\"" == 1 across
+    the whole file, confirming it was not force-added elsewhere); (3)
+    Stage4_Card_Dossier_Schema.json -- `administrative_identity.aliases` is
+    `{"type": "array", "items": {"type": "string"}, "description": "Optional
+    list of former or alternate card ids (e.g. a prior database_id retired by
+    a rename) that must continue to resolve to this dossier for backward
+    compatibility."}`, present in `properties` but deliberately absent from
+    the `required` array -- genuinely optional, genuinely generic wording, no
+    Fool reference anywhere in the schema text; (4) Card_Dossier_Skeletons.json
+    -- SPECIAL-FOOL''s administrative_identity carries `"aliases": ["TRUMP-FOOL"]`
+    as a real array, not a hardcoded string. T-MIN-017 can reuse this mechanism
+    directly for the Knight alias without any schema rework. No blocker found.'
+- severity: INFO
+  description: 'SCHEMA FIX. Confirmed administrative_identity.sort_order in
+    Stage4_Card_Dossier_Schema.json is `"minimum": 0, "maximum": 97` (widened
+    from the audited minimum of 1). Spot-checked the widening did not leak to
+    other cards: in Card_Dossier_Skeletons.json (97 entries), TRUMP-01 =
+    sort_order 58, TRUMP-35 = 92, TRUMP-40 = 97, and the first six non-trump
+    entries checked run sort_order 1 through 6 -- SPECIAL-FOOL is the only
+    entry at 0. The registry CSV/JSON show the identical pattern.'
+- severity: INFO
+  description: 'THE RENAME ITSELF. Confirmed card_id/dossier_id/database_id
+    are SPECIAL-FOOL (not TRUMP-FOOL) in the registry CSV, registry JSON, and
+    Card_Dossier_Skeletons.json. Confirmed research/pilots/drafts/PERSONALITY_SPECIAL-FOOL_Fool.md
+    exists (git mv from the TRUMP-FOOL filename, old file absent) with correct
+    internal id references: Card: line reads SPECIAL-FOOL, FOO-C001/FOO-C003/FOO-C006
+    evidence rows cite "SPECIAL-FOOL row"/"SPECIAL-FOOL blocking_issue"/"SPECIAL-FOOL
+    registry row". sort_order is 0 in all three data files (registry CSV col
+    10, registry JSON, and Card_Dossier_Skeletons.json). Both question_id
+    prefixes (SPECIAL-FOOL-Q-IMG-001, SPECIAL-FOOL-Q-NAME-001) are updated and
+    no TRUMP-FOOL-Q- prefix remains.'
+- severity: MINOR
+  description: 'FOO-C003 CHECK (read myself, did not trust the worker''s
+    report). The worker''s claim -- that sort_order=0 does not contradict the
+    file''s three-statement distinction (unnumbered on card / outside the
+    ranked ladder / sort-0-as-bookkeeping) -- holds up on independent reading;
+    the file''s own point 3 already anticipated a sort key of 0 before this
+    task ("the database sort key may be 0"), so setting it to 0 confirms
+    rather than contradicts the prose. However, the worker (per its own
+    feedback file, honestly disclosed) updated ONLY the terse claims-table
+    summary rows for FOO-C001/FOO-C003 (the one-line table entries), not the
+    full supporting prose those claims summarize: Sec 1 point 3''s actual
+    paragraph still asserted "The registry assigns sort_order 57" (now
+    literally false against the live registry), the Card: header line still
+    read "sort order 57", Sec 4''s open-question list still asked whether the
+    sort key "should be 0 or 57" as if unresolved, and the Sec 5 reviewer
+    checklist still said "sort-57 bookkeeping". These are live, in-scope
+    claims about the current registry state (distinct from L68 and L116,
+    which accurately quote/cite the still-unrevised Wheel study''s own text
+    and the historical Stage 2 inventory snapshot respectively -- correctly
+    left alone since those are genuinely out of this task''s scope). Applied
+    as a trivially safe correction: updated the four in-scope "57" mentions to
+    "0" and reworded the Sec 4 open question as resolved, with no change to
+    any claim, grading, or the three-statement distinction''s substance.
+    Committed as 02092c3 on test-T-MIN-016 and pushed. Re-ran the verification
+    command after the fix: still PASS (the command does not check this prose,
+    so the fix was necessary independent review work, not something the
+    command would have caught).'
+- severity: INFO
+  description: 'THE 10 CROSS-REFERENCING FILES. Spot-checked 4 of the 10
+    (TRUMP-01 Ganellino/GAN-C012, TRUMP-05 Love/LOV-C017, TRUMP-19
+    Charity/CHA-C005 plus a bare-prose "TRUMP-FOOL and TRUMP-19" mention, and
+    TRUMP-14 Devil/DEV-C019) by diffing each against 09f857d: in every case
+    only the id token TRUMP-FOOL -> SPECIAL-FOOL changed inside citation
+    columns/bare mentions; no surrounding claim text, grading, or conclusion
+    changed. Confirmed PERSONALITY_TRUMP-40_Trumpets.md is genuinely untouched
+    (git diff 09f857d..3ac0db7 -- that file returns zero lines).'
+- severity: INFO
+  description: 'SCOPE. git diff --name-only 09f857d..3ac0db7 touches exactly
+    the 15 files named in scope (4 data/schema files + the renamed Fool study
+    + 10 cross-referencing drafts) -- no archive files, no report files, no
+    code/contract files, nothing outside the named surface.'
+reviewed_at: '2026-08-12T19:40:00.000000Z'

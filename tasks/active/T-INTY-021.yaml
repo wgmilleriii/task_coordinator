@@ -3,7 +3,7 @@ title: Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit 
 repo: intypiano
 priority: P0
 lane: ANY
-status: PEER_REVIEW
+status: DONE
 owner: Worker-DBFallback1
 created_at: '2026-08-12T18:07:43Z'
 dependencies: []
@@ -90,4 +90,8 @@ events:
 - timestamp: '2026-08-12T18:12:34.182128Z'
   action: SUBMIT
   actor: Worker-DBFallback1
+- timestamp: '2026-08-12T18:18:39.378396Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-DBFallback1
+  details: 'Verdict: PASS'
 claimed_at: '2026-08-12T18:09:54.653961Z'

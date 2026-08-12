@@ -1,0 +1,110 @@
+task_id: T-MIN-015
+reviewer_agent: Reviewer-F21
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 69b25a391acabae423c2046b386861eefa4ced73
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: 'Scope confirmed by diff. git -C <worktree> diff --name-only
+    19c26db..218a577 shows exactly five changed files, all in scope and no
+    others: research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md,
+    PERSONALITY_TRUMP-02_Ruler.md, PERSONALITY_TRUMP-04_Ruler.md,
+    PERSONALITY_TRUMP-40_Trumpets.md, PERSONALITY_TRUMP-FOOL_Fool.md. This
+    matches the task scope-forbid clause and DoD item 4 exactly (TRUMP-40 was
+    touched, which is permitted only if the Fool/Trumpets edge is typed --
+    confirmed it was).'
+- severity: INFO
+  description: 'Independently re-verified the decline grounds rather than
+    trusting the worker''s claim. Grepped all five committed arie files
+    (PERSONALITY_TRUMP-36_Star.md through -40_Trumpets.md) directly: each of
+    the five carries its own "[PS] No typed edges to the zodiac, elements,
+    virtues, *papi*, courts, or pips" sentence (Star L246-247, Moon L217, Sun
+    L241, World L217, Trumpets L269), independent of the other four -- this is
+    not one shared disclaimer copy-pasted, it is five separate self-contained
+    statements. Confirmed Ganellino (TRUMP-01), Ruler II (TRUMP-02), and Ruler
+    IV (TRUMP-04) are the "papi" cards this language names, by reading each
+    file''s own header: all three are explicitly "Papi/Fool batch"
+    (PAPI_FOOL_BATCH_BRIEF.md, T-MIN-012) cards. The grounds genuinely apply to
+    Ganellino/Ruler-02/Ruler-04 specifically, not a general disclaimer the
+    worker over-read.'
+- severity: MINOR
+  description: 'Found and corrected a third occurrence of the stale-deferral
+    trap the task and PM audit flagged only for two locations (claims-table row
+    + §3 prose). A §5 "Verification a reviewer must perform" checklist item in
+    each of the three files (Ganellino L266, Ruler-02 L225, Ruler-04 L234) still
+    described the arie edge as "in-flight"/deferred (Ruler-04''s was the worst:
+    "the *arie* deferral is recorded (T-MIN-011 in flight)"), left over from
+    before this task''s reconciliation. This did not trip the verification
+    command (its regex checks specific phrase orderings that these checklist
+    sentences did not match verbatim), so it would have shipped silently.
+    Applied as a trivially safe fix: reworded all three to reflect the resolved
+    state (mutual decline against the merged T-MIN-011 batch) with no change to
+    any claim, disposition, or edge typing. Committed as 69b25a3 on
+    test-T-MIN-015 and pushed. Re-ran the verification command after the fix:
+    still PASS.'
+- severity: INFO
+  description: 'Confirmed both occurrences (claims-table row AND separate §3
+    prose sentence) were updated for all three decline cases by reading the
+    actual diff (19c26db..218a577), not just grepping for absence of old
+    language: Ganellino GAN-C012 (§3 L229-234, table L285), Ruler II RUL2-C012
+    (§3 L192-196, table L244), Ruler IV RUL4-C013 (§3 L200-204, table L254).
+    Grepped for "arie batch in flight", "reconciliation deferred", "batch in
+    flight (T-MIN-011", and "no committed text to reconcile" across all five
+    changed files: zero hits, confirming the known double-occurrence trap did
+    not survive in either location.'
+- severity: INFO
+  description: 'The Fool<->Trumpets "opposite" typing (FOO-C014/TRO-C018) is
+    substantively sound. Located the controlled 15-type vocabulary in
+    research/pilots/ARIE_BATCH_BRIEF.md L92-94: ally, mentor, student, rival,
+    opposite, mirror, shadow-mirror, catalyst, restraint, tempter, healer,
+    companion, predecessor, transformation, most-easily-confused -- "contrast"
+    is not in the vocabulary, and the worker correctly avoided using it as a
+    type (it appears only as descriptive prose, e.g. "structural contrast").
+    Checked usage precedent across the corpus: "Fool -> X: opposite" is the
+    established, near-universal convention throughout every other trump study
+    for the Fool''s relationship to the ranked ladder (grep hits on Love,
+    Chariot, Wheel of Fortune, Old Man/Time, Hanged Man, Devil, Death, House of
+    the Devil -- all typed "Fool -> [card]: opposite", basis "structurally
+    inferred, from game function"), because the Fool sits structurally outside
+    the ranked trump ladder entirely. "mirror" and "shadow-mirror" are used
+    elsewhere in the corpus for doctrinal/thematic resemblance (e.g.
+    Fortitude<->Chariot, Temperance<->Justice, Faith<->Devil), a different
+    semantic than the exclusion-vs-summit relationship described here. Given
+    that the Fool stands wholly outside the ranked ladder (no rank arithmetic
+    exists for it) and the Trumpets stand at its absolute top (beats all 39
+    other trumps, loses to none), "opposite" on ladder position is the correct
+    controlled type, not "mirror" or an invented term -- it matches the
+    project''s own established convention for exactly this structural relation.'
+- severity: INFO
+  description: 'Confirmed the edge is typed identically and reciprocally in
+    both files: PERSONALITY_TRUMP-FOOL_Fool.md''s new §3 record ("Fool ->
+    Trumpets (XL): opposite -- the Trumpets file''s open invitation (TRO-C018),
+    taken up") and claims-table row FOO-C014 both state direction Fool ->
+    Trumpets, type opposite, grounds unnumbered-on-card + shared Minucci
+    exemplary valuation + diverging ladder position (Fool wholly outside,
+    Trumpets at the summit). PERSONALITY_TRUMP-40_Trumpets.md''s reciprocal §3
+    record and claims-table row TRO-C018 (revised) state the identical
+    direction (Fool -> Trumpets, not reversed), identical type (opposite), and
+    the identical grounds, explicitly citing FOO-C014 back. Also confirmed
+    Trumpets §4 open question 5, which previously read "left entirely to the
+    Fool study''s author," is now marked "Resolved: ... now a typed record --
+    opposite (TRO-C018/FOO-C014); see §3" -- not left dangling.'
+- severity: INFO
+  description: 'No relationship invented beyond the five permitted items.
+    Reviewed the full diff for all five changed files line by line: the only
+    substantive changes are (1) GAN-C012/RUL2-C012/RUL4-C013 arie declines,
+    (2) the Fool study''s new no-edge concurrence with Star/Moon/Sun/World
+    (rank/listing only, matching those four files'' own no-edge statements,
+    not a new relationship), and (3) the single Fool<->Trumpets opposite edge.
+    No new thematic reading connecting the low block to the celestial arie was
+    introduced, consistent with the scope-forbid clause.'
+- severity: INFO
+  description: 'Re-ran the audited verification_command from
+    tasks/active/T-MIN-015.yaml verbatim in the isolated review worktree
+    (created via git worktree add at 218a577a8d220bd8939c09e0eef6da6409f6a8ea,
+    never touching the shared minchiate_tarot checkout, which stayed on its
+    existing branch test-T-MIN-003 throughout -- not touched or disturbed).
+    Printed PASS both before and after applying the §5 checklist corrections.
+    The corrections were committed on branch test-T-MIN-015 (commit 69b25a3)
+    and pushed to origin; the worktree was then removed.'
+reviewed_at: '2026-08-12T04:50:00.000000Z'

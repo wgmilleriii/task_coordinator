@@ -3,8 +3,8 @@ title: Voicing-technique continuity + citation-format test matrix (all preset x 
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: PEER_REVIEW
+owner: Claude-FleetCommander
 created_at: '2026-08-12T15:00:00Z'
 audited_at: '2026-08-12T15:00:00Z'
 audited_by: Claude-PM
@@ -35,7 +35,7 @@ definition_of_done:
   fails.
 verification_command: cd journalgpt && php tests/manual_voicing_continuity_matrix.php scholarly quick
 human_review_required: false
-claimed_at: null
+claimed_at: '2026-08-12T17:31:23.801665Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -50,3 +50,15 @@ events:
     auditing this task: turn 1 gave a grounded, well-cited answer; turn 2 correctly resolved ''this''
     to the voicing-technique discussion from turn 1, and citations page-range-collapsed correctly (pp.
     12-14 etc.).'
+- timestamp: '2026-08-12T17:31:23.802359Z'
+  action: CLAIM
+  actor: Claude-FleetCommander
+- timestamp: '2026-08-12T15:40:00Z'
+  action: SUBMIT
+  actor: Claude-FleetCommander
+  details: Verified locally (php tests/manual_voicing_continuity_matrix.php scholarly quick), handoff
+    filled in at commit b34ad1881d01c7622ffa7845726232a2956f4f83. Full matrix results and the Deep-tier
+    root-cause finding written to feedback/FEEDBACK_ClaudeFleetCommander_ClaudeSonnet5_20260812.md. Set
+    status directly rather than via `fleet submit` because the shared store currently has unrelated malformed
+    YAML from another concurrent agent (T-INTY-018/019, intypiano repo) that blocks the CLI's global lint
+    gate on any write.

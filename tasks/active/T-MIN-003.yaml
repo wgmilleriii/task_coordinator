@@ -3,8 +3,8 @@ title: Apply the 93 pending card renames already recorded in ledger.json
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F17
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:40.150761Z'
 audited_by: PM-1
@@ -52,7 +52,7 @@ verification_command: "python3 finalize_identifications.py && python3 finalize_i
   print('OK: 97 entries, 0 pending renames, 0 missing files')\n\" && python3 minchiate_reviewer.py\
   \ --check"
 human_review_required: true
-claimed_at: null
+claimed_at: '2026-08-12T04:40:48.878759Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -61,3 +61,6 @@ events:
   action: AUDIT
   actor: PM-1
   details: Audited against 0509f6914e201ba192717c7a90c3c4154e5120fc
+- timestamp: '2026-08-12T04:40:48.880222Z'
+  action: CLAIM
+  actor: Worker-F17

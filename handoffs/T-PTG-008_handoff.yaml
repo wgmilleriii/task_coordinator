@@ -1,0 +1,136 @@
+task_id: T-PTG-008
+agent: Worker-PTG-FeatureRequest1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-008
+base_sha: 2915a622d26b0dfa151f5da6070cad4c9688d3ae
+head_sha: 04842d7e9120bd559464f6cc1586e8c52c72c5f1
+evidence_output: "`fleet verify` ran the verification_command against\n/Users/willismiller/Documents/GitHub/newmexicoptg.org\
+  \ (branch main, at the\naudited base_sha, no T-PTG-008 changes) instead of this\
+  \ worker's isolated\nworktree at ../newmexicoptg.org-t008, so it \"passed\" against\
+  \ unmodified\nbaseline code -- not a real verification of this task's diff. Same\
+  \ tooling\ngap flagged in T-INTY-018's handoff. All evidence below was captured\
+  \ directly\nin ../newmexicoptg.org-t008 on branch test-T-PTG-008 (head_sha 04842d7),\
+  \ with\nMySQL 9.3.0 local (DB_HOST=127.0.0.1 DB_USER=root DB_PASS=root) and a real\n\
+  php -S built-in server, exactly as the task's own verification convention\nrequires.\n\
+  \n=== 1. DB-backed baseline suite (fresh journal_ai_test DB, migration 010 auto-applied\
+  \ via cli/migrate.php) ===\n$ mysql -h127.0.0.1 -uroot -proot -e \"DROP DATABASE\
+  \ IF EXISTS journal_ai_test; CREATE DATABASE journal_ai_test ...\"\n$ DB_HOST=127.0.0.1\
+  \ DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/AskEndpointTest.php\n\
+  === Running api/ask.php Endpoint Tests ===\n[OK] Anonymous access denial check passed.\n\
+  [OK] CSRF token validation & rejection verified.\n[OK] JSON response structure &\
+  \ secret leakage protection verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n$ DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php\
+  \ journalgpt/tests/UsagePolicyTest.php\n=== Running UsagePolicy & Quota Tests ===\n\
+  [OK] Pre-invocation quota enforcement verified (3 allowed, 4th denied).\n[OK] Administrator\
+  \ quota exemption verified.\n[OK] Organization monthly budget hard cap enforcement\
+  \ verified.\n[OK] Atomic transaction allowance check verified.\n[OK] Detailed usage\
+  \ ledger recording & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n$ DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root\
+  \ php journalgpt/tests/JournalAnswerServiceTest.php\n=== Running JournalAnswerService\
+  \ Unit Tests ===\n[OK] Grounded answer and citations verified successfully.\n[OK]\
+  \ Uncertainty signaling verified.\n[OK] ask() returned 1 citation(s), persisted\
+  \ to citations_json.\n[OK] Unattributable answer withheld behind the PTJ-012 phrase.\n\
+  ... (24 sub-tests total)\n=== ALL JOURNAL ANSWER SERVICE TESTS PASSED SUCCESSFULLY\
+  \ ===\nCombined exit code: 0. All three suites pass on a fresh, migrated DB -- this\
+  \ IS the repo's verification_command for T-PTG-008, run for real against the actual\
+  \ diff (not the baseline tree fleet verify hit).\n\n=== 2. Live server, real HTTP,\
+  \ tagged feature-request routing (OPENAI_MOCK_MODE=true, php -S localhost:8098)\
+  \ ===\nLogged in as a real member via login.php, then POSTed to /api/ask.php with\
+  \ a\nsession-bound CSRF token.\n\nTurn 1: POST {\"question\": \"/feature request\
+  \ I wish the app could export my\nconversation history as a PDF\"}\n=> {\"status\"\
+  :\"success\",\"conversation_id\":12,\"answer\":\"...Who runs into this...\",\n \
+  \   \"conversation_type\":\"feature_request\",\"triage_status\":\"gathering\",\n\
+  \    \"dimensions_covered\":{\"who\":false,\"how_often\":false,\"what\":false},\n\
+  \    \"usage\":{...}}\n-- NO citations key, NO is_grounded key in the response at\
+  \ all.\n\nTurns 2-4 (follow-ups on conversation_id=12, untagged, answering who /\
+  \ how_often /\nwhat): each response asks the next dimension's question; turn 4 returns\n\
+  \"triage_status\":\"complete\", \"dimensions_covered\":{\"who\":true,\"how_often\"\
+  :true,\"what\":true}.\n\nDB inspection after close-out (mysql journal_ai_test):\n\
+  conversations: id=12, user_id=5, conversation_type='feature_request'\nfeature_request_details:\
+  \ conversation_id=12, status='complete',\n  closed_reason='dimensions_covered',\
+  \ who/how_often/what_it_would_look_like\n  all populated with real structured text,\
+  \ who_covered=how_often_covered=what_covered=1\nmessages: 8 rows (4 user + 4 assistant),\
+  \ citations_json IS NULL on every row\nusage_events: 4 rows, event_type='feature_request',\
+  \ status='success',\n  estimated_cost=0.000030 each\ndebug_logs: 4 rows, is_grounded=0,\
+  \ retrieved_chunks_count=0 on every row --\n  proves no vector store / retrieval\
+  \ touched this lane.\n\n=== 3. Tag-matching correctness (Decision 1: first token\
+  \ only) ===\n\"/Feature-Request Please add dark mode\" (hyphen + mixed case) =>\
+  \ routed to\n  feature_request lane correctly.\n\"Does PTG have a source on regulation,\
+  \ or is that a feature request gap?\"\n  (mentions \"feature request\" mid-sentence,\
+  \ NOT first token) => routed to the\n  normal RAG lane, returned real citations\
+  \ and is_grounded:true -- confirms\n  the false-positive risk the scope called out\
+  \ is avoided.\n\n=== 4. Explicit early close-out (Decision 2: user signal beats\
+  \ dimension coverage) ===\nStarted a fresh feature-request conversation (id=17),\
+  \ then on the very next\nturn sent \"that is everything, thanks\" before any dimension\
+  \ was answered.\nResult: triage_status=\"complete\" immediately; DB row shows\n\
+  status='complete', closed_reason='user_closed', who_covered=how_often_covered=\n\
+  what_covered=0 -- proves the stopping condition is dimension-coverage OR\nexplicit\
+  \ user close-out, whichever comes first, exactly as scoped.\n\n=== 5. Quota / budget\
+  \ split (Decision 3) ===\n$ mysql ... \"SELECT user_id, event_type, COUNT(*), SUM(estimated_cost)\
+  \ FROM\nusage_events WHERE user_id=5 GROUP BY user_id, event_type\"\n  user_id=5,\
+  \ event_type='feature_request', cnt=4, total_cost=0.000120\n\n$ php -r '... UsagePolicy::getMonthlyUserQuestionCount(5)\
+  \ ...'\n  => 0   (the 4 feature_request turns do NOT count toward the member's\n\
+  \     monthly_question_quota, because getMonthlyUserQuestionCount() filters\n  \
+  \   event_type='query' and these rows are event_type='feature_request')\n\n$ php\
+  \ -r '... UsagePolicy::getMonthlyOrgSpend() ...'\n  => 5.51852  (includes the 4\
+  \ feature_request rows' cost, confirmed via the\n     per-event breakdown above\
+  \ -- getMonthlyOrgSpend() has no event_type\n     filter, so feature-request turns\
+  \ are NOT a budget-cap loophole)\n\n=== 6. Untagged/RAG regression check (live server,\
+  \ not just unit tests) ===\nPOSTed an ordinary question (\"What does the June 2026\
+  \ issue say about Fourier\nanalysis in tuning?\") with no tag => normal JournalAnswerService\
+  \ response with a\nreal citations[] array (article_id, page, printed_page, citation_label,\
+  \ url,\npdf_url) and is_grounded:true -- confirms the RAG pipeline is unaffected\
+  \ by\nthe new router added ahead of it in api/ask.php.\n\n=== Code-review notes\
+  \ (this diff was NOT written by this worker session --\ninherited uncommitted from\
+  \ a prior killed Worker session; reviewed critically\nbefore trusting it) ===\n\
+  Traced every call FeatureRequestService.php and OpenAIClient::converse() make:\n\
+  confirmed neither calls getActiveVectorStoreId(), callOpenAIResponsesApi(),\nresolveCitationsFromChunks(),\
+  \ or fallbackExtractCitationsFromAnswer() --\nconverse() hits POST /chat/completions\
+  \ directly with no tools/vector_store_id\nin the payload at all. Confirmed UsageLedger::recordEvent()\
+  \ and\nConversationContext::getRecentTurns() signatures match FeatureRequestService's\n\
+  calls. Confirmed migrations 001/008/009 don't already have a conversation-type\n\
+  or feature-request concept (008's `tier` column is model-tier, orthogonal, not\n\
+  reused). Ran the live tests above rather than trusting the inherited diff's own\n\
+  comments. No bugs found requiring fixes -- the inherited diff was correct and\n\
+  complete as found; this session's contribution was empirical verification, not\n\
+  code changes."
+peer_review_notes: "`fleet verify` re-ran verification_command against\n/Users/willismiller/Documents/GitHub/newmexicoptg.org\
+  \ (main, at base_sha,\nno diff) rather than this worker's isolated worktree at\n\
+  ../newmexicoptg.org-t008, producing a spurious pass that verified nothing about\n\
+  this task's actual change. Same gap as T-INTY-018's handoff. Recommend fleet\nverify\
+  \ accept a --worktree-path override or infer it from an active CLAIMED\ntask's known\
+  \ worktree convention.\n\nDoD checklist:\n- Tagged message never calls getActiveVectorStoreId()\
+  \ / vector-store-attached\n  callOpenAIResponsesApi() / any citation-resolution\
+  \ method -- verified by code\n  trace AND live debug_logs rows (is_grounded=0, retrieved_chunks_count=0).\n\
+  - JSON response for a tagged message has no citations array and no is_grounded:true\
+  \ --\n  verified directly against live HTTP responses (section 2 above).\n- Multi-turn\
+  \ conversation observed end-to-end against a running server: 4 turns,\n  triage\
+  \ questions not corpus answers, closes out on full dimension coverage\n  (section\
+  \ 2) and separately on explicit user close-out (section 4).\n- Stopping condition\
+  \ is concrete/testable: 3-dimension structured coverage OR\n  an explicit closing-phrase\
+  \ match, both demonstrated live, not model self-judgment.\n- Closed conversation\
+  \ produces a well-formed feature_request_details row with\n  all three dimensions\
+  \ as structured TEXT fields (not just present in prose) --\n  sufficient for a later\
+  \ separate script to build a task_coordinator YAML from. That\n  extraction script\
+  \ is explicitly NOT part of this task's DoD and was not built.\n- Quota/budget:\
+  \ feature-request turns excluded from monthly_question_quota (event_type\n  filter\
+  \ mismatch, verified via getMonthlyUserQuestionCount()=0) but included in\n  org_monthly_budget_usd\
+  \ (getMonthlyOrgSpend() has no event_type filter, verified\n  with real cost figures).\
+  \ UsagePolicy.php was not modified; UsagePolicyTest.php\n  (5/5) still passes.\n\
+  - RAG pipeline unaffected: AskEndpointTest + JournalAnswerServiceTest pass on a\n\
+  \  fresh migrated DB, plus a live untagged request still returns real citations\n\
+  \  and is_grounded:true.\n- Storage design documented in the commit message: DB-only\
+  \ (conversations +\n  feature_request_details), no direct write to task_coordinator\
+  \ from production\n  PHP, matching the audited scope's pull-based-handoff requirement.\n\
+  \nThis worker inherited the diff uncommitted from a prior killed session and\ntreated\
+  \ it as an unverified PR: read every changed/new file in full, traced\ncall signatures\
+  \ against the actual UsagePolicy/UsageLedger/ConversationContext/\nmigration code\
+  \ rather than trusting inline comments, and then proved every DoD\nbullet against\
+  \ a real running server rather than asserting from the code. No\ncorrectness bugs\
+  \ were found -- the inherited implementation was solid on\ninspection and held up\
+  \ under live testing without needing changes."
+human_action_required: null
+token_spend: null
+cost_usd: null

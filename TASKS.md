@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
-    T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::active
+    T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::review
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::done
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
@@ -966,7 +966,25 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 🛠 T-PTG-008 · P2 · ANY · CLAIMED
+### ✅ T-PTG-007 · P2 · ANY · DONE
+**Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario**
+**Owner:** Claude-FleetCommander
+
+**Scope:**
+- journalgpt/tests/scenarios/frequent_contributors_aggregate.json (new) — real production conversation (2026-08-12, conversation_id=47, user_id=1) found via the reviewing-production-conversations skill: 'who writes the most articles?' -> 'enuermate the top 10 most frequent contributoprs' (typos preserved verbatim) -> 'list the names of their articles along with them'.
+- This is a genuinely new cognitive mode beyond the 4 T-PTG-006 covers (factual retrieval / synthesis / speculative / sentiment aggregation): a question that requires a COUNT or RANKING across the entire corpus, which a single ~20-chunk semantic retrieval architecturally cannot produce reliably — it only ever sees a small, unrepresentative sample, never the full corpus.
+- Production evidence (debug_logs id=15) shows the model DID verbally hedge ('did not specify a definitive list... a comprehensive ranking... is not available in the provided excerpts') but still printed a confident-looking numbered 1-10 list beneath that caveat — the visual formatting undercuts the verbal honesty.
+
+**Definition of Done:**
+- Scenario executed across enough preset/tier combinations to know whether the hedge-but-still-rank behavior is consistent or occasional (model-specific).
+- Determine whether the current verbal caveat is sufficient, or whether a concrete change is warranted: e.g. system-instruction guidance requiring the model to state the sample-vs-corpus limitation BEFORE presenting any list for a count/ranking question, or to avoid a definitively-numbered list format entirely when the underlying data is acknowledged incomplete.
+- If a fix is implemented, verify it doesn't regress the 4 existing cognitive modes (T-PTG-005/006 coverage) or the citation-format checks.
+- Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
+
+*Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+
+---
+### ⏳ T-PTG-008 · P2 · ANY · PEER_REVIEW
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
 **Owner:** Worker-PTG-FeatureRequest1
 
@@ -993,23 +1011,5 @@ graph TD
 - Existing RAG-pipeline behavior for untagged messages is unchanged -- no regression in citation resolution, Zero-Guessing withholding, or the 4-5 cognitive modes covered by T-PTG-005/006/007.
 
 *Audited against SHA:* `2915a622d26b0dfa151f5da6070cad4c9688d3ae`
-
----
-### ✅ T-PTG-007 · P2 · ANY · DONE
-**Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario**
-**Owner:** Claude-FleetCommander
-
-**Scope:**
-- journalgpt/tests/scenarios/frequent_contributors_aggregate.json (new) — real production conversation (2026-08-12, conversation_id=47, user_id=1) found via the reviewing-production-conversations skill: 'who writes the most articles?' -> 'enuermate the top 10 most frequent contributoprs' (typos preserved verbatim) -> 'list the names of their articles along with them'.
-- This is a genuinely new cognitive mode beyond the 4 T-PTG-006 covers (factual retrieval / synthesis / speculative / sentiment aggregation): a question that requires a COUNT or RANKING across the entire corpus, which a single ~20-chunk semantic retrieval architecturally cannot produce reliably — it only ever sees a small, unrepresentative sample, never the full corpus.
-- Production evidence (debug_logs id=15) shows the model DID verbally hedge ('did not specify a definitive list... a comprehensive ranking... is not available in the provided excerpts') but still printed a confident-looking numbered 1-10 list beneath that caveat — the visual formatting undercuts the verbal honesty.
-
-**Definition of Done:**
-- Scenario executed across enough preset/tier combinations to know whether the hedge-but-still-rank behavior is consistent or occasional (model-specific).
-- Determine whether the current verbal caveat is sufficient, or whether a concrete change is warranted: e.g. system-instruction guidance requiring the model to state the sample-vs-corpus limitation BEFORE presenting any list for a count/ranking question, or to avoid a definitively-numbered list format entirely when the underlying data is acknowledged incomplete.
-- If a fix is implemented, verify it doesn't regress the 4 existing cognitive modes (T-PTG-005/006 coverage) or the citation-format checks.
-- Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
-
-*Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
 
 ---

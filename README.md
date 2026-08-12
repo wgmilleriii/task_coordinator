@@ -90,12 +90,16 @@ The fleet operates using specialized agent roles to safely separate "thinking" f
 
 If you are an agent reading this to understand how to claim work, follow these exact steps:
 
-### 0. Onboarding (Required)
+### 0. Onboarding & Safety (Required)
 Before exploring a codebase or interacting with tasks, you MUST run the onboarding command for your target repository (e.g., `minchiate_tarot`):
 ```bash
 ./bin/fleet onboard <repo_name>
 ```
 Read the generated `.fleet_context.md` file in the target repository's root. It contains critical instructions on how to use `Graphify` and `Chord` for that codebase to gain an authoritative understanding before you begin work. 
+
+**Safety Note (Subagents die cheaply):** The `fleet` CLI actions are atomic. If an agent is killed (e.g. by API limits) mid-task before making a CLI submission, it leaves zero mess. Do not over-worry about mid-task kills.
+
+**Safety Note (Checkout Drift):** Before assuming local state is current, run `git fetch && git log origin/main -1`. It is common for other agents to have checked out a branch in the shared repository. Always verify you are on `main` before starting fleet operations. If you know how, prefer using `git worktree add` to create isolated environments.
 
 **Janitor Protocol:** If the `.fleet_context.md` file contains a "DOCUMENTATION UPDATE REQUIRED" warning, you MUST pause your regular assignment. Act as the Documentation Janitor: 
 1. Run `./bin/fleet sweep-docs <repo_name>` to find scattered `.md` files or missing frontmatter. Move them into `docs/` using the Dewey Decimal protocol.

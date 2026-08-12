@@ -811,10 +811,12 @@ def main():
     audit_parser.add_argument("--auditor", required=True)
     audit_parser.add_argument("--repo-sha", required=True)
     audit_parser.add_argument("--command", required=True)
+    audit_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     
     claim_parser = subparsers.add_parser("claim", help="Claim an AUDITED task")
     claim_parser.add_argument("task_id", help="The Task ID (e.g. T-MIN-001)")
     claim_parser.add_argument("--owner", required=True, help="Platform/Agent name claiming the task")
+    claim_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     
     verify_parser = subparsers.add_parser("verify", help="Execute verification command and capture evidence")
     verify_parser.add_argument("task_id")
@@ -822,6 +824,7 @@ def main():
     
     submit_parser = subparsers.add_parser("submit", help="Submit a CLAIMED task for review")
     submit_parser.add_argument("task_id")
+    submit_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     
     start_review_parser = subparsers.add_parser("start-review", help="Generate a review template for a PEER_REVIEW task")
     start_review_parser.add_argument("task_id")
@@ -830,6 +833,7 @@ def main():
     
     record_review_parser = subparsers.add_parser("record-review", help="Record the verdict of a peer review")
     record_review_parser.add_argument("task_id")
+    record_review_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     
     block_parser = subparsers.add_parser("block", help="Mark a task as BLOCKED and notify humans")
     block_parser.add_argument("task_id")
@@ -841,6 +845,7 @@ def main():
     close_parser = subparsers.add_parser("close", help="Mark a REVIEW task as DONE (requires human approval if human_review_required is True)")
     close_parser.add_argument("task_id")
     close_parser.add_argument("--human", default="Unknown", help="Name of the human approving the close")
+    close_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     
     archive_parser = subparsers.add_parser("archive", help="Sweep all DONE, CANCELLED, and DEFERRED tasks off the active board into tasks/archive/")
     

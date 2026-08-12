@@ -1,0 +1,80 @@
+id: T-MIN-018
+title: Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola
+  boundary before requiring a human download — supersedes T-MIN-008
+repo: minchiate_tarot
+priority: P2
+lane: codex
+status: OPEN
+owner: null
+created_at: '2026-08-12T09:10:00-06:00'
+dependencies: []
+scope:
+- "This task supersedes T-MIN-008 (still OPEN, unaudited — audited_at/audited_by/audited_repo_sha\
+  \ all null as of this writing) pending a PM decision on which of the two stays open. T-MIN-008\
+  \ was scoped assuming the Bernardi 1790 source (RULE-1790) had to be manually acquired because it\
+  \ exists only as a bibliographic pointer to https://archive.org/details/bub_gb_4_rdG3SVa48C (68\
+  \ pages), not physically stored in the repo. This task preserves T-MIN-008's original scope and\
+  \ definition_of_done in full (see below, verbatim) but adds an explicit, mandatory FIRST step:\
+  \ attempt direct WebFetch/WebSearch of archive.org's own OCR/plaintext exposure for that item\
+  \ before concluding a human must download anything."
+- "Precedent: T-MIN-009 (DONE) resolved a structurally similar problem — hedged zodiac locators —\
+  \ entirely via WebFetch/WebSearch against public web editions (LacusCurtius, Perseus/Scaife,\
+  \ Thorndike, Topostext), with zero local repo storage of the sources. Read\
+  \ research/pilots/Zodiac_Locator_Resolution_Note.md in full before starting; its \"Method\"\
+  \ section and \"Sources opened\" table are the standard this task is held to (open the actual\
+  \ source, cite exact locators, downgrade to [UNVERIFIED] rather than inventing)."
+- "MANDATORY FIRST STEP: attempt to open archive.org item bub_gb_4_rdG3SVa48C via its public\
+  \ endpoints before doing anything else. Try, in order, and document what was tried and what each\
+  \ attempt returned (HTTP status, content found or not): (a) the item's metadata API,\
+  \ https://archive.org/metadata/bub_gb_4_rdG3SVa48C, to discover available derivative files (djvu.txt,\
+  \ _text.pdf, etc.); (b) the plaintext/OCR view, typically\
+  \ https://archive.org/stream/bub_gb_4_rdG3SVa48C/bub_gb_4_rdG3SVa48C_djvu.txt (the exact filename\
+  \ segment must be confirmed from the metadata API response, not assumed); (c) the item's own\
+  \ details/download page for a full-text or PDF derivative; (d) a general WebSearch for the same\
+  \ Bernardi 1790 rules text hosted on any other public digitization (Google Books, a library\
+  \ digital collection, etc.) if archive.org's own OCR is unusable (e.g. garbled, paywalled, or the\
+  \ derivative does not exist for this item)."
+- "Only if (a) through (d) are genuinely attempted and fail — not merely found inconvenient — is\
+  \ it acceptable to conclude a human must acquire a physical/PDF copy. \"Genuinely fail\" means:\
+  \ endpoints 404/error, or the OCR text is present but too degraded to locate/read the verzicola\
+  \ passage with confidence, or no readable derivative exists at all. Document exactly what was\
+  \ tried and what each attempt returned before falling back to that conclusion; a bare \"could not\
+  \ find it\" without documented attempts is not acceptable."
+- "If direct access succeeds: transcribe every verzicola combination example from Bernardi's 1790\
+  \ text directly, replacing the Justice pilot's hedge (\"I-V and beginning around XXVIII\", pilot\
+  \ line 92) with an exact list, with exact locators (chapter and printed page, or the archive.org\
+  \ page/leaf number if no printed page number is legible). Record whether the examples are\
+  \ exhaustive or exemplary in Bernardi's own text; do not convert examples into rules — the\
+  \ deliverable is the transcription plus locators, not an interpretation."
+- "Thirteen committed studies currently lean on the hedge; the zodiac batch flags it as acutely\
+  \ open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element\
+  \ batch left \"whether XX-XXIII can form a verzicola\" as a standing open question in all four\
+  \ files. If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII\
+  \ sections 2 and 4, element files' open questions, Justice pilot cross-references) as a\
+  \ reconciliation queue; apply the amendments only if the audit that unlocks this task scopes that\
+  \ in — do not silently apply them un-audited."
+- "If direct web access genuinely fails after documented attempts: write the same conclusion\
+  \ T-MIN-008 anticipated (a human must acquire a physical/PDF copy of archive.org item\
+  \ bub_gb_4_rdG3SVa48C) but back it with the documented attempt log from this task, not with an\
+  \ unexamined assumption."
+definition_of_done:
+- A documented attempt log exists (in the same output note) showing what was tried against
+  archive.org (metadata API, stream/OCR view, details page) and any fallback WebSearch, with
+  outcomes for each — win or fail.
+- A sourced note in research/02-source-audit/ or research/pilots/ either (a) transcribes the
+  verzicola examples with exact locators and states what the record can and cannot support, using
+  direct web access as the source, or (b) states plainly that direct web access was attempted and
+  genuinely failed, with the attempt log as evidence, before recommending human acquisition.
+- The reconciliation queue of affected files is listed with per-file line references, if the
+  boundary resolved.
+- The hedge is superseded only by direct transcription or a documented failed-attempt log, never by
+  memory or assumption.
+- This task's output note explicitly states it supersedes/replaces T-MIN-008's rationale; it does
+  not archive or delete T-MIN-008 itself (that is a PM/human decision).
+verification_command: 'bash -c ''set -e; found=0; for f in $(grep -rli "verzicola" research/02-source-audit/
+  research/pilots/ 2>/dev/null); do if [ "$f" = "research/02-source-audit/Stage2_Source_Critical_Foundation.md"
+  ]; then continue; fi; if grep -qi "attempt log" "$f" 2>/dev/null && grep -qi "archive.org"
+  "$f" 2>/dev/null; then found=1; break; fi; done; if [ "$found" != "1" ]; then echo
+  FAIL_no_note_with_attempt_log_and_archive_org_reference_alongside_verzicola; exit
+  1; fi; echo PASS'''
+human_review_required: false

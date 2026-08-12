@@ -1,0 +1,108 @@
+id: T-MIN-016
+title: Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias
+repo: minchiate_tarot
+priority: P2
+lane: codex
+status: OPEN
+owner: null
+created_at: '2026-08-12T09:00:00-06:00'
+dependencies: []
+scope:
+- "Editorial decision D3 (tasks/human/editorial_decisions_2026-08-12.md) sets the card id to\
+  \ SPECIAL-FOOL, sort_order 0, with a permanent alias from TRUMP-FOOL for backward compatibility.\
+  \ Scout blast-radius grep (branch test) found TRUMP-FOOL as a live PRIMARY identifier in these\
+  \ files, which is the full rename surface: research/05-registry-and-audit/Stage5_Master_Card_Registry.csv\
+  \ (row col 1, card_id), Stage5_Master_Card_Registry.json (\"card_id\": \"TRUMP-FOOL\"), and\
+  \ Card_Dossier_Skeletons.json (\"dossier_id\": \"TRUMP-FOOL\", \"database_id\": \"TRUMP-FOOL\",\
+  \ and the two question_id values TRUMP-FOOL-Q-IMG-001 / TRUMP-FOOL-Q-NAME-001, which must become\
+  \ SPECIAL-FOOL-Q-IMG-001 / SPECIAL-FOOL-Q-NAME-001)."
+- "Rename the id everywhere it is the primary identifier: the registry CSV and JSON rows, the\
+  \ Card_Dossier_Skeletons.json entry (dossier_id, database_id, question_id prefixes), and the\
+  \ committed study file research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md — including its\
+  \ filename (rename to PERSONALITY_SPECIAL-FOOL_Fool.md) and every place inside it where\
+  \ TRUMP-FOOL is used as the card's own id (e.g. the \"Card:\" line, FOO-C001/FOO-C003/FOO-C006\
+  \ evidence-column citations of \"TRUMP-FOOL row\"/\"TRUMP-FOOL blocking_issue\")."
+- "Set sort_order to 0 in the registry CSV and JSON and in Card_Dossier_Skeletons.json. Before\
+  \ writing this, re-read FOO-C003 in PERSONALITY_TRUMP-FOOL_Fool.md (soon SPECIAL-FOOL): it\
+  \ already separates three distinct statements — unnumbered on the card, outside the ranked\
+  \ trump ladder (family Special), and sort 57 as project bookkeeping convention (\"registry key,\
+  \ may be 0\"). Sort_order=0 does not contradict any of the three as currently worded (the file\
+  \ already anticipates sort key 0). Update the sort-order number in FOO-C001/FOO-C003 prose from\
+  \ 57 to 0 while preserving the three-statement distinction verbatim in substance — do not merge\
+  \ or drop any of the three. If, on closer reading, you find sort=0 DOES contradict one of the\
+  \ three statements as written, do not resolve the contradiction yourself: leave the prose as-is,\
+  \ set sort_order=0 in the registry only, and add a one-line flag in this task's scope-file notes\
+  \ (or a TODO comment) naming the contradiction for human/PM attention."
+- "Add a documented permanent alias TRUMP-FOOL -> SPECIAL-FOOL. Scout finding: as of 09f857d,\
+  \ NEITHER the registry CSV/JSON schema NOR research/04-dossier-spec/Stage4_Card_Dossier_Schema.json\
+  \ has any alias/former-id/redirect field — grep for \"alias\" across research/05-registry-and-audit/\
+  \ and research/04-dossier-spec/ returns zero hits. There is no existing aliasing mechanism to\
+  \ hook into. Do not silently invent a new schema field to paper over this. Required output: add\
+  \ a plain-language, clearly-labeled note (e.g. a \"former_id\"/\"aliases\" column added to the\
+  \ registry CSV+JSON+skeleton schema, OR — if a schema change feels too invasive for a rename\
+  \ task — a documented note in the registry's notes field plus a short paragraph in\
+  \ REORGANIZATION_PLAN.md or a new short note under research/05-registry-and-audit/ stating\
+  \ plainly \"no alias field exists in the schema; TRUMP-FOOL must be tracked as a former id by\
+  \ [wherever you put it] until a real alias/redirect mechanism is built.\" Either path is\
+  \ acceptable; but the absence must be visible in the deliverable, not worked around invisibly."
+- "Update every OTHER committed study file that cites the Fool by its registry row as an evidence\
+  \ source (id-as-citation, not just narrative prose about \"the Fool\"). Full list found by scout\
+  \ grep on branch test: research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md (GAN-C012),\
+  \ PERSONALITY_TRUMP-02_Ruler.md (RUL2-C012), PERSONALITY_TRUMP-04_Ruler.md (RUL4-C012),\
+  \ PERSONALITY_TRUMP-05_Love.md (LOV-C017), PERSONALITY_TRUMP-09_Wheel_of_Fortune.md (WHE-C014),\
+  \ PERSONALITY_TRUMP-11_Old_Man_Time.md (OLD-C015), PERSONALITY_TRUMP-13_Death.md (DEA-C014),\
+  \ PERSONALITY_TRUMP-14_Devil.md (DEV-C019), PERSONALITY_TRUMP-15_House_of_the_Devil.md (HOU-C018),\
+  \ PERSONALITY_TRUMP-19_Charity.md (CHA-C005, references \"TRUMP-FOOL and TRUMP-19\" symbol\
+  \ sharing in prose too), and PERSONALITY_TRUMP-40_Trumpets.md (TRO-C002, TRO-C006, TRO-C018 —\
+  \ this file also has a typed reciprocal edge, \"Fool -> Trumpets (XL): opposite\", in its\
+  \ narrative prose around L272-282 that names the Fool's own claim FOO-C014; update its id\
+  \ citations to SPECIAL-FOOL but do not alter the typed-edge conclusion, grading, or direction).\
+  \ In every one of these files, change only the id token (TRUMP-FOOL -> SPECIAL-FOOL) in\
+  \ citation/evidence columns and any bare id mentions; do not touch surrounding claim text,\
+  \ grading, or conclusions."
+- "Do NOT touch: research/archive/failed-runs/* (archived/superseded, historical record — leave\
+  \ TRUMP-FOOL as-is there), research/pilots/Papi_Fool_Batch_Verification_Report.md,\
+  \ Quarantine_Register_Outside_Set_Claims.md, Fleet_Sweep_Personality_Triage_Report.md,\
+  \ Wave2_Virtue_Verification_Report.md, SIGNOFF_OPUS5.md, REORGANIZATION_PLAN.md's own body text,\
+  \ tasks/human/*, tasks/agent/*, or any other audit-trail/report/planning document that narrates\
+  \ project history using the old id — these are point-in-time records, not live identifiers, and\
+  \ rewriting them would falsify the audit trail. Also do not touch build_graph_contract.py or\
+  \ research/01-strategy/graph_contract_v1.json / VISUALIZATION_GAPS_IDENTIFIED.md unless doing so\
+  \ is trivially required to keep the id rename internally consistent within this same commit —\
+  \ if unsure, leave code/contract files alone and flag them instead of guessing."
+- Do not touch the prose content or claims of any study beyond identifier and sort-order fields —
+  this is a rename, not a rewrite.
+definition_of_done:
+- Zero occurrences of "TRUMP-FOOL" remain as a primary identifier (card_id/dossier_id/database_id/
+  question_id prefix/filename/citation token) in Stage5_Master_Card_Registry.csv,
+  Stage5_Master_Card_Registry.json, Card_Dossier_Skeletons.json, and the eleven listed committed
+  drafts files plus the renamed Fool study file; the ONLY acceptable remaining occurrences of the
+  literal string "TRUMP-FOOL" in those specific files are inside a clearly labeled alias/former-id
+  note.
+- The registry (CSV + JSON) and Card_Dossier_Skeletons.json all show sort_order/sort key 0 for the
+  Fool/SPECIAL-FOOL row.
+- A documented former-id/alias note for TRUMP-FOOL -> SPECIAL-FOOL exists and is discoverable from
+  the registry or its accompanying docs; if no schema aliasing field was added, the absence is
+  explicitly stated in that same note, not silently omitted.
+- research/archive/failed-runs/*, the named audit/report/planning files, and any file not
+  explicitly listed in scope are byte-for-byte unchanged (git diff --name-only against the audited
+  sha touches only the files named in scope).
+- No claim text, grading, or conclusion in any of the eleven cross-referencing drafts changed
+  beyond the id token itself.
+verification_command: 'bash -c ''set -e; files="research/05-registry-and-audit/Stage5_Master_Card_Registry.csv
+  research/05-registry-and-audit/Stage5_Master_Card_Registry.json research/05-registry-and-audit/Card_Dossier_Skeletons.json
+  research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md research/pilots/drafts/PERSONALITY_TRUMP-02_Ruler.md
+  research/pilots/drafts/PERSONALITY_TRUMP-04_Ruler.md research/pilots/drafts/PERSONALITY_TRUMP-05_Love.md
+  research/pilots/drafts/PERSONALITY_TRUMP-09_Wheel_of_Fortune.md research/pilots/drafts/PERSONALITY_TRUMP-11_Old_Man_Time.md
+  research/pilots/drafts/PERSONALITY_TRUMP-13_Death.md research/pilots/drafts/PERSONALITY_TRUMP-14_Devil.md
+  research/pilots/drafts/PERSONALITY_TRUMP-15_House_of_the_Devil.md research/pilots/drafts/PERSONALITY_TRUMP-19_Charity.md
+  research/pilots/drafts/PERSONALITY_TRUMP-40_Trumpets.md"; for f in $files; do if grep -q "TRUMP-FOOL"
+  "$f" 2>/dev/null; then echo "FAIL: $f still contains a live TRUMP-FOOL reference"; exit
+  1; fi; done; test -f research/pilots/drafts/PERSONALITY_SPECIAL-FOOL_Fool.md || {
+  echo "FAIL: renamed Fool study file missing"; exit 1; }; grep -q "SPECIAL-FOOL" research/05-registry-and-audit/Stage5_Master_Card_Registry.csv
+  || { echo "FAIL: SPECIAL-FOOL not in registry CSV"; exit 1; }; grep -q ''"card_id":
+  "SPECIAL-FOOL"'' research/05-registry-and-audit/Stage5_Master_Card_Registry.json ||
+  { echo "FAIL: SPECIAL-FOOL not in registry JSON"; exit 1; }; awk -F, ''$1=="SPECIAL-FOOL"
+  {print $10}'' research/05-registry-and-audit/Stage5_Master_Card_Registry.csv | grep
+  -q "^0$" || { echo "FAIL: sort_order not 0 in CSV"; exit 1; }; echo PASS'''
+human_review_required: false

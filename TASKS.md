@@ -11,7 +11,9 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
+    T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
+    T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
@@ -37,6 +39,7 @@ graph TD
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
+    T-MIN-018["T-MIN-018<br/>Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008"]
 ```
 
 ---
@@ -717,6 +720,27 @@ graph TD
 *Audited against SHA:* `f8bb1b8`
 
 ---
+### 📋 T-MIN-016 · P2 · codex · OPEN
+**Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias**
+**Owner:** None
+
+**Scope:**
+- Editorial decision D3 (tasks/human/editorial_decisions_2026-08-12.md) sets the card id to SPECIAL-FOOL, sort_order 0, with a permanent alias from TRUMP-FOOL for backward compatibility. Scout blast-radius grep (branch test) found TRUMP-FOOL as a live PRIMARY identifier in these files, which is the full rename surface: research/05-registry-and-audit/Stage5_Master_Card_Registry.csv (row col 1, card_id), Stage5_Master_Card_Registry.json ("card_id": "TRUMP-FOOL"), and Card_Dossier_Skeletons.json ("dossier_id": "TRUMP-FOOL", "database_id": "TRUMP-FOOL", and the two question_id values TRUMP-FOOL-Q-IMG-001 / TRUMP-FOOL-Q-NAME-001, which must become SPECIAL-FOOL-Q-IMG-001 / SPECIAL-FOOL-Q-NAME-001).
+- Rename the id everywhere it is the primary identifier: the registry CSV and JSON rows, the Card_Dossier_Skeletons.json entry (dossier_id, database_id, question_id prefixes), and the committed study file research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md — including its filename (rename to PERSONALITY_SPECIAL-FOOL_Fool.md) and every place inside it where TRUMP-FOOL is used as the card's own id (e.g. the "Card:" line, FOO-C001/FOO-C003/FOO-C006 evidence-column citations of "TRUMP-FOOL row"/"TRUMP-FOOL blocking_issue").
+- Set sort_order to 0 in the registry CSV and JSON and in Card_Dossier_Skeletons.json. Before writing this, re-read FOO-C003 in PERSONALITY_TRUMP-FOOL_Fool.md (soon SPECIAL-FOOL): it already separates three distinct statements — unnumbered on the card, outside the ranked trump ladder (family Special), and sort 57 as project bookkeeping convention ("registry key, may be 0"). Sort_order=0 does not contradict any of the three as currently worded (the file already anticipates sort key 0). Update the sort-order number in FOO-C001/FOO-C003 prose from 57 to 0 while preserving the three-statement distinction verbatim in substance — do not merge or drop any of the three. If, on closer reading, you find sort=0 DOES contradict one of the three statements as written, do not resolve the contradiction yourself: leave the prose as-is, set sort_order=0 in the registry only, and add a one-line flag in this task's scope-file notes (or a TODO comment) naming the contradiction for human/PM attention.
+- Add a documented permanent alias TRUMP-FOOL -> SPECIAL-FOOL. Scout finding: as of 09f857d, NEITHER the registry CSV/JSON schema NOR research/04-dossier-spec/Stage4_Card_Dossier_Schema.json has any alias/former-id/redirect field — grep for "alias" across research/05-registry-and-audit/ and research/04-dossier-spec/ returns zero hits. There is no existing aliasing mechanism to hook into. Do not silently invent a new schema field to paper over this. Required output: add a plain-language, clearly-labeled note (e.g. a "former_id"/"aliases" column added to the registry CSV+JSON+skeleton schema, OR — if a schema change feels too invasive for a rename task — a documented note in the registry's notes field plus a short paragraph in REORGANIZATION_PLAN.md or a new short note under research/05-registry-and-audit/ stating plainly "no alias field exists in the schema; TRUMP-FOOL must be tracked as a former id by [wherever you put it] until a real alias/redirect mechanism is built." Either path is acceptable; but the absence must be visible in the deliverable, not worked around invisibly.
+- Update every OTHER committed study file that cites the Fool by its registry row as an evidence source (id-as-citation, not just narrative prose about "the Fool"). Full list found by scout grep on branch test: research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md (GAN-C012), PERSONALITY_TRUMP-02_Ruler.md (RUL2-C012), PERSONALITY_TRUMP-04_Ruler.md (RUL4-C012), PERSONALITY_TRUMP-05_Love.md (LOV-C017), PERSONALITY_TRUMP-09_Wheel_of_Fortune.md (WHE-C014), PERSONALITY_TRUMP-11_Old_Man_Time.md (OLD-C015), PERSONALITY_TRUMP-13_Death.md (DEA-C014), PERSONALITY_TRUMP-14_Devil.md (DEV-C019), PERSONALITY_TRUMP-15_House_of_the_Devil.md (HOU-C018), PERSONALITY_TRUMP-19_Charity.md (CHA-C005, references "TRUMP-FOOL and TRUMP-19" symbol sharing in prose too), and PERSONALITY_TRUMP-40_Trumpets.md (TRO-C002, TRO-C006, TRO-C018 — this file also has a typed reciprocal edge, "Fool -> Trumpets (XL): opposite", in its narrative prose around L272-282 that names the Fool's own claim FOO-C014; update its id citations to SPECIAL-FOOL but do not alter the typed-edge conclusion, grading, or direction). In every one of these files, change only the id token (TRUMP-FOOL -> SPECIAL-FOOL) in citation/evidence columns and any bare id mentions; do not touch surrounding claim text, grading, or conclusions.
+- Do NOT touch: research/archive/failed-runs/* (archived/superseded, historical record — leave TRUMP-FOOL as-is there), research/pilots/Papi_Fool_Batch_Verification_Report.md, Quarantine_Register_Outside_Set_Claims.md, Fleet_Sweep_Personality_Triage_Report.md, Wave2_Virtue_Verification_Report.md, SIGNOFF_OPUS5.md, REORGANIZATION_PLAN.md's own body text, tasks/human/*, tasks/agent/*, or any other audit-trail/report/planning document that narrates project history using the old id — these are point-in-time records, not live identifiers, and rewriting them would falsify the audit trail. Also do not touch build_graph_contract.py or research/01-strategy/graph_contract_v1.json / VISUALIZATION_GAPS_IDENTIFIED.md unless doing so is trivially required to keep the id rename internally consistent within this same commit — if unsure, leave code/contract files alone and flag them instead of guessing.
+- Do not touch the prose content or claims of any study beyond identifier and sort-order fields — this is a rename, not a rewrite.
+
+**Definition of Done:**
+- Zero occurrences of "TRUMP-FOOL" remain as a primary identifier (card_id/dossier_id/database_id/ question_id prefix/filename/citation token) in Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json, Card_Dossier_Skeletons.json, and the eleven listed committed drafts files plus the renamed Fool study file; the ONLY acceptable remaining occurrences of the literal string "TRUMP-FOOL" in those specific files are inside a clearly labeled alias/former-id note.
+- The registry (CSV + JSON) and Card_Dossier_Skeletons.json all show sort_order/sort key 0 for the Fool/SPECIAL-FOOL row.
+- A documented former-id/alias note for TRUMP-FOOL -> SPECIAL-FOOL exists and is discoverable from the registry or its accompanying docs; if no schema aliasing field was added, the absence is explicitly stated in that same note, not silently omitted.
+- research/archive/failed-runs/*, the named audit/report/planning files, and any file not explicitly listed in scope are byte-for-byte unchanged (git diff --name-only against the audited sha touches only the files named in scope).
+- No claim text, grading, or conclusion in any of the eleven cross-referencing drafts changed beyond the id token itself.
+
+---
 ### 📋 T-MIN-008 · P2 · ANY · OPEN
 **Pin down Bernardi's verzicola boundary from the 1790 rules directly**
 **Owner:** None
@@ -731,6 +755,27 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
+
+---
+### 📋 T-MIN-018 · P2 · codex · OPEN
+**Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008**
+**Owner:** None
+
+**Scope:**
+- This task supersedes T-MIN-008 (still OPEN, unaudited — audited_at/audited_by/audited_repo_sha all null as of this writing) pending a PM decision on which of the two stays open. T-MIN-008 was scoped assuming the Bernardi 1790 source (RULE-1790) had to be manually acquired because it exists only as a bibliographic pointer to https://archive.org/details/bub_gb_4_rdG3SVa48C (68 pages), not physically stored in the repo. This task preserves T-MIN-008's original scope and definition_of_done in full (see below, verbatim) but adds an explicit, mandatory FIRST step: attempt direct WebFetch/WebSearch of archive.org's own OCR/plaintext exposure for that item before concluding a human must download anything.
+- Precedent: T-MIN-009 (DONE) resolved a structurally similar problem — hedged zodiac locators — entirely via WebFetch/WebSearch against public web editions (LacusCurtius, Perseus/Scaife, Thorndike, Topostext), with zero local repo storage of the sources. Read research/pilots/Zodiac_Locator_Resolution_Note.md in full before starting; its "Method" section and "Sources opened" table are the standard this task is held to (open the actual source, cite exact locators, downgrade to [UNVERIFIED] rather than inventing).
+- MANDATORY FIRST STEP: attempt to open archive.org item bub_gb_4_rdG3SVa48C via its public endpoints before doing anything else. Try, in order, and document what was tried and what each attempt returned (HTTP status, content found or not): (a) the item's metadata API, https://archive.org/metadata/bub_gb_4_rdG3SVa48C, to discover available derivative files (djvu.txt, _text.pdf, etc.); (b) the plaintext/OCR view, typically https://archive.org/stream/bub_gb_4_rdG3SVa48C/bub_gb_4_rdG3SVa48C_djvu.txt (the exact filename segment must be confirmed from the metadata API response, not assumed); (c) the item's own details/download page for a full-text or PDF derivative; (d) a general WebSearch for the same Bernardi 1790 rules text hosted on any other public digitization (Google Books, a library digital collection, etc.) if archive.org's own OCR is unusable (e.g. garbled, paywalled, or the derivative does not exist for this item).
+- Only if (a) through (d) are genuinely attempted and fail — not merely found inconvenient — is it acceptable to conclude a human must acquire a physical/PDF copy. "Genuinely fail" means: endpoints 404/error, or the OCR text is present but too degraded to locate/read the verzicola passage with confidence, or no readable derivative exists at all. Document exactly what was tried and what each attempt returned before falling back to that conclusion; a bare "could not find it" without documented attempts is not acceptable.
+- If direct access succeeds: transcribe every verzicola combination example from Bernardi's 1790 text directly, replacing the Justice pilot's hedge ("I-V and beginning around XXVIII", pilot line 92) with an exact list, with exact locators (chapter and printed page, or the archive.org page/leaf number if no printed page number is legible). Record whether the examples are exhaustive or exemplary in Bernardi's own text; do not convert examples into rules — the deliverable is the transcription plus locators, not an interpretation.
+- Thirteen committed studies currently lean on the hedge; the zodiac batch flags it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element batch left "whether XX-XXIII can form a verzicola" as a standing open question in all four files. If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot cross-references) as a reconciliation queue; apply the amendments only if the audit that unlocks this task scopes that in — do not silently apply them un-audited.
+- If direct web access genuinely fails after documented attempts: write the same conclusion T-MIN-008 anticipated (a human must acquire a physical/PDF copy of archive.org item bub_gb_4_rdG3SVa48C) but back it with the documented attempt log from this task, not with an unexamined assumption.
+
+**Definition of Done:**
+- A documented attempt log exists (in the same output note) showing what was tried against archive.org (metadata API, stream/OCR view, details page) and any fallback WebSearch, with outcomes for each — win or fail.
+- A sourced note in research/02-source-audit/ or research/pilots/ either (a) transcribes the verzicola examples with exact locators and states what the record can and cannot support, using direct web access as the source, or (b) states plainly that direct web access was attempted and genuinely failed, with the attempt log as evidence, before recommending human acquisition.
+- The reconciliation queue of affected files is listed with per-file line references, if the boundary resolved.
+- The hedge is superseded only by direct transcription or a documented failed-attempt log, never by memory or assumption.
+- This task's output note explicitly states it supersedes/replaces T-MIN-008's rationale; it does not archive or delete T-MIN-008 itself (that is a PM/human decision).
 
 ---
 ### ✅ T-MIN-009 · P3 · ANY · DONE
@@ -749,6 +794,25 @@ graph TD
 - A short locator-resolution note records which sources were opened and what each yielded.
 
 *Audited against SHA:* `274b981`
+
+---
+### 📋 T-MIN-017 · P3 · codex · OPEN
+**Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)**
+**Owner:** None
+
+**Scope:**
+- Editorial decision D4 (tasks/human/editorial_decisions_2026-08-12.md) sets: Cavalier (Cavallo) is the public heading for the four cavalier court cards; Knight is a subordinate search alias. This extends the existing "names to avoid" precedent already on the Page row. No live URL/slug system exists yet — this is policy + registry data-consistency only, NOT a routing or slug-generation change.
+- Scout audit of the four cavalier rows in research/05-registry-and-audit/Stage5_Master_Card_Registry.csv (branch test, commit 09f857d) found: SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12 all already carry canonical_name = "Cavalier of <Suit>" (already correct per D4) and historical_names = "Cavallo / Cavaliere / Knight / Horse" (Knight is already present, but folded into historical_names rather than called out as a search alias — the registry schema has no distinct field for 'search alias' or 'subordinate alias', only historical_names and names_to_avoid). All four rows' names_to_avoid column currently reads only "Page" — this is the existing precedent D4 explicitly extends.
+- Write the naming policy itself, once, in a discoverable location. Prefer research/04-dossier-spec/ (the existing dossier-spec home) if a suitable file exists there to extend; otherwise create a short new file research/04-dossier-spec/NAMING_POLICY.md (or research/pilots/NAMING_POLICY.md only if 04-dossier-spec is a worse fit on inspection — pick one, do not create both). The policy statement must cover: (1) historical accuracy governs the public heading (canonical_name) — e.g. Cavalier not Knight, matching the existing Page exclusion precedent; (2) familiar/common English terms (Knight, etc.) are retained as search aliases, not headings; (3) explicitly state this is a naming/data-consistency policy only — no URL/slug routing system exists yet to implement it.
+- Audit and, if needed, update the four cavalier registry rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12 in Stage5_Master_Card_Registry.csv and the corresponding entries in Stage5_Master_Card_Registry.json) for heading/alias consistency with the new policy: confirm canonical_name stays "Cavalier of <Suit>" for all four (already correct — do not change if already correct), and make Knight's status as an explicit search alias unambiguous in the record — either by adding it to a clearly-labeled alias representation (if you add a new column/field, add it consistently to all four rows, document the new field's meaning inline or in the naming policy doc, and do not invent per-row inconsistent formats), or by leaving Knight inside historical_names but adding one explicit sentence to the naming policy doc stating that, for these four rows specifically, historical_names doubles as the search-alias list until a dedicated field exists. Either approach is acceptable; pick one and apply it uniformly across all four rows, and say in the policy doc which approach was taken and why.
+- Do NOT invent a URL-slug or routing system. The url_slug column already exists and already reads cavalier-of-<suit> for all four rows (e.g. cavalier-of-cups) — leave url_slug values untouched; this task is naming/heading policy and registry alias-consistency only.
+- Do not touch Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md or the STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md draft's prose/claims content — those are content files, not registry/policy files, and out of scope for this task.
+
+**Definition of Done:**
+- A single naming-policy document exists at a discoverable path (research/04-dossier-spec/ preferred) stating the Cavalier-heading / Knight-alias rule, citing the Page precedent, and explicitly noting no URL/slug system exists yet.
+- All four cavalier rows in both Stage5_Master_Card_Registry.csv and Stage5_Master_Card_Registry.json have canonical_name "Cavalier of <Suit>" and have Knight's alias status made explicit and consistent across all four rows, using the single approach documented in the policy file.
+- url_slug values for the four cavalier rows are unchanged from cavalier-of-swords / cavalier-of-batons / cavalier-of-cups / cavalier-of-coins.
+- git diff --name-only against the audited sha touches only the new/edited policy file and the two registry files (CSV + JSON) — no pilot/draft study content files are touched.
 
 ---
 

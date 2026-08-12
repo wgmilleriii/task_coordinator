@@ -30,7 +30,7 @@ graph TD
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::blocked
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
-    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::review
+    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
 ```
 
 ---
@@ -537,7 +537,7 @@ graph TD
 *Audited against SHA:* `f8bb1b8`
 
 ---
-### ⏳ T-MIN-002 · P1 · ANY · HUMAN_REVIEW
+### ✅ T-MIN-002 · P1 · ANY · DONE
 **Add card-identification write path to minchiate_reviewer.py**
 **Owner:** Worker-F14
 

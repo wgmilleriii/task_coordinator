@@ -14,7 +14,7 @@ graph TD
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
-    T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::active
+    T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::blocked
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
@@ -36,7 +36,7 @@ graph TD
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
-    T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]
+    T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::active
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::review
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
@@ -72,9 +72,9 @@ graph TD
 *Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
-### 📋 T-INTY-018 · P1 · ANY · AUDITED
+### 🛠 T-INTY-018 · P1 · ANY · CLAIMED
 **Add dedicated gazelle_id column, decoupled from piano_code**
-**Owner:** None
+**Owner:** Worker-Gazelle1
 
 **Scope:**
 - Verified live in intypiano_demo (which is anonymized production data, so this is not hypothetical) - all 126 inventory.piano_code values already look like Gazelle "Piano ID" strings (e.g. '110641', '110801', '152964'), not QR-specific codes. import_sfusd.php lines 31, 41-44 confirm the mechanism - it reads the Gazelle CSV's 'Piano ID' column and writes it straight into inventory.piano_code on import. So piano_code is silently overloaded today - it is simultaneously the QR lookup key AND the raw Gazelle identifier - and the user has rejected reusing it further, wanting a dedicated gazellecode (gazelle_id) column instead.
@@ -673,8 +673,10 @@ graph TD
 *Audited against SHA:* `09f857d`
 
 ---
-### 🛠 T-MIN-016 · P2 · codex · CLAIMED
+### 🛑 T-MIN-016 · P2 · codex · BLOCKED
 **Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias**
+> 🛑 **BLOCKED REASON:** Implementation complete on branch test-T-MIN-016 (commits 15e34cd, 3ac0db7; pushed to origin) satisfying every definition_of_done item, but the audited verification_command is internally self-contradictory and cannot pass for ANY implementation that fulfills the DoD. The command's first loop greps Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json for zero occurrences of literal 'TRUMP-FOOL' and exits 1 on any match -- but the same task's DoD requires those exact three files to carry the alias field containing the literal string 'TRUMP-FOOL' (scope point 1, DoD item 1). Card_Dossier_Skeletons.json is doubly contradictory: the same script later asserts grep -c TRUMP-FOOL == 1 on that file, which is unreachable dead code given the earlier zero-occurrence check on the same file already exits first. Ran ./bin/fleet verify T-MIN-016 --model claude-sonnet-5 with the branch checked out; it fails at the CSV check (first file in the list) with exit code 1, confirming this empirically. Needs PM re-audit to fix verification_command (e.g. drop the registry/skeletons files from the zero-occurrence loop, since those three are precisely where the alias is supposed to live) before this can be verified and submitted. See FEEDBACK_Worker-F18_claude-sonnet-5_20260812.md for full detail.
+
 **Owner:** Worker-F18
 
 **Scope:**

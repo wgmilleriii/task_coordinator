@@ -4,7 +4,7 @@ title: "Apply D3 \u2014 rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permane
 repo: minchiate_tarot
 priority: P2
 lane: codex
-status: CLAIMED
+status: BLOCKED
 owner: Worker-F18
 created_at: '2026-08-12T09:00:00-06:00'
 dependencies: []
@@ -176,4 +176,41 @@ events:
 - timestamp: '2026-08-12T18:10:18.656239Z'
   action: CLAIM
   actor: Worker-F18
+- timestamp: '2026-08-12T18:20:09.088189Z'
+  action: BLOCK
+  actor: Unknown
+  details: 'Reason: Implementation complete on branch test-T-MIN-016 (commits 15e34cd,
+    3ac0db7; pushed to origin) satisfying every definition_of_done item, but the audited
+    verification_command is internally self-contradictory and cannot pass for ANY
+    implementation that fulfills the DoD. The command''s first loop greps Stage5_Master_Card_Registry.csv,
+    Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json for zero occurrences
+    of literal ''TRUMP-FOOL'' and exits 1 on any match -- but the same task''s DoD
+    requires those exact three files to carry the alias field containing the literal
+    string ''TRUMP-FOOL'' (scope point 1, DoD item 1). Card_Dossier_Skeletons.json
+    is doubly contradictory: the same script later asserts grep -c TRUMP-FOOL == 1
+    on that file, which is unreachable dead code given the earlier zero-occurrence
+    check on the same file already exits first. Ran ./bin/fleet verify T-MIN-016 --model
+    claude-sonnet-5 with the branch checked out; it fails at the CSV check (first
+    file in the list) with exit code 1, confirming this empirically. Needs PM re-audit
+    to fix verification_command (e.g. drop the registry/skeletons files from the zero-occurrence
+    loop, since those three are precisely where the alias is supposed to live) before
+    this can be verified and submitted. See FEEDBACK_Worker-F18_claude-sonnet-5_20260812.md
+    for full detail.'
 claimed_at: '2026-08-12T18:10:18.656086Z'
+previous_status: CLAIMED
+blocked_reason: 'Implementation complete on branch test-T-MIN-016 (commits 15e34cd,
+  3ac0db7; pushed to origin) satisfying every definition_of_done item, but the audited
+  verification_command is internally self-contradictory and cannot pass for ANY implementation
+  that fulfills the DoD. The command''s first loop greps Stage5_Master_Card_Registry.csv,
+  Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json for zero occurrences
+  of literal ''TRUMP-FOOL'' and exits 1 on any match -- but the same task''s DoD requires
+  those exact three files to carry the alias field containing the literal string ''TRUMP-FOOL''
+  (scope point 1, DoD item 1). Card_Dossier_Skeletons.json is doubly contradictory:
+  the same script later asserts grep -c TRUMP-FOOL == 1 on that file, which is unreachable
+  dead code given the earlier zero-occurrence check on the same file already exits
+  first. Ran ./bin/fleet verify T-MIN-016 --model claude-sonnet-5 with the branch
+  checked out; it fails at the CSV check (first file in the list) with exit code 1,
+  confirming this empirically. Needs PM re-audit to fix verification_command (e.g.
+  drop the registry/skeletons files from the zero-occurrence loop, since those three
+  are precisely where the alias is supposed to live) before this can be verified and
+  submitted. See FEEDBACK_Worker-F18_claude-sonnet-5_20260812.md for full detail.'

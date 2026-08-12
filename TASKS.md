@@ -10,13 +10,21 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
+    T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::review
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
+    T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
+    T-PTG-001 --> T-PTG-002
+    T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
+    T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]
+    T-PTG-001 --> T-PTG-003
+    T-PTG-002 --> T-PTG-003
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
+    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
@@ -25,6 +33,426 @@ graph TD
 
 ---
 
+
+## Repo: `intypiano`
+
+### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
+**Piano Dossier Data Entry Interface (Modern EAV)**
+**Owner:** TaskForce
+
+**Scope:**
+- I
+- m
+- p
+- l
+- e
+- m
+- e
+- n
+- t
+-  
+- a
+-  
+- m
+- o
+- d
+- e
+- r
+- n
+- i
+- z
+- e
+- d
+-  
+- E
+- A
+- V
+-  
+- a
+- r
+- c
+- h
+- i
+- t
+- e
+- c
+- t
+- u
+- r
+- e
+-  
+- f
+- o
+- r
+-  
+- c
+- o
+- l
+- l
+- e
+- c
+- t
+- i
+- n
+- g
+-  
+- d
+- e
+- t
+- a
+- i
+- l
+- e
+- d
+-  
+- P
+- i
+- a
+- n
+- o
+-  
+- c
+- o
+- n
+- d
+- i
+- t
+- i
+- o
+- n
+-  
+- d
+- o
+- s
+- s
+- i
+- e
+- r
+- s
+- ,
+-  
+- b
+- a
+- s
+- e
+- d
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- S
+- t
+- a
+- n
+- f
+- o
+- r
+- d
+-  
+- T
+- e
+- m
+- p
+- l
+- a
+- t
+- e
+-  
+- P
+- D
+- F
+- .
+- 
+
+- I
+- n
+- c
+- l
+- u
+- d
+- e
+- s
+-  
+- s
+- c
+- h
+- e
+- m
+- a
+-  
+- (
+- `
+- d
+- o
+- s
+- s
+- i
+- e
+- r
+- _
+- f
+- i
+- e
+- l
+- d
+- _
+- d
+- e
+- f
+- i
+- n
+- i
+- t
+- i
+- o
+- n
+- s
+- `
+- ,
+-  
+- `
+- p
+- i
+- a
+- n
+- o
+- _
+- d
+- o
+- s
+- s
+- i
+- e
+- r
+- s
+- `
+- ,
+-  
+- `
+- p
+- i
+- a
+- n
+- o
+- _
+- d
+- o
+- s
+- s
+- i
+- e
+- r
+- _
+- v
+- a
+- l
+- u
+- e
+- s
+- `
+- )
+- ,
+-  
+- 
+
+- a
+-  
+- m
+- o
+- b
+- i
+- l
+- e
+- -
+- f
+- i
+- r
+- s
+- t
+-  
+- d
+- a
+- t
+- a
+-  
+- e
+- n
+- t
+- r
+- y
+-  
+- i
+- n
+- t
+- e
+- r
+- f
+- a
+- c
+- e
+-  
+- (
+- `
+- a
+- d
+- m
+- i
+- n
+- /
+- v
+- 2
+- /
+- d
+- o
+- s
+- s
+- i
+- e
+- r
+- _
+- e
+- d
+- i
+- t
+- .
+- p
+- h
+- p
+- `
+- )
+-  
+- w
+- i
+- t
+- h
+-  
+- s
+- e
+- g
+- m
+- e
+- n
+- t
+- e
+- d
+-  
+- t
+- o
+- u
+- c
+- h
+- -
+- f
+- r
+- i
+- e
+- n
+- d
+- l
+- y
+-  
+- g
+- r
+- a
+- d
+- i
+- n
+- g
+-  
+- b
+- u
+- t
+- t
+- o
+- n
+- s
+- ,
+-  
+- 
+
+- a
+- n
+- d
+-  
+- i
+- n
+- t
+- e
+- g
+- r
+- a
+- t
+- i
+- o
+- n
+-  
+- i
+- n
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- e
+- x
+- i
+- s
+- t
+- i
+- n
+- g
+-  
+- V
+- 2
+-  
+- p
+- i
+- a
+- n
+- o
+-  
+- v
+- i
+- e
+- w
+-  
+- (
+- `
+- a
+- d
+- m
+- i
+- n
+- /
+- v
+- 2
+- /
+- p
+- i
+- a
+- n
+- o
+- .
+- p
+- h
+- p
+- `
+- )
+- .
+- 
+
+
+**Definition of Done:**
+
+*Audited against SHA:* `efef90953c62f09c2e6c74e3cee15c97ddf57980`
+
+---
 
 ## Repo: `minchiate_tarot`
 
@@ -211,5 +639,81 @@ graph TD
 - A short locator-resolution note records which sources were opened and what each yielded.
 
 *Audited against SHA:* `274b981`
+
+---
+
+## Repo: `newmexicoptg.org`
+
+### 📋 T-PTG-001 · P0 · ANY · AUDITED
+**Fix footnote list numbering to match inline citation markers**
+**Owner:** None
+
+**Scope:**
+- journalgpt/lib/JournalAnswerService.php — the ask() method, specifically the block converting raw OpenAI annotations (the file-citation tag OpenAI wraps in special bracket characters) into inline [1], [2], ... markers (the $uniqueTags map), and the separate block below it that appends a Footnotes list by enumerating $citationsOutput 1..N.
+- Root cause confirmed live in production: a 'Golden Hammer Award recipients' answer had only 4 unique inline markers ([1]-[4]) in the model's prose, but the appended footnote block listed 24 numbered entries — footnote numbers 1-24 do not correspond to inline markers 1-4 at all. The two numbering systems are built independently: inline numbers come from the order unique annotation tags first appear in the raw answer text; footnote numbers come from the order $parsedCitations were resolved (chunk-derived citations from every retrieved chunk, in retrieval order, plus Tier-4 corpus-scan fallback results appended after). Nothing ties a footnote's number or content to which inline marker it is supposed to back.
+- Fix must make the footnote list contain exactly the citations that correspond to inline markers, numbered identically to those markers, in the same first-appearance order — not a dump of every retrieved-but-possibly-uncited chunk.
+
+**Definition of Done:**
+- Footnote count in the rendered answer equals the count of distinct inline [n] markers actually present in the cleaned answer text (never more, never fewer).
+- Footnote [n] links to the same source the model's inline [n] marker was standing in for (i.e. the annotation-to-citation mapping is preserved through the pipeline, not re-derived independently for the footnote block).
+- A citation that was retrieved (present in retrieved_chunks or found by the Tier-4 corpus scan) but never actually referenced by an inline marker in the model's prose does not appear as a numbered footnote.
+- New regression test added to journalgpt/tests/JournalAnswerServiceTest.php reproducing this shape: a StubOpenAIClient answer with only 4 unique annotations in the text but retrieved_chunks/corpus-scan data that would independently resolve to 15+ citations. Assert count(inline markers) === count(footnotes).
+- Existing test suite (tests/JournalAnswerServiceTest.php) still passes in full, including the existing hedged-answer/citation-always-works regression tests.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### 📋 T-PTG-004 · P1 · ANY · AUDITED
+**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
+**Owner:** None
+
+**Scope:**
+- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
+- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
+- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
+
+**Definition of Done:**
+- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
+- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
+- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
+- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
+- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### 📋 T-PTG-002 · P1 · ANY · AUDITED
+**Stop citing every retrieved chunk — only cite what the model actually referenced**
+**Owner:** None
+
+**Scope:**
+- journalgpt/lib/JournalAnswerService.php — resolveCitationsFromChunks() (turns EVERY entry in $retrievedChunks into a citation, one per chunk, regardless of whether the model's answer actually drew on it) and fallbackExtractCitationsFromAnswer() (Tier-4 corpus-wide phrase scan, capped at MAX_FALLBACK_CITATIONS = 6 per call but still additive on top of chunk citations).
+- This is the upstream cause behind T-PTG-001's symptom: File Search / Assistants retrieval commonly returns 10-20+ chunks touching many issues/pages of the Journal for a broad query (e.g. 'Golden Hammer Award recipients' spans years of issues). Today every one of those chunks becomes its own citation entry, deduped only by (article_uid, page) — never checked against whether the model's prose contains an annotation actually pointing at that chunk.
+- T-PTG-001 fixes the numbering/footnote-list symptom (footnotes must match inline markers 1:1). This task fixes the underlying data problem so citation volume itself stays sane even before T-PTG-001's filtering: adjacent-page citations to the same article should collapse into one entry with a page range rather than N separate entries, and the Tier-4 answer-text fallback should only ever supplement — never dominate — a citation list.
+
+**Definition of Done:**
+- resolveCitationsFromChunks (or its caller) collapses consecutive/adjacent pages within the same article_uid into a single citation entry with a page range (e.g. pp. 21-23) instead of 3 separate entries — verify against the real example where article_id=145 pages 23/24/25 all cited separately in one answer.
+- Tier-4 fallbackExtractCitationsFromAnswer results are clearly and structurally distinguished from directly-retrieved/annotated citations (e.g. a source: 'fallback_scan' vs source: 'retrieval' field on each citation record) so downstream consumers (including T-PTG-001's inline-matching logic) can tell which citations the model actually pointed to vs. which were discovered independently by scanning corpus text for matching phrases.
+- No regression in existing grounded-answer tests — a genuinely single-source answer still returns exactly one citation.
+- New regression test added to journalgpt/tests/JournalAnswerServiceTest.php using a StubOpenAIClient with 10+ retrieved_chunks across multiple issues, asserting page-range collapsing and that fallback-scan citations are tagged distinctly from retrieval citations.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### 📋 T-PTG-003 · P1 · ANY · AUDITED
+**Lock in citation-numbering fix with a real-shape regression fixture**
+**Owner:** None
+
+**Scope:**
+- journalgpt/tests/JournalAnswerServiceTest.php
+- journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) — add a fixture reproducing the actual reported 'Golden Hammer Award recipients' case shape as closely as possible without shipping real user data: a multi-paragraph answer with a handful of inline [n] markers, and a StubOpenAIClient retrieved_chunks payload spanning many issues/pages (2019 through 2025) so the test exercises real cross-issue volume, not just 2-3 chunks.
+- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily synthetic/minimal; this task's job is to add a second, independent test built directly from the bug report so the fix is verified against the actual failure shape, not just a simplified version of it.
+
+**Definition of Done:**
+- New test method added asserting, end-to-end through JournalAnswerService::ask() (not just the internal resolver methods), that the final answer string's footnote count equals its inline marker count, and every footnote's citation_label refers to an article/page combination that genuinely appears in the stubbed retrieved_chunks/annotations — no orphaned or fabricated footnote.
+- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out the prior revision or reasoning through the diff) and passes after.
+- Full suite (tests/JournalAnswerServiceTest.php) passes.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---

@@ -1,0 +1,45 @@
+id: T-PTG-003
+title: Lock in citation-numbering fix with a real-shape regression fixture
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-12T04:03:50Z'
+audited_at: '2026-08-12T04:03:50Z'
+audited_by: Claude-PM
+audited_repo_sha: 9e74d39c82a5980f488695fb4e4e5e1dd46bdb54
+dependencies:
+- T-PTG-001
+- T-PTG-002
+scope:
+- journalgpt/tests/JournalAnswerServiceTest.php
+- 'journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) — add a fixture reproducing
+  the actual reported ''Golden Hammer Award recipients'' case shape as closely as possible without shipping
+  real user data: a multi-paragraph answer with a handful of inline [n] markers, and a StubOpenAIClient
+  retrieved_chunks payload spanning many issues/pages (2019 through 2025) so the test exercises real cross-issue
+  volume, not just 2-3 chunks.'
+- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily synthetic/minimal;
+  this task's job is to add a second, independent test built directly from the bug report so the fix is
+  verified against the actual failure shape, not just a simplified version of it.
+definition_of_done:
+- New test method added asserting, end-to-end through JournalAnswerService::ask() (not just the internal
+  resolver methods), that the final answer string's footnote count equals its inline marker count, and
+  every footnote's citation_label refers to an article/page combination that genuinely appears in the
+  stubbed retrieved_chunks/annotations — no orphaned or fabricated footnote.
+- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out the prior revision
+  or reasoning through the diff) and passes after.
+- Full suite (tests/JournalAnswerServiceTest.php) passes.
+verification_command: cd journalgpt && php tests/JournalAnswerServiceTest.php
+human_review_required: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+requires_doc_update: false
+events:
+- timestamp: '2026-08-12T04:03:50Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Verification-hardening follow-up so the T-PTG-001/002 fix is checked against the real bug report
+    shape, not only hand-built minimal fixtures.

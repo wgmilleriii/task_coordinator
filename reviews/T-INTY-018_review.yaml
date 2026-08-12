@@ -1,0 +1,101 @@
+task_id: T-INTY-018
+reviewer_agent: ReviewerSonnet5
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 6d955d9962a89d24af8a5d8052eb1d67b1ea0186
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Full diff at head_sha 6d955d99 touches exactly the 7 files claimed
+    (ddl/146/001-005, docs/experts/schema-catalog.md, import_sfusd.php). No
+    unexpected files. Reviewed in an isolated worktree at
+    ../intypiano-t018-review, checked out at the exact head_sha, separate
+    from both the shared working copy and the Worker's own worktree.
+- severity: INFO
+  description: >-
+    Read all 5 ddl/146/*.sql(.php) files directly. 001/002 add gazelle_id
+    VARCHAR(24) NULL with a UNIQUE key to pianos and inventory respectively,
+    purely additive (AFTER piano_code, no other column touched). 003/004
+    backfill gazelle_id from piano_code only WHERE piano_code REGEXP
+    '^[0-9]+$' AND gazelle_id IS NULL -- piano_code itself is never written
+    by any of the 5 files, confirmed by reading, not by trusting the
+    Worker's narrative. 005_verify.php asserts missed=0 and overreach=0 per
+    table via a single aggregate query, not just a row count.
+- severity: INFO
+  description: >-
+    Independently re-verified the Worker's key claim (that the PM audit's
+    "all 126 piano_code values are Gazelle IDs" assumption was wrong)
+    against the live intypiano_demo DB from my own worktree, via a
+    standalone script using the app's own DatabaseManager/Redditlite
+    bootstrap (local demo creds are hostname-gated and could not be reached
+    directly via mysqli). Result for BOTH pianos and inventory tables:
+    total=126, digit_like=42, has_gazelle=42, fabricated=0, missed=0. This
+    matches both the Worker's claimed numbers and the PM's own pre-dispatch
+    spot check exactly. A direct query for non-digit piano_code rows with a
+    non-null gazelle_id (i.e. fabricated Gazelle IDs among the 84
+    hand-assigned codes) returned zero rows.
+- severity: INFO
+  description: >-
+    Confirmed live schema via SHOW COLUMNS / SHOW INDEX on intypiano_demo:
+    both pianos.gazelle_id and inventory.gazelle_id are varchar(24), Null=YES,
+    Key=UNI (uniq_gazelle_id / ix_inventory_gazelle_id), exactly as the DDL
+    claims and as the task's DoD requires.
+- severity: INFO
+  description: >-
+    intypiano_demo is a database shared with the Worker (not per-worktree);
+    `php scripts/migrate.php --db=intypiano_demo --status` from my worktree
+    showed Current version 146 / No pending migrations, i.e. the Worker's
+    migration was already applied. Per the review brief's caution about
+    shared DBs, I did not re-run the migration (003/004's UPDATE ...WHERE
+    gazelle_id IS NULL are idempotent by construction, but re-running was
+    unnecessary since read-only queries above already independently confirm
+    the post-migration state matches every claim). Confirmed
+    scripts/migrate.php's $protected array still contains unm_piano,
+    unm_piano_readonly, unm_piano_test and scripts/bootstrap_v2_db.sh still
+    rejects those names -- ddl/146 introduces no new path around that guard.
+- severity: INFO
+  description: >-
+    Read import_sfusd.php's diff directly. It now INSERTs gazelle_id
+    alongside piano_code (both set to $piano_id) and the ON DUPLICATE KEY
+    UPDATE clause also updates gazelle_id. piano_code's own INSERT value and
+    column position are unchanged -- it continues to mirror the Gazelle
+    Piano ID for QR-label continuity, an explicit product decision stated in
+    an inline comment and consistent with the task's DoD requirement to
+    document the choice rather than silently pick one.
+- severity: INFO
+  description: >-
+    Independently ran ./vendor/bin/phpunit from my own worktree against a
+    fresh `php -S localhost:2027 -t .` (port was free, no collision this
+    time). Got Tests: 330, Assertions: 666, Errors: 1, Failures: 68 --
+    identical to the Worker's claimed numbers. Extracted all "N) Test::method"
+    failure/error identifiers from my run and diffed them (sorted) against
+    the same extraction from the T-INTY-021 handoff's evidence_output (69
+    lines each: 1 error + 68 failures). `diff` produced zero output -- the
+    failing test set is name-for-name identical, confirming no new
+    regressions and no failures masked by an unrelated fix.
+- severity: INFO
+  description: >-
+    docs/experts/schema-catalog.md diff adds a ddl/146 row to the migration
+    table and two new "Landmines" entries: one correcting the
+    piano_code-is-always-a-Gazelle-ID assumption with the 42/126 finding,
+    and one documenting that inventory and pianos do not stay in sync
+    (no ongoing job beyond the one-time ddl/132/004_map_pianos.sql). Matches
+    the task's requires_doc_update: true obligation.
+- severity: MINOR
+  description: >-
+    The Worker's handoff notes that `fleet verify`'s automated re-run of
+    verification_command executed against the wrong checkout (the shared
+    repo, not the worker's isolated worktree) and collided with a stale
+    process on port 2027, producing a spurious result the Worker had to
+    override with manually captured evidence. This is a real tooling gap
+    (also flagged by T-INTY-021) but is orthogonal to the correctness of
+    this change -- noting it here for the coordinator's system-level
+    backlog rather than as a defect in this task's deliverable.
+- severity: INFO
+  description: >-
+    task's human_review_required is true in tasks/active/T-INTY-018.yaml.
+    Per bin/fleet.py cmd_record_review (lines ~495-505), a non-FAIL verdict
+    with human_review_required=true sets task status to HUMAN_REVIEW (not
+    DONE) -- recording this PASS will move T-INTY-018 from PEER_REVIEW to
+    HUMAN_REVIEW, awaiting final human sign-off, not close the task.
+reviewed_at: '2026-08-12T19:05:00.000000Z'

@@ -3,8 +3,8 @@ title: Add card-identification write path to minchiate_reviewer.py
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F14
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:30.640903Z'
 audited_by: PM-1
@@ -42,7 +42,7 @@ definition_of_done:
   is not broken).
 verification_command: python3 minchiate_reviewer.py --check
 human_review_required: true
-claimed_at: null
+claimed_at: '2026-08-12T04:10:12.858485Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -51,3 +51,6 @@ events:
   action: AUDIT
   actor: PM-1
   details: Audited against 0509f6914e201ba192717c7a90c3c4154e5120fc
+- timestamp: '2026-08-12T04:10:12.858879Z'
+  action: CLAIM
+  actor: Worker-F14

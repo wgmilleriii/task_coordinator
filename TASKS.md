@@ -24,11 +24,11 @@ graph TD
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
-    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]
+    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::active
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
-    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]
+    T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::active
 ```
 
 ---
@@ -475,9 +475,9 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 📋 T-MIN-002 · P1 · ANY · AUDITED
+### 🛠 T-MIN-002 · P1 · ANY · CLAIMED
 **Add card-identification write path to minchiate_reviewer.py**
-**Owner:** None
+**Owner:** Worker-F14
 
 **Scope:**
 - On branch test-T-MIN-001, minchiate_reviewer.py was rewritten from Flask to stdlib http.server (commits 1eb6550, 0509f69). The rewrite dropped the old Flask app's /api/update and /api/confirm POST routes entirely — the new ReviewerHandler implements only do_GET, no do_POST — so the running server is now read-only.
@@ -644,9 +644,9 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
-### 📋 T-PTG-001 · P0 · ANY · AUDITED
+### 🛠 T-PTG-001 · P0 · ANY · CLAIMED
 **Fix footnote list numbering to match inline citation markers**
-**Owner:** None
+**Owner:** Claude-Worker
 
 **Scope:**
 - journalgpt/lib/JournalAnswerService.php — the ask() method, specifically the block converting raw OpenAI annotations (the file-citation tag OpenAI wraps in special bracket characters) into inline [1], [2], ... markers (the $uniqueTags map), and the separate block below it that appends a Footnotes list by enumerating $citationsOutput 1..N.

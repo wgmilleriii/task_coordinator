@@ -1,0 +1,54 @@
+id: T-INTY-020
+title: "Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"
+repo: intypiano
+priority: P3
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-12T00:00:00-06:00'
+dependencies:
+- T-INTY-018
+scope:
+- This is a research/design task, not a build task. Do not write a sync job
+  or cron script under this task. The original proposal (a prior Gemini/
+  Antigravity session, endorsed by the user in principle) wants a nightly
+  sync of volatile Gazelle data - service history, tuning dates, condition
+  reports - pulled into intypiano and keyed on the new pianos.gazelle_id
+  column from T-INTY-018. That depends on Gazelle API access and API docs
+  that were not confirmed to exist during this scout pass.
+- First step - determine whether Gazelle actually exposes a read API (REST,
+  CSV export endpoint, webhook feed, or export-only). Check for anything left
+  behind by the prior 'Gazelle Data Normalization tool' work (git commit
+  1ea83713) - it may already have investigated Gazelle's API surface or only
+  handled flat CSV files (import_sfusd.php reading new_customers/SFUSD.csv
+  suggests CSV export is the only mechanism confirmed working today, not a
+  live API).
+- If no API/programmatic access is confirmed, the deliverable is a written
+  design doc (per this repo's expert-page convention, likely
+  docs/experts/gazelle-sync.md or under task_coordinator's Dewey Decimal
+  20-Architecture/ per that repo's own doc rules) covering - what data Gazelle
+  can realistically expose (API vs. recurring CSV drop), how conflicts are
+  resolved when both intypiano and Gazelle have edited the same piano's data
+  since last sync (the original proposal's "detecting remote edits" item was
+  deliberately NOT scoped as a task here - flag it as an open question this
+  design doc should surface, not solve), what fields sync one-way vs. need
+  human reconciliation, and what a minimal V1 sync would touch (proposed -
+  only pianos rows where gazelle_id IS NOT NULL, from T-INTY-018).
+- Do not scope pushing intypiano invoices/data back to Gazelle - that is a
+  separate, more speculative future phase explicitly deferred by this scout
+  pass (see feedback file), not by accident.
+definition_of_done:
+- A written design doc exists (exact location per whichever repo's doc
+  convention applies - confirm intypiano has no equivalent Dewey rule before
+  defaulting to task_coordinator's) stating clearly whether Gazelle API/export
+  access is confirmed to exist, and if not, what is needed to unblock a real
+  build task.
+- The doc names which specific fields (service history, tuning dates,
+  condition reports) are in scope for a V1 sync and which are deferred.
+- The doc explicitly notes conflict/remote-edit detection as unsolved and
+  out of scope for V1, so a future PM does not assume it was silently handled.
+- No production code, migration, or cron job is added under this task - if
+  the investigation finds enough clarity to justify a build, that becomes a
+  new task, not scope creep on this one.
+verification_command: test -f docs/experts/gazelle-sync.md || find . -iname "*gazelle-sync*"
+human_review_required: true

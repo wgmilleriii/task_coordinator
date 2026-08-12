@@ -1,0 +1,44 @@
+id: T-INTY-019
+title: "\"Open in Gazelle\" deep-link button on the Piano Dossier page"
+repo: intypiano
+priority: P2
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-12T00:00:00-06:00'
+dependencies:
+- T-INTY-018
+scope:
+- Small, low-risk UI addition. Add an "Open in Gazelle" button/link to
+  admin/v2/piano.php (the Piano Dossier / instrument page shipped in
+  T-INTY-017, integrated with dossier_edit.php) that opens the piano's record
+  in the Gazelle CRM in a new tab, built from the new pianos.gazelle_id column
+  added by T-INTY-018.
+- Confirm the actual Gazelle web URL pattern before hardcoding it (this scout
+  pass did not have access to a Gazelle account/docs to confirm the URL
+  scheme - e.g. whether it's a path like https://app.gazellecrm.com/pianos/{id}
+  or a query-string form). Do not guess and ship a link that 404s - verify
+  with the user or find it in the CSV/API docs referenced by the original
+  Gazelle Data Normalization tool work (git log shows commit
+  1ea83713 'feat(integrations) - build Gazelle Data Normalization tool' -
+  check that work for any recorded Gazelle URL conventions first).
+- Render conditionally - if pianos.gazelle_id IS NULL for this piano (e.g. it
+  predates the Gazelle integration or was hand-entered), do not show a dead
+  link; either hide the button or show a disabled/greyed state with a tooltip
+  explaining why.
+- Follow admin/v2/piano.php's existing conventions for buttons/links (CSRF
+  is irrelevant here since this is a pure outbound GET link, not a form post,
+  but match the existing visual style in that file rather than introducing a
+  new button pattern).
+definition_of_done:
+- admin/v2/piano.php shows an "Open in Gazelle" link/button when the piano's
+  gazelle_id is set, pointing at a confirmed-correct Gazelle URL pattern, and
+  hides or disables it when gazelle_id is NULL.
+- php -l admin/v2/piano.php passes.
+- Manually verified in a running server (php -S localhost:2027 -t .) against
+  at least one piano with a gazelle_id and one without, per CLAUDE.md's
+  "prefer running over reading" rule - screenshot or terminal evidence of both
+  states attached to the handoff.
+- ./vendor/bin/phpunit still reports the 259-test baseline with 0 new failures.
+verification_command: php -l admin/v2/piano.php && ./vendor/bin/phpunit
+human_review_required: true

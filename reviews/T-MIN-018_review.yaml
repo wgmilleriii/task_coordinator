@@ -1,0 +1,114 @@
+task_id: T-MIN-018
+reviewer_agent: Reviewer-F24
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 2b48367
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Independently re-fetched the archive.org source from scratch (not trusting the
+    worker's transcription) and it checks out fully. GET
+    https://archive.org/metadata/bub_gb_4_rdG3SVa48C returned HTTP 200 with title
+    "Regole generali del giuoco delle minchiate...", creator Luigi Bernardi, date 1790
+    — matches RULE-1790 exactly. The djvu.txt derivative is listed at exactly 63,518
+    bytes. Fetched it directly via curl (not WebFetch, per the worker's own
+    documented reason — WebFetch's summarization pass is unreliable for verbatim
+    transcription; confirmed this is the right call, not just a documented excuse):
+    HTTP 200, 63,518 bytes, 2,416 lines — byte-for-byte and line-for-line identical
+    to what the worker reports.
+  file_reference: research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+- severity: INFO
+  description: >-
+    HEADLINE FINDING CONFIRMED: the XXVIII boundary claim is genuinely what the
+    source says, not a misread OCR artifact or invention. In my own raw-text
+    inspection: Cap. V (line 416) gives "28. 2p. 30." (29 OCR-garbled as "2p") for
+    the Tarocchi/trenti verzicola, matching the note's "Verzicole di Tarocchi... di
+    trenti" quote. Cap. XV (lines 1209-1233) independently gives "XX Vili. , XXIX, e
+    XXX." (XXVIII/XXIX/XXX) as a worked strategy example, and "farvi il XX Vili."
+    names XXVIII as a "chiave" of other verzicole. Part II Cap. VIII (line 2093-2099)
+    independently gives "di XXVIII. XXIX. e XXX." in a fully worked scoring dispute.
+    Three independent passages across three separate chapters agree on the same
+    boundary. I also confirmed XXVII appears exactly once anywhere in the text (line
+    1325, Cap. XVII: "cioè il XXVII. o il XXVI. almeno") and there it names a generic
+    low-value "Taroccaccio" discard card — never inside or opening a verzicola
+    example. This precisely matches the note's claim and rules out XXVII as the true
+    boundary.
+  file_reference: research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+- severity: INFO
+  description: >-
+    Chapter/page citations verified against the source's own table of contents (DEI
+    CAPITOLI, starting line 2321 of the djvu.txt). "CaP. V. D;// g Verzicele
+    regolari... 9." and "CaP. Vi. tf,//* Verzicole irregolari. n," confirm Cap. V p.9
+    and Cap. VI p.11 exactly as cited. Cap. XV's page is OCR-garbled to "3**" in the
+    TOC; the note's interpolation to p.30 against the clean neighboring entries
+    (Cap. XIV=17, Cap. XVI=33, Cap. XVII=34, Cap. XVIII=36) is a reasonable,
+    correctly-flagged inference rather than an invented fact. Part II Cap. VIII's
+    page renders as "$z" in OCR — plausibly "52" (S/2 garbled) — again a supported,
+    non-fabricated read. djvu.txt line-number citations for individual quotes are
+    accurate to within 0-1 line of my own grep results (e.g. worker cites
+    "2094-2099" for the Part II passage; my grep places the first line at 2093 —
+    trivial, not worth a correction).
+  file_reference: research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+- severity: INFO
+  description: >-
+    Section 3's exemplary-vs-exhaustive claim is honestly supported by the source,
+    not overclaimed. Confirmed directly: "La Verzicola è composta di tre carte di
+    seguito, o più di tre. Per esempio:" (line 416) states the general rule first and
+    explicitly flags the following numeral list as example ("per esempio"); "come
+    28.29.30., ovvero 29.30.31. ec., oppure 29.30.31.32. ec., di seguito ec." (lines
+    428-432) repeats "ec." (etc.) three times in one sentence, textbook "and so on"
+    framing. Section 4(B)'s treatment of the XX-XXIII element-block question is
+    correctly NOT upgraded to "resolved" — I searched the raw OCR myself for any
+    XXI./XXII./XXIII. verzicola example and found none; the only XX-range verzicola
+    instances all involve X/XX/XXX/Trombe or XX/XXX/XXXI/XXXII combinations, never an
+    XX-XXI-XXII or XXI-XXII-XXIII run. The note's "covered by the general rule,
+    unconfirmed by named example" framing is exactly right and appropriately
+    conservative — it does not convert an absence of a counter-example into a claim
+    of confirmation.
+  file_reference: research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+- severity: INFO
+  description: >-
+    The attempt log (section 1) is honest and matches my own experience trying the
+    same endpoints: metadata API 200, download URL 302-redirects to a load-balanced
+    content node (I did not need to manually follow the redirect — curl -sL handled
+    it transparently — but the note's observation that the redirect target is
+    non-deterministic per request is a real, verifiable archive.org behavior and is
+    correctly flagged as a reason to cite the canonical archive.org/download/... URL
+    rather than a specific node hostname as the stable locator).
+  file_reference: research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+- severity: INFO
+  description: >-
+    Reconciliation queue spot-checked at 4 files/locations, all real and accurately
+    cited: (1) Pilot3_TRUMP-08_Justice.md line 92 contains the exact hedge quoted in
+    the note ("Bernardi says a verzicola is made from consecutive cards and then
+    gives explicit low-Papi examples from I–V and higher-trump examples beginning
+    around XXVIII"); line 525's JSON claim register does carry the "I-XXVII" bound
+    language cited. (2) Element_Batch_Verification_Report.md lines 41-42 and 261
+    both reference the "XX–XXIII verzicola question" as queued/unchecked, matching
+    the citation. (3) PERSONALITY_TRUMP-22_Earth.md carries a full "### The
+    *verzicola* question" section (around line 342) with "unchecked" language, an
+    open-question item 7 citing "§3", and registry row EAR-C020 restating "unchecked"
+    with a [U] tag and pointer to Justice pilot L92 — all matching the queue's
+    description. No fabricated queue entries found in the spot-check.
+  file_reference: research/pilots/drafts/PERSONALITY_TRUMP-22_Earth.md
+- severity: INFO
+  description: >-
+    Scope confirmed clean: `git diff --name-only 09f857d..2b48367` in the audited
+    worktree touches exactly one file,
+    research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md. No
+    accidental amendments to any of the ~20 queued dependent files — the note
+    correctly lists them without touching them, as the task scoped. Re-ran the
+    audited verification_command in the worktree at head 2b48367: PASS (exit 0,
+    stdout "PASS").
+  file_reference: null
+- severity: MINOR
+  description: >-
+    Not a defect in this task, but worth flagging for the future PM who scopes the
+    reconciliation queue: the queue's largest single item
+    (Fleet_Sweep_Personality_Triage_Report.md, 8 line references) and several
+    verification reports were not spot-checked here (time-boxed the check to 4 of
+    ~20 files per the review brief); the reconciliation task itself should re-verify
+    the remaining ~16 before applying any amendments, not assume this review's
+    4-file spot-check covers the whole queue.
+  file_reference: null
+reviewed_at: '2026-08-12T19:45:00Z'

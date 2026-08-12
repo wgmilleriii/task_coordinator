@@ -44,7 +44,7 @@ graph TD
 
 ## Repo: `intypiano`
 
-### 📋 T-INTY-018 · P1 · ANY · OPEN
+### 📋 T-INTY-018 · P1 · ANY · AUDITED
 **Add dedicated gazelle_id column, decoupled from piano_code**
 **Owner:** None
 
@@ -62,7 +62,9 @@ graph TD
 - Existing piano_code values are provably unchanged after migration - a before/after diff of SELECT id, piano_code FROM pianos shows zero modified rows, and qr_avery5162_poc.php / piano/index.php still resolve every existing piano_code to the same piano (spot-check at least 3 real codes from intypiano_demo).
 - gazelle_id is populated for all rows where the investigation confirms piano_code currently holds a Gazelle ID (expected ~126/126 in demo data today, but confirm rather than assume 100%).
 - import_sfusd.php writes gazelle_id going forward; the chosen behavior for piano_code on new imports is explicitly documented in the commit message.
-- ./vendor/bin/phpunit still reports the 259-test baseline with 0 new failures.
+- ./vendor/bin/phpunit does not introduce NEW failures/errors beyond the PM-captured baseline below. PM AUDIT NOTE (2026-08-12, repo-sha 3cf4775d) - CLAUDE.md's documented "259 tests, 0 failures" baseline is currently STALE and NOT reproducible. A clean run on this exact SHA (php -S localhost:2027 -t ., then ./vendor/bin/phpunit) produced Tests=330, Assertions=564, Errors=18, Failures=114, Skipped=6. This is a pre-existing regression, unrelated to Gazelle/gazelle_id - traced to admin/v2/* pages 500ing locally ("Uncaught mysqli_sql_exception - Unknown database 'caut_sfusd'" out of classes/core/DatabaseManager.php:307) since the new multi-tenant config.php/ DatabaseManager dispatch landed 2026-08-11 (commits 40d00b89..4751c925). Reproduced 3 independent ways (fresh php -S process, direct curl to admin/v2/piano.php, and a standalone PHP CLI simulation) - this is not an artifact of a stale/duplicate local server process. Do NOT let a Worker "fix" this DatabaseManager/config.php regression as part of this task - it is a separate, unrelated bug; file it as its own task instead. The Worker's bar for this task is - the SAME 330/18/114/6 shape (or better) after adding gazelle_id, not the stale 259/0 figure in CLAUDE.md.
+
+*Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
 ### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
@@ -487,6 +489,7 @@ graph TD
 **Owner:** None
 
 **Scope:**
+- PM NOTE (2026-08-12, left OPEN not audited) - this task's DoD requires manually verifying admin/v2/piano.php in a running local server with before/after evidence. As of repo-sha 3cf4775d, EVERY admin/v2/* page 500s on a fresh local checkout ("Uncaught mysqli_sql_exception - Unknown database 'caut_sfusd'" from classes/core/DatabaseManager.php:307), unrelated to Gazelle - it is a regression in the new multi-tenant config.php/ DatabaseManager dispatch added 2026-08-11 (commits 40d00b89..4751c925). Verified 3 independent ways (fresh php -S, direct curl, standalone PHP CLI repro). This task also structurally cannot be claimed before T-INTY-018 is DONE (bin/fleet.py's claim command checks dependency status == DONE, not just AUDITED/existence - confirmed by reading bin/fleet.py lines ~296-303), so there is no urgency to unlock it now. Recommended - file a separate bug task for the admin/v2 DatabaseManager regression and get it fixed BEFORE auditing this one, otherwise a Worker will be blocked on an unrelated pre-existing bug through no fault of their own. Re-run this scope's own verification (php -l admin/v2/piano.php && ./vendor/bin/phpunit) against a fresh sha before auditing.
 - Small, low-risk UI addition. Add an "Open in Gazelle" button/link to admin/v2/piano.php (the Piano Dossier / instrument page shipped in T-INTY-017, integrated with dossier_edit.php) that opens the piano's record in the Gazelle CRM in a new tab, built from the new pianos.gazelle_id column added by T-INTY-018.
 - Confirm the actual Gazelle web URL pattern before hardcoding it (this scout pass did not have access to a Gazelle account/docs to confirm the URL scheme - e.g. whether it's a path like https://app.gazellecrm.com/pianos/{id} or a query-string form). Do not guess and ship a link that 404s - verify with the user or find it in the CSV/API docs referenced by the original Gazelle Data Normalization tool work (git log shows commit 1ea83713 'feat(integrations) - build Gazelle Data Normalization tool' - check that work for any recorded Gazelle URL conventions first).
 - Render conditionally - if pianos.gazelle_id IS NULL for this piano (e.g. it predates the Gazelle integration or was hand-entered), do not show a dead link; either hide the button or show a disabled/greyed state with a tooltip explaining why.
@@ -499,21 +502,25 @@ graph TD
 - ./vendor/bin/phpunit still reports the 259-test baseline with 0 new failures.
 
 ---
-### 📋 T-INTY-020 · P3 · ANY · OPEN
+### 📋 T-INTY-020 · P3 · ANY · AUDITED
 **Design (not build) nightly sync of Gazelle service history keyed on gazelle_id**
 **Owner:** None
 
 **Scope:**
-- This is a research/design task, not a build task. Do not write a sync job or cron script under this task. The original proposal (a prior Gemini/ Antigravity session, endorsed by the user in principle) wants a nightly sync of volatile Gazelle data - service history, tuning dates, condition reports - pulled into intypiano and keyed on the new pianos.gazelle_id column from T-INTY-018. That depends on Gazelle API access and API docs that were not confirmed to exist during this scout pass.
-- First step - determine whether Gazelle actually exposes a read API (REST, CSV export endpoint, webhook feed, or export-only). Check for anything left behind by the prior 'Gazelle Data Normalization tool' work (git commit 1ea83713) - it may already have investigated Gazelle's API surface or only handled flat CSV files (import_sfusd.php reading new_customers/SFUSD.csv suggests CSV export is the only mechanism confirmed working today, not a live API).
-- If no API/programmatic access is confirmed, the deliverable is a written design doc (per this repo's expert-page convention, likely docs/experts/gazelle-sync.md or under task_coordinator's Dewey Decimal 20-Architecture/ per that repo's own doc rules) covering - what data Gazelle can realistically expose (API vs. recurring CSV drop), how conflicts are resolved when both intypiano and Gazelle have edited the same piano's data since last sync (the original proposal's "detecting remote edits" item was deliberately NOT scoped as a task here - flag it as an open question this design doc should surface, not solve), what fields sync one-way vs. need human reconciliation, and what a minimal V1 sync would touch (proposed - only pianos rows where gazelle_id IS NOT NULL, from T-INTY-018).
+- This is a research/design task, not a build task. Do not write a sync job or cron script under this task. The original proposal (a prior Gemini/ Antigravity session, endorsed by the user in principle) wants a nightly sync of volatile Gazelle data - service history, tuning dates, condition reports - pulled into intypiano and keyed on the new pianos.gazelle_id column from T-INTY-018.
+- PM AUDIT CORRECTION (2026-08-12) - the scout's framing that "Gazelle API access was never confirmed to exist" is WRONG and stale as of this repo-sha. classes/integration/GazelleAPI.php (added in commit 1ea83713, the same commit the scout cites) is a working private GraphQL client (https://gazelleapp.io/graphql/private) with a confirmed READ query (allPianos) and a confirmed WRITE mutation (updatePiano), already wired up and used in production by admin/v2/normalization.php's "Mass Edit" tool. API access is confirmed to exist. Do NOT scope this task as "determine whether an API exists" - go read those two files first.
+- The REAL open question this design doc should answer instead - today's GazelleAPI usage takes a per-request, admin-pasted `gazelle_api_key` typed into a form field (see admin/v2/normalization.php lines ~18-83); there is no stored/persisted service-account credential anywhere in the repo. A nightly cron job has no admin sitting at a keyboard to paste a key each run, so the design doc must cover where that credential would live (config_local.php- style gitignored file? a new `gazelle_credentials` table? an env var?) and how it avoids the fate of the API-token bearer-secret pattern already used by api/v1/admin/logRefill.php (config/api_token.php, gitignored, INTYPIANO_API_TOKEN env override).
+- Also flag explicitly - the existing GraphQL API is NOT read-only. It has a live `updatePiano` mutation capable of overwriting Gazelle's own data. A nightly sync job pulling FROM Gazelle should almost certainly restrict itself to the read-only `allPianos`-style query and never call the mutation path, but this is a design decision the doc must state explicitly, not something to leave implicit - a future Worker copy-pasting GazelleAPI.php usage could otherwise wire up writes by accident.
+- The deliverable is a written design doc (per this repo's expert-page convention, likely docs/experts/gazelle-sync.md or under task_coordinator's Dewey Decimal 20-Architecture/ per that repo's own doc rules) covering - what data Gazelle can realistically expose beyond GazelleAPI.php's current make/model fields (does allPianos or a sibling query already return service history / tuning dates / condition reports, or only the make/model fields the Normalization tool uses - check the GraphQL schema, don't assume), how conflicts are resolved when both intypiano and Gazelle have edited the same piano's data since last sync (the original proposal's "detecting remote edits" item was deliberately NOT scoped as a task here - flag it as an open question this design doc should surface, not solve), what fields sync one-way vs. need human reconciliation, and what a minimal V1 sync would touch (proposed - only pianos rows where gazelle_id IS NOT NULL, from T-INTY-018).
 - Do not scope pushing intypiano invoices/data back to Gazelle - that is a separate, more speculative future phase explicitly deferred by this scout pass (see feedback file), not by accident.
 
 **Definition of Done:**
-- A written design doc exists (exact location per whichever repo's doc convention applies - confirm intypiano has no equivalent Dewey rule before defaulting to task_coordinator's) stating clearly whether Gazelle API/export access is confirmed to exist, and if not, what is needed to unblock a real build task.
+- A written design doc exists (exact location per whichever repo's doc convention applies - confirm intypiano has no equivalent Dewey rule before defaulting to task_coordinator's). It must not re-litigate whether Gazelle API access exists (confirmed - classes/integration/GazelleAPI.php, a working private GraphQL client already used in production by admin/v2/normalization.php). It must state clearly (a) what fields that API actually exposes today vs. what a nightly sync would need, (b) where a persisted service-account credential for an unattended cron job would live, since today's only working credential flow is an admin pasting a key per request, and (c) that the sync must be read-only against Gazelle even though the client library exposes a write mutation.
 - The doc names which specific fields (service history, tuning dates, condition reports) are in scope for a V1 sync and which are deferred.
 - The doc explicitly notes conflict/remote-edit detection as unsolved and out of scope for V1, so a future PM does not assume it was silently handled.
 - No production code, migration, or cron job is added under this task - if the investigation finds enough clarity to justify a build, that becomes a new task, not scope creep on this one.
+
+*Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
 

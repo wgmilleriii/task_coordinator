@@ -8,7 +8,25 @@ owner: null
 created_at: '2026-08-12T00:00:00-06:00'
 dependencies:
 - T-INTY-018
+requires_doc_update: false
 scope:
+- PM NOTE (2026-08-12, left OPEN not audited) - this task's DoD requires
+  manually verifying admin/v2/piano.php in a running local server with
+  before/after evidence. As of repo-sha 3cf4775d, EVERY admin/v2/* page 500s
+  on a fresh local checkout ("Uncaught mysqli_sql_exception - Unknown database
+  'caut_sfusd'" from classes/core/DatabaseManager.php:307), unrelated to
+  Gazelle - it is a regression in the new multi-tenant config.php/
+  DatabaseManager dispatch added 2026-08-11 (commits 40d00b89..4751c925).
+  Verified 3 independent ways (fresh php -S, direct curl, standalone PHP CLI
+  repro). This task also structurally cannot be claimed before T-INTY-018 is
+  DONE (bin/fleet.py's claim command checks dependency status == DONE, not
+  just AUDITED/existence - confirmed by reading bin/fleet.py lines ~296-303),
+  so there is no urgency to unlock it now. Recommended - file a separate bug
+  task for the admin/v2 DatabaseManager regression and get it fixed BEFORE
+  auditing this one, otherwise a Worker will be blocked on an unrelated
+  pre-existing bug through no fault of their own. Re-run this scope's own
+  verification (php -l admin/v2/piano.php && ./vendor/bin/phpunit) against a
+  fresh sha before auditing.
 - Small, low-risk UI addition. Add an "Open in Gazelle" button/link to
   admin/v2/piano.php (the Piano Dossier / instrument page shipped in
   T-INTY-017, integrated with dossier_edit.php) that opens the piano's record

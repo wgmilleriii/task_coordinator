@@ -1,54 +1,81 @@
 id: T-INTY-020
-title: "Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"
+title: Design (not build) nightly sync of Gazelle service history keyed on gazelle_id
 repo: intypiano
 priority: P3
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-12T00:00:00-06:00'
 dependencies:
 - T-INTY-018
 scope:
-- This is a research/design task, not a build task. Do not write a sync job
-  or cron script under this task. The original proposal (a prior Gemini/
-  Antigravity session, endorsed by the user in principle) wants a nightly
-  sync of volatile Gazelle data - service history, tuning dates, condition
-  reports - pulled into intypiano and keyed on the new pianos.gazelle_id
-  column from T-INTY-018. That depends on Gazelle API access and API docs
-  that were not confirmed to exist during this scout pass.
-- First step - determine whether Gazelle actually exposes a read API (REST,
-  CSV export endpoint, webhook feed, or export-only). Check for anything left
-  behind by the prior 'Gazelle Data Normalization tool' work (git commit
-  1ea83713) - it may already have investigated Gazelle's API surface or only
-  handled flat CSV files (import_sfusd.php reading new_customers/SFUSD.csv
-  suggests CSV export is the only mechanism confirmed working today, not a
-  live API).
-- If no API/programmatic access is confirmed, the deliverable is a written
-  design doc (per this repo's expert-page convention, likely
-  docs/experts/gazelle-sync.md or under task_coordinator's Dewey Decimal
-  20-Architecture/ per that repo's own doc rules) covering - what data Gazelle
-  can realistically expose (API vs. recurring CSV drop), how conflicts are
-  resolved when both intypiano and Gazelle have edited the same piano's data
-  since last sync (the original proposal's "detecting remote edits" item was
-  deliberately NOT scoped as a task here - flag it as an open question this
-  design doc should surface, not solve), what fields sync one-way vs. need
-  human reconciliation, and what a minimal V1 sync would touch (proposed -
-  only pianos rows where gazelle_id IS NOT NULL, from T-INTY-018).
-- Do not scope pushing intypiano invoices/data back to Gazelle - that is a
-  separate, more speculative future phase explicitly deferred by this scout
-  pass (see feedback file), not by accident.
+- This is a research/design task, not a build task. Do not write a sync job or cron
+  script under this task. The original proposal (a prior Gemini/ Antigravity session,
+  endorsed by the user in principle) wants a nightly sync of volatile Gazelle data
+  - service history, tuning dates, condition reports - pulled into intypiano and keyed
+  on the new pianos.gazelle_id column from T-INTY-018.
+- PM AUDIT CORRECTION (2026-08-12) - the scout's framing that "Gazelle API access
+  was never confirmed to exist" is WRONG and stale as of this repo-sha. classes/integration/GazelleAPI.php
+  (added in commit 1ea83713, the same commit the scout cites) is a working private
+  GraphQL client (https://gazelleapp.io/graphql/private) with a confirmed READ query
+  (allPianos) and a confirmed WRITE mutation (updatePiano), already wired up and used
+  in production by admin/v2/normalization.php's "Mass Edit" tool. API access is confirmed
+  to exist. Do NOT scope this task as "determine whether an API exists" - go read
+  those two files first.
+- The REAL open question this design doc should answer instead - today's GazelleAPI
+  usage takes a per-request, admin-pasted `gazelle_api_key` typed into a form field
+  (see admin/v2/normalization.php lines ~18-83); there is no stored/persisted service-account
+  credential anywhere in the repo. A nightly cron job has no admin sitting at a keyboard
+  to paste a key each run, so the design doc must cover where that credential would
+  live (config_local.php- style gitignored file? a new `gazelle_credentials` table?
+  an env var?) and how it avoids the fate of the API-token bearer-secret pattern already
+  used by api/v1/admin/logRefill.php (config/api_token.php, gitignored, INTYPIANO_API_TOKEN
+  env override).
+- Also flag explicitly - the existing GraphQL API is NOT read-only. It has a live
+  `updatePiano` mutation capable of overwriting Gazelle's own data. A nightly sync
+  job pulling FROM Gazelle should almost certainly restrict itself to the read-only
+  `allPianos`-style query and never call the mutation path, but this is a design decision
+  the doc must state explicitly, not something to leave implicit - a future Worker
+  copy-pasting GazelleAPI.php usage could otherwise wire up writes by accident.
+- The deliverable is a written design doc (per this repo's expert-page convention,
+  likely docs/experts/gazelle-sync.md or under task_coordinator's Dewey Decimal 20-Architecture/
+  per that repo's own doc rules) covering - what data Gazelle can realistically expose
+  beyond GazelleAPI.php's current make/model fields (does allPianos or a sibling query
+  already return service history / tuning dates / condition reports, or only the make/model
+  fields the Normalization tool uses - check the GraphQL schema, don't assume), how
+  conflicts are resolved when both intypiano and Gazelle have edited the same piano's
+  data since last sync (the original proposal's "detecting remote edits" item was
+  deliberately NOT scoped as a task here - flag it as an open question this design
+  doc should surface, not solve), what fields sync one-way vs. need human reconciliation,
+  and what a minimal V1 sync would touch (proposed - only pianos rows where gazelle_id
+  IS NOT NULL, from T-INTY-018).
+- Do not scope pushing intypiano invoices/data back to Gazelle - that is a separate,
+  more speculative future phase explicitly deferred by this scout pass (see feedback
+  file), not by accident.
 definition_of_done:
-- A written design doc exists (exact location per whichever repo's doc
-  convention applies - confirm intypiano has no equivalent Dewey rule before
-  defaulting to task_coordinator's) stating clearly whether Gazelle API/export
-  access is confirmed to exist, and if not, what is needed to unblock a real
-  build task.
-- The doc names which specific fields (service history, tuning dates,
-  condition reports) are in scope for a V1 sync and which are deferred.
-- The doc explicitly notes conflict/remote-edit detection as unsolved and
-  out of scope for V1, so a future PM does not assume it was silently handled.
-- No production code, migration, or cron job is added under this task - if
-  the investigation finds enough clarity to justify a build, that becomes a
-  new task, not scope creep on this one.
-verification_command: test -f docs/experts/gazelle-sync.md || find . -iname "*gazelle-sync*"
+- A written design doc exists (exact location per whichever repo's doc convention
+  applies - confirm intypiano has no equivalent Dewey rule before defaulting to task_coordinator's).
+  It must not re-litigate whether Gazelle API access exists (confirmed - classes/integration/GazelleAPI.php,
+  a working private GraphQL client already used in production by admin/v2/normalization.php).
+  It must state clearly (a) what fields that API actually exposes today vs. what a
+  nightly sync would need, (b) where a persisted service-account credential for an
+  unattended cron job would live, since today's only working credential flow is an
+  admin pasting a key per request, and (c) that the sync must be read-only against
+  Gazelle even though the client library exposes a write mutation.
+- The doc names which specific fields (service history, tuning dates, condition reports)
+  are in scope for a V1 sync and which are deferred.
+- The doc explicitly notes conflict/remote-edit detection as unsolved and out of scope
+  for V1, so a future PM does not assume it was silently handled.
+- No production code, migration, or cron job is added under this task - if the investigation
+  finds enough clarity to justify a build, that becomes a new task, not scope creep
+  on this one.
+verification_command: test -f docs/experts/gazelle-sync.md || find . -iname '*gazelle-sync*'
 human_review_required: true
+audited_at: '2026-08-12T17:45:26.347163Z'
+audited_by: PM-Gazelle1
+audited_repo_sha: 3cf4775d3561b3746c6e55586921beb4492ec57d
+events:
+- timestamp: '2026-08-12T17:45:26.347379Z'
+  action: AUDIT
+  actor: PM-Gazelle1
+  details: Audited against 3cf4775d3561b3746c6e55586921beb4492ec57d

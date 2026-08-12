@@ -1,0 +1,23 @@
+task_id: T-MIN-016
+agent: Worker-F18
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: minchiate_tarot
+branch: test-T-MIN-016
+base_sha: 09f857d
+head_sha: 3ac0db7
+evidence_output: 'Exit code: 0
+
+
+  STDOUT:
+
+  PASS
+
+
+  STDERR:
+
+  '
+peer_review_notes: null
+human_action_required: null
+token_spend: null
+cost_usd: null

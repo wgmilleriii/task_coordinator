@@ -1,155 +1,189 @@
 id: T-MIN-016
-title: Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias
+title: "Apply D3 \u2014 rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent\
+  \ alias"
 repo: minchiate_tarot
 priority: P2
 lane: codex
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F18
 created_at: '2026-08-12T09:00:00-06:00'
 dependencies: []
 scope:
-- 'PM-F7 ARCHITECTURAL DECISION (audit 2026-08-12, confirmed against branch test @09f857d): verified zero
-  hits for "alias" in research/05-registry-and-audit/ and research/04-dossier-spec/ — the gap is real,
-  not a scout false positive. Fix: add a new OPTIONAL field named `aliases` (a list of strings) to (1)
-  Stage5_Master_Card_Registry.csv as a new trailing column `aliases` (semicolon-separated if multiple,
-  e.g. "TRUMP-FOOL"), (2) the corresponding key in each row object of Stage5_Master_Card_Registry.json,
-  and (3) `administrative_identity.aliases` (type array of strings, optional, NOT in the schema''s `required`
-  list) in research/04-dossier-spec/Stage4_Card_Dossier_Schema.json and the matching Card_Dossier_Skeletons.json
-  entries. This ONE mechanism is used for both D3''s former-id alias here (SPECIAL-FOOL row gets aliases:
-  ["TRUMP-FOOL"]) and D4''s Knight search-alias in T-MIN-017 (which depends on this task and reuses the
-  same field) — do not invent a second, differently-shaped mechanism in either task. Document the field''s
-  meaning (one sentence) inline in Stage4_Card_Dossier_Schema.json via a JSON Schema `description` on
-  the new property, and in the registry''s own notes/header if the CSV format supports a comment; if not,
-  document it in the same alias note this task already requires.'
-- 'PM-F7 FINDING (audit 2026-08-12): Stage4_Card_Dossier_Schema.json''s `administrative_identity.sort_order`
-  is constrained `"minimum": 1, "maximum": 97`. Setting sort_order to 0 in Card_Dossier_Skeletons.json''s
-  TRUMP-FOOL/SPECIAL-FOOL entry (per this task''s own instruction below) will violate that schema constraint
-  as currently written. Required fix: change `"minimum": 1` to `"minimum": 0` on that one property in
-  Stage4_Card_Dossier_Schema.json (a one-line, backward-compatible widening — every other card''s sort_order
-  stays >=1 in practice, only the Fool''s special-family exception uses 0) so the skeleton entry remains
-  schema-valid. Do this as part of this task, not a follow-up.'
-- 'PM-F7 CORRECTION (audit 2026-08-12): PERSONALITY_TRUMP-40_Trumpets.md was spot-checked and contains
-  ZERO literal "TRUMP-FOOL" token occurrences on branch test @09f857d (grep -c returns 0). Its TRO-C002/TRO-C006/TRO-C018
-  citations and the L272-282 reciprocal-edge prose reference "the Fool" (bare prose) and "FOO-C014" (the
-  Fool study''s own claim-id prefix, already independent of the dossier/file id "TRUMP-FOOL"), never the
-  token "TRUMP-FOOL" itself. No id-token edit is needed or expected in this file — do not hunt for one.
-  Leave it completely untouched; it will still satisfy the zero-occurrence verification check trivially.
-  The other ten files in the list below were spot-checked (TRUMP-01, TRUMP-19 read in full; all ten confirmed
-  via `grep -c "TRUMP-FOOL"` returning >=1) and are real, live citations requiring the rename.'
-- 'Editorial decision D3 (tasks/human/editorial_decisions_2026-08-12.md) sets the card id to SPECIAL-FOOL,
-  sort_order 0, with a permanent alias from TRUMP-FOOL for backward compatibility. Scout blast-radius
-  grep (branch test) found TRUMP-FOOL as a live PRIMARY identifier in these files, which is the full rename
-  surface: research/05-registry-and-audit/Stage5_Master_Card_Registry.csv (row col 1, card_id), Stage5_Master_Card_Registry.json
-  ("card_id": "TRUMP-FOOL"), and Card_Dossier_Skeletons.json ("dossier_id": "TRUMP-FOOL", "database_id":
-  "TRUMP-FOOL", and the two question_id values TRUMP-FOOL-Q-IMG-001 / TRUMP-FOOL-Q-NAME-001, which must
-  become SPECIAL-FOOL-Q-IMG-001 / SPECIAL-FOOL-Q-NAME-001).'
-- 'Rename the id everywhere it is the primary identifier: the registry CSV and JSON rows, the Card_Dossier_Skeletons.json
-  entry (dossier_id, database_id, question_id prefixes), and the committed study file research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md
-  — including its filename (rename to PERSONALITY_SPECIAL-FOOL_Fool.md) and every place inside it where
-  TRUMP-FOOL is used as the card''s own id (e.g. the "Card:" line, FOO-C001/FOO-C003/FOO-C006 evidence-column
-  citations of "TRUMP-FOOL row"/"TRUMP-FOOL blocking_issue").'
-- 'Set sort_order to 0 in the registry CSV and JSON and in Card_Dossier_Skeletons.json. Before writing
-  this, re-read FOO-C003 in PERSONALITY_TRUMP-FOOL_Fool.md (soon SPECIAL-FOOL): it already separates three
-  distinct statements — unnumbered on the card, outside the ranked trump ladder (family Special), and
-  sort 57 as project bookkeeping convention ("registry key, may be 0"). Sort_order=0 does not contradict
-  any of the three as currently worded (the file already anticipates sort key 0). Update the sort-order
-  number in FOO-C001/FOO-C003 prose from 57 to 0 while preserving the three-statement distinction verbatim
-  in substance — do not merge or drop any of the three. If, on closer reading, you find sort=0 DOES contradict
-  one of the three statements as written, do not resolve the contradiction yourself: leave the prose as-is,
-  set sort_order=0 in the registry only, and add a one-line flag in this task''s scope-file notes (or
-  a TODO comment) naming the contradiction for human/PM attention.'
-- 'Add a documented permanent alias TRUMP-FOOL -> SPECIAL-FOOL. Scout finding: as of 09f857d, NEITHER
-  the registry CSV/JSON schema NOR research/04-dossier-spec/Stage4_Card_Dossier_Schema.json has any alias/former-id/redirect
-  field — grep for "alias" across research/05-registry-and-audit/ and research/04-dossier-spec/ returns
-  zero hits. There is no existing aliasing mechanism to hook into. Do not silently invent a new schema
-  field to paper over this. Required output: add a plain-language, clearly-labeled note (e.g. a "former_id"/"aliases"
-  column added to the registry CSV+JSON+skeleton schema, OR — if a schema change feels too invasive for
-  a rename task — a documented note in the registry''s notes field plus a short paragraph in REORGANIZATION_PLAN.md
-  or a new short note under research/05-registry-and-audit/ stating plainly "no alias field exists in
-  the schema; TRUMP-FOOL must be tracked as a former id by [wherever you put it] until a real alias/redirect
-  mechanism is built." Either path is acceptable; but the absence must be visible in the deliverable,
-  not worked around invisibly.'
-- 'Update every OTHER committed study file that cites the Fool by its registry row as an evidence source
-  (id-as-citation, not just narrative prose about "the Fool"). Full list found by scout grep on branch
-  test: research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md (GAN-C012), PERSONALITY_TRUMP-02_Ruler.md
-  (RUL2-C012), PERSONALITY_TRUMP-04_Ruler.md (RUL4-C012), PERSONALITY_TRUMP-05_Love.md (LOV-C017), PERSONALITY_TRUMP-09_Wheel_of_Fortune.md
-  (WHE-C014), PERSONALITY_TRUMP-11_Old_Man_Time.md (OLD-C015), PERSONALITY_TRUMP-13_Death.md (DEA-C014),
-  PERSONALITY_TRUMP-14_Devil.md (DEV-C019), PERSONALITY_TRUMP-15_House_of_the_Devil.md (HOU-C018), PERSONALITY_TRUMP-19_Charity.md
-  (CHA-C005, references "TRUMP-FOOL and TRUMP-19" symbol sharing in prose too), and PERSONALITY_TRUMP-40_Trumpets.md
-  (TRO-C002, TRO-C006, TRO-C018 — this file also has a typed reciprocal edge, "Fool -> Trumpets (XL):
-  opposite", in its narrative prose around L272-282 that names the Fool''s own claim FOO-C014; update
-  its id citations to SPECIAL-FOOL but do not alter the typed-edge conclusion, grading, or direction).
-  In every one of these files, change only the id token (TRUMP-FOOL -> SPECIAL-FOOL) in citation/evidence
-  columns and any bare id mentions; do not touch surrounding claim text, grading, or conclusions.'
-- 'Do NOT touch: research/archive/failed-runs/* (archived/superseded, historical record — leave TRUMP-FOOL
-  as-is there), research/pilots/Papi_Fool_Batch_Verification_Report.md, Quarantine_Register_Outside_Set_Claims.md,
-  Fleet_Sweep_Personality_Triage_Report.md, Wave2_Virtue_Verification_Report.md, SIGNOFF_OPUS5.md, REORGANIZATION_PLAN.md''s
-  own body text, tasks/human/*, tasks/agent/*, or any other audit-trail/report/planning document that
-  narrates project history using the old id — these are point-in-time records, not live identifiers, and
-  rewriting them would falsify the audit trail. Also do not touch build_graph_contract.py or research/01-strategy/graph_contract_v1.json
-  / VISUALIZATION_GAPS_IDENTIFIED.md unless doing so is trivially required to keep the id rename internally
-  consistent within this same commit — if unsure, leave code/contract files alone and flag them instead
-  of guessing.'
-- Do not touch the prose content or claims of any study beyond identifier and sort-order fields — this
-  is a rename, not a rewrite.
+- "PM-F7 ARCHITECTURAL DECISION (audit 2026-08-12, confirmed against branch test @09f857d):\
+  \ verified zero hits for \"alias\" in research/05-registry-and-audit/ and research/04-dossier-spec/\
+  \ \u2014 the gap is real, not a scout false positive. Fix: add a new OPTIONAL field\
+  \ named `aliases` (a list of strings) to (1) Stage5_Master_Card_Registry.csv as\
+  \ a new trailing column `aliases` (semicolon-separated if multiple, e.g. \"TRUMP-FOOL\"\
+  ), (2) the corresponding key in each row object of Stage5_Master_Card_Registry.json,\
+  \ and (3) `administrative_identity.aliases` (type array of strings, optional, NOT\
+  \ in the schema's `required` list) in research/04-dossier-spec/Stage4_Card_Dossier_Schema.json\
+  \ and the matching Card_Dossier_Skeletons.json entries. This ONE mechanism is used\
+  \ for both D3's former-id alias here (SPECIAL-FOOL row gets aliases: [\"TRUMP-FOOL\"\
+  ]) and D4's Knight search-alias in T-MIN-017 (which depends on this task and reuses\
+  \ the same field) \u2014 do not invent a second, differently-shaped mechanism in\
+  \ either task. Document the field's meaning (one sentence) inline in Stage4_Card_Dossier_Schema.json\
+  \ via a JSON Schema `description` on the new property, and in the registry's own\
+  \ notes/header if the CSV format supports a comment; if not, document it in the\
+  \ same alias note this task already requires."
+- "PM-F7 FINDING (audit 2026-08-12): Stage4_Card_Dossier_Schema.json's `administrative_identity.sort_order`\
+  \ is constrained `\"minimum\": 1, \"maximum\": 97`. Setting sort_order to 0 in Card_Dossier_Skeletons.json's\
+  \ TRUMP-FOOL/SPECIAL-FOOL entry (per this task's own instruction below) will violate\
+  \ that schema constraint as currently written. Required fix: change `\"minimum\"\
+  : 1` to `\"minimum\": 0` on that one property in Stage4_Card_Dossier_Schema.json\
+  \ (a one-line, backward-compatible widening \u2014 every other card's sort_order\
+  \ stays >=1 in practice, only the Fool's special-family exception uses 0) so the\
+  \ skeleton entry remains schema-valid. Do this as part of this task, not a follow-up."
+- "PM-F7 CORRECTION (audit 2026-08-12): PERSONALITY_TRUMP-40_Trumpets.md was spot-checked\
+  \ and contains ZERO literal \"TRUMP-FOOL\" token occurrences on branch test @09f857d\
+  \ (grep -c returns 0). Its TRO-C002/TRO-C006/TRO-C018 citations and the L272-282\
+  \ reciprocal-edge prose reference \"the Fool\" (bare prose) and \"FOO-C014\" (the\
+  \ Fool study's own claim-id prefix, already independent of the dossier/file id \"\
+  TRUMP-FOOL\"), never the token \"TRUMP-FOOL\" itself. No id-token edit is needed\
+  \ or expected in this file \u2014 do not hunt for one. Leave it completely untouched;\
+  \ it will still satisfy the zero-occurrence verification check trivially. The other\
+  \ ten files in the list below were spot-checked (TRUMP-01, TRUMP-19 read in full;\
+  \ all ten confirmed via `grep -c \"TRUMP-FOOL\"` returning >=1) and are real, live\
+  \ citations requiring the rename."
+- 'Editorial decision D3 (tasks/human/editorial_decisions_2026-08-12.md) sets the
+  card id to SPECIAL-FOOL, sort_order 0, with a permanent alias from TRUMP-FOOL for
+  backward compatibility. Scout blast-radius grep (branch test) found TRUMP-FOOL as
+  a live PRIMARY identifier in these files, which is the full rename surface: research/05-registry-and-audit/Stage5_Master_Card_Registry.csv
+  (row col 1, card_id), Stage5_Master_Card_Registry.json ("card_id": "TRUMP-FOOL"),
+  and Card_Dossier_Skeletons.json ("dossier_id": "TRUMP-FOOL", "database_id": "TRUMP-FOOL",
+  and the two question_id values TRUMP-FOOL-Q-IMG-001 / TRUMP-FOOL-Q-NAME-001, which
+  must become SPECIAL-FOOL-Q-IMG-001 / SPECIAL-FOOL-Q-NAME-001).'
+- "Rename the id everywhere it is the primary identifier: the registry CSV and JSON\
+  \ rows, the Card_Dossier_Skeletons.json entry (dossier_id, database_id, question_id\
+  \ prefixes), and the committed study file research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md\
+  \ \u2014 including its filename (rename to PERSONALITY_SPECIAL-FOOL_Fool.md) and\
+  \ every place inside it where TRUMP-FOOL is used as the card's own id (e.g. the\
+  \ \"Card:\" line, FOO-C001/FOO-C003/FOO-C006 evidence-column citations of \"TRUMP-FOOL\
+  \ row\"/\"TRUMP-FOOL blocking_issue\")."
+- "Set sort_order to 0 in the registry CSV and JSON and in Card_Dossier_Skeletons.json.\
+  \ Before writing this, re-read FOO-C003 in PERSONALITY_TRUMP-FOOL_Fool.md (soon\
+  \ SPECIAL-FOOL): it already separates three distinct statements \u2014 unnumbered\
+  \ on the card, outside the ranked trump ladder (family Special), and sort 57 as\
+  \ project bookkeeping convention (\"registry key, may be 0\"). Sort_order=0 does\
+  \ not contradict any of the three as currently worded (the file already anticipates\
+  \ sort key 0). Update the sort-order number in FOO-C001/FOO-C003 prose from 57 to\
+  \ 0 while preserving the three-statement distinction verbatim in substance \u2014\
+  \ do not merge or drop any of the three. If, on closer reading, you find sort=0\
+  \ DOES contradict one of the three statements as written, do not resolve the contradiction\
+  \ yourself: leave the prose as-is, set sort_order=0 in the registry only, and add\
+  \ a one-line flag in this task's scope-file notes (or a TODO comment) naming the\
+  \ contradiction for human/PM attention."
+- "Add a documented permanent alias TRUMP-FOOL -> SPECIAL-FOOL. Scout finding: as\
+  \ of 09f857d, NEITHER the registry CSV/JSON schema NOR research/04-dossier-spec/Stage4_Card_Dossier_Schema.json\
+  \ has any alias/former-id/redirect field \u2014 grep for \"alias\" across research/05-registry-and-audit/\
+  \ and research/04-dossier-spec/ returns zero hits. There is no existing aliasing\
+  \ mechanism to hook into. Do not silently invent a new schema field to paper over\
+  \ this. Required output: add a plain-language, clearly-labeled note (e.g. a \"former_id\"\
+  /\"aliases\" column added to the registry CSV+JSON+skeleton schema, OR \u2014 if\
+  \ a schema change feels too invasive for a rename task \u2014 a documented note\
+  \ in the registry's notes field plus a short paragraph in REORGANIZATION_PLAN.md\
+  \ or a new short note under research/05-registry-and-audit/ stating plainly \"no\
+  \ alias field exists in the schema; TRUMP-FOOL must be tracked as a former id by\
+  \ [wherever you put it] until a real alias/redirect mechanism is built.\" Either\
+  \ path is acceptable; but the absence must be visible in the deliverable, not worked\
+  \ around invisibly."
+- "Update every OTHER committed study file that cites the Fool by its registry row\
+  \ as an evidence source (id-as-citation, not just narrative prose about \"the Fool\"\
+  ). Full list found by scout grep on branch test: research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md\
+  \ (GAN-C012), PERSONALITY_TRUMP-02_Ruler.md (RUL2-C012), PERSONALITY_TRUMP-04_Ruler.md\
+  \ (RUL4-C012), PERSONALITY_TRUMP-05_Love.md (LOV-C017), PERSONALITY_TRUMP-09_Wheel_of_Fortune.md\
+  \ (WHE-C014), PERSONALITY_TRUMP-11_Old_Man_Time.md (OLD-C015), PERSONALITY_TRUMP-13_Death.md\
+  \ (DEA-C014), PERSONALITY_TRUMP-14_Devil.md (DEV-C019), PERSONALITY_TRUMP-15_House_of_the_Devil.md\
+  \ (HOU-C018), PERSONALITY_TRUMP-19_Charity.md (CHA-C005, references \"TRUMP-FOOL\
+  \ and TRUMP-19\" symbol sharing in prose too), and PERSONALITY_TRUMP-40_Trumpets.md\
+  \ (TRO-C002, TRO-C006, TRO-C018 \u2014 this file also has a typed reciprocal edge,\
+  \ \"Fool -> Trumpets (XL): opposite\", in its narrative prose around L272-282 that\
+  \ names the Fool's own claim FOO-C014; update its id citations to SPECIAL-FOOL but\
+  \ do not alter the typed-edge conclusion, grading, or direction). In every one of\
+  \ these files, change only the id token (TRUMP-FOOL -> SPECIAL-FOOL) in citation/evidence\
+  \ columns and any bare id mentions; do not touch surrounding claim text, grading,\
+  \ or conclusions."
+- "Do NOT touch: research/archive/failed-runs/* (archived/superseded, historical record\
+  \ \u2014 leave TRUMP-FOOL as-is there), research/pilots/Papi_Fool_Batch_Verification_Report.md,\
+  \ Quarantine_Register_Outside_Set_Claims.md, Fleet_Sweep_Personality_Triage_Report.md,\
+  \ Wave2_Virtue_Verification_Report.md, SIGNOFF_OPUS5.md, REORGANIZATION_PLAN.md's\
+  \ own body text, tasks/human/*, tasks/agent/*, or any other audit-trail/report/planning\
+  \ document that narrates project history using the old id \u2014 these are point-in-time\
+  \ records, not live identifiers, and rewriting them would falsify the audit trail.\
+  \ Also do not touch build_graph_contract.py or research/01-strategy/graph_contract_v1.json\
+  \ / VISUALIZATION_GAPS_IDENTIFIED.md unless doing so is trivially required to keep\
+  \ the id rename internally consistent within this same commit \u2014 if unsure,\
+  \ leave code/contract files alone and flag them instead of guessing."
+- "Do not touch the prose content or claims of any study beyond identifier and sort-order\
+  \ fields \u2014 this is a rename, not a rewrite."
 definition_of_done:
-- An optional `aliases` field (list of strings) exists on the SPECIAL-FOOL row in Stage5_Master_Card_Registry.csv
-  and Stage5_Master_Card_Registry.json, and as `administrative_identity.aliases` in Stage4_Card_Dossier_Schema.json
-  (optional, not required) and the SPECIAL-FOOL entry in Card_Dossier_Skeletons.json, containing "TRUMP-FOOL".
-- Stage4_Card_Dossier_Schema.json's administrative_identity.sort_order minimum is 0 (widened from 1) so
-  the SPECIAL-FOOL skeleton entry with sort_order 0 validates against the schema.
-- Zero occurrences of "TRUMP-FOOL" remain as a primary identifier (card_id/dossier_id/database_id/ question_id
-  prefix/filename/citation token) in Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json,
-  Card_Dossier_Skeletons.json, and the eleven listed committed drafts files plus the renamed Fool study
-  file; the ONLY acceptable remaining occurrences of the literal string "TRUMP-FOOL" in those specific
-  files are inside a clearly labeled alias/former-id note.
-- The registry (CSV + JSON) and Card_Dossier_Skeletons.json all show sort_order/sort key 0 for the Fool/SPECIAL-FOOL
-  row.
-- A documented former-id/alias note for TRUMP-FOOL -> SPECIAL-FOOL exists and is discoverable from the
-  registry or its accompanying docs; if no schema aliasing field was added, the absence is explicitly
-  stated in that same note, not silently omitted.
-- research/archive/failed-runs/*, the named audit/report/planning files, and any file not explicitly listed
-  in scope are byte-for-byte unchanged (git diff --name-only against the audited sha touches only the
-  files named in scope).
-- No claim text, grading, or conclusion in any of the eleven cross-referencing drafts changed beyond the
-  id token itself.
+- An optional `aliases` field (list of strings) exists on the SPECIAL-FOOL row in
+  Stage5_Master_Card_Registry.csv and Stage5_Master_Card_Registry.json, and as `administrative_identity.aliases`
+  in Stage4_Card_Dossier_Schema.json (optional, not required) and the SPECIAL-FOOL
+  entry in Card_Dossier_Skeletons.json, containing "TRUMP-FOOL".
+- Stage4_Card_Dossier_Schema.json's administrative_identity.sort_order minimum is
+  0 (widened from 1) so the SPECIAL-FOOL skeleton entry with sort_order 0 validates
+  against the schema.
+- Zero occurrences of "TRUMP-FOOL" remain as a primary identifier (card_id/dossier_id/database_id/
+  question_id prefix/filename/citation token) in Stage5_Master_Card_Registry.csv,
+  Stage5_Master_Card_Registry.json, Card_Dossier_Skeletons.json, and the eleven listed
+  committed drafts files plus the renamed Fool study file; the ONLY acceptable remaining
+  occurrences of the literal string "TRUMP-FOOL" in those specific files are inside
+  a clearly labeled alias/former-id note.
+- The registry (CSV + JSON) and Card_Dossier_Skeletons.json all show sort_order/sort
+  key 0 for the Fool/SPECIAL-FOOL row.
+- A documented former-id/alias note for TRUMP-FOOL -> SPECIAL-FOOL exists and is discoverable
+  from the registry or its accompanying docs; if no schema aliasing field was added,
+  the absence is explicitly stated in that same note, not silently omitted.
+- research/archive/failed-runs/*, the named audit/report/planning files, and any file
+  not explicitly listed in scope are byte-for-byte unchanged (git diff --name-only
+  against the audited sha touches only the files named in scope).
+- No claim text, grading, or conclusion in any of the eleven cross-referencing drafts
+  changed beyond the id token itself.
 verification_command: "bash -c 'set -e\ndraft_files=\"research/pilots/drafts/PERSONALITY_TRUMP-01_Ganellino.md\
   \ research/pilots/drafts/PERSONALITY_TRUMP-02_Ruler.md research/pilots/drafts/PERSONALITY_TRUMP-04_Ruler.md\
   \ research/pilots/drafts/PERSONALITY_TRUMP-05_Love.md research/pilots/drafts/PERSONALITY_TRUMP-09_Wheel_of_Fortune.md\
   \ research/pilots/drafts/PERSONALITY_TRUMP-11_Old_Man_Time.md research/pilots/drafts/PERSONALITY_TRUMP-13_Death.md\
   \ research/pilots/drafts/PERSONALITY_TRUMP-14_Devil.md research/pilots/drafts/PERSONALITY_TRUMP-15_House_of_the_Devil.md\
   \ research/pilots/drafts/PERSONALITY_TRUMP-19_Charity.md research/pilots/drafts/PERSONALITY_TRUMP-40_Trumpets.md\"\
-  \nfor f in $draft_files; do\n  if grep -q \"TRUMP-FOOL\" \"$f\" 2>/dev/null; then\n    echo \"FAIL:\
-  \ $f still contains a live TRUMP-FOOL reference\"; exit 1\n  fi\ndone\ntest -f research/pilots/drafts/PERSONALITY_SPECIAL-FOOL_Fool.md\
-  \ || { echo \"FAIL: renamed Fool study file missing\"; exit 1; }\nif [ -f research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md\
-  \ ]; then\n  echo \"FAIL: old PERSONALITY_TRUMP-FOOL_Fool.md still present\"; exit 1\nfi\nCSV=research/05-registry-and-audit/Stage5_Master_Card_Registry.csv\n\
-  JSON=research/05-registry-and-audit/Stage5_Master_Card_Registry.json\nSKEL=research/05-registry-and-audit/Card_Dossier_Skeletons.json\n\
-  grep -q \"^SPECIAL-FOOL,\" \"$CSV\" || { echo \"FAIL: SPECIAL-FOOL not primary card_id in registry CSV\"\
-  ; exit 1; }\nif grep -q \"^TRUMP-FOOL,\" \"$CSV\"; then\n  echo \"FAIL: TRUMP-FOOL still primary card_id\
-  \ in registry CSV\"; exit 1\nfi\ngrep -q '\"'\"'\"card_id\": \"SPECIAL-FOOL\"'\"'\"' \"$JSON\" || {\
-  \ echo \"FAIL: SPECIAL-FOOL not primary card_id in registry JSON\"; exit 1; }\nif grep -q '\"'\"'\"\
-  card_id\": \"TRUMP-FOOL\"'\"'\"' \"$JSON\"; then\n  echo \"FAIL: TRUMP-FOOL still primary card_id in\
-  \ registry JSON\"; exit 1\nfi\ngrep -q '\"'\"'\"dossier_id\": \"SPECIAL-FOOL\"'\"'\"' \"$SKEL\" || {\
-  \ echo \"FAIL: SPECIAL-FOOL not dossier_id in skeletons\"; exit 1; }\nif grep -q '\"'\"'\"dossier_id\"\
-  : \"TRUMP-FOOL\"'\"'\"' \"$SKEL\"; then\n  echo \"FAIL: TRUMP-FOOL still dossier_id in skeletons\";\
-  \ exit 1\nfi\ngrep -q '\"'\"'\"database_id\": \"SPECIAL-FOOL\"'\"'\"' \"$SKEL\" || { echo \"FAIL: SPECIAL-FOOL\
-  \ not database_id in skeletons\"; exit 1; }\nif grep -q '\"'\"'\"database_id\": \"TRUMP-FOOL\"'\"'\"\
-  ' \"$SKEL\"; then\n  echo \"FAIL: TRUMP-FOOL still database_id in skeletons\"; exit 1\nfi\ngrep -q \"\
-  SPECIAL-FOOL-Q-IMG-001\" \"$SKEL\" || { echo \"FAIL: SPECIAL-FOOL-Q-IMG-001 missing from skeletons\"\
-  ; exit 1; }\ngrep -q \"SPECIAL-FOOL-Q-NAME-001\" \"$SKEL\" || { echo \"FAIL: SPECIAL-FOOL-Q-NAME-001\
-  \ missing from skeletons\"; exit 1; }\nif grep -q \"TRUMP-FOOL-Q-\" \"$SKEL\"; then\n  echo \"FAIL:\
-  \ TRUMP-FOOL question_id prefix still present in skeletons\"; exit 1\nfi\nawk -F, '\"'\"'$1==\"SPECIAL-FOOL\"\
-  \ {print $10}'\"'\"' \"$CSV\" | grep -q \"^0$\" || { echo \"FAIL: sort_order not 0 in CSV\"; exit 1;\
-  \ }\ngrep -q '\"'\"'\"aliases\"'\"'\"' research/04-dossier-spec/Stage4_Card_Dossier_Schema.json || {\
-  \ echo \"FAIL: aliases field missing from Stage4 schema\"; exit 1; }\ngrep -A3 '\"'\"'\"sort_order\"\
-  '\"'\"' research/04-dossier-spec/Stage4_Card_Dossier_Schema.json | grep -q '\"'\"'\"minimum\": 0'\"\
-  '\"' || { echo \"FAIL: sort_order minimum not widened to 0 in schema\"; exit 1; }\ngrep \"^SPECIAL-FOOL,\"\
-  \ \"$CSV\" | grep -q \"TRUMP-FOOL\" || { echo \"FAIL: SPECIAL-FOOL row in CSV missing TRUMP-FOOL in\
-  \ aliases column\"; exit 1; }\ngrep -A2 '\"'\"'\"aliases\": \\['\"'\"' \"$JSON\" | grep -q \"TRUMP-FOOL\"\
-  \ || { echo \"FAIL: aliases array in registry JSON missing TRUMP-FOOL\"; exit 1; }\ngrep -q '\"'\"'\"\
-  aliases\"'\"'\"' \"$SKEL\" || { echo \"FAIL: aliases missing from skeletons\"; exit 1; }\ngrep -c \"\
-  TRUMP-FOOL\" \"$SKEL\" | grep -q \"^1$\" || { echo \"FAIL: expected exactly one TRUMP-FOOL alias mention\
-  \ in skeletons\"; exit 1; }\necho PASS'"
+  \nfor f in $draft_files; do\n  if grep -q \"TRUMP-FOOL\" \"$f\" 2>/dev/null; then\n\
+  \    echo \"FAIL: $f still contains a live TRUMP-FOOL reference\"; exit 1\n  fi\n\
+  done\ntest -f research/pilots/drafts/PERSONALITY_SPECIAL-FOOL_Fool.md || { echo\
+  \ \"FAIL: renamed Fool study file missing\"; exit 1; }\nif [ -f research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md\
+  \ ]; then\n  echo \"FAIL: old PERSONALITY_TRUMP-FOOL_Fool.md still present\"; exit\
+  \ 1\nfi\nCSV=research/05-registry-and-audit/Stage5_Master_Card_Registry.csv\nJSON=research/05-registry-and-audit/Stage5_Master_Card_Registry.json\n\
+  SKEL=research/05-registry-and-audit/Card_Dossier_Skeletons.json\ngrep -q \"^SPECIAL-FOOL,\"\
+  \ \"$CSV\" || { echo \"FAIL: SPECIAL-FOOL not primary card_id in registry CSV\"\
+  ; exit 1; }\nif grep -q \"^TRUMP-FOOL,\" \"$CSV\"; then\n  echo \"FAIL: TRUMP-FOOL\
+  \ still primary card_id in registry CSV\"; exit 1\nfi\ngrep -q '\"'\"'\"card_id\"\
+  : \"SPECIAL-FOOL\"'\"'\"' \"$JSON\" || { echo \"FAIL: SPECIAL-FOOL not primary card_id\
+  \ in registry JSON\"; exit 1; }\nif grep -q '\"'\"'\"card_id\": \"TRUMP-FOOL\"'\"\
+  '\"' \"$JSON\"; then\n  echo \"FAIL: TRUMP-FOOL still primary card_id in registry\
+  \ JSON\"; exit 1\nfi\ngrep -q '\"'\"'\"dossier_id\": \"SPECIAL-FOOL\"'\"'\"' \"\
+  $SKEL\" || { echo \"FAIL: SPECIAL-FOOL not dossier_id in skeletons\"; exit 1; }\n\
+  if grep -q '\"'\"'\"dossier_id\": \"TRUMP-FOOL\"'\"'\"' \"$SKEL\"; then\n  echo\
+  \ \"FAIL: TRUMP-FOOL still dossier_id in skeletons\"; exit 1\nfi\ngrep -q '\"'\"\
+  '\"database_id\": \"SPECIAL-FOOL\"'\"'\"' \"$SKEL\" || { echo \"FAIL: SPECIAL-FOOL\
+  \ not database_id in skeletons\"; exit 1; }\nif grep -q '\"'\"'\"database_id\":\
+  \ \"TRUMP-FOOL\"'\"'\"' \"$SKEL\"; then\n  echo \"FAIL: TRUMP-FOOL still database_id\
+  \ in skeletons\"; exit 1\nfi\ngrep -q \"SPECIAL-FOOL-Q-IMG-001\" \"$SKEL\" || {\
+  \ echo \"FAIL: SPECIAL-FOOL-Q-IMG-001 missing from skeletons\"; exit 1; }\ngrep\
+  \ -q \"SPECIAL-FOOL-Q-NAME-001\" \"$SKEL\" || { echo \"FAIL: SPECIAL-FOOL-Q-NAME-001\
+  \ missing from skeletons\"; exit 1; }\nif grep -q \"TRUMP-FOOL-Q-\" \"$SKEL\"; then\n\
+  \  echo \"FAIL: TRUMP-FOOL question_id prefix still present in skeletons\"; exit\
+  \ 1\nfi\nawk -F, '\"'\"'$1==\"SPECIAL-FOOL\" {print $10}'\"'\"' \"$CSV\" | grep\
+  \ -q \"^0$\" || { echo \"FAIL: sort_order not 0 in CSV\"; exit 1; }\ngrep -q '\"\
+  '\"'\"aliases\"'\"'\"' research/04-dossier-spec/Stage4_Card_Dossier_Schema.json\
+  \ || { echo \"FAIL: aliases field missing from Stage4 schema\"; exit 1; }\ngrep\
+  \ -A3 '\"'\"'\"sort_order\"'\"'\"' research/04-dossier-spec/Stage4_Card_Dossier_Schema.json\
+  \ | grep -q '\"'\"'\"minimum\": 0'\"'\"' || { echo \"FAIL: sort_order minimum not\
+  \ widened to 0 in schema\"; exit 1; }\ngrep \"^SPECIAL-FOOL,\" \"$CSV\" | grep -q\
+  \ \"TRUMP-FOOL\" || { echo \"FAIL: SPECIAL-FOOL row in CSV missing TRUMP-FOOL in\
+  \ aliases column\"; exit 1; }\ngrep -A2 '\"'\"'\"aliases\": \\['\"'\"' \"$JSON\"\
+  \ | grep -q \"TRUMP-FOOL\" || { echo \"FAIL: aliases array in registry JSON missing\
+  \ TRUMP-FOOL\"; exit 1; }\ngrep -q '\"'\"'\"aliases\"'\"'\"' \"$SKEL\" || { echo\
+  \ \"FAIL: aliases missing from skeletons\"; exit 1; }\ngrep -c \"TRUMP-FOOL\" \"\
+  $SKEL\" | grep -q \"^1$\" || { echo \"FAIL: expected exactly one TRUMP-FOOL alias\
+  \ mention in skeletons\"; exit 1; }\necho PASS'"
 human_review_required: false
 audited_at: '2026-08-12T18:00:05.936224Z'
 audited_by: PM-F7
@@ -165,19 +199,22 @@ events:
 - timestamp: '2026-08-12T18:20:09.088189Z'
   action: BLOCK
   actor: Unknown
-  details: 'Reason: Implementation complete on branch test-T-MIN-016 (commits 15e34cd, 3ac0db7; pushed
-    to origin) satisfying every definition_of_done item, but the audited verification_command is internally
-    self-contradictory and cannot pass for ANY implementation that fulfills the DoD. The command''s first
-    loop greps Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json
-    for zero occurrences of literal ''TRUMP-FOOL'' and exits 1 on any match -- but the same task''s DoD
-    requires those exact three files to carry the alias field containing the literal string ''TRUMP-FOOL''
-    (scope point 1, DoD item 1). Card_Dossier_Skeletons.json is doubly contradictory: the same script
-    later asserts grep -c TRUMP-FOOL == 1 on that file, which is unreachable dead code given the earlier
-    zero-occurrence check on the same file already exits first. Ran ./bin/fleet verify T-MIN-016 --model
-    claude-sonnet-5 with the branch checked out; it fails at the CSV check (first file in the list) with
-    exit code 1, confirming this empirically. Needs PM re-audit to fix verification_command (e.g. drop
-    the registry/skeletons files from the zero-occurrence loop, since those three are precisely where
-    the alias is supposed to live) before this can be verified and submitted. See FEEDBACK_Worker-F18_claude-sonnet-5_20260812.md
+  details: 'Reason: Implementation complete on branch test-T-MIN-016 (commits 15e34cd,
+    3ac0db7; pushed to origin) satisfying every definition_of_done item, but the audited
+    verification_command is internally self-contradictory and cannot pass for ANY
+    implementation that fulfills the DoD. The command''s first loop greps Stage5_Master_Card_Registry.csv,
+    Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json for zero occurrences
+    of literal ''TRUMP-FOOL'' and exits 1 on any match -- but the same task''s DoD
+    requires those exact three files to carry the alias field containing the literal
+    string ''TRUMP-FOOL'' (scope point 1, DoD item 1). Card_Dossier_Skeletons.json
+    is doubly contradictory: the same script later asserts grep -c TRUMP-FOOL == 1
+    on that file, which is unreachable dead code given the earlier zero-occurrence
+    check on the same file already exits first. Ran ./bin/fleet verify T-MIN-016 --model
+    claude-sonnet-5 with the branch checked out; it fails at the CSV check (first
+    file in the list) with exit code 1, confirming this empirically. Needs PM re-audit
+    to fix verification_command (e.g. drop the registry/skeletons files from the zero-occurrence
+    loop, since those three are precisely where the alias is supposed to live) before
+    this can be verified and submitted. See FEEDBACK_Worker-F18_claude-sonnet-5_20260812.md
     for full detail.'
 - timestamp: '2026-08-12T18:33:53.942330Z'
   action: UNBLOCK
@@ -186,16 +223,21 @@ events:
 - timestamp: '2026-08-12T18:34:04.362763Z'
   action: PM_CORRECTION
   actor: PM-F8
-  details: 'Corrected verification_command: the audited command''s zero-occurrence TRUMP-FOOL loop wrongly
-    included Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json, and Card_Dossier_Skeletons.json
-    -- exactly the three files where DoD item 1 requires a TRUMP-FOOL alias to live, making the command
-    unsatisfiable by any valid implementation. Fix: removed those three files from the blind zero-occurrence
-    loop (kept for the eleven study drafts), and replaced with specific checks that (a) card_id/dossier_id/database_id/question_id-prefix
-    is SPECIAL-FOOL not TRUMP-FOOL as a primary identifier, and (b) the aliases field/column for that
-    row contains TRUMP-FOOL. Dry-ran the corrected command via `bash -c` against a git worktree of the
-    actual pushed branch test-T-MIN-016 (head 3ac0db7): PASS. Also sanity-checked it correctly FAILS against
-    the pre-implementation sha 09f857d. DoD, scope, audited_at/by/repo_sha left unchanged -- only the
-    command was buggy. See feedback/FEEDBACK_PM-F8_claude-sonnet-5_20260812.md for detail.'
+  details: 'Corrected verification_command: the audited command''s zero-occurrence
+    TRUMP-FOOL loop wrongly included Stage5_Master_Card_Registry.csv, Stage5_Master_Card_Registry.json,
+    and Card_Dossier_Skeletons.json -- exactly the three files where DoD item 1 requires
+    a TRUMP-FOOL alias to live, making the command unsatisfiable by any valid implementation.
+    Fix: removed those three files from the blind zero-occurrence loop (kept for the
+    eleven study drafts), and replaced with specific checks that (a) card_id/dossier_id/database_id/question_id-prefix
+    is SPECIAL-FOOL not TRUMP-FOOL as a primary identifier, and (b) the aliases field/column
+    for that row contains TRUMP-FOOL. Dry-ran the corrected command via `bash -c`
+    against a git worktree of the actual pushed branch test-T-MIN-016 (head 3ac0db7):
+    PASS. Also sanity-checked it correctly FAILS against the pre-implementation sha
+    09f857d. DoD, scope, audited_at/by/repo_sha left unchanged -- only the command
+    was buggy. See feedback/FEEDBACK_PM-F8_claude-sonnet-5_20260812.md for detail.'
+- timestamp: '2026-08-12T18:36:03.902460Z'
+  action: SUBMIT
+  actor: Worker-F18
 claimed_at: '2026-08-12T18:10:18.656086Z'
 previous_status: null
 blocked_reason: null

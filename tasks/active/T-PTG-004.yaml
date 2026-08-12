@@ -1,10 +1,11 @@
 id: T-PTG-004
-title: 'Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title'
+title: 'Audit citation metadata accuracy: volume/issue-number mismatches between issue_label
+  and title'
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: HUMAN_REVIEW
+owner: Claude-Worker
 created_at: '2026-08-12T04:03:50Z'
 audited_at: '2026-08-12T04:03:50Z'
 audited_by: Claude-PM
@@ -13,33 +14,38 @@ dependencies: []
 scope:
 - journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json
   (volume/number fields used by the Tier-4 fallback path).
-- 'Found live in the reported bug example — footnote [2]: ''2022-10-01 Vol. 69 No. 10 — "Piano Technicians
-  Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21''. The issue_label (built from articles.volume
-  / articles.issue_number) says ''Vol. 69 No. 10''; the article''s own title string for the same October
-  2022 issue says ''(Vol. 65 No. 10)''. Both cannot be right for the same physical issue — this is a direct
-  violation of the ''must give reference to the right journal number'' hard requirement, independent of
-  the footnote-numbering bug in T-PTG-001.'
-- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content'
-  that read as synthesized placeholders rather than real article titles — these make citations technically
-  present but practically useless to a member trying to verify a source.
+- "Found live in the reported bug example \u2014 footnote [2]: '2022-10-01 Vol. 69\
+  \ No. 10 \u2014 \"Piano Technicians Journal \u2014 October 2022 Issue (Vol. 65 No.\
+  \ 10)\", p. 21'. The issue_label (built from articles.volume / articles.issue_number)\
+  \ says 'Vol. 69 No. 10'; the article's own title string for the same October 2022\
+  \ issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue\
+  \ \u2014 this is a direct violation of the 'must give reference to the right journal\
+  \ number' hard requirement, independent of the footnote-numbering bug in T-PTG-001."
+- "Also audit for similarly generic/low-information titles like 'Piano Technicians\
+  \ PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real\
+  \ article titles \u2014 these make citations technically present but practically\
+  \ useless to a member trying to verify a source."
 definition_of_done:
-- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number
-  embedded in title disagrees with the row's own volume/issue_number columns, and report the count and
-  sample rows.
-- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged
-  at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback
-  protocol, not just fixed silently.
-- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the
-  source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
-- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article
-  titles, with a recommendation for the human on how to best source the real titles.
-- 'Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php
-  (already written; see repo) — the affected rows may only exist in the full production corpus. Run the
-  audit against production data (or the fullest available corpus snapshot), not just the local pilot subset,
-  before concluding there is nothing to fix.'
+- Write a one-off audit script (or SQL query) that finds every article row where a
+  volume/issue-number embedded in title disagrees with the row's own volume/issue_number
+  columns, and report the count and sample rows.
+- "Root-cause how the two diverged (bad import script, manual edit, two different\
+  \ numbering schemes merged at some point, etc.) \u2014 write findings into a task_coordinator\
+  \ feedback file per the README's feedback protocol, not just fixed silently."
+- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually
+  wrong per the source PDF) via a migration or corrective script, not a one-off manual
+  DB edit with no record.
+- Flag (but do not necessarily rewrite) titles that are generic placeholders rather
+  than real article titles, with a recommendation for the human on how to best source
+  the real titles.
+- "Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches\
+  \ from cli/audit_citation_metadata.php (already written; see repo) \u2014 the affected\
+  \ rows may only exist in the full production corpus. Run the audit against production\
+  \ data (or the fullest available corpus snapshot), not just the local pilot subset,\
+  \ before concluding there is nothing to fix."
 verification_command: cd journalgpt && php cli/audit_citation_metadata.php
 human_review_required: true
-claimed_at: null
+claimed_at: '2026-08-12T04:19:23.184570Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -48,7 +54,18 @@ events:
 - timestamp: '2026-08-12T04:03:50Z'
   action: AUDIT
   actor: Claude-PM
-  details: Data-accuracy finding surfaced while investigating the footnote-numbering bug (T-PTG-001) in
-    the same reported example. Kept as a separate task since it is a data problem, not a code/logic problem,
-    and needs a human decision on which value (title vs. volume/issue_number columns) is authoritative
-    before any correction is applied.
+  details: Data-accuracy finding surfaced while investigating the footnote-numbering
+    bug (T-PTG-001) in the same reported example. Kept as a separate task since it
+    is a data problem, not a code/logic problem, and needs a human decision on which
+    value (title vs. volume/issue_number columns) is authoritative before any correction
+    is applied.
+- timestamp: '2026-08-12T04:19:23.186568Z'
+  action: CLAIM
+  actor: Claude-Worker
+- timestamp: '2026-08-12T04:20:08.551736Z'
+  action: SUBMIT
+  actor: Claude-Worker
+- timestamp: '2026-08-12T04:20:33.663693Z'
+  action: RECORD_REVIEW
+  actor: Claude-Reviewer
+  details: 'Verdict: PASS_WITH_CORRECTIONS'

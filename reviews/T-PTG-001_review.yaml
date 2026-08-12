@@ -1,0 +1,46 @@
+task_id: T-PTG-001
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 23eb6e0ab653ed3f96139cfed558011a098a6712
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Root cause matches the reported bug: the inline [1]/[2] renumbering ($uniqueTags,
+    keyed by first-appearance order of unique 【…】 tags) and the appended
+    "Footnotes:" block (built by enumerating $citationsOutput, itself derived from
+    every retrieved chunk plus a Tier-4 corpus-scan fallback) were two independent
+    numbering sequences with no shared key. Confirmed by reading both blocks
+    pre-fix in JournalAnswerService::ask().
+  file_reference: journalgpt/lib/JournalAnswerService.php
+- severity: INFO
+  description: >-
+    Fix removes the fragile reconciliation rather than patching it: raw 【…】
+    markers are now stripped (not renumbered) from the answer text, and the
+    duplicate "Footnotes:" markdown block is deleted outright. Verified this is
+    safe by reading assets/journal-chat.js: it already renders `citations` as an
+    independent structured "Sources Grounded in Journal" list via
+    appendAssistantMessage(), using textContent (not innerHTML/markdown), so the
+    old footnote block was rendering as literal asterisks and was never usable
+    markdown in the first place — removing it is a strict UX improvement, not a
+    feature regression.
+  file_reference: journalgpt/assets/journal-chat.js
+- severity: MINOR
+  description: >-
+    testHedgedAnswerWithGroundedCitationsStillGetsCited (TEST 18b) was written for
+    the pre-simplification design and asserted on inline "[1]" markers; it has been
+    updated in this same commit to assert no raw 【 markers leak into the answer
+    instead, matching the new behavior. Confirmed consistent with the other
+    end-to-end citation test (TEST 18) which makes the same assertion.
+  file_reference: journalgpt/tests/JournalAnswerServiceTest.php
+- severity: INFO
+  description: >-
+    Verification: all tests in tests/JournalAnswerServiceTest.php pass (ran
+    `php tests/JournalAnswerServiceTest.php` directly), including new TEST 18c
+    covering the T-PTG-002 filtering/collapsing behavior. api/ask.php and
+    source.php regex tests (AskEndpointTest, SourceRegexTest) also pass.
+    JournalChatRenderTest has one pre-existing unrelated failure (a stale
+    cache-busting query-string assertion against index.php) confirmed via
+    `git status`/`git diff --stat` to predate this commit — this change does
+    not touch index.php.
+reviewed_at: '2026-08-12T04:18:10.696568Z'

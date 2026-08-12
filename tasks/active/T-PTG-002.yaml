@@ -54,3 +54,12 @@ events:
   details: Companion task to T-PTG-001. Confirmed via code reading that resolveCitationsFromChunks has
     no concept of 'was this chunk actually cited inline' — every retrieved chunk becomes a citation. Depends
     on T-PTG-001 landing first so the citation source tagging introduced here has a consumer.
+- timestamp: '2026-08-12T04:20:00Z'
+  action: NOTE
+  actor: Claude-Worker
+  details: Implementation already landed in commit 23eb6e0ab653ed3f96139cfed558011a098a6712 (newmexicoptg.org),
+    alongside T-PTG-001 which shares the same code paths — OpenAIClient::citedFileIds(), the citableChunks
+    filter, collapseAdjacentPageCitations(), and source tagging. TEST 18c in JournalAnswerServiceTest.php
+    verifies this task's definition_of_done directly. Cannot formally claim/submit through the fleet CLI
+    until T-PTG-001 reaches DONE (dependency gate) — that requires human close per human_review_required.
+    Flagging so the human can close both in one pass.

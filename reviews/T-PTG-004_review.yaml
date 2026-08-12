@@ -1,0 +1,35 @@
+task_id: T-PTG-004
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 23eb6e0ab653ed3f96139cfed558011a098a6712
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: >-
+    cli/audit_citation_metadata.php correctly implements the audit query described
+    in the task scope: finds articles whose title embeds "Vol. X No. Y" and
+    compares against the row's own volume/issue_number columns, printing each
+    mismatch and exiting 1 if any are found. Verified the regex and comparison
+    logic by reading the script directly.
+  file_reference: journalgpt/cli/audit_citation_metadata.php
+- severity: MAJOR
+  description: >-
+    The task's core deliverable — finding and correcting the actual
+    volume/issue-number mismatch reported in production (Vol. 69 vs Vol. 65 for
+    the same October 2022 issue) — could not be completed in this environment.
+    The local dev DB (journal_ai_test, 92 seeded articles) shows 0 mismatches; the
+    affected rows evidently only exist in the full production corpus, which this
+    session had no access to. This was anticipated in the task's own
+    definition_of_done note, so it is not a surprise finding, but it means
+    "correct the confirmed-wrong rows via a migration" — one of the DoD bullets —
+    is not done.
+  file_reference: null
+- severity: INFO
+  description: >-
+    Findings were written to feedback/FEEDBACK_ClaudeWorker_ClaudeSonnet5_20260812.md
+    per the README's feedback protocol, and human_action_required on the handoff
+    spells out the exact next command to run against production. This satisfies
+    the DoD's "write findings into a feedback file, not just fixed silently"
+    requirement even though the fix itself is deferred.
+  file_reference: feedback/FEEDBACK_ClaudeWorker_ClaudeSonnet5_20260812.md
+reviewed_at: '2026-08-12T04:27:00Z'

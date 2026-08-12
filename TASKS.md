@@ -984,7 +984,7 @@ graph TD
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
 
 ---
-### ⏳ T-PTG-008 · P2 · ANY · PEER_REVIEW
+### ⏳ T-PTG-008 · P2 · ANY · HUMAN_REVIEW
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
 **Owner:** Worker-PTG-FeatureRequest1
 

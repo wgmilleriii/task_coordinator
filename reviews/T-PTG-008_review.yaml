@@ -1,0 +1,130 @@
+task_id: T-PTG-008
+reviewer_agent: Reviewer-PTG-FeatureRequest1
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 04842d7e9120bd559464f6cc1586e8c52c72c5f1
+verdict: PASS_WITH_CORRECTIONS
+findings:
+- severity: INFO
+  description: >-
+    Independently re-verified in an isolated worktree (../newmexicoptg.org-t008-review,
+    detached at 04842d7) that the Worker's own note about `fleet verify` hitting
+    the unmodified main checkout instead of the isolated worktree is accurate --
+    same tooling gap as T-INTY-018. All verification in this review was performed
+    directly against the audited head_sha's diff, not the baseline tree.
+- severity: INFO
+  description: >-
+    Full diff read line-by-line (journalgpt/api/ask.php +40, journalgpt/lib/FeatureRequestService.php
+    +546 new, journalgpt/lib/OpenAIClient.php +72, journalgpt/migrations/010_feature_request_conversations.sql
+    +36; 4 files, 694 insertions, 0 deletions). api/ask.php routes on FeatureRequestService::isTagged()
+    or an existing feature_request conversation_id, placed after CSRF validation
+    and before tier/preset resolution, exactly as scoped -- a tagged message never
+    reaches the tier/preset block, JournalAnswerService, or getActiveVectorStoreId().
+- severity: INFO
+  description: >-
+    Tag-detection regex in FeatureRequestService::isTagged() is `/^\/feature[-
+    ]request(?=[\s]|$)/i` applied to ltrim($message) -- confirmed first-token-only,
+    case-insensitive, and confirmed by direct testing that leading whitespace,
+    hyphen vs space, and mixed case (/Feature-Request) all match while a mid-sentence
+    mention ("...or is that a feature request gap?") does not. One minor untested
+    edge case worth noting for a future pass: a tag immediately followed by punctuation
+    with no space (e.g. "/feature-request!") would NOT match, since the lookahead
+    requires whitespace or end-of-string after "request" -- not a false positive/security
+    issue, just a slightly narrower match than "first token" might imply. Not blocking.
+- severity: INFO
+  description: >-
+    Read FeatureRequestService.php and OpenAIClient.php in full. Confirmed FeatureRequestService
+    never calls getActiveVectorStoreId(), callOpenAIResponsesApi(), resolveCitationsFromChunks(),
+    or fallbackExtractCitationsFromAnswer() -- it only calls the new OpenAIClient::converse(),
+    which builds a plain POST to /chat/completions with only {model, messages} in
+    the payload; no `tools`, no `vector_store_id`, no /assistants or /threads endpoints
+    touched anywhere in the new code path. This was verified by reading the diff directly,
+    not by trusting the Worker's docblock claims.
+- severity: INFO
+  description: >-
+    Applied migration 010 myself against a completely fresh database (journal_ai_test_review,
+    not the Worker's DB) via `journalgpt/cli/migrate.php`. All 11 migrations (001 through
+    010) applied cleanly in order with zero collisions; conversations.conversation_type
+    ENUM('rag','feature_request') DEFAULT 'rag' and the new feature_request_details
+    table (FK to conversations, UNIQUE conversation_id) were created as scoped. Confirmed
+    008's `tier` column (model tier) was not reused/conflated, matching the audited
+    Decision 4.
+- severity: INFO
+  description: >-
+    Ran all three claimed test suites myself against my own freshly migrated DB (not
+    the Worker's): AskEndpointTest.php 3/3 passed, UsagePolicyTest.php 5/5 passed,
+    JournalAnswerServiceTest.php all sub-tests passed (24 distinct [OK] assertions
+    covering grounding, citation resolution, withholding, and conversation context
+    -- unaffected by the new parallel lane). All three exited 0. Matches the Worker's
+    claimed results exactly.
+- severity: INFO
+  description: >-
+    Started a real php -S server from my isolated worktree with OPENAI_MOCK_MODE=true,
+    created a real member-role (role_id=1, not admin) test user, logged in via login.php
+    to get a real session + CSRF token, and drove the full flow over real HTTP with
+    curl. Turn 1 (tagged "/feature request I wish the app could export my conversation
+    history as a PDF") returned conversation_type=feature_request, triage_status=gathering,
+    and NO citations/is_grounded keys at all in the JSON. Turns 2-4 (untagged follow-ups
+    on the same conversation_id) asked who/how_often/what in order and closed with
+    triage_status=complete on turn 4. Verified matching DB rows directly: conversations.conversation_type='feature_request',
+    feature_request_details has who/how_often/what_it_would_look_like populated as
+    real structured text with all three *_covered=1, closed_reason='dimensions_covered',
+    8 messages rows (4 user + 4 assistant) all with citations_json IS NULL, 4 usage_events
+    rows with event_type='feature_request', 4 debug_logs rows with is_grounded=0 and
+    retrieved_chunks_count=0. All independently reproduced, not taken from the handoff.
+- severity: INFO
+  description: >-
+    Reproduced both claimed edge cases myself. (1) "/Feature-Request Please add dark
+    mode" (hyphen + mixed case) routed correctly into the feature_request lane. (2)
+    "Does PTG have a source on regulation, or is that a feature request gap?" (mid-sentence
+    mention, not first token) stayed in the RAG lane and returned a real citations[]
+    array with is_grounded:true -- confirms no false-positive misrouting of a genuine
+    technical question. (3) Started a fresh feature-request conversation, then immediately
+    sent "that is everything, thanks" with zero dimensions answered -- triage_status
+    went to complete immediately, DB row shows closed_reason='user_closed', who_covered=how_often_covered=what_covered=0,
+    exactly as scoped (explicit user signal beats/short-circuits dimension coverage).
+- severity: INFO
+  description: >-
+    Verified the quota/budget split directly against live usage_events rows I generated
+    (not asserted from code): SELECT showed 7 feature_request rows and 1 query row
+    for the test user. UsagePolicy::getMonthlyUserQuestionCount(5) returned 1 (only
+    the query row -- the 7 feature_request rows are correctly excluded, since that
+    method filters event_type='query'). UsagePolicy::getMonthlyOrgSpend() returned
+    a nonzero sum that includes the feature_request rows' cost (method has no event_type
+    filter). UsagePolicy.php itself was not modified; confirmed no existing quota
+    logic changed. This closes the exact cost-control loophole the scope called out
+    -- feature-request turns cannot be used to bypass the per-user quota or the org
+    budget cap.
+- severity: MAJOR
+  description: >-
+    requires_doc_update is set true on this task, and per the README's own Janitor
+    Protocol semantics this is a downstream trigger (fires after the task is DONE
+    and >24h since the last doc sweep), not a hard gate on this PEER_REVIEW->HUMAN_REVIEW
+    transition -- so this does not block a PASS. However, checked directly: no file
+    under journalgpt/docs/, journalgpt/changelog.json, or journalgpt/version.json
+    was added or updated in this commit. This repo has a strong, consistent pattern
+    of every prior feature-sized change (2.1.0, 2.1.1, 2.2.0, 2.3.0 in changelog.json)
+    getting a changelog entry, and this is explicitly a new architectural lane (new
+    table, new service, new router branch) per the Scout/PM's own framing. The commit
+    message and handoff document the design well, but neither is discoverable by
+    a future agent reading journalgpt/docs/ the way the repo's other architectural
+    decisions are. Recommend the human reviewer require a docs/ entry (or at minimum
+    a changelog.json bump) before running `fleet close`, or explicitly waive it and
+    let the Janitor Protocol pick it up later -- but it should be a conscious decision,
+    not silently skipped.
+- severity: INFO
+  description: >-
+    DoD checked line-by-line against the delivered diff and my own live evidence,
+    not just the handoff's claims. All seven DoD bullets are satisfied: (1) no vector-store/citation
+    calls in the tagged path -- code-traced and confirmed via debug_logs rows; (2)
+    no citations/is_grounded keys in the tagged response -- confirmed on live JSON;
+    (3) multi-turn conversation observed against a running server -- 4 real turns
+    plus a 2-turn early-close scenario, both reproduced by me; (4) stopping condition
+    is concrete/testable (3-dimension coverage OR explicit closing phrase, both demonstrated
+    live); (5) closed conversation produces a well-formed feature_request_details
+    row with structured TEXT fields per dimension -- confirmed via direct DB inspection,
+    extraction script explicitly out of scope and not built, correctly noted in the
+    commit message; (6) quota/budget split implemented and verified live, UsagePolicy.php
+    untouched, its test suite still passes; (7) untagged RAG behavior unchanged --
+    JournalAnswerServiceTest full suite passes and a live untagged question still
+    returns real citations/is_grounded:true.
+reviewed_at: '2026-08-12T20:35:00Z'

@@ -16,7 +16,7 @@ graph TD
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
-    T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]
+    T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::active
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
@@ -50,9 +50,9 @@ graph TD
 
 ## Repo: `intypiano`
 
-### 📋 T-INTY-021 · P0 · ANY · AUDITED
+### 🛠 T-INTY-021 · P0 · ANY · CLAIMED
 **Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline**
-**Owner:** None
+**Owner:** Worker-DBFallback1
 
 **Scope:**
 - Confirmed by reading classes/core/DatabaseManager.php lines 251-294 directly (not by inference): the localhost/127.0.0.1 branch (line 251) enters a sub-branch at line 267 (`if (isset($this->app->app) && $this->app->app== "cauttools")`) that is NOT a rare edge case -- `classes/redditlite_base.php` line 8 sets `public $app="cauttools";` as the class default, and essentially every entry point in the app (`admin_header_base.php` line 15, `admin/v2/_guard.php` line 17, `scripts/migrate.php`, most of `api/*.php`, and the PHPUnit `Integration` tests) explicitly re-sets `$r->app = "cauttools"` anyway. This branch is the normal path for local dev and CI, not an exception.

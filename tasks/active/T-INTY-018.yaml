@@ -1,0 +1,55 @@
+id: T-INTY-018
+title: Business-card QR sheet (Avery 8371) as a second QR report
+repo: intypiano
+priority: P2
+lane: ANY
+status: CLAIMED
+owner: Commander
+created_at: '2026-08-12T16:05:18Z'
+dependencies: []
+scope:
+- The collection has exactly one printable QR output today, print_labels_5162.php
+  -- a 4in x 1.33in adhesive label sized to stick on the instrument. It cannot be
+  handed to a person, and at 33.87mm tall it can only carry a 26mm QR.
+- Add a SECOND QR report at business-card size (3.5in x 2in, Avery 8371/5371, 10 per
+  Letter sheet) for the hand-out / music-desk case, where the card is read by a student
+  or faculty member rather than scanned off the piano's cheekblock by a technician.
+- The new sheet reads the same v2 pianos + locations source as print_labels_5162.php,
+  encodes the same public-scheduler URL (frontend/schedule_tuning.php?qr=), and honours
+  the same ?building= filter.
+- Register it in the canonical report catalog (classes/core/report_queries.php) so
+  it appears on both the v1 reports surface and admin/v2/reports.php, plus the hub
+  tile row, the v2 jump index, and the per-building action row.
+- Do NOT touch print_labels_5162.php's geometry. It was rebuilt on 2026-08-07 to stop
+  text overflowing the 1.33in label and is the known-good reference.
+definition_of_done:
+- A new endpoint print_cards_8371.php returns a Letter-size PDF, session-gated the
+  same way print_labels_5162.php is (403 for an anonymous request, no cookie gating).
+- Card geometry is Avery 8371 exactly -- 88.9mm x 50.8mm, 2 columns x 5 rows, 19.05mm
+  side margins, 12.7mm top margin, zero gutters -- and 11 instruments produce 2 pages.
+- Every text line is truncated to a single line so nothing wraps or overflows the
+  card, the same failure that forced the 5162 rebuild.
+- Optional ?guides=1 draws cut guides for plain-paper printing; the default output
+  has no guides so pre-perforated Avery stock is unmarked.
+- The layout is exercised by a test that runs with NO database and NO dev server,
+  so the geometry is proven by execution rather than by reading. Page count, page
+  size, and cards-per-page are asserted against a rendered PDF.
+- The report catalog gains a qr_cards entry alongside qr_labels, and the existing
+  entry's blurb is corrected to distinguish the two sizes.
+- phpunit is green -- no regression against the 259-test baseline for the suites that
+  can run without a database.
+verification_command: ./vendor/bin/phpunit --filter QrCardSheet
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-12T16:05:57.077126Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against 3cf4775d3561b3746c6e55586921beb4492ec57d
+- timestamp: '2026-08-12T16:05:57.354629Z'
+  action: CLAIM
+  actor: Commander
+audited_at: '2026-08-12T16:05:57.077084Z'
+audited_by: PM
+audited_repo_sha: 3cf4775d3561b3746c6e55586921beb4492ec57d
+claimed_at: '2026-08-12T16:05:57.354595Z'

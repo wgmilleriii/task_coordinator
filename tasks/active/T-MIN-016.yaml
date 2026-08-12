@@ -4,8 +4,8 @@ title: "Apply D3 \u2014 rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permane
 repo: minchiate_tarot
 priority: P2
 lane: codex
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F18
 created_at: '2026-08-12T09:00:00-06:00'
 dependencies: []
 scope:
@@ -173,3 +173,7 @@ events:
   action: AUDIT
   actor: PM-F7
   details: Audited against 09f857d
+- timestamp: '2026-08-12T18:10:18.656239Z'
+  action: CLAIM
+  actor: Worker-F18
+claimed_at: '2026-08-12T18:10:18.656086Z'

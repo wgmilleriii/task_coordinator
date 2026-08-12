@@ -14,7 +14,7 @@ graph TD
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
-    T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]
+    T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::active
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::active
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
@@ -650,9 +650,32 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 📋 T-MIN-016 · P2 · codex · AUDITED
-**Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias**
+### 📋 T-MIN-018 · P2 · codex · AUDITED
+**Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008**
 **Owner:** None
+
+**Scope:**
+- This task supersedes T-MIN-008 (still OPEN, unaudited — audited_at/audited_by/audited_repo_sha all null as of this writing) pending a PM decision on which of the two stays open. T-MIN-008 was scoped assuming the Bernardi 1790 source (RULE-1790) had to be manually acquired because it exists only as a bibliographic pointer to https://archive.org/details/bub_gb_4_rdG3SVa48C (68 pages), not physically stored in the repo. This task preserves T-MIN-008's original scope and definition_of_done in full (see below, verbatim) but adds an explicit, mandatory FIRST step: attempt direct WebFetch/WebSearch of archive.org's own OCR/plaintext exposure for that item before concluding a human must download anything.
+- Precedent: T-MIN-009 (DONE) resolved a structurally similar problem — hedged zodiac locators — entirely via WebFetch/WebSearch against public web editions (LacusCurtius, Perseus/Scaife, Thorndike, Topostext), with zero local repo storage of the sources. Read research/pilots/Zodiac_Locator_Resolution_Note.md in full before starting; its "Method" section and "Sources opened" table are the standard this task is held to (open the actual source, cite exact locators, downgrade to [UNVERIFIED] rather than inventing).
+- MANDATORY FIRST STEP: attempt to open archive.org item bub_gb_4_rdG3SVa48C via its public endpoints before doing anything else. Try, in order, and document what was tried and what each attempt returned (HTTP status, content found or not): (a) the item's metadata API, https://archive.org/metadata/bub_gb_4_rdG3SVa48C, to discover available derivative files (djvu.txt, _text.pdf, etc.); (b) the plaintext/OCR view, typically https://archive.org/stream/bub_gb_4_rdG3SVa48C/bub_gb_4_rdG3SVa48C_djvu.txt (the exact filename segment must be confirmed from the metadata API response, not assumed); (c) the item's own details/download page for a full-text or PDF derivative; (d) a general WebSearch for the same Bernardi 1790 rules text hosted on any other public digitization (Google Books, a library digital collection, etc.) if archive.org's own OCR is unusable (e.g. garbled, paywalled, or the derivative does not exist for this item).
+- Only if (a) through (d) are genuinely attempted and fail — not merely found inconvenient — is it acceptable to conclude a human must acquire a physical/PDF copy. "Genuinely fail" means: endpoints 404/error, or the OCR text is present but too degraded to locate/read the verzicola passage with confidence, or no readable derivative exists at all. Document exactly what was tried and what each attempt returned before falling back to that conclusion; a bare "could not find it" without documented attempts is not acceptable.
+- If direct access succeeds: transcribe every verzicola combination example from Bernardi's 1790 text directly, replacing the Justice pilot's hedge ("I-V and beginning around XXVIII", pilot line 92) with an exact list, with exact locators (chapter and printed page, or the archive.org page/leaf number if no printed page number is legible). Record whether the examples are exhaustive or exemplary in Bernardi's own text; do not convert examples into rules — the deliverable is the transcription plus locators, not an interpretation.
+- Thirteen committed studies currently lean on the hedge; the zodiac batch flags it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element batch left "whether XX-XXIII can form a verzicola" as a standing open question in all four files. If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot cross-references) as a reconciliation queue; apply the amendments only if the audit that unlocks this task scopes that in — do not silently apply them un-audited.
+- If direct web access genuinely fails after documented attempts: write the same conclusion T-MIN-008 anticipated (a human must acquire a physical/PDF copy of archive.org item bub_gb_4_rdG3SVa48C) but back it with the documented attempt log from this task, not with an unexamined assumption.
+
+**Definition of Done:**
+- A documented attempt log exists (in the same output note) showing what was tried against archive.org (metadata API, stream/OCR view, details page) and any fallback WebSearch, with outcomes for each — win or fail.
+- A sourced note in research/02-source-audit/ or research/pilots/ either (a) transcribes the verzicola examples with exact locators and states what the record can and cannot support, using direct web access as the source, or (b) states plainly that direct web access was attempted and genuinely failed, with the attempt log as evidence, before recommending human acquisition.
+- The reconciliation queue of affected files is listed with per-file line references, if the boundary resolved.
+- The hedge is superseded only by direct transcription or a documented failed-attempt log, never by memory or assumption.
+- This task's output note explicitly states it supersedes/replaces T-MIN-008's rationale; it does not archive or delete T-MIN-008 itself (that is a PM/human decision).
+
+*Audited against SHA:* `09f857d`
+
+---
+### 🛠 T-MIN-016 · P2 · codex · CLAIMED
+**Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias**
+**Owner:** Worker-F18
 
 **Scope:**
 - PM-F7 ARCHITECTURAL DECISION (audit 2026-08-12, confirmed against branch test @09f857d): verified zero hits for "alias" in research/05-registry-and-audit/ and research/04-dossier-spec/ — the gap is real, not a scout false positive. Fix: add a new OPTIONAL field named `aliases` (a list of strings) to (1) Stage5_Master_Card_Registry.csv as a new trailing column `aliases` (semicolon-separated if multiple, e.g. "TRUMP-FOOL"), (2) the corresponding key in each row object of Stage5_Master_Card_Registry.json, and (3) `administrative_identity.aliases` (type array of strings, optional, NOT in the schema's `required` list) in research/04-dossier-spec/Stage4_Card_Dossier_Schema.json and the matching Card_Dossier_Skeletons.json entries. This ONE mechanism is used for both D3's former-id alias here (SPECIAL-FOOL row gets aliases: ["TRUMP-FOOL"]) and D4's Knight search-alias in T-MIN-017 (which depends on this task and reuses the same field) — do not invent a second, differently-shaped mechanism in either task. Document the field's meaning (one sentence) inline in Stage4_Card_Dossier_Schema.json via a JSON Schema `description` on the new property, and in the registry's own notes/header if the CSV format supports a comment; if not, document it in the same alias note this task already requires.
@@ -674,29 +697,6 @@ graph TD
 - A documented former-id/alias note for TRUMP-FOOL -> SPECIAL-FOOL exists and is discoverable from the registry or its accompanying docs; if no schema aliasing field was added, the absence is explicitly stated in that same note, not silently omitted.
 - research/archive/failed-runs/*, the named audit/report/planning files, and any file not explicitly listed in scope are byte-for-byte unchanged (git diff --name-only against the audited sha touches only the files named in scope).
 - No claim text, grading, or conclusion in any of the eleven cross-referencing drafts changed beyond the id token itself.
-
-*Audited against SHA:* `09f857d`
-
----
-### 📋 T-MIN-018 · P2 · codex · AUDITED
-**Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008**
-**Owner:** None
-
-**Scope:**
-- This task supersedes T-MIN-008 (still OPEN, unaudited — audited_at/audited_by/audited_repo_sha all null as of this writing) pending a PM decision on which of the two stays open. T-MIN-008 was scoped assuming the Bernardi 1790 source (RULE-1790) had to be manually acquired because it exists only as a bibliographic pointer to https://archive.org/details/bub_gb_4_rdG3SVa48C (68 pages), not physically stored in the repo. This task preserves T-MIN-008's original scope and definition_of_done in full (see below, verbatim) but adds an explicit, mandatory FIRST step: attempt direct WebFetch/WebSearch of archive.org's own OCR/plaintext exposure for that item before concluding a human must download anything.
-- Precedent: T-MIN-009 (DONE) resolved a structurally similar problem — hedged zodiac locators — entirely via WebFetch/WebSearch against public web editions (LacusCurtius, Perseus/Scaife, Thorndike, Topostext), with zero local repo storage of the sources. Read research/pilots/Zodiac_Locator_Resolution_Note.md in full before starting; its "Method" section and "Sources opened" table are the standard this task is held to (open the actual source, cite exact locators, downgrade to [UNVERIFIED] rather than inventing).
-- MANDATORY FIRST STEP: attempt to open archive.org item bub_gb_4_rdG3SVa48C via its public endpoints before doing anything else. Try, in order, and document what was tried and what each attempt returned (HTTP status, content found or not): (a) the item's metadata API, https://archive.org/metadata/bub_gb_4_rdG3SVa48C, to discover available derivative files (djvu.txt, _text.pdf, etc.); (b) the plaintext/OCR view, typically https://archive.org/stream/bub_gb_4_rdG3SVa48C/bub_gb_4_rdG3SVa48C_djvu.txt (the exact filename segment must be confirmed from the metadata API response, not assumed); (c) the item's own details/download page for a full-text or PDF derivative; (d) a general WebSearch for the same Bernardi 1790 rules text hosted on any other public digitization (Google Books, a library digital collection, etc.) if archive.org's own OCR is unusable (e.g. garbled, paywalled, or the derivative does not exist for this item).
-- Only if (a) through (d) are genuinely attempted and fail — not merely found inconvenient — is it acceptable to conclude a human must acquire a physical/PDF copy. "Genuinely fail" means: endpoints 404/error, or the OCR text is present but too degraded to locate/read the verzicola passage with confidence, or no readable derivative exists at all. Document exactly what was tried and what each attempt returned before falling back to that conclusion; a bare "could not find it" without documented attempts is not acceptable.
-- If direct access succeeds: transcribe every verzicola combination example from Bernardi's 1790 text directly, replacing the Justice pilot's hedge ("I-V and beginning around XXVIII", pilot line 92) with an exact list, with exact locators (chapter and printed page, or the archive.org page/leaf number if no printed page number is legible). Record whether the examples are exhaustive or exemplary in Bernardi's own text; do not convert examples into rules — the deliverable is the transcription plus locators, not an interpretation.
-- Thirteen committed studies currently lean on the hedge; the zodiac batch flags it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge names), and the element batch left "whether XX-XXIII can form a verzicola" as a standing open question in all four files. If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot cross-references) as a reconciliation queue; apply the amendments only if the audit that unlocks this task scopes that in — do not silently apply them un-audited.
-- If direct web access genuinely fails after documented attempts: write the same conclusion T-MIN-008 anticipated (a human must acquire a physical/PDF copy of archive.org item bub_gb_4_rdG3SVa48C) but back it with the documented attempt log from this task, not with an unexamined assumption.
-
-**Definition of Done:**
-- A documented attempt log exists (in the same output note) showing what was tried against archive.org (metadata API, stream/OCR view, details page) and any fallback WebSearch, with outcomes for each — win or fail.
-- A sourced note in research/02-source-audit/ or research/pilots/ either (a) transcribes the verzicola examples with exact locators and states what the record can and cannot support, using direct web access as the source, or (b) states plainly that direct web access was attempted and genuinely failed, with the attempt log as evidence, before recommending human acquisition.
-- The reconciliation queue of affected files is listed with per-file line references, if the boundary resolved.
-- The hedge is superseded only by direct transcription or a documented failed-attempt log, never by memory or assumption.
-- This task's output note explicitly states it supersedes/replaces T-MIN-008's rationale; it does not archive or delete T-MIN-008 itself (that is a PM/human decision).
 
 *Audited against SHA:* `09f857d`
 

@@ -16,6 +16,7 @@ graph TD
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
+    T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
@@ -49,6 +50,28 @@ graph TD
 
 ## Repo: `intypiano`
 
+### 📋 T-INTY-021 · P0 · ANY · AUDITED
+**Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline**
+**Owner:** None
+
+**Scope:**
+- Confirmed by reading classes/core/DatabaseManager.php lines 251-294 directly (not by inference): the localhost/127.0.0.1 branch (line 251) enters a sub-branch at line 267 (`if (isset($this->app->app) && $this->app->app== "cauttools")`) that is NOT a rare edge case -- `classes/redditlite_base.php` line 8 sets `public $app="cauttools";` as the class default, and essentially every entry point in the app (`admin_header_base.php` line 15, `admin/v2/_guard.php` line 17, `scripts/migrate.php`, most of `api/*.php`, and the PHPUnit `Integration` tests) explicitly re-sets `$r->app = "cauttools"` anyway. This branch is the normal path for local dev and CI, not an exception.
+- Within that sub-branch (lines 272-291), `$_SERVER['SERVER_PORT']` selects the database: ports 8001-8010 map to `caut_demo01`..`caut_demo10` (the demo-pool infrastructure from the 2026-08-11 multi-tenant work, commit 8dbcaeb9) -- this part is legitimate and working. Every other port, including 2027 (the port CLAUDE.md and the whole PHPUnit suite standardize on, and the port `php -S localhost:2027 -t .` binds), falls into the `else` at line 278 and hardcodes `$db = "caut_sfusd"`. `config.php`'s `$db_configs['sfusd']` override (checked at lines 283-290) also resolves to `caut_sfusd` -- confirmed by reading config.php, so it provides no escape hatch locally.
+- Confirmed `caut_sfusd` does not exist as a local database and nothing in the repo suggests it ever should on port 2027 -- `git blame` on lines 267-291 attributes the entire cauttools sub-branch to commit 8dbcaeb9 (2026-08-11, "Demo pool: ten pre-built slots, hostname mapping, and a 14-day reset"), i.e. the `caut_sfusd` hardcoded else-default was introduced at the same time as the demo-pool port logic, not inherited from older working code. There is no earlier commit where this fallback pointed anywhere else. CLAUDE.md is explicit that the local dev server should hit `intypiano_demo` ("The server hits `intypiano_demo`... Local login for the v2 admin: `cmiller` / `localdev1` on `intypiano_demo`"), and `intypiano_demo` does exist locally per the same doc.
+- Confirmed this is NOT v2-admin-scoped: `admin_header_base.php` (the V1 admin gate) sets `$r->app = "cauttools"` and calls `$r->init()` exactly the same as `admin/v2/_guard.php` does, so V1 admin pages hit the identical broken fallback on port 2027. Blast radius is the whole local/CI test run, which matches the observed jump from the documented baseline (259 tests, 0 failures) to the current run (330 tests, 18 errors, 114 failures, 6 skipped) and the literal `Unknown database 'caut_sfusd'` fatal thrown from `classes/core/DatabaseManager.php:307` when hitting `admin/v2/piano.php` directly.
+- The fix must be minimal and targeted: change ONLY the else-branch default at line 278-280 (and, if needed, whether the config.php sfusd override at lines 283-290 should still apply on this port) so that the standard local dev port (2027, and any non-demo-pool port covered by this branch) resolves to `intypiano_demo` instead of the hardcoded `caut_sfusd`. Do NOT rip out or restructure the `if (isset($this->app->app) && $this->app->app=="cauttools")` gate itself, and do NOT touch the `$server_port >= 8001 && $server_port <= 8010` demo-pool dispatch (lines 274-277) -- that is working multi-tenant infrastructure serving a different, unrelated purpose (the ten `demo01`..`demo10` slots) and must be left exactly as-is.
+- Credentials: the demo-pool branch uses `root`/`root` (lines 268-269, set before the port check, so it already applies to the else-branch too) -- confirm during implementation whether `intypiano_demo` uses those same local credentials or needs its own, and set username/password/db together rather than leaving a mismatched combination.
+- Out of scope: do not touch the non-localhost branches (sfusd.cauttools.com, unm.cauttools.com, demo01.cauttools.com, uh-test.cauttools.com, etc. -- lines 152-249), do not touch config.php or config_template.php, and do not investigate or fix the separate MAMP-port fallback at line 316 unless it turns out to be entangled with this fix.
+
+**Definition of Done:**
+- A fresh `./vendor/bin/phpunit` run (against `php -S localhost:2027 -t .` serving `intypiano_demo`, per CLAUDE.md) shows the error/failure count drop substantially from the current 18 errors / 114 failures -- the DoD is not satisfied by a partial improvement that still leaves `Unknown database` as a live cause of failures.
+- Directly hitting `admin/v2/piano.php` (or any other admin/v2/* page) on localhost:2027 no longer throws `Uncaught mysqli_sql_exception: Unknown database`.
+- The demo-pool ports (8001-8010) are verified unaffected: the fix did not alter `$server_port >= 8001 && $server_port <= 8010` or the `caut_demoNN` mapping it produces.
+- The four "original localhost" ports/hosts in the outer branch (lines 251) that are not port 2099/8888/3031 -- confirm the fix does not regress the pre-existing `game_people` DB path used by those, since the cauttools sub-branch only fires when `$this->app->app=="cauttools"`, which is not every caller.
+
+*Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
+
+---
 ### 📋 T-INTY-018 · P1 · ANY · AUDITED
 **Add dedicated gazelle_id column, decoupled from piano_code**
 **Owner:** None

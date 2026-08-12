@@ -1,73 +1,113 @@
 id: T-MIN-017
-title: Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier
-  registry rows)
+title: "Apply D4 \u2014 Cavalier/Knight naming policy (write policy + audit four cavalier\
+  \ registry rows)"
 repo: minchiate_tarot
 priority: P3
 lane: codex
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-12T09:05:00-06:00'
-dependencies: []
+dependencies:
+- T-MIN-016
 scope:
-- "Editorial decision D4 (tasks/human/editorial_decisions_2026-08-12.md) sets: Cavalier (Cavallo)\
-  \ is the public heading for the four cavalier court cards; Knight is a subordinate search alias.\
-  \ This extends the existing \"names to avoid\" precedent already on the Page row. No live\
-  \ URL/slug system exists yet — this is policy + registry data-consistency only, NOT a routing\
-  \ or slug-generation change."
+- "PM-F7 ARCHITECTURAL DECISION (audit 2026-08-12): this task depends on T-MIN-016,\
+  \ which adds an optional `aliases` field (list of strings) to Stage5_Master_Card_Registry.csv,\
+  \ Stage5_Master_Card_Registry.json, Stage4_Card_Dossier_Schema.json (`administrative_identity.aliases`),\
+  \ and Card_Dossier_Skeletons.json. Claim T-MIN-016 first (or confirm it is already\
+  \ DONE/merged) before starting this task, so the field exists once, not twice with\
+  \ two different shapes. RESOLUTION of the two-option choice below in the original\
+  \ scope: use the `aliases` field \u2014 add \"Knight\" to the `aliases` list for\
+  \ all four cavalier rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12)\
+  \ in both the registry CSV and JSON. This is the SAME mechanism T-MIN-016 uses for\
+  \ TRUMP-FOOL's former-id alias \u2014 one consistent field for both a former-id\
+  \ alias and a search alias. Do not also add a second, differently-named field. Leave\
+  \ Knight in historical_names as well (do not remove it from there); `aliases` is\
+  \ additive, a machine-readable pointer, not a replacement for the historical_names\
+  \ prose. State this resolution explicitly in the naming policy doc so a reader does\
+  \ not have to re-derive it from the registry alone."
+- "Editorial decision D4 (tasks/human/editorial_decisions_2026-08-12.md) sets: Cavalier\
+  \ (Cavallo) is the public heading for the four cavalier court cards; Knight is a\
+  \ subordinate search alias. This extends the existing \"names to avoid\" precedent\
+  \ already on the Page row. No live URL/slug system exists yet \u2014 this is policy\
+  \ + registry data-consistency only, NOT a routing or slug-generation change."
 - "Scout audit of the four cavalier rows in research/05-registry-and-audit/Stage5_Master_Card_Registry.csv\
-  \ (branch test, commit 09f857d) found: SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12\
-  \ all already carry canonical_name = \"Cavalier of <Suit>\" (already correct per D4) and\
-  \ historical_names = \"Cavallo / Cavaliere / Knight / Horse\" (Knight is already present, but\
-  \ folded into historical_names rather than called out as a search alias — the registry schema\
-  \ has no distinct field for 'search alias' or 'subordinate alias', only historical_names and\
-  \ names_to_avoid). All four rows' names_to_avoid column currently reads only \"Page\" — this is\
+  \ (branch test, commit 09f857d) found: SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12,\
+  \ SUIT-COINS-12 all already carry canonical_name = \"Cavalier of <Suit>\" (already\
+  \ correct per D4) and historical_names = \"Cavallo / Cavaliere / Knight / Horse\"\
+  \ (Knight is already present, but folded into historical_names rather than called\
+  \ out as a search alias \u2014 the registry schema has no distinct field for 'search\
+  \ alias' or 'subordinate alias', only historical_names and names_to_avoid). All\
+  \ four rows' names_to_avoid column currently reads only \"Page\" \u2014 this is\
   \ the existing precedent D4 explicitly extends."
-- "Write the naming policy itself, once, in a discoverable location. Prefer\
-  \ research/04-dossier-spec/ (the existing dossier-spec home) if a suitable file exists there to\
-  \ extend; otherwise create a short new file research/04-dossier-spec/NAMING_POLICY.md (or\
-  \ research/pilots/NAMING_POLICY.md only if 04-dossier-spec is a worse fit on inspection — pick\
-  \ one, do not create both). The policy statement must cover: (1) historical accuracy governs the\
-  \ public heading (canonical_name) — e.g. Cavalier not Knight, matching the existing Page\
-  \ exclusion precedent; (2) familiar/common English terms (Knight, etc.) are retained as search\
-  \ aliases, not headings; (3) explicitly state this is a naming/data-consistency policy only —\
-  \ no URL/slug routing system exists yet to implement it."
+- "Write the naming policy itself, once, in a discoverable location. Prefer research/04-dossier-spec/\
+  \ (the existing dossier-spec home) if a suitable file exists there to extend; otherwise\
+  \ create a short new file research/04-dossier-spec/NAMING_POLICY.md (or research/pilots/NAMING_POLICY.md\
+  \ only if 04-dossier-spec is a worse fit on inspection \u2014 pick one, do not create\
+  \ both). The policy statement must cover: (1) historical accuracy governs the public\
+  \ heading (canonical_name) \u2014 e.g. Cavalier not Knight, matching the existing\
+  \ Page exclusion precedent; (2) familiar/common English terms (Knight, etc.) are\
+  \ retained as search aliases, not headings; (3) explicitly state this is a naming/data-consistency\
+  \ policy only \u2014 no URL/slug routing system exists yet to implement it."
 - "Audit and, if needed, update the four cavalier registry rows (SUIT-SWORDS-12, SUIT-BATONS-12,\
-  \ SUIT-CUPS-12, SUIT-COINS-12 in Stage5_Master_Card_Registry.csv and the corresponding entries in\
-  \ Stage5_Master_Card_Registry.json) for heading/alias consistency with the new policy: confirm\
-  \ canonical_name stays \"Cavalier of <Suit>\" for all four (already correct — do not change if\
-  \ already correct), and make Knight's status as an explicit search alias unambiguous in the\
-  \ record — either by adding it to a clearly-labeled alias representation (if you add a new\
-  \ column/field, add it consistently to all four rows, document the new field's meaning inline or\
-  \ in the naming policy doc, and do not invent per-row inconsistent formats), or by leaving Knight\
-  \ inside historical_names but adding one explicit sentence to the naming policy doc stating that,\
-  \ for these four rows specifically, historical_names doubles as the search-alias list until a\
-  \ dedicated field exists. Either approach is acceptable; pick one and apply it uniformly across\
-  \ all four rows, and say in the policy doc which approach was taken and why."
-- Do NOT invent a URL-slug or routing system. The url_slug column already exists and already reads
-  cavalier-of-<suit> for all four rows (e.g. cavalier-of-cups) — leave url_slug values untouched;
-  this task is naming/heading policy and registry alias-consistency only.
-- Do not touch Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md or the STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md
-  draft's prose/claims content — those are content files, not registry/policy files, and out of
-  scope for this task.
+  \ SUIT-CUPS-12, SUIT-COINS-12 in Stage5_Master_Card_Registry.csv and the corresponding\
+  \ entries in Stage5_Master_Card_Registry.json) for heading/alias consistency with\
+  \ the new policy: confirm canonical_name stays \"Cavalier of <Suit>\" for all four\
+  \ (already correct \u2014 do not change if already correct), and make Knight's status\
+  \ as an explicit search alias unambiguous in the record \u2014 either by adding\
+  \ it to a clearly-labeled alias representation (if you add a new column/field, add\
+  \ it consistently to all four rows, document the new field's meaning inline or in\
+  \ the naming policy doc, and do not invent per-row inconsistent formats), or by\
+  \ leaving Knight inside historical_names but adding one explicit sentence to the\
+  \ naming policy doc stating that, for these four rows specifically, historical_names\
+  \ doubles as the search-alias list until a dedicated field exists. Either approach\
+  \ is acceptable; pick one and apply it uniformly across all four rows, and say in\
+  \ the policy doc which approach was taken and why."
+- "Do NOT invent a URL-slug or routing system. The url_slug column already exists\
+  \ and already reads cavalier-of-<suit> for all four rows (e.g. cavalier-of-cups)\
+  \ \u2014 leave url_slug values untouched; this task is naming/heading policy and\
+  \ registry alias-consistency only."
+- "Do not touch Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md or the STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md\
+  \ draft's prose/claims content \u2014 those are content files, not registry/policy\
+  \ files, and out of scope for this task."
 definition_of_done:
-- A single naming-policy document exists at a discoverable path (research/04-dossier-spec/ preferred)
-  stating the Cavalier-heading / Knight-alias rule, citing the Page precedent, and explicitly noting
-  no URL/slug system exists yet.
-- All four cavalier rows in both Stage5_Master_Card_Registry.csv and Stage5_Master_Card_Registry.json
-  have canonical_name "Cavalier of <Suit>" and have Knight's alias status made explicit and
-  consistent across all four rows, using the single approach documented in the policy file.
-- url_slug values for the four cavalier rows are unchanged from cavalier-of-swords / cavalier-of-batons
-  / cavalier-of-cups / cavalier-of-coins.
-- git diff --name-only against the audited sha touches only the new/edited policy file and the two
-  registry files (CSV + JSON) — no pilot/draft study content files are touched.
-verification_command: 'bash -c ''set -e; test -f research/04-dossier-spec/NAMING_POLICY.md ||
-  test -f research/pilots/NAMING_POLICY.md || { echo "FAIL: no naming policy doc found"; exit
-  1; }; pf=$(test -f research/04-dossier-spec/NAMING_POLICY.md && echo research/04-dossier-spec/NAMING_POLICY.md
-  || echo research/pilots/NAMING_POLICY.md); grep -qi "cavalier" "$pf" && grep -qi "knight"
-  "$pf" || { echo "FAIL: policy doc missing Cavalier/Knight rule"; exit 1; }; for row
-  in SUIT-SWORDS-12 SUIT-BATONS-12 SUIT-CUPS-12 SUIT-COINS-12; do line=$(grep "^$row,"
-  research/05-registry-and-audit/Stage5_Master_Card_Registry.csv) || { echo "FAIL: $row
-  missing from registry CSV"; exit 1; }; echo "$line" | grep -qi "Cavalier of" || {
-  echo "FAIL: $row canonical_name not Cavalier of <Suit>"; exit 1; }; echo "$line" |
-  grep -qi "cavalier-of-" || { echo "FAIL: $row url_slug changed or missing"; exit 1;
-  }; done; echo PASS'''
+- A single naming-policy document exists at a discoverable path (research/04-dossier-spec/
+  preferred) stating the Cavalier-heading / Knight-alias rule, citing the Page precedent,
+  explicitly noting no URL/slug system exists yet, and stating that Knight's alias
+  status is recorded via the `aliases` field added by T-MIN-016.
+- "All four cavalier rows in both Stage5_Master_Card_Registry.csv and Stage5_Master_Card_Registry.json\
+  \ have canonical_name \"Cavalier of <Suit>\" and have \"Knight\" recorded in an\
+  \ `aliases` field/column (the same field T-MIN-016 introduces for TRUMP-FOOL), consistent\
+  \ across all four rows, with historical_names left unchanged (Knight remains there\
+  \ too \u2014 additive, not a replacement)."
+- url_slug values for the four cavalier rows are unchanged from cavalier-of-swords
+  / cavalier-of-batons / cavalier-of-cups / cavalier-of-coins.
+- "git diff --name-only against the audited sha touches only the new/edited policy\
+  \ file and the two registry files (CSV + JSON) \u2014 no pilot/draft study content\
+  \ files are touched."
+verification_command: 'bash -c ''set -e; test -f research/04-dossier-spec/NAMING_POLICY.md
+  || test -f research/pilots/NAMING_POLICY.md || { echo "FAIL: no naming policy doc
+  found"; exit 1; }; pf=$(test -f research/04-dossier-spec/NAMING_POLICY.md && echo
+  research/04-dossier-spec/NAMING_POLICY.md || echo research/pilots/NAMING_POLICY.md);
+  grep -qi "cavalier" "$pf" && grep -qi "knight" "$pf" || { echo "FAIL: policy doc
+  missing Cavalier/Knight rule"; exit 1; }; grep -qi "aliases" "$pf" || { echo "FAIL:
+  policy doc does not reference the aliases field resolution"; exit 1; }; grep -q
+  "\"aliases\"" research/04-dossier-spec/Stage4_Card_Dossier_Schema.json || { echo
+  "FAIL: aliases field missing from Stage4 schema (T-MIN-016 not applied first)";
+  exit 1; }; for row in SUIT-SWORDS-12 SUIT-BATONS-12 SUIT-CUPS-12 SUIT-COINS-12;
+  do line=$(grep "^$row," research/05-registry-and-audit/Stage5_Master_Card_Registry.csv)
+  || { echo "FAIL: $row missing from registry CSV"; exit 1; }; echo "$line" | grep
+  -qi "Cavalier of" || { echo "FAIL: $row canonical_name not Cavalier of <Suit>";
+  exit 1; }; echo "$line" | grep -qi "cavalier-of-" || { echo "FAIL: $row url_slug
+  changed or missing"; exit 1; }; jline=$(grep -A20 "\"card_id\": \"$row\"" research/05-registry-and-audit/Stage5_Master_Card_Registry.json)
+  || { echo "FAIL: $row missing from registry JSON"; exit 1; }; echo "$jline" | grep
+  -q "\"aliases\"" || { echo "FAIL: $row has no aliases field in registry JSON"; exit
+  1; }; echo "$jline" | grep -A3 "\"aliases\"" | grep -qi "knight" || { echo "FAIL:
+  $row aliases field does not contain Knight"; exit 1; }; done; echo PASS'''
+audited_at: '2026-08-12T18:00:06.257172Z'
+audited_by: PM-F7
+audited_repo_sha: 09f857d
+events:
+- timestamp: '2026-08-12T18:00:06.257363Z'
+  action: AUDIT
+  actor: PM-F7
+  details: Audited against 09f857d

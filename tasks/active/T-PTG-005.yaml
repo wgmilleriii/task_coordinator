@@ -1,0 +1,52 @@
+id: T-PTG-005
+title: Voicing-technique continuity + citation-format test matrix (all preset x tier combos)
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-12T15:00:00Z'
+audited_at: '2026-08-12T15:00:00Z'
+audited_by: Claude-PM
+audited_repo_sha: 267ebaf267b3cd0b5b0727baa79c26b858cf32ac
+dependencies: []
+scope:
+- 'journalgpt/tests/manual_voicing_continuity_matrix.php (new) — runs a real two-turn conversation through
+  JournalAnswerService::ask() for a given (preset, tier) combination: turn 1 asks ''Have voicing technique
+  changed over the years? Are there different viewpoints of what should be done? Do any contradict another?'';
+  turn 2 asks the follow-up ''Who talks about this first?'' in the SAME conversation_id.'
+- 'Exercises all 6 combinations: preset in {scholarly, quick} x tier in {quick, medium, deep} (quick=gpt-4o-mini,
+  medium=gpt-4o, deep=o3-mini). Makes REAL OpenAI API calls against the configured key — not free, not
+  part of the automated test suite.'
+- 'Purpose: (a) verify turn 2 actually resolves ''this''/''first'' against turn 1''s context (conversation
+  continuity, per Chip''s question about whether follow-ups work at all), and (b) verify citation format
+  correctness (page_verified, url/pdf_url shape, page-range collapsing, no leaked 【…】 markers) holds across
+  every tier, not just the tiers already covered by the automated unit tests with a StubOpenAIClient.'
+definition_of_done:
+- All 6 (preset, tier) combinations executed successfully (or their failure mode is understood and recorded
+  — e.g. Deep tier timing out before the T-PTG-timeout fix).
+- 'For each combination, record: did turn 2 correctly resolve the follow-up against turn 1''s topic, or
+  did it behave as if starting fresh?'
+- 'For each combination, record whether citations are well-formed: every citation has a real article_id
+  + page, citation_label matches the printed_page/printed_page_end shown, url/pdf_url follow the source.php?article_id=X&page=Y
+  shape, and the answer text carries no raw 【…】 annotation markers.'
+- Findings written up (this task's own execution log / a feedback file) — not just raw JSON dumps — identifying
+  any combination that fails continuity or citation format, with a specific hypothesis for why if one
+  fails.
+verification_command: cd journalgpt && php tests/manual_voicing_continuity_matrix.php scholarly quick
+human_review_required: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+requires_doc_update: false
+events:
+- timestamp: '2026-08-12T15:00:00Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: 'Chip asked me to act as fleet commander and build/execute/refine a test matrix probing conversation
+    continuity (following up on his ''why is there no continuity'' question) and citation format correctness,
+    across every preset x tier combination the UI exposes. Smoke-tested scholarly/quick locally before
+    auditing this task: turn 1 gave a grounded, well-cited answer; turn 2 correctly resolved ''this''
+    to the voicing-technique discussion from turn 1, and citations page-range-collapsed correctly (pp.
+    12-14 etc.).'

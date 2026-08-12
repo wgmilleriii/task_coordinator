@@ -4,7 +4,7 @@ title: Write back resolved dispositions into the Quarantine Register (CW-5/6/7/1
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: PEER_REVIEW
+status: DONE
 owner: Worker-F15
 created_at: '2026-08-11T20:15:00-06:00'
 dependencies: []
@@ -81,4 +81,8 @@ events:
 - timestamp: '2026-08-12T04:31:16.046726Z'
   action: SUBMIT
   actor: Worker-F15
+- timestamp: '2026-08-12T04:35:35.688592Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-F20
+  details: 'Verdict: PASS'
 claimed_at: '2026-08-12T04:21:59.047811Z'

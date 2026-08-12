@@ -1,0 +1,105 @@
+task_id: T-MIN-014
+reviewer_agent: Reviewer-F20
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 925d124662aac435995b1ef047f14c825b665aa8
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Scope confirmed by diff. git -C <worktree> diff --name-only
+    19c26db..925d124 shows exactly one changed file:
+    research/pilots/Quarantine_Register_Outside_Set_Claims.md (202 lines changed,
+    192 insertions / 10 deletions across two commits: e72ecfd write-back,
+    925d124 a pure line-reflow of three QC rows so their disposition lines fall
+    in-window). No study file under research/pilots/drafts/ or elsewhere was
+    touched. This satisfies DoD item 4 and scope item 4.'
+- severity: INFO
+  description: 'All four new STATUS blocks (CW-5, CW-6, CW-7, CW-10) independently
+    checked against the actual cited study files, not trusted from the register
+    prose. CW-5/FOO-C007: opened research/pilots/drafts/PERSONALITY_TRUMP-FOOL_Fool.md
+    S0 and its claims table row FOO-C007 -- confirms the structural/mechanical
+    split exactly as the register states (placelessness substantiated and kept;
+    immune-in-play mechanics refused as unsourced, quoting the registry''s own
+    "game function varies by rules" blocker). CW-6/AIR-C006+FIR-C009+FIR-C017:
+    opened PERSONALITY_TRUMP-23_Air.md, PERSONALITY_TRUMP-20_Fire.md and
+    PERSONALITY_TRUMP-22_Earth.md claims tables -- AIR-C006 and FIR-C009 both
+    independently replace CW-6''s inert-substance framing with an Aristotelian
+    mode-of-energy reading; FIR-C017 specifically confirms Fire owns the QC-060 /
+    Death-edge sub-disposition batch-wide (Fire XX -> Death XIII: "mirror",
+    "mode of energy outlasts the event" replacing "substance outlasts the thing"),
+    with Water/Earth/Air citing rather than re-dispositioning it -- matches the
+    register''s CW-6 STATUS paragraph precisely, including the claim that only
+    rank facts and unbargainability survive. CW-7/LIB-C010+GEM-C010: opened
+    PERSONALITY_TRUMP-24_Libra.md and PERSONALITY_TRUMP-35_Gemini.md claims
+    tables -- both independently confirm the calendrical fact is kept as family
+    context while the "origin family" reduction to card content is rejected,
+    matching the register verbatim in substance. CW-10/TRO-C012: opened
+    PERSONALITY_TRUMP-40_Trumpets.md S0/claims table -- confirms "summons" is
+    engaged and rejected structurally, not just lexically, citing the same four
+    prior withdrawals (OLD-C014, Death/Hanged/House QC notes) the register cites.
+    No paraphrase drift found in any of the four blocks.'
+- severity: INFO
+  description: 'Spot-checked 14 of the 42 annotated QC rows (well over the
+    required minimum of 8), spanning all four groups, by opening the cited study
+    file directly rather than trusting the register text: QC-049 (Fool study
+    FOO-C011, Papi/Fool group) -- confirmed the "immune party" heading is
+    correctly flagged stale against the committed Devil study''s own second
+    pass. QC-052 (Ganellino study GAN-C009, Papi/Fool group) -- confirmed
+    "companion" disposition and the register''s own note that the committed Love
+    file says "worth more" not "worth having." QC-057/QC-058 (Earth study
+    EAR-C016, elements group) -- confirmed the reframe to bearing-mode language
+    with rank facts (79 vs 67, 79 vs 68) retained. QC-060 (Fire study FIR-C017,
+    elements group) -- confirmed as above. QC-066 (Water study WAT-C014,
+    elements group) -- confirmed the ship-continuity speculation is correctly
+    rejected as a basis, pending human verification of WAT-C005/C006. QC-070,
+    QC-072 (zodiac group, LIB-C010/GEM-C010) -- confirmed as above. QC-075
+    (Scorpio study SCO-C010, zodiac group) -- citation exists and text matches.
+    QC-079 (World study WOR-C011, arie group) -- confirmed the Devil scope
+    ruling is followed family-wide with no edge or scene, and that the Trumpets
+    file cites this row for QC-088 exactly as the register states. QC-085
+    through QC-089 (Trumpets study TRO-C013/C014/C015/C017, arie group) --
+    confirmed each reciprocates "transformation" or "declined"/"unresolved" per
+    the register''s claim, correctly noting the Death and House studies'' own
+    hedges. QC-107 (Star study STA-C014, cross-suit/misc) -- confirmed the
+    rank-only bounded acceptance, and independently verified the quoted Hanged
+    study text ("he loses to Fire, to Water, to Libra, to the Star...") appears
+    verbatim at PERSONALITY_TRUMP-12_Hanged_Man.md L219-220 as cited. Every
+    checked citation was real (correct claim ID, correct file, correct content)
+    and every annotation accurately reflected the cited source rather than a
+    plausible-sounding paraphrase.'
+- severity: INFO
+  description: 'QC-076 (Gemini<->Love resolver-type conflict) independently
+    verified by opening both committed studies myself rather than trusting the
+    worker''s characterization, per the review''s explicit instruction. The
+    committed Love study (PERSONALITY_TRUMP-05_Love.md, current L314-322) reads:
+    "This is deliberately not typed most-easily-confused: that type asserts a
+    live confusion needing a resolver, and no resolver can be built while both
+    cards'' iconography is unverified." The Gemini study
+    (PERSONALITY_TRUMP-35_Gemini.md, S0 lines ~34-51 and S3 "guardrail record"
+    lines ~157-171, claims table row GEM-C011) explicitly types Gemini(XXXV) ->
+    Love(V) as "most-easily-confused -- preventive," under the batch brief''s
+    mandate for a Justice/Libra-style guardrail, while stating openly in S0 that
+    this is done "against" the Love record''s explicit type-decline. This is a
+    genuine, unresolved disagreement between two committed studies (one types a
+    resolver the other explicitly refuses to type), not a fabricated or
+    overstated flag. The register''s QC-076 disposition correctly quotes both
+    sides and marks it "FLAGGED FOR HUMAN" without attempting to resolve it
+    itself, which is the correct handling per this task''s scope instruction
+    (do not resolve conflicting dispositions; flag them). No correction needed.'
+- severity: INFO
+  description: 'Format check: read CW-1, CW-2, CW-3, CW-4, CW-8 and CW-9''s
+    existing STATUS blocks for comparison (register lines 948-1145). The four new
+    blocks (CW-5/6/7/10) match the established pattern exactly -- a bolded
+    "STATUS -- <resolution keyword>" opening naming the owning study/section/claim
+    ID, followed by a prose paragraph in the same analytical voice, ending with a
+    pointer to the relevant batch verification report where applicable (as CW-1''s
+    TEM-C020 and CW-9''s Hope citation do). No jarring format break; CW-11 and
+    CW-12 were correctly left untouched (no verified study yet), as scoped.'
+- severity: INFO
+  description: 'Verification command re-run independently in the isolated review
+    worktree (branch detached at 925d124, not the shared minchiate_tarot
+    checkout, which remained untouched on test throughout): the audited
+    verification_command from tasks/active/T-MIN-014.yaml was executed verbatim
+    and printed PASS. All 34 required QC IDs (QC-043 through QC-054, QC-060,
+    QC-063 through QC-066, QC-070, QC-072, QC-075 through QC-089, QC-107) carry a
+    disposition/STATUS annotation, and all four CW STATUS blocks are present.'
+reviewed_at: '2026-08-12T04:40:00.000000Z'

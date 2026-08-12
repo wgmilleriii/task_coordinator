@@ -535,7 +535,7 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### ⏳ T-MIN-003 · P1 · ANY · PEER_REVIEW
+### ⏳ T-MIN-003 · P1 · ANY · HUMAN_REVIEW
 **Apply the 93 pending card renames already recorded in ledger.json**
 **Owner:** Worker-F17
 

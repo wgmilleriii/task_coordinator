@@ -1,0 +1,78 @@
+task_id: T-MIN-003
+reviewer_agent: Reviewer-F22
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 90573b8ab5885bcfdade5d580e17a9afe647e7cc
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Aries duplicate resolution verified exact-value match against
+    Chip''s live instruction. In the review worktree (branch test-T-MIN-003, head
+    90573b8), ledger.json[''830154001_card_05.jpg''] reads type="Trump",
+    value="AriesDuplicate" (exact string, exact casing, no paraphrase), with
+    identified=true and human_confirmed=true both preserved, and
+    current_name="Trump_AriesDuplicate.jpg" which exists on disk at
+    research/evidence/cards_raw/Trump_AriesDuplicate.jpg (confirmed via ls). The
+    canonical Aries entry, ledger.json[''830140001_card_08.jpg''], is untouched:
+    type="Trump", value="27 (Aries)", identified=true, human_confirmed=true,
+    current_name="Trump_27Aries.jpg" (file present on disk), and this entry is
+    byte-identical between commit ad18b35 (pre-resolution, 92/93 batch) and
+    90573b8 (post-resolution) per `git diff` — the human''s resolution touched
+    only the duplicate card''s entry, never the canonical one.'
+- severity: INFO
+  description: 'Completeness independently recomputed (not trusting the worker''s
+    count): a fresh python3 script loading ledger.json in the worktree confirms
+    exactly 97 entries, zero entries with identified=true and
+    current_name==original_name (i.e., 0 pending renames — the 93 pending +
+    4 already-renamed = 97 total reconciles exactly), and zero entries with
+    not-identified. No arithmetic mismatch.'
+- severity: INFO
+  description: 'No data loss / no collision, verified directly against the
+    filesystem: research/evidence/cards_raw/ contains exactly 97 regular files
+    (find -maxdepth 1 -type f), matching the ledger''s 97 current_name values
+    with zero set difference in either direction (no ledger name missing from
+    disk, no disk file absent from the ledger). Two pre-existing subdirectories
+    (duplicates/, partials/) sit alongside the 97 files and are not part of the
+    ledger-tracked set — an initial `ls | wc -l` of 99 was a false alarm from
+    counting these two directories as entries; `find -maxdepth 1 -type f`
+    resolves it to the correct 97. No two ledger entries share a current_name
+    (checked via set comparison, zero duplicates found).'
+- severity: INFO
+  description: 'Idempotency independently verified, not trusted from the
+    worker''s claim: recorded md5 of ledger.json and a sorted file listing of
+    cards_raw/ before running `python3 finalize_identifications.py` in the
+    worktree myself, then again after. Both hashes were byte-identical
+    (ledger.json md5 be057a8d9f084a24042bbe98f12ca4cc unchanged; directory
+    listing md5 a5cf638a55750aae18aed6f521617d49 unchanged), and the script
+    printed "Nothing to do: no pending renames found." — a genuine no-op.'
+- severity: INFO
+  description: 'Re-ran the full audited verification_command from
+    tasks/active/T-MIN-003.yaml independently in the worktree (two
+    finalize_identifications.py invocations, the 97/0-pending/0-missing Python
+    assertion script, then minchiate_reviewer.py --check). All stages PASS:
+    both finalize runs report "Nothing to do"; the assertion script prints
+    "OK: 97 entries, 0 pending renames, 0 missing files"; minchiate_reviewer.py
+    --check exits 0, loads and sorts 97 card records, resolves geography for
+    all 8 sheets, and serves a 97-card grid with a sampled image GET (200).
+    This also confirms the geographic-sort logic (keyed off original_name''s
+    9-digit prefix, not current_name) still resolves every one of the 93
+    renamed files correctly.'
+- severity: INFO
+  description: 'Scope confirmed minimal: git diff ad18b35..90573b8 (the prior
+    blocked head to this submission) touches exactly two things — ledger.json
+    (the single Aries-duplicate entry moved from pending to resolved, 9
+    insertions/9 deletions) and a git-detected rename of
+    research/evidence/cards_raw/830154001_card_05.jpg to
+    research/evidence/cards_raw/Trump_AriesDuplicate.jpg (100% similarity, pure
+    rename). finalize_identifications.py is untouched in this diff (it was
+    already committed and stable from the prior 92-card batch). No unrelated
+    files touched.'
+- severity: INFO
+  description: 'Verdict: PASS. The human''s specific resolution (830154001_card_05.jpg
+    -> type=Trump, value=AriesDuplicate, leaving 830140001_card_08.jpg as sole
+    canonical Aries) was applied faithfully, not reinterpreted or approximated.
+    All 97 files reconcile with zero collisions and zero data loss, the
+    finalize script is genuinely idempotent, and the full audited verification
+    command passes cleanly. Per the task''s human_review_required: true, this
+    PASS routes to HUMAN_REVIEW for Chip''s final sign-off on the completed
+    93-card rename batch, not directly to DONE.'
+reviewed_at: '2026-08-12T14:07:56.831357Z'

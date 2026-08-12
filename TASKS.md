@@ -35,6 +35,7 @@ graph TD
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]
+    T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::active
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::review
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
@@ -870,6 +871,24 @@ graph TD
 - Full suite (tests/JournalAnswerServiceTest.php) passes.
 
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### 🛠 T-PTG-006 · P1 · ANY · CLAIMED
+**Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)**
+**Owner:** Claude-FleetCommander
+
+**Scope:**
+- journalgpt/tests/manual_conversation_matrix.php (new) — generalizes manual_voicing_continuity_matrix.php into a scenario-driven harness: runs an arbitrary N-turn conversation loaded from a JSON scenario file (not hardcoded to one Q&A pair), tagging each turn with a cognitive-mode `type` (factual_retrieval / synthesis / speculative / sentiment_aggregation) and an `expect_grounded` flag so type-appropriate quality checks can be applied.
+- journalgpt/tests/scenarios/golden_hammer_deep_dive.json (new) — Chip's 4-turn scenario: 'Who won the Golden Hammer award over the last five years?' -> 'Tell me about their biographies. Do they have anything in common?' -> 'Imagine that you were in a room with all of them. What do you think they would talk about?' -> 'What are some of the concerns for this organization that have been voiced in the last five years?'. Deliberately mixes a purely factual turn, a cross-referencing synthesis turn, an EXPLICITLY SPECULATIVE turn (should never be treated as a grounded corpus claim), and a sentiment-aggregation turn requiring synthesis across many scattered sources.
+- Purpose: go beyond 'does it cite correctly' (T-PTG-005) into 'does the conversation feel like a genuinely capable assistant, not a rigid grounding-rule robot' — specifically whether the strict corpus-grounding system instruction causes the speculative turn to refuse or produce a stilted non-answer instead of engaging naturally while drawing on the real biographical facts established earlier in the conversation.
+
+**Definition of Done:**
+- Scenario executed against at least 3 preset/tier combinations covering the speed spectrum (e.g. scholarly/quick, scholarly/medium, scholarly/deep).
+- For each combination, record whether the speculative turn (turn 3) refused, gave a stilted 'I cannot speculate' non-answer, or engaged naturally while staying grounded in the real facts from turns 1-2 — this is the key quality signal this scenario is built to surface.
+- For each combination, verify turns 1/2/4 (the grounded ones) still produce correct, well-formed citations per the existing T-PTG-001/002 checks.
+- Findings written up identifying any combination where the speculative turn behaves poorly, with a concrete recommendation (e.g. system-instruction wording change) if a pattern emerges — not just raw JSON dumps.
+
+*Audited against SHA:* `700b5e56fd49ea8ac74666d0a5580c6bbc99d3f2`
 
 ---
 ### ⏳ T-PTG-004 · P1 · ANY · HUMAN_REVIEW

@@ -1,0 +1,68 @@
+id: T-PTG-006
+title: Enhanced multi-turn conversational-quality testing system (Golden Hammer deep
+  dive)
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: CLAIMED
+owner: Claude-FleetCommander
+created_at: '2026-08-12T17:00:00Z'
+audited_at: '2026-08-12T17:00:00Z'
+audited_by: Claude-PM
+audited_repo_sha: 700b5e56fd49ea8ac74666d0a5580c6bbc99d3f2
+dependencies: []
+scope:
+- "journalgpt/tests/manual_conversation_matrix.php (new) \u2014 generalizes manual_voicing_continuity_matrix.php\
+  \ into a scenario-driven harness: runs an arbitrary N-turn conversation loaded from\
+  \ a JSON scenario file (not hardcoded to one Q&A pair), tagging each turn with a\
+  \ cognitive-mode `type` (factual_retrieval / synthesis / speculative / sentiment_aggregation)\
+  \ and an `expect_grounded` flag so type-appropriate quality checks can be applied."
+- "journalgpt/tests/scenarios/golden_hammer_deep_dive.json (new) \u2014 Chip's 4-turn\
+  \ scenario: 'Who won the Golden Hammer award over the last five years?' -> 'Tell\
+  \ me about their biographies. Do they have anything in common?' -> 'Imagine that\
+  \ you were in a room with all of them. What do you think they would talk about?'\
+  \ -> 'What are some of the concerns for this organization that have been voiced\
+  \ in the last five years?'. Deliberately mixes a purely factual turn, a cross-referencing\
+  \ synthesis turn, an EXPLICITLY SPECULATIVE turn (should never be treated as a grounded\
+  \ corpus claim), and a sentiment-aggregation turn requiring synthesis across many\
+  \ scattered sources."
+- "Purpose: go beyond 'does it cite correctly' (T-PTG-005) into 'does the conversation\
+  \ feel like a genuinely capable assistant, not a rigid grounding-rule robot' \u2014\
+  \ specifically whether the strict corpus-grounding system instruction causes the\
+  \ speculative turn to refuse or produce a stilted non-answer instead of engaging\
+  \ naturally while drawing on the real biographical facts established earlier in\
+  \ the conversation."
+definition_of_done:
+- Scenario executed against at least 3 preset/tier combinations covering the speed
+  spectrum (e.g. scholarly/quick, scholarly/medium, scholarly/deep).
+- "For each combination, record whether the speculative turn (turn 3) refused, gave\
+  \ a stilted 'I cannot speculate' non-answer, or engaged naturally while staying\
+  \ grounded in the real facts from turns 1-2 \u2014 this is the key quality signal\
+  \ this scenario is built to surface."
+- For each combination, verify turns 1/2/4 (the grounded ones) still produce correct,
+  well-formed citations per the existing T-PTG-001/002 checks.
+- "Findings written up identifying any combination where the speculative turn behaves\
+  \ poorly, with a concrete recommendation (e.g. system-instruction wording change)\
+  \ if a pattern emerges \u2014 not just raw JSON dumps."
+verification_command: cd journalgpt && php tests/manual_conversation_matrix.php tests/scenarios/golden_hammer_deep_dive.json
+  scholarly quick
+human_review_required: false
+claimed_at: '2026-08-12T17:55:03.962764Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+requires_doc_update: false
+events:
+- timestamp: '2026-08-12T17:00:00Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: "Chip asked for an enhanced testing system that probes conversational quality\
+    \ closer to what a strong general-purpose assistant delivers, not just citation\
+    \ correctness \u2014 specifically a 4-turn scenario mixing factual retrieval,\
+    \ synthesis, an explicitly speculative/imaginative turn, and sentiment aggregation.\
+    \ Generalized the T-PTG-005 harness into a reusable scenario-driven framework\
+    \ rather than hardcoding this one conversation, so future scenarios can be added\
+    \ as JSON files without touching the harness."
+- timestamp: '2026-08-12T17:55:03.964376Z'
+  action: CLAIM
+  actor: Claude-FleetCommander

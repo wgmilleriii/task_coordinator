@@ -1,0 +1,85 @@
+task_id: T-PTG-009
+agent: Worker-TagFix1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-009
+base_sha: 04842d7e9120bd559464f6cc1586e8c52c72c5f1
+head_sha: 05c03c9387e91b93500249c39e55c7322661f967
+evidence_output: "Manually captured -- `./bin/fleet verify` ran the verification_command\
+  \ against the WRONG checkout (/Users/willismiller/Documents/GitHub/newmexicoptg.org,\
+  \ the main clone, which does not have this fix) instead of the isolated worktree\
+  \ at /Users/willismiller/Documents/GitHub/newmexicoptg.org-t009 (branch test-T-PTG-009)\
+  \ where the commit actually lives, so it correctly failed with 'Could not open input\
+  \ file: journalgpt/tests/FeatureRequestServiceTest.php' (that file only exists on\
+  \ this branch). Re-ran the exact same verification_command by hand, cd'd into the\
+  \ correct worktree, and it exits 0:\n\n$ cd /Users/willismiller/Documents/GitHub/newmexicoptg.org-t009\
+  \ && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/AskEndpointTest.php\
+  \ && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/UsagePolicyTest.php\
+  \ && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/JournalAnswerServiceTest.php\
+  \ && php journalgpt/tests/FeatureRequestServiceTest.php\n\n=== Running api/ask.php\
+  \ Endpoint Tests ===\n[TEST 1] Testing anonymous access denial (401/403)...\n[OK]\
+  \ Anonymous access denial check passed.\n[TEST 2] Testing CSRF validation and missing\
+  \ token rejection...\n[OK] CSRF token validation & rejection verified.\n[TEST 3]\
+  \ Testing valid JSON response format and secret leakage protection...\n[OK] JSON\
+  \ response structure & secret leakage protection verified.\n=== ALL ASK ENDPOINT\
+  \ TESTS PASSED SUCCESSFULLY ===\n=== Running UsagePolicy & Quota Tests ===\n[TEST\
+  \ 1] Testing pre-invocation quota enforcement...\n[OK] Pre-invocation quota enforcement\
+  \ verified (3 allowed, 4th denied).\n[TEST 2] Testing administrator exemption from\
+  \ per-user question cap...\n[OK] Administrator quota exemption verified.\n[TEST\
+  \ 3] Testing organization monthly budget hard cap enforcement...\n[OK] Organization\
+  \ monthly budget hard cap enforcement verified.\n[TEST 4] Testing race-safe atomic\
+  \ transaction allowance check...\n[OK] Atomic transaction allowance check verified.\n\
+  [TEST 5] Testing detailed usage ledger recording & stats...\n[OK] Detailed usage\
+  \ ledger recording & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED\
+  \ SUCCESSFULLY ===\n=== Running JournalAnswerService Unit Tests ===\n[OK] Test database\
+  \ populated for service tests.\n... (19 sub-tests, all [OK]) ...\n=== ALL JOURNAL\
+  \ ANSWER SERVICE TESTS PASSED SUCCESSFULLY ===\n=== Running FeatureRequestService\
+  \ Tag-Matching Tests ===\n[TEST 1] Production regression: '/featurerequest different\
+  \ color schemes' must now be tagged...\n[OK] No-space variant now correctly tagged.\n\
+  [TEST 2] All three separator variants (space / no-space / hyphen) route correctly...\n\
+  [OK] All separator variants tagged.\n[TEST 3] Case-insensitivity across variants...\n\
+  [OK] Case-insensitivity verified.\n[TEST 4] Leading whitespace tolerance (pre-existing\
+  \ ltrim behavior, guarded against regression)...\n[OK] Leading whitespace tolerance\
+  \ still works.\n[TEST 5] Mid-sentence mention of 'feature request' must NOT be tagged\
+  \ (false-positive regression guard)...\n[OK] Mid-sentence mentions correctly excluded\
+  \ from the triage lane.\n[TEST 6] stripTag() cleanly removes the tag for all separator\
+  \ variants, leaving the member's message intact...\n[OK] stripTag() produces clean\
+  \ member content for all variants.\n=== ALL FEATURE REQUEST SERVICE TESTS PASSED\
+  \ SUCCESSFULLY ===\nEXIT: 0\n\nTDD proof (per repo convention, before implementing\
+  \ the fix): `git stash` to the pre-fix tree, then `php journalgpt/tests/FeatureRequestServiceTest.php`\
+  \ produced `[FAIL] REGRESSION NOT FIXED: isTagged() still returns false for the\
+  \ no-space variant that misrouted a real member message.` (exit 1), confirming the\
+  \ test fails against pre-fix code. `git stash pop` restored the fix; the same test\
+  \ file then passes (exit 0) as shown above.\n\nEnd-to-end reproduction against a\
+  \ running local server with a real database (journal_ai_test, migrated via journalgpt/cli/migrate.php),\
+  \ using the EXACT production string from debug_logs.php?id=22 -- not just the isTagged()\
+  \ unit check, but a full FeatureRequestService::ask() call (mock-mode OpenAIClient):\n\
+  \n  isTagged('/featurerequest different color schemes') = true\n  conversation_type\
+  \ = feature_request\n  status = success\n  answer = Thanks for sharing that -- I\
+  \ want to make sure I understand the idea before passing it along.\n\n  Who runs\
+  \ into this -- which members or roles hit this the most?\n  DB conversations.conversation_type\
+  \ = feature_request\n  PASS: '/featurerequest different color schemes' now routes\
+  \ to the feature-request triage lane end-to-end, not JournalAnswerService/RAG.\n\
+  \n  $ mysql -h127.0.0.1 -uroot -proot journal_ai_test -e \"SELECT idea_summary FROM\
+  \ feature_request_details ORDER BY id DESC LIMIT 1;\"\n  idea_summary\n  different\
+  \ color schemes\n\nConfirms stripTag() left clean member content ('different color\
+  \ schemes') in the DB with no leftover tag fragment (e.g. not 'request different\
+  \ color schemes')."
+peer_review_notes: '`./bin/fleet verify` is a known tooling gap for this session (also
+  hit on T-PTG-008''s companion task): it invokes the verification_command against
+  /Users/willismiller/Documents/GitHub/newmexicoptg.org (the primary checkout registered
+  for this repo) rather than the isolated worktree at newmexicoptg.org-t009 where
+  T-PTG-009''s branch (test-T-PTG-009) and commit (05c03c9) actually live. The primary
+  checkout''s working tree does not have this fix or the new test file, so the CLI
+  correctly reports a failure ("Could not open input file") -- that failure is a checkout-selection
+  bug in the CLI, not evidence against this fix. Ran the identical verification_command
+  by hand inside the correct worktree; exit 0, all four test files pass, matching
+  the DoD''s literal verification_command. The DoD''s "no fuzzy/typo matching, no
+  anywhere-in-body detection" constraint is satisfied by inspection of the diff: only
+  `[- ]` -> `[- ]?` changed in isTagged() and stripTag(), no other logic touched.
+  Recommend a follow-up fleet-tooling fix so `verify` resolves the worktree registered
+  for the task''s branch rather than a hardcoded/default checkout path.'
+human_action_required: null
+token_spend: null
+cost_usd: null

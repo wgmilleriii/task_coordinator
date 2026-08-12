@@ -4,7 +4,7 @@ title: Feature-request tag router misses no-space variant, misrouting real membe
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-TagFix1
 created_at: '2026-08-12T00:00:00Z'
 audited_at: '2026-08-12T20:33:37.881456Z'
@@ -153,4 +153,7 @@ events:
   details: Audited against 04842d7e9120bd559464f6cc1586e8c52c72c5f1
 - timestamp: '2026-08-12T20:35:43.517907Z'
   action: CLAIM
+  actor: Worker-TagFix1
+- timestamp: '2026-08-12T21:49:53.728129Z'
+  action: SUBMIT
   actor: Worker-TagFix1

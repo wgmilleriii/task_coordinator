@@ -24,7 +24,7 @@ graph TD
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
-    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::active
+    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]
@@ -535,7 +535,7 @@ graph TD
 *Audited against SHA:* `b51d4e4`
 
 ---
-### ⏳ T-MIN-002 · P1 · ANY · PEER_REVIEW
+### ⏳ T-MIN-002 · P1 · ANY · HUMAN_REVIEW
 **Add card-identification write path to minchiate_reviewer.py**
 **Owner:** Worker-F14
 
@@ -682,7 +682,7 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
-### 🛠 T-PTG-001 · P0 · ANY · CLAIMED
+### ⏳ T-PTG-001 · P0 · ANY · HUMAN_REVIEW
 **Fix footnote list numbering to match inline citation markers**
 **Owner:** Claude-Worker
 

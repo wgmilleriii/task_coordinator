@@ -1,0 +1,72 @@
+task_id: T-MIN-002
+reviewer_agent: Reviewer-F19
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 94da0cc5845782f8eeacca57f7eacd5dbd41efb3
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Reviewed in an isolated worktree at 94da0cc5 (branch test-T-MIN-002,
+    descends from 86ef0e4/test-T-MIN-010 -> 0509f69/test-T-MIN-001, neither
+    merged into `test` yet). Diff to minchiate_reviewer.py is stdlib-only
+    (re, json, os, urllib.parse — all already imported pre-diff); no Flask
+    or other new dependency introduced.
+- severity: INFO
+  description: >-
+    Functional correctness verified by running the actual server (python3
+    minchiate_reviewer.py --port 8099) and curling /api/update directly,
+    not by trusting the worker's narrative. Valid update renamed the file
+    on disk and updated ledger.json's current_name/type/value/identified
+    fields (verified via os.listdir + re-reading ledger.json). Grid HTML
+    (render_grid_html via load_sorted_cards) reflects the new identity
+    immediately with no manual ledger edit.
+- severity: INFO
+  description: >-
+    Collision rejection (highest-risk failure mode) verified directly by
+    constructing two cards that would collide: first request renamed
+    830124001_card_05.jpg -> TestType_TestVal.jpg (200); second request
+    tried to rename 830124001_card_06.jpg to the same target and was
+    rejected with HTTP 400 {"error": "File TestType_TestVal.jpg already
+    exists"}. MD5 of TestType_TestVal.jpg was identical before and after
+    the second attempt (16574cef...) and 830124001_card_06.jpg was left
+    on disk untouched and unchanged in the ledger — no clobber occurred.
+- severity: INFO
+  description: >-
+    Unknown original_name, missing type/value, and malformed JSON body all
+    return 400 with a JSON error body and do not crash the server (server
+    answered GET / with 200 immediately after each). Path traversal
+    attempted via type="../../../../tmp/evil" and via
+    original_name="../../../etc/passwd": original_name is only ever used
+    as a ledger dict-key lookup (never joined into a filesystem path), and
+    type/value are passed through SAFE_NAME_RE = [^A-Za-z0-9]+ before being
+    joined into the target filename, stripping all path separators and
+    dots — the traversal attempt produced a harmless local file
+    "tmpevil_x.jpg" inside RAW_DIR, nothing escaped RAW_DIR.
+- severity: INFO
+  description: >-
+    python3 minchiate_reviewer.py --check re-run in the worktree (both
+    before and after the manual /api/update tests) exits 0 and reports
+    "Found 97 image(s)" / "97 card image(s)" — existing read-path behavior
+    is not broken by the write-path addition.
+- severity: INFO
+  description: >-
+    All four definition_of_done bullets are met, nothing partial and
+    nothing added beyond scope: (1) valid POST renames file + updates
+    ledger, verified directly; (2) filename-collision POST rejected
+    non-200 with no rename/clobber, verified directly; (3) grid reflects
+    new identity on reload without manual ledger editing, verified via
+    render_grid_html output; (4) --check still exits 0.
+- severity: INFO
+  description: >-
+    System observation (not a defect in this task): this branch's parent
+    chain (test-T-MIN-010 -> test-T-MIN-001) is not yet merged into
+    `test` — T-MIN-001 is human_review_required: true and still awaiting
+    the human's ruling, and T-MIN-010 passed peer review but is held
+    pending that same gate. This is expected per the task brief and does
+    not affect this review's verdict; it is a merge-chain/sequencing
+    matter for the Fleet Coordinator / human, not a T-MIN-002 code defect.
+- severity: INFO
+  description: >-
+    No corrections were needed or applied; the branch is unchanged from
+    94da0cc5845782f8eeacca57f7eacd5dbd41efb3 as submitted by Worker-F14.
+reviewed_at: '2026-08-12T04:17:57.774395Z'

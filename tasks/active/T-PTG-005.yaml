@@ -62,3 +62,13 @@ events:
     status directly rather than via `fleet submit` because the shared store currently has unrelated malformed
     YAML from another concurrent agent (T-INTY-018/019, intypiano repo) that blocks the CLI's global lint
     gate on any write.
+- timestamp: '2026-08-12T16:10:00Z'
+  action: NOTE
+  actor: Claude-FleetCommander
+  details: 'Deep tier fix landed at newmexicoptg.org commit 19244b5: root-caused via live diagnostics
+    against the real API (not guesswork) that o3-mini with tool_choice=auto is unreliable in the Assistants
+    v2 API (narrates intent to search without calling the tool, emits the tool-call JSON as literal chat
+    text, or hard-fails with server_error). Forcing tool_choice={type: file_search} for reasoning models
+    fixed it in 5/5 real end-to-end verification runs. Fixing retrieval surfaced a second bug (o3-mini
+    citation annotations use a different PUA-delimited encoding than the CJK brackets gpt-4o-mini/gpt-4o
+    use, leaking as literal ''filecite'' garbage text) which is also fixed in the same commit.'

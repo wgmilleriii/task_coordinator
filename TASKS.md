@@ -43,7 +43,7 @@ graph TD
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
     T-PTG-007["T-PTG-007<br/>Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario"]:::active
-    T-MIN-018["T-MIN-018<br/>Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008"]
+    T-MIN-018["T-MIN-018<br/>Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008"]:::active
 ```
 
 ---
@@ -651,9 +651,9 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 📋 T-MIN-018 · P2 · codex · AUDITED
+### 🛠 T-MIN-018 · P2 · codex · CLAIMED
 **Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008**
-**Owner:** None
+**Owner:** Worker-F19
 
 **Scope:**
 - This task supersedes T-MIN-008 (still OPEN, unaudited — audited_at/audited_by/audited_repo_sha all null as of this writing) pending a PM decision on which of the two stays open. T-MIN-008 was scoped assuming the Bernardi 1790 source (RULE-1790) had to be manually acquired because it exists only as a bibliographic pointer to https://archive.org/details/bub_gb_4_rdG3SVa48C (68 pages), not physically stored in the repo. This task preserves T-MIN-008's original scope and definition_of_done in full (see below, verbatim) but adds an explicit, mandatory FIRST step: attempt direct WebFetch/WebSearch of archive.org's own OCR/plaintext exposure for that item before concluding a human must download anything.

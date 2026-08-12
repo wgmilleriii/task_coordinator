@@ -4,8 +4,8 @@ title: Feature-request tag router misses no-space variant, misrouting real membe
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-TagFix1
 created_at: '2026-08-12T00:00:00Z'
 audited_at: '2026-08-12T20:33:37.881456Z'
 audited_by: PM-TagFix1
@@ -123,7 +123,7 @@ verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_
   && php journalgpt/tests/FeatureRequestServiceTest.php
 human_review_required: false
 requires_doc_update: false
-claimed_at: null
+claimed_at: '2026-08-12T20:35:43.517749Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -151,3 +151,6 @@ events:
   action: AUDIT
   actor: PM-TagFix1
   details: Audited against 04842d7e9120bd559464f6cc1586e8c52c72c5f1
+- timestamp: '2026-08-12T20:35:43.517907Z'
+  action: CLAIM
+  actor: Worker-TagFix1

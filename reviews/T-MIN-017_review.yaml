@@ -1,0 +1,58 @@
+task_id: T-MIN-017
+reviewer_agent: Reviewer-F25
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: a1134002504adb8e2ef34920fbfcd9b0b8dc250b
+verdict: PASS
+findings:
+- severity: INFO
+  description: Re-ran the audited verification_command in an isolated worktree checked
+    out at the head sha; it PASSED (printed PASS, exit 0).
+- severity: INFO
+  description: Confirmed the worker's grep -A20 diagnosis is real. In the unmodified
+    base state (de0861c), each of the four cavalier JSON entries spans 25 lines from
+    "card_id" to the closing brace, and none of the four had an aliases field at all
+    pre-task (only SPECIAL-FOOL had one, added by T-MIN-016). Verified the worker's
+    fix places the new "aliases" key at relative line 4-6 from "card_id" in all four
+    entries (well inside a 20-line grep window), immediately after historical_names.
+- severity: INFO
+  description: >-
+    Confirmed content-preservation. git diff de0861c..HEAD on the JSON shows a
+    pure 3-line insertion (a new aliases array containing Knight) per entry with
+    zero other lines touched in any of the four entries -- no existing key's
+    value changed, only a new key was added early in the object. Parsed the
+    full JSON file with Python's json.load (not just eyeballed) -- valid syntax
+    throughout.
+- severity: INFO
+  description: Read NAMING_POLICY.md (research/04-dossier-spec/NAMING_POLICY.md)
+    in full. It is genuinely new, specific content (not boilerplate) and covers all
+    three required points -- (1) historical accuracy governs canonical_name with
+    explicit Cavalier-not-Knight examples per row, (2) common terms like Knight are
+    retained as search aliases via the aliases field, not headings, (3) explicit
+    section 3 states no URL/slug routing system exists yet and that url_slug is inert
+    descriptive data -- and explicitly cites the Page names_to_avoid precedent in
+    section 1.
+- severity: INFO
+  description: Checked all four cavalier rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12,
+    SUIT-COINS-12) in both the CSV (via csv.DictReader) and the JSON. canonical_name
+    is unchanged ("Cavalier of <Suit>"), historical_names is unchanged (Knight still
+    present there too), url_slug is unchanged (cavalier-of-<suit>), and aliases now
+    contains exactly "Knight" -- identical format across all four rows in both files,
+    no inconsistency.
+- severity: INFO
+  description: 'git diff --name-only de0861c..a1134002504adb8e2ef34920fbfcd9b0b8dc250b
+    touches exactly 3 files: research/04-dossier-spec/NAMING_POLICY.md, Stage5_Master_Card_Registry.csv,
+    Stage5_Master_Card_Registry.json. Confirmed research/pilots/Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md
+    and Pilot2_SUIT-CUPS-12_Cavalier_of_Cups_Dossier.json (the pilot/draft content
+    files) are untouched.'
+- severity: MINOR
+  description: System-level observation (out of this task's scope, noted for a future
+    scout task, not counted against this review) -- the same grep -A20 fragility
+    likely already affects T-MIN-016's SPECIAL-FOOL entry in the registry JSON as
+    merged. Checked directly in this worktree's current registry state -- SPECIAL-FOOL's
+    aliases field sits at relative line 25 from its "card_id" line (field order there
+    is historical_names, names_to_avoid, ..., notes, then aliases at the very end),
+    i.e. past a 20-line grep window, same class of bug the worker found and fixed
+    for the four cavalier rows. T-MIN-016 already passed on real regression testing,
+    which is a stronger signal than one grep check alone, so this is a low-severity
+    flag for a follow-up scout task, not a blocker for T-MIN-017.
+reviewed_at: '2026-08-12T19:42:50.444222Z'

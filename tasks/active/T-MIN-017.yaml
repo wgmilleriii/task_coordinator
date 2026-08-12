@@ -4,7 +4,7 @@ title: "Apply D4 \u2014 Cavalier/Knight naming policy (write policy + audit four
 repo: minchiate_tarot
 priority: P3
 lane: codex
-status: PEER_REVIEW
+status: DONE
 owner: Worker-F20
 created_at: '2026-08-12T09:05:00-06:00'
 dependencies:
@@ -117,4 +117,8 @@ events:
 - timestamp: '2026-08-12T19:39:20.011898Z'
   action: SUBMIT
   actor: Worker-F20
+- timestamp: '2026-08-12T19:43:31.258972Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-F25
+  details: 'Verdict: PASS'
 claimed_at: '2026-08-12T19:35:39.063323Z'

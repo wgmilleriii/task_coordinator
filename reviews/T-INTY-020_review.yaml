@@ -1,0 +1,69 @@
+task_id: T-INTY-020
+reviewer_agent: Reviewer-GazelleSync1
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: cf03e56c56d054924139c35fea30fef1b2bcf7bf
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Verified in an isolated worktree (../intypiano-t020-review at head_sha
+    cf03e56c). git show --stat confirms the diff touches exactly two files:
+    docs/experts/gazelle-sync.md (new, 210 lines) and CLAUDE.md (+1 row in the
+    expert-page table pointing at the new doc). No production code, migration,
+    or cron job added — doc-only, as claimed.
+- severity: INFO
+  description: >-
+    Doc exists at docs/experts/gazelle-sync.md, matching both the task's
+    verification_command and the exact path implied by the repo's own
+    expert-page convention (CLAUDE.md's "Expert pages" table, which this
+    commit extends). No Dewey-Decimal path was needed since intypiano has its
+    own established doc convention, which the doc correctly followed instead
+    of defaulting to task_coordinator's 20-Architecture/ scheme.
+- severity: INFO
+  description: >-
+    Read classes/integration/GazelleAPI.php directly. Confirmed the claimed
+    field surface exactly: getPianosByMake() runs GraphQL query "GetPianos"
+    against allPianos(first:1000){ nodes { id make model } } — only those
+    three fields, nothing else. updatePianoMakeModel() runs mutation
+    "UpdatePianoMakeModel" calling updatePiano(id, input: PrivatePianoInput)
+    with make/model only. No reference anywhere in the file to service
+    history, tuning dates, visit/appointment records, or condition reports —
+    the doc's UNCONFIRMED framing in §2 is accurate, not a case of the doc
+    missing something that's actually present in the client. Doc neither
+    exaggerates (does not claim these fields exist) nor understates (does not
+    omit the real id/make/model/updatePiano surface) the client's actual
+    capabilities.
+- severity: INFO
+  description: >-
+    Doc reads as genuinely decision-bearing, not vague hand-waving. No
+    TBD/placeholder language found. Concrete per-section commitments: §3 is a
+    real field-in/field-out table with explicit sync direction and rationale
+    (additive-only for service history/condition reports to sidestep conflict
+    questions); §5 names a specific credential pattern
+    (config/gazelle_api_token.php + INTYPIANO_GAZELLE_API_TOKEN mirroring the
+    existing api_token.php convention) and explicitly rejects two alternatives
+    (a new gazelle_credentials table, reusing a named staff member's personal
+    key) with stated reasons; §6 states read-only as an explicit design
+    decision and names the concrete risk (a future Worker copy-pasting
+    GazelleAPI.php usage could wire up writes by accident) plus a concrete
+    mitigation (read-only wrapper/subclass or a loud comment at every call
+    site); §7 gives an ordered list of blocking prerequisites for any future
+    build task. Where the doc doesn't have an answer (§2's field-existence
+    question, whether Gazelle supports service-account keys in §5), it says so
+    explicitly and names the exact follow-up check required, rather than
+    guessing or leaving it silently unaddressed.
+- severity: INFO
+  description: >-
+    §4 explicitly and clearly flags conflict/remote-edit detection as unsolved
+    and out of scope for V1 ("That was deliberately not scoped as part of this
+    task, and this design doc is not attempting to solve it either... This is
+    a known open question. Do not build around an assumed answer to it."),
+    matching the task's DoD requirement precisely.
+- severity: INFO
+  description: >-
+    task's human_review_required is true. Per bin/fleet.py cmd_record_review
+    (line ~500), a PASS verdict on a task with human_review_required=true sets
+    status to HUMAN_REVIEW rather than DONE — recording this verdict should
+    route T-INTY-020 to HUMAN_REVIEW, consistent with the worker's own
+    handoff note under human_action_required.
+reviewed_at: '2026-08-13T03:10:00.000000Z'

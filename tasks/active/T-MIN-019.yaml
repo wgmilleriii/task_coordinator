@@ -1,0 +1,169 @@
+id: T-MIN-019
+title: "Apply the Bernardi verzicola reconciliation queue — hedge-phrase citation\
+  \ fix only"
+repo: minchiate_tarot
+priority: P2
+lane: ANY
+status: OPEN
+owner: null
+created_at: '2026-08-12T20:00:00-06:00'
+dependencies: []
+scope:
+- "SCOUT-F5 SOURCE: this task applies the reconciliation queue listed in \xA75 of\
+  \ research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md (T-MIN-018,\
+  \ merged/DONE at commit 4705b31). That note resolved the verzicola upper-sequence\
+  \ boundary to exactly XXVIII (independently confirmed twice from raw archive.org\
+  \ OCR of Bernardi 1790, cap. V/VI + two worked examples in cap. XV and Part II cap.\
+  \ VIII). This task is a CITATION-PRECISION update only: replace the old hedge phrasing\
+  \ with the resolved boundary plus a citation to the resolution note. Do NOT re-litigate,\
+  \ reinterpret, or change any other claim, grading, confidence label, or conclusion\
+  \ in any touched file. If you find yourself wanting to change anything beyond the\
+  \ hedge phrase itself (plus its citation) and, where present, the matching claims-table\
+  \ cell, stop and leave a TODO/flag instead — do not resolve it yourself."
+- "SCOUT-F5 FINDING — there are TWO textually distinct hedges in this corpus\
+  \ that both mention nearby Roman numerals around XXVII/XXVIII, and only ONE of them\
+  \ is resolved by T-MIN-018. Do not conflate them:\n  HEDGE A (IN SCOPE — resolved\
+  \ by T-MIN-018): the verzicola UPPER-SEQUENCE-BOUNDARY hedge, i.e. claims about where\
+  \ Bernardi's higher-trump verzicola examples begin. Phrasings found verbatim in the\
+  \ current test-branch content include \"beginning around XXVIII\", \"about XXVIII\
+  \ upward\"/\"from about XXVIII upward\", \"around XXVIII upward\", \"~XXVIII up\"\
+  /\"from about XXVIII up\". Replace these with wording stating the boundary is exactly\
+  \ XXVIII, citing research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md\
+  \ (T-MIN-018) as the source.\n  HEDGE B (OUT OF SCOPE — NOT resolved by T-MIN-018,\
+  \ do not touch): the Bernardi POINT-VALUE-SCHEDULE transcription-extent caveat (Cap.\
+  \ III — which cards have confirmed point values, e.g. \"transcription bounded\
+  \ at XXVII\", \"Bernardi's transcription stops at XXVII\", \"Bernardi covers only\
+  \ XXIV–XXVII of the block\"). This is a different topic (point pricing, not\
+  \ verzicola sequence membership) that T-MIN-018's note never examined — its\
+  \ transcription covered cap. V, VI, XV and Part II cap. VIII, not a re-read of cap.\
+  \ III's point table. Leave every Hedge-B occurrence exactly as written. If unsure\
+  \ which hedge a given line is, read the surrounding paragraph before editing —\
+  \ do not pattern-match on the numeral alone."
+- "SCOUT-F5 VERIFIED FILE-BY-FILE (dry run against branch test @d0052dc, 2026-08-12)\
+  \ — these are the files from the resolution note's \xA75 queue confirmed to\
+  \ currently contain a genuine Hedge-A occurrence, with line numbers AS OF d0052dc\
+  \ (re-check on your own checkout, lines may have drifted): research/pilots/Pilot3_TRUMP-08_Justice.md\
+  \ (L92), research/pilots/ARIE_BATCH_BRIEF.md (L86), research/pilots/ELEMENT_BATCH_BRIEF.md\
+  \ (L58–59), research/pilots/Element_Batch_Verification_Report.md (L41–42),\
+  \ research/pilots/Arie_Batch_Verification_Report.md (L82), research/pilots/Justice_Personality_Verification_Report_2.md\
+  \ (L183, \"~XXVIII up\"), research/pilots/Wave1_Virtue_Verification_Report.md (L218),\
+  \ research/pilots/Zodiac_Batch_Verification_Report.md (L108 and L282 — two occurrences),\
+  \ research/pilots/ZODIAC_BATCH_BRIEF.md (L80–81, wraps across two lines —\
+  \ use a search that isn't line-bounded), research/pilots/drafts/PERSONALITY_TRUMP-20_Fire.md\
+  \ (L363–364 and L442 — two occurrences, prose + FIR-C021 claims-table row),\
+  \ research/pilots/drafts/PERSONALITY_TRUMP-21_Water.md (L21 and L69–70 —\
+  \ two occurrences), research/pilots/drafts/PERSONALITY_TRUMP-22_Earth.md (L345–\
+  347 and L419 — two occurrences, prose + EAR-C020 claims-table row)."
+- "SCOUT-F5 VERIFIED — files listed in the queue that, on inspection, do NOT\
+  \ currently contain a Hedge-A occurrence (either they only carry Hedge B language,\
+  \ or a plain unhedged mention of \"XX–XXIII\"/verzicola with no boundary numeral\
+  \ hedge attached): research/pilots/PAPI_FOOL_BATCH_BRIEF.md, research/pilots/Papi_Fool_Batch_Verification_Report.md,\
+  \ research/pilots/Fleet_Sweep_Personality_Triage_Report.md, research/pilots/Wave2_Virtue_Verification_Report.md,\
+  \ research/pilots/Quarantine_Register_Outside_Set_Claims.md, research/pilots/drafts/GUIDEBOOK_TRUMP-03_Ruler.md,\
+  \ research/pilots/drafts/GUIDEBOOK_TRUMP-04_Ruler.md, research/pilots/drafts/PERSONALITY_TRUMP-23_Air.md.\
+  \ Do not force an edit into these files if, on your own re-check, they still have\
+  \ no Hedge-A text — an empty diff in a file is an acceptable, correct outcome\
+  \ of this task. (Their queue listing in T-MIN-018's note was evidently keyed off\
+  \ Hedge-B language or the still-open \"XX–XXIII unconfirmed by named example\"\
+  \ question, per \xA74(B) of the resolution note — that open question is NOT\
+  \ resolved by T-MIN-018 either and must not be flattened to \"resolved\" anywhere;\
+  \ leave \xA74(B)-type language exactly as it stands.)"
+- "research/archive/failed-runs/PERSONALITY_TRUMP-04_Ruler_FLEET-STUB_archived-2026-08-11.md\
+  \ is explicitly OUT OF SCOPE. It is an archived failed run, listed in the resolution\
+  \ note \"for completeness only\"; do not edit it."
+- "SCOUT-F5 JUDGMENT CALL ON research/pilots/Pilot3_TRUMP-08_Justice.md (read in full\
+  \ before touching — this is the most sensitive file in the queue): the task's\
+  \ authoring context raised an explicit concern that this file, as the ORIGIN document\
+  \ every other queue file's hedge citation points back to (\"Justice pilot L92\"),\
+  \ might be an audit-trail record that should stay historically accurate to what was\
+  \ known when it was written, per the established T-MIN-016 precedent (see commits\
+  \ 3ac0db7 and, especially, 02092c3, which reconciled stale \"sort_order 57\" prose\
+  \ in PERSONALITY_SPECIAL-FOOL_Fool.md to the resolved sort_order 0, while explicitly\
+  \ leaving alone one line quoting another unrevised source's own text and one line\
+  \ citing a historical Stage-2 inventory snapshot, on the reasoning that those two\
+  \ were accurate descriptions of other out-of-scope, unrevised sources, not live claims\
+  \ resting on the fact being corrected).\n  SCOUT-F5's reasoned call, after reading\
+  \ Pilot3_TRUMP-08_Justice.md L92 in full: **UPDATE it**, narrowly. Reasoning: (1)\
+  \ L92 is not a quotation of another file's text and not a dated historical snapshot\
+  \ reference — it is the pilot's own live descriptive paraphrase of what Bernardi's\
+  \ source says (\"Bernardi says a verzicola is made from consecutive cards and then\
+  \ gives explicit low-Papi examples from I–V and higher-trump examples beginning\
+  \ around XXVIII\"), directly analogous to the SPECIAL-FOOL study's own stale sort_order\
+  \ prose that 02092c3 corrected, not to the two lines 02092c3 deliberately preserved.\
+  \ (2) The resolution note's own \xA75 queue and \xA76 supersession statement already\
+  \ treat L92 as \"the hedge itself, source of truth all other files point back to\"\
+  \ — i.e. the T-MIN-018 author's own view was that it should eventually be corrected,\
+  \ not preserved as a monument. (3) The claim the hedge sits inside, JUS-C006 (\"\
+  Trump VIII has no special intrinsic point value\"), does not rest on the exact verzicola\
+  \ boundary numeral for its own truth — fixing the hedge phrase changes no claim's\
+  \ validity, confidence, or evidence label. THEREFORE: edit ONLY the specific clause\
+  \ \"higher-trump examples beginning around XXVIII\" → wording stating the boundary\
+  \ is exactly XXVIII with a citation to Bernardi_1790_Verzicola_Boundary_Resolution_Note.md.\
+  \ Do not touch anything else on that line or in that paragraph (not the \"does not\
+  \ claim that VIII can never occur…\" sentence, not the citeturn marker, not\
+  \ JUS-C006 or JUS-C015 elsewhere in the file)."
+- "SCOUT-F5 FINDING — the resolution note's queue entry for Pilot3_TRUMP-08_Justice.md\
+  \ also cites \"line 525 (JSON claim register echoing the 'I-XXVII... II-V' bound)\"\
+  \ as needing an update. This is a FALSE POSITIVE relative to this task: as of d0052dc,\
+  \ JSON line 525 is JUS-C006's `source_links[0].note` field, which reads \"Bernardi\
+  \ assigns five points to I, X, XIII and XX among I-XXVII and three points to II-V;\
+  \ VIII is not assigned a special value\" — this is Hedge B (the Cap. III point-value\
+  \ schedule), textually unrelated to the verzicola sequence boundary, and must NOT\
+  \ be edited under this task. The JSON's actual echo of the verzicola hedge is three\
+  \ lines later, at the `qualifications` field (\"This does not resolve every possible\
+  \ role of VIII in consecutive-card combinations\") — but that sentence does\
+  \ not itself contain the numeral hedge text and needs no literal edit; leave it as-is\
+  \ too. Do not edit JSON line 525 or the qualifications field."
+- "CLAIMS-TABLE + PROSE SYNC (applies to research/pilots/drafts/PERSONALITY_TRUMP-20_Fire.md,\
+  \ _21_Water.md, and _22_Earth.md, and any verification report with a claims table\
+  \ touched by this task): every one of these files carries the Hedge-A phrase in BOTH\
+  \ a prose passage AND a claims-table row (e.g. Fire's FIR-C021, Earth's EAR-C020).\
+  \ Fixing one without the other is a defect this project's discipline explicitly forbids\
+  \ — update both in the same commit, keeping the wording of what's now confirmed\
+  \ (\"exactly XXVIII, per the T-MIN-018 resolution note\") consistent between the\
+  \ prose and the table cell. Do not upgrade the separate, still-open \xA74(B) question\
+  \ (\"can XX–XXIII itself form a verzicola\") to resolved anywhere — that\
+  \ remains \"covered by the general rule, unconfirmed by named example\" per the resolution\
+  \ note; only the specific boundary-numeral hedge is in scope here."
+definition_of_done:
+- Every confirmed Hedge-A occurrence listed in the scope above (16 occurrences across
+  11 files, per SCOUT-F5's dry run) is replaced with wording stating the verzicola
+  upper-sequence boundary is exactly XXVIII, each with an explicit citation to research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md.
+- No Hedge-B (point-value-schedule transcription-extent) text is altered anywhere.
+- No claim, confidence label, grading, or conclusion other than the hedge phrase itself
+  changes in any touched file; a reviewer diffing before/after should see only the
+  hedge-phrase-plus-citation edits (and, where present, the matching claims-table cell)
+  and nothing else.
+- The still-open §4(B) question (whether XX–XXIII itself can form a verzicola) is
+  not flattened to resolved anywhere it appears; it stays framed as "covered by the
+  general rule, unconfirmed by named example" per the resolution note.
+- For every file where a Hedge-A fix touches prose that has a matching claims-table
+  row (at minimum PERSONALITY_TRUMP-20_Fire.md/FIR-C021 and PERSONALITY_TRUMP-22_Earth.md/EAR-C020),
+  both the prose and the claims-table row are updated in sync.
+- research/pilots/Pilot3_TRUMP-08_Justice.md line 92's hedge clause is updated per
+  the judgment call above (narrowly — the hedge clause and its citation only); JSON
+  line 525 and the qualifications field are left untouched.
+- research/archive/failed-runs/PERSONALITY_TRUMP-04_Ruler_FLEET-STUB_archived-2026-08-11.md
+  is not modified.
+- Files verified to have no current Hedge-A text (PAPI_FOOL_BATCH_BRIEF.md, Papi_Fool_Batch_Verification_Report.md,
+  Fleet_Sweep_Personality_Triage_Report.md, Wave2_Virtue_Verification_Report.md, Quarantine_Register_Outside_Set_Claims.md,
+  GUIDEBOOK_TRUMP-03_Ruler.md, GUIDEBOOK_TRUMP-04_Ruler.md, PERSONALITY_TRUMP-23_Air.md)
+  are re-checked by the worker and left untouched if still empty of Hedge-A text —
+  do not force an edit into a file that has none.
+verification_command: "python3 -c \"\nimport re,sys\nfiles = [\n 'research/pilots/Pilot3_TRUMP-08_Justice.md',\n\
+  \ 'research/pilots/ARIE_BATCH_BRIEF.md',\n 'research/pilots/ELEMENT_BATCH_BRIEF.md',\n\
+  \ 'research/pilots/Element_Batch_Verification_Report.md',\n 'research/pilots/Arie_Batch_Verification_Report.md',\n\
+  \ 'research/pilots/PAPI_FOOL_BATCH_BRIEF.md',\n 'research/pilots/Papi_Fool_Batch_Verification_Report.md',\n\
+  \ 'research/pilots/Fleet_Sweep_Personality_Triage_Report.md',\n 'research/pilots/Justice_Personality_Verification_Report_2.md',\n\
+  \ 'research/pilots/Wave1_Virtue_Verification_Report.md',\n 'research/pilots/Wave2_Virtue_Verification_Report.md',\n\
+  \ 'research/pilots/ZODIAC_BATCH_BRIEF.md',\n 'research/pilots/Zodiac_Batch_Verification_Report.md',\n\
+  \ 'research/pilots/Quarantine_Register_Outside_Set_Claims.md',\n 'research/pilots/drafts/GUIDEBOOK_TRUMP-03_Ruler.md',\n\
+  \ 'research/pilots/drafts/GUIDEBOOK_TRUMP-04_Ruler.md',\n 'research/pilots/drafts/PERSONALITY_TRUMP-20_Fire.md',\n\
+  \ 'research/pilots/drafts/PERSONALITY_TRUMP-21_Water.md',\n 'research/pilots/drafts/PERSONALITY_TRUMP-22_Earth.md',\n\
+  \ 'research/pilots/drafts/PERSONALITY_TRUMP-23_Air.md',\n]\npat = re.compile(r'(around|about|~)\\\
+  s*XXVIII', re.I)\ntotal = 0\nfor f in files:\n    try:\n        text = open(f).read()\n\
+  \    except FileNotFoundError:\n        print('MISSING', f); sys.exit(1)\n    hits\
+  \ = pat.findall(text)\n    if hits:\n        print(f, len(hits)); total += len(hits)\n\
+  print('TOTAL', total)\nsys.exit(1 if total else 0)\n\"\n"
+human_review_required: false
+requires_doc_update: false

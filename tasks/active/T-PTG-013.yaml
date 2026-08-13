@@ -4,7 +4,7 @@ title: Theme picker doesn't visibly recolor changelog.php (and 5 other pages) du
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: PEER_REVIEW
+status: HUMAN_REVIEW
 owner: Worker-ThemeCache2
 created_at: '2026-08-13T00:00:00Z'
 audited_at: '2026-08-13T03:45:35.164839Z'
@@ -141,3 +141,7 @@ events:
 - timestamp: '2026-08-13T03:52:40.507005Z'
   action: SUBMIT
   actor: Worker-ThemeCache2
+- timestamp: '2026-08-13T04:20:51.034802Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

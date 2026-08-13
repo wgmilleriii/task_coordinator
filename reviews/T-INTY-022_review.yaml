@@ -1,0 +1,32 @@
+task_id: T-INTY-022
+reviewer_agent: FleetCoordinator-Chip
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 4f985b4a3e0886b72dd44b824d1ce350433331db
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Independently re-verified against the worktree at
+    /Users/willismiller/Documents/GitHub/intypiano-T-INTY-022, commit 4f985b4a
+    (not the primary clone, per the worker''s correct warning that fleet
+    verify checks the wrong checkout). php -l passed on all three changed/new
+    files (login_form.php, ddl/147/002_seed_system_account.php,
+    ddl/147/003_verify.php). grep -rn "CAUTSystem" . --exclude-dir=databasedumps
+    --exclude-dir=.git returned zero hits. Diff reviewed: hardcoded bypass
+    branch fully removed, global_system now authenticates through the normal
+    bcrypt users-table path with a real seeded row (ddl/147), role-based
+    redirect added so global_system still lands on system_hub.php while every
+    other role keeps going to hub.php. ddl/147/002''s seed script is idempotent,
+    generates a CSPRNG password per-environment via password_hash(), and never
+    persists the raw password to git -- correct design for the "must not lock
+    Chip out" constraint.'
+- severity: INFO
+  description: 'System-level defect confirmed and worth fixing in
+    task_coordinator itself: ./bin/fleet verify runs verification_command
+    against the primary clone''s checked-out branch, not the task''s worktree,
+    so for this task it produced a spurious PASS while the vulnerable string
+    was still present in the primary clone. The worker correctly caught this,
+    documented it in evidence_output and the feedback file, and supplied real
+    hand-verified evidence instead. Recommend a task_coordinator engine fix
+    (out of scope for T-INTY-022) so future verify runs target the actual
+    worktree branch.'
+reviewed_at: '2026-08-13T15:00:59.799375Z'

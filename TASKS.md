@@ -19,7 +19,7 @@ graph TD
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::done
-    T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]
+    T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]:::active
     T-PTG-024 --> T-PTG-025
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
@@ -52,14 +52,14 @@ graph TD
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::done
     T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]:::done
     T-PTG-019 --> T-PTG-020
-    T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]
+    T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]:::active
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::done
     T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::done
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::done
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
-    T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]:::active
+    T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]:::review
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::done
@@ -84,9 +84,9 @@ graph TD
 
 ## Repo: `intypiano`
 
-### 📋 T-INTY-023 · P0 · ANY · AUDITED
+### 🛠 T-INTY-023 · P0 · ANY · CLAIMED
 **master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher**
-**Owner:** None
+**Owner:** Worker-MigrateSafety1
 
 **Scope:**
 - Confirmed by reading master_migrate.php in full: it loops over every tenant in config.php's `$db_configs` (lines 83-117) and executes arbitrary SQL from a file in sql_scripts/ (or repo root) against each one via a raw PDO connection, with no per-tenant exclusion list. `$db_configs['unm']` (config.php lines 9-13) points at `dbname => 'unm_piano'` -- the same production database that scripts/bootstrap_v2_db.sh, scripts/migrate.php, and scripts/data_quality.php --fix all explicitly refuse to target (see docs/experts/schema-catalog.md "Protected databases" and CLAUDE.md). master_migrate.php has no such refusal. This is a real gap, not a hypothetical: any .sql file dropped in sql_scripts/ and launched via this tool runs against unm_piano today.
@@ -102,29 +102,6 @@ graph TD
 - system_hub.php''s "Global Migrations" card is replaced with a dynamic list driven by sql_scripts/*.sql minus what sql_scripts_applied shows as fully applied, verified by loading system_hub.php as the global_system role in a running server (php -S localhost:2027 -t ., per CLAUDE.md''s "prefer running over reading" rule) and confirming the list matches the current filesystem + tracking-table state, with a screenshot or terminal evidence attached to the handoff.
 - php -l on every changed .php file passes.
 - No regression to the existing global_system session-role gate on master_migrate.php (non-CLI requests still require session role system_admin/global_system).
-
-*Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
-
----
-### 🛠 T-INTY-022 · P0 · ANY · CLAIMED
-**Hardcoded plaintext global_system bypass credential in login_form.php**
-**Owner:** Worker-LoginFix1
-
-**Scope:**
-- Confirmed by reading login_form.php lines 17-25 directly: any POST to login_form.php with email exactly `system@cauttools.com` OR the bare string `system`, and password exactly `CAUTSystem!!@@`, bypasses the normal users-table/bcrypt auth path entirely and grants a session with `$_SESSION['role'] = 'global_system'` -- the highest privilege role in the app, no user record, no rate limiting, no MFA, nothing.
-- Confirmed the blast radius by grepping for `global_system` across the repo (not guessing): it gates system_hub.php, system_users.php, system_health.php, system_cleanup.php, system_analytics.php, system_user_manager.php, system_insights.php, and master_migrate.php -- the last of which (per admin/v2/help.php line 125) "loops through all active tenant databases (SFUSD, demos, etc.) defined in config.php and applies SQL schema updates to all of them at once." A leaked or brute-forced copy of this one hardcoded password is a path to running arbitrary migrations against every tenant database, not just one.
-- login_form.php is reachable at unm.cauttools.com/login_form.php (and presumably every other cauttools-app hostname sharing this same file) -- this is a live, internet-facing entry point, not a local-dev-only shortcut. Confirm during investigation whether this is exposed on every tenant hostname or just some, by reading the hostname-dispatch branches in classes/core/DatabaseManager.php that T-INTY-021 already investigated.
-- Do not assume this is unintentional/accidental -- the user (project owner) uses this exact bypass today as their own system-account login (confirmed 2026-08-13, see conversation this task was scoped from). This is a known, currently-relied-upon login path, not a forgotten backdoor. The fix must replace the mechanism, not just delete it, or it will lock the project owner out of system-level administration.
-- This repo already solved an analogous problem for staff logins: forgot_password.php -> emailed single-use token -> password_reset.php, backed by ddl/140's `password_resets` table (hashed single-use tokens, bcrypt on set), replacing the old `reset_password.php?secret=123123` backdoor (see CLAUDE.md "Open and live" item 4). Investigate whether the system account can be onboarded into that same `users` table (with a real, unguessable password and a real or synthetic email such as `system@cauttools.internal`) rather than inventing a second bespoke mechanism -- the login form's existing bcrypt/users-table path already works, and a `role`/`is_active` combination for `global_system` may already be representable there.
-- If reusing the `users` table is not viable (e.g. the account genuinely needs no email and the schema requires one, or `global_system` is not a role the `users.role` column currently supports), scope and implement the smallest secure replacement instead: e.g. a long random token issued out-of-band and stored only as a hash, following the config/api_token.php gitignored-secret pattern already used by api/v1/admin/logRefill.php and addTicket.php. Either way, the literal string `CAUTSystem!!@@` must not remain live in the codebase or in git history as a still-working credential after this task closes.
-- Out of scope: do not touch the bcrypt/users-table login path itself (lines 27-65 of login_form.php) beyond what's needed to onboard the system account into it, and do not touch forgot_password.php/password_reset.php -- reuse them, do not redesign them.
-
-**Definition of Done:**
-- The literal hardcoded password `CAUTSystem!!@@` (and the bare-`system` / `system@cauttools.com` special-case branch that checks it) is removed from login_form.php.
-- The project owner has a working replacement login path for the same `global_system` role-level access, verified end-to-end against a running server (php -S localhost:2027 -t ., per CLAUDE.md's "prefer running over reading" rule) -- log in with the new credential, land on system_hub.php, and confirm session role is `global_system`.
-- grep -rn "CAUTSystem" . (excluding databasedumps/ and .git/) returns zero hits after the fix, confirming no copy of the literal password remains live in tracked files.
-- If a new credential/token is generated, it is delivered to the project owner through the handoff (not just committed silently) so they can actually log in after this ships -- a "fixed" migration that leaves the owner locked out fails this DoD.
-- No regression to the existing bcrypt/users-table staff login path (the branch at login_form.php lines 27-65) -- spot-check at least one existing non-system staff login still works after the change.
 
 *Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
 
@@ -149,6 +126,29 @@ graph TD
 - The four "original localhost" ports/hosts in the outer branch (lines 251) that are not port 2099/8888/3031 -- confirm the fix does not regress the pre-existing `game_people` DB path used by those, since the cauttools sub-branch only fires when `$this->app->app=="cauttools"`, which is not every caller.
 
 *Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
+
+---
+### ⏳ T-INTY-022 · P0 · ANY · PEER_REVIEW
+**Hardcoded plaintext global_system bypass credential in login_form.php**
+**Owner:** Worker-LoginFix1
+
+**Scope:**
+- Confirmed by reading login_form.php lines 17-25 directly: any POST to login_form.php with email exactly `system@cauttools.com` OR the bare string `system`, and password exactly `CAUTSystem!!@@`, bypasses the normal users-table/bcrypt auth path entirely and grants a session with `$_SESSION['role'] = 'global_system'` -- the highest privilege role in the app, no user record, no rate limiting, no MFA, nothing.
+- Confirmed the blast radius by grepping for `global_system` across the repo (not guessing): it gates system_hub.php, system_users.php, system_health.php, system_cleanup.php, system_analytics.php, system_user_manager.php, system_insights.php, and master_migrate.php -- the last of which (per admin/v2/help.php line 125) "loops through all active tenant databases (SFUSD, demos, etc.) defined in config.php and applies SQL schema updates to all of them at once." A leaked or brute-forced copy of this one hardcoded password is a path to running arbitrary migrations against every tenant database, not just one.
+- login_form.php is reachable at unm.cauttools.com/login_form.php (and presumably every other cauttools-app hostname sharing this same file) -- this is a live, internet-facing entry point, not a local-dev-only shortcut. Confirm during investigation whether this is exposed on every tenant hostname or just some, by reading the hostname-dispatch branches in classes/core/DatabaseManager.php that T-INTY-021 already investigated.
+- Do not assume this is unintentional/accidental -- the user (project owner) uses this exact bypass today as their own system-account login (confirmed 2026-08-13, see conversation this task was scoped from). This is a known, currently-relied-upon login path, not a forgotten backdoor. The fix must replace the mechanism, not just delete it, or it will lock the project owner out of system-level administration.
+- This repo already solved an analogous problem for staff logins: forgot_password.php -> emailed single-use token -> password_reset.php, backed by ddl/140's `password_resets` table (hashed single-use tokens, bcrypt on set), replacing the old `reset_password.php?secret=123123` backdoor (see CLAUDE.md "Open and live" item 4). Investigate whether the system account can be onboarded into that same `users` table (with a real, unguessable password and a real or synthetic email such as `system@cauttools.internal`) rather than inventing a second bespoke mechanism -- the login form's existing bcrypt/users-table path already works, and a `role`/`is_active` combination for `global_system` may already be representable there.
+- If reusing the `users` table is not viable (e.g. the account genuinely needs no email and the schema requires one, or `global_system` is not a role the `users.role` column currently supports), scope and implement the smallest secure replacement instead: e.g. a long random token issued out-of-band and stored only as a hash, following the config/api_token.php gitignored-secret pattern already used by api/v1/admin/logRefill.php and addTicket.php. Either way, the literal string `CAUTSystem!!@@` must not remain live in the codebase or in git history as a still-working credential after this task closes.
+- Out of scope: do not touch the bcrypt/users-table login path itself (lines 27-65 of login_form.php) beyond what's needed to onboard the system account into it, and do not touch forgot_password.php/password_reset.php -- reuse them, do not redesign them.
+
+**Definition of Done:**
+- The literal hardcoded password `CAUTSystem!!@@` (and the bare-`system` / `system@cauttools.com` special-case branch that checks it) is removed from login_form.php.
+- The project owner has a working replacement login path for the same `global_system` role-level access, verified end-to-end against a running server (php -S localhost:2027 -t ., per CLAUDE.md's "prefer running over reading" rule) -- log in with the new credential, land on system_hub.php, and confirm session role is `global_system`.
+- grep -rn "CAUTSystem" . (excluding databasedumps/ and .git/) returns zero hits after the fix, confirming no copy of the literal password remains live in tracked files.
+- If a new credential/token is generated, it is delivered to the project owner through the handoff (not just committed silently) so they can actually log in after this ships -- a "fixed" migration that leaves the owner locked out fails this DoD.
+- No regression to the existing bcrypt/users-table staff login path (the branch at login_form.php lines 27-65) -- spot-check at least one existing non-system staff login still works after the change.
+
+*Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
 
 ---
 ### 📋 T-INTY-024 · P1 · ANY · AUDITED
@@ -1256,26 +1256,6 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-025 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 2.1, 17-19 (Intellectual Property Protection, Bulk Extraction Protection, Public Sharing Review) before starting. Gated on T-PTG-024 (ClaimValidator) -- by this point the answer pipeline has fundamentally changed (planning, multi-query retrieval, ranking, synthesis with explanation-vs-Journal distinction, per-claim validation), so this phase re-audits the existing IP/security protections against the NEW pipeline shape, not just the old one.
-- WHAT TO REVIEW/HARDEN, per v3.md exactly: (1) section 17 -- confirm the browser never receives OpenAI API keys, vector-store credentials, corpus filesystem paths, extracted corpus dumps, or private storage credentials, across ALL the new lib classes added in Phases 1-4 (ConversationStateService, ResearchPlanner, EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator) -- a new class is a new place a leak could be introduced. (2) section 18 -- confirm bulk-extraction refusal (already tested in security_and_eval_suite.php's TC-SEC-001/002 cases) still works correctly against the new multi-query retrieval pipeline, which by design fetches MORE passages per question than the old single-search pipeline -- verify this increased retrieval breadth has not created a new bulk-extraction loophole. (3) section 19 -- review the existing public conversation-sharing feature (find it in the codebase -- grep for "shared" conversations, `SharedConversationsTest.php` already exists) and confirm unauthenticated users still cannot gain protected PDF access via a shared conversation, even though shared conversations may now include the new explanation-vs-Journal-distinguished content and per-claim-validated citations from Phases 3-4.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions, including SharedConversationsTest.php and AuthAccessTest.php specifically.
-- EXPLICITLY OUT OF SCOPE: Phase 6 evaluation/tuning. This is a review-and-harden task, not a new-feature task -- if the review finds everything already correctly protected against the new pipeline, the DoD is still satisfied by documenting that finding with evidence, not by inventing unnecessary new restrictions.
-
-**Definition of Done:**
-- A written review (in the handoff, not a new doc file unless the Worker judges one is needed) explicitly addresses all three v3.md areas (secret/credential exposure across the new Phase 1-4 classes, bulk-extraction refusal against the wider multi-query retrieval, and public-sharing PDF-access boundary) with concrete evidence for each -- either "confirmed already safe, here is the test/grep that proves it" or "found a gap, here is the fix."
-- Any gap found is fixed, with a new or extended test proving the fix (e.g. extending SharedConversationsTest.php or security_and_eval_suite.php's existing TC-SEC-* cases).
-- Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
-- php -l passes on all modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### 📋 T-PTG-026 · P2 · ANY · AUDITED
 **JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
 **Owner:** None
@@ -1293,6 +1273,26 @@ graph TD
 - At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
 - The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
 - The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 🛠 T-PTG-025 · P2 · ANY · CLAIMED
+**JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
+**Owner:** FleetCoordinator
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 2.1, 17-19 (Intellectual Property Protection, Bulk Extraction Protection, Public Sharing Review) before starting. Gated on T-PTG-024 (ClaimValidator) -- by this point the answer pipeline has fundamentally changed (planning, multi-query retrieval, ranking, synthesis with explanation-vs-Journal distinction, per-claim validation), so this phase re-audits the existing IP/security protections against the NEW pipeline shape, not just the old one.
+- WHAT TO REVIEW/HARDEN, per v3.md exactly: (1) section 17 -- confirm the browser never receives OpenAI API keys, vector-store credentials, corpus filesystem paths, extracted corpus dumps, or private storage credentials, across ALL the new lib classes added in Phases 1-4 (ConversationStateService, ResearchPlanner, EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator) -- a new class is a new place a leak could be introduced. (2) section 18 -- confirm bulk-extraction refusal (already tested in security_and_eval_suite.php's TC-SEC-001/002 cases) still works correctly against the new multi-query retrieval pipeline, which by design fetches MORE passages per question than the old single-search pipeline -- verify this increased retrieval breadth has not created a new bulk-extraction loophole. (3) section 19 -- review the existing public conversation-sharing feature (find it in the codebase -- grep for "shared" conversations, `SharedConversationsTest.php` already exists) and confirm unauthenticated users still cannot gain protected PDF access via a shared conversation, even though shared conversations may now include the new explanation-vs-Journal-distinguished content and per-claim-validated citations from Phases 3-4.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions, including SharedConversationsTest.php and AuthAccessTest.php specifically.
+- EXPLICITLY OUT OF SCOPE: Phase 6 evaluation/tuning. This is a review-and-harden task, not a new-feature task -- if the review finds everything already correctly protected against the new pipeline, the DoD is still satisfied by documenting that finding with evidence, not by inventing unnecessary new restrictions.
+
+**Definition of Done:**
+- A written review (in the handoff, not a new doc file unless the Worker judges one is needed) explicitly addresses all three v3.md areas (secret/credential exposure across the new Phase 1-4 classes, bulk-extraction refusal against the wider multi-query retrieval, and public-sharing PDF-access boundary) with concrete evidence for each -- either "confirmed already safe, here is the test/grep that proves it" or "found a gap, here is the fix."
+- Any gap found is fixed, with a new or extended test proving the fix (e.g. extending SharedConversationsTest.php or security_and_eval_suite.php's existing TC-SEC-* cases).
+- Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- php -l passes on all modified PHP files.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 

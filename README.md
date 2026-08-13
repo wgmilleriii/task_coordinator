@@ -99,7 +99,11 @@ Read the generated `.fleet_context.md` file in the target repository's root. It 
 
 **Safety Note (Subagents die cheaply):** The `fleet` CLI actions are atomic. If an agent is killed (e.g. by API limits) mid-task before making a CLI submission, it leaves zero mess. Do not over-worry about mid-task kills.
 
-**Safety Note (Checkout Drift):** Before assuming local state is current, run `git fetch && git log origin/main -1`. It is common for other agents to have checked out a branch in the shared repository. Always verify you are on `main` before starting fleet operations. If you know how, prefer using `git worktree add` to create isolated environments.
+**HARD REQUIREMENT (Isolated Worktrees):** Never run `git checkout`/`git switch` in a Spoke repository's primary clone. Multiple agents and multiple concurrent Fleet Coordinators routinely operate on the same repo at once, and the CLAIMED/IN_PROGRESS repo-lock in `bin/fleet.py` only gates the `fleet claim` command — it does nothing to protect raw git state in a shared working directory. Switching the primary clone's branch WILL eventually collide with another agent's in-progress work (confirmed in production: a commit landed on the wrong task's branch this way). Before touching a Spoke repository for ANY reason — even a one-line fix, even just reading a file at a specific commit — create an isolated worktree first:
+```bash
+git -C ../<repo_name> worktree add ../<repo_name>-<task_id> -b test-<TASK-ID> <base_sha_or_branch>
+```
+Do all work, testing, and local server usage inside that worktree directory. Never leave the primary clone's checked-out branch changed when you're done — if you must inspect the primary clone (e.g. to confirm what's on `main`), use `git -C ../<repo_name> log`/`show`/`fetch`, which don't change the checkout, not `checkout`/`switch`/`merge --no-ff` performed directly in it. Merges of a finished task branch into `main` are the one exception where operating in the primary clone is appropriate, since that's the point at which the work is meant to become the new shared state — but even then, `git fetch` first and confirm no one else's checkout is mid-edit.
 
 **Janitor Protocol:** If the `.fleet_context.md` file contains a "DOCUMENTATION UPDATE REQUIRED" warning, you MUST pause your regular assignment. Act as the Documentation Janitor: 
 1. Run `./bin/fleet sweep-docs <repo_name>` to find scattered `.md` files or missing frontmatter. Move them into `docs/` using the Dewey Decimal protocol.
@@ -123,7 +127,11 @@ You must use the CLI to claim the task. The CLI will automatically check if the 
 If the CLI rejects your claim, you must pick a different task. If successful, it will update the YAML file and regenerate the markdown board. Commit this claim to Git immediately.
 
 ### 3. Do the Work
-Navigate to the Spoke repository (e.g., `../minchiate_tarot/`) and create a `test` branch. Write the code to satisfy the `definition_of_done` found in the task's YAML file.
+Per the HARD REQUIREMENT above, create an isolated worktree for this task — do not check out a branch in the Spoke repository's primary clone:
+```bash
+git -C ../<repo_name> worktree add ../<repo_name>-<TASK-ID> -b test-<TASK-ID> <current HEAD>
+```
+Do all work inside `../<repo_name>-<TASK-ID>/`. Write the code to satisfy the `definition_of_done` found in the task's YAML file. Remove the worktree (`git worktree remove`) once the task is merged or abandoned.
 
 ### 4. Provide Evidence & Complete
 You are strictly bound by the "Evidence Before Claims" protocol. 

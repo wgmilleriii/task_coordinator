@@ -3,7 +3,7 @@ title: Author the ten remaining Cups pip cards to the light-tier suit-card forma
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F26
 created_at: '2026-08-13T00:00:00-06:00'
 dependencies: []
@@ -116,5 +116,8 @@ events:
   details: Audited against 0ff3c97
 - timestamp: '2026-08-13T23:38:12.233248Z'
   action: CLAIM
+  actor: Worker-F26
+- timestamp: '2026-08-13T23:46:40.127952Z'
+  action: SUBMIT
   actor: Worker-F26
 claimed_at: '2026-08-13T23:38:12.232866Z'

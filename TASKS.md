@@ -58,7 +58,7 @@ graph TD
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
     T-MIN-025["T-MIN-025<br/>Author the nine remaining Coins pip cards to the light-tier suit-card format"]
-    T-MIN-024["T-MIN-024<br/>Author the ten remaining Cups pip cards to the light-tier suit-card format"]:::active
+    T-MIN-024["T-MIN-024<br/>Author the ten remaining Cups pip cards to the light-tier suit-card format"]:::review
     T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
@@ -783,29 +783,6 @@ graph TD
 *Audited against SHA:* `0ff3c97`
 
 ---
-### 🛠 T-MIN-024 · P2 · ANY · CLAIMED
-**Author the ten remaining Cups pip cards to the light-tier suit-card format**
-**Owner:** Worker-F26
-
-**Scope:**
-- SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Cups occupies the contiguous sort-order block 29-42. The ten pip cards are SUIT-CUPS-01 through SUIT-CUPS-10, canonical names Ace of Cups through Ten of Cups, Italian Asso di Coppe through Dieci di Coppe, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 29 plus 1, i.e. for SUIT-CUPS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.
-- COURTS EXCLUDED (confirm, do not re-derive from scratch): SUIT-CUPS-11 (Fantina/Maid, the round-suit female-page court, NOT Fante/Jack -- Cups and Coins substitute Fantina for the male Fante used in the long suits Swords/Batons), SUIT-CUPS-12 (Cavalier/Cavallo -- already the working court pilot, drafts/STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md, not your concern), SUIT-CUPS-13 (Queen/Regina), SUIT-CUPS-14 (King/Re) are the four Cups court cards, sort orders 39-42, already scoped under the middle court tier (T-MIN-013 pilot 2 of 2; T-MIN-021 middle-tier format, closed DONE). They are OUT OF SCOPE here -- do not write, restate, or touch any Cups court file under this task, including the existing Cavalier of Cups pilot.
-- Write all ten pip cards fresh, one file per card, to research/pilots/drafts/STANDARD_SUIT-CUPS-NN_Card_Name.md (NN zero-padded, e.g. STANDARD_SUIT-CUPS-01_Ace_of_Cups.md), following research/pilots/SUIT_CARD_FORMAT_SPEC.md's section skeleton exactly (header block with maturity state and IMG-001 blocker; section 1 registry facts [F]; section 2 rank in suit recomputed from sort_order, not memory; section 3 scoring sourced-or-absent; section 4 iconography baseline at true confidence; section 5 confusion resolvers or 'none required'; section 6 project reading [PS], at most 10 lines, built only from sections 1-5 anchors; section 7 boundaries; section 8 mini claims table, 6-12 rows, claim IDs namespaced CU-NN-C-NN per the spec's claim-namespace rule). Diff every card against drafts/STANDARD_SUIT-COINS-04_Four_of_Coins.md (the working pilot, same round-suit family) for structural and disciplinary consistency (line-count band 60-120, same grading legend, same bounded-transcription caveat wording).
-- SCORING DISCIPLINE (already settled by the format spec section 3, do not re-litigate or invent a new rule): RULE-1790 pp. 5-6 gives five points to each King and none to the other thirteen cards of a suit; every captured card (including each Cups pip) contributes one card to the captured-card count, never more; no combination (verzicola) value is demonstrated on the record for any suit numeral, and no categorical exclusion is asserted either -- state this as sourced-or-absent per pip, never invent an amount. Cups is a ROUND suit: RULE-1790 cap. II (printed pp. 5-6, as transcribed for Coins in the Four of Coins pilot, CL-SC04-008/-009) inverts numeral trick order for both round suits (Coins AND Cups) -- this rule is already sourced and general, not Coins-specific, so it may be cited directly for Cups; still, name the witness and locator on every card rather than asserting the rule bare, and keep the witness-bounded caveat (secure for the 1790 Florentine witness only).
-- No modern cartomancy meanings, no RWS bleed-over (no Ten of Cups family-bliss scene, no cup-suit-as-emotion imagery, no upright/reversed keywords), no elemental/astrological/Kabbalah/numerology correspondences (no Cups-equals-Water), no unsourced point amounts or combination values -- identical discipline to every batch this project has run (trump/arie/papi-fool/zodiac/element).
-- Work in waves with self-verification before final submission, matching the trump/arie/papi-fool batch pattern: recompute every section-2 rank-in-suit line against the registry sort_order column, check every claims-table row resolves to a source cell or an explicit [UNVERIFIED]/absent marker, grep every drafted file for forbidden terms (pentacles, upright, reversed, Water/Earth-as-suit, RWS scene names), and diff each card against the Four of Coins pilot for format-skeleton and line-count consistency.
-- Write a batch verification report at research/pilots/Cups_Pip_Batch_Verification_Report.md with a per-card verdict (PASS / PASS_WITH_CORRECTIONS / FAIL) for all ten cards and a recomputation table showing each card's sort_order, block-start arithmetic, and resulting rank-in-suit.
-- OUT OF SCOPE: the four Cups court cards including the existing Cavalier of Cups pilot (already handled, see above); any modern cartomancy content; any point value, card count, or combination reach not traceable to a named witness and locator; any other suit's cards.
-
-**Definition of Done:**
-- All ten files research/pilots/drafts/STANDARD_SUIT-CUPS-01_*.md through STANDARD_SUIT-CUPS-10_*.md exist, each following the SUIT_CARD_FORMAT_SPEC.md skeleton (header/maturity/IMG-001 blocker, sections 1-8 present, claims table with CU-NN-C-NN IDs), each 60-120 lines, none containing a court card id (SUIT-CUPS-11 through -14) or forbidden terms from the spec's section 5 list.
-- research/pilots/Cups_Pip_Batch_Verification_Report.md exists, naming all ten SUIT-CUPS-01..10 card ids with a verdict and recomputed rank-in-suit for each.
-- Every section-2 rank-in-suit arithmetic line is recomputed from the registry's sort_order column (block start 29), not asserted from memory.
-- Every section-3 scoring statement is sourced (RULE-1790 pp. 5-6 as transcribed via the Four of Coins pilot's claim chain, or the Justice pilot's verzicola hedge where relevant) or explicitly marked absent/[UNVERIFIED] -- no invented amounts.
-
-*Audited against SHA:* `0ff3c97`
-
----
 ### ✅ T-MIN-021 · P2 · ANY · DONE
 **Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)**
 **Owner:** Worker-F23
@@ -1066,6 +1043,29 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
+
+---
+### ⏳ T-MIN-024 · P2 · ANY · PEER_REVIEW
+**Author the ten remaining Cups pip cards to the light-tier suit-card format**
+**Owner:** Worker-F26
+
+**Scope:**
+- SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Cups occupies the contiguous sort-order block 29-42. The ten pip cards are SUIT-CUPS-01 through SUIT-CUPS-10, canonical names Ace of Cups through Ten of Cups, Italian Asso di Coppe through Dieci di Coppe, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 29 plus 1, i.e. for SUIT-CUPS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.
+- COURTS EXCLUDED (confirm, do not re-derive from scratch): SUIT-CUPS-11 (Fantina/Maid, the round-suit female-page court, NOT Fante/Jack -- Cups and Coins substitute Fantina for the male Fante used in the long suits Swords/Batons), SUIT-CUPS-12 (Cavalier/Cavallo -- already the working court pilot, drafts/STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md, not your concern), SUIT-CUPS-13 (Queen/Regina), SUIT-CUPS-14 (King/Re) are the four Cups court cards, sort orders 39-42, already scoped under the middle court tier (T-MIN-013 pilot 2 of 2; T-MIN-021 middle-tier format, closed DONE). They are OUT OF SCOPE here -- do not write, restate, or touch any Cups court file under this task, including the existing Cavalier of Cups pilot.
+- Write all ten pip cards fresh, one file per card, to research/pilots/drafts/STANDARD_SUIT-CUPS-NN_Card_Name.md (NN zero-padded, e.g. STANDARD_SUIT-CUPS-01_Ace_of_Cups.md), following research/pilots/SUIT_CARD_FORMAT_SPEC.md's section skeleton exactly (header block with maturity state and IMG-001 blocker; section 1 registry facts [F]; section 2 rank in suit recomputed from sort_order, not memory; section 3 scoring sourced-or-absent; section 4 iconography baseline at true confidence; section 5 confusion resolvers or 'none required'; section 6 project reading [PS], at most 10 lines, built only from sections 1-5 anchors; section 7 boundaries; section 8 mini claims table, 6-12 rows, claim IDs namespaced CU-NN-C-NN per the spec's claim-namespace rule). Diff every card against drafts/STANDARD_SUIT-COINS-04_Four_of_Coins.md (the working pilot, same round-suit family) for structural and disciplinary consistency (line-count band 60-120, same grading legend, same bounded-transcription caveat wording).
+- SCORING DISCIPLINE (already settled by the format spec section 3, do not re-litigate or invent a new rule): RULE-1790 pp. 5-6 gives five points to each King and none to the other thirteen cards of a suit; every captured card (including each Cups pip) contributes one card to the captured-card count, never more; no combination (verzicola) value is demonstrated on the record for any suit numeral, and no categorical exclusion is asserted either -- state this as sourced-or-absent per pip, never invent an amount. Cups is a ROUND suit: RULE-1790 cap. II (printed pp. 5-6, as transcribed for Coins in the Four of Coins pilot, CL-SC04-008/-009) inverts numeral trick order for both round suits (Coins AND Cups) -- this rule is already sourced and general, not Coins-specific, so it may be cited directly for Cups; still, name the witness and locator on every card rather than asserting the rule bare, and keep the witness-bounded caveat (secure for the 1790 Florentine witness only).
+- No modern cartomancy meanings, no RWS bleed-over (no Ten of Cups family-bliss scene, no cup-suit-as-emotion imagery, no upright/reversed keywords), no elemental/astrological/Kabbalah/numerology correspondences (no Cups-equals-Water), no unsourced point amounts or combination values -- identical discipline to every batch this project has run (trump/arie/papi-fool/zodiac/element).
+- Work in waves with self-verification before final submission, matching the trump/arie/papi-fool batch pattern: recompute every section-2 rank-in-suit line against the registry sort_order column, check every claims-table row resolves to a source cell or an explicit [UNVERIFIED]/absent marker, grep every drafted file for forbidden terms (pentacles, upright, reversed, Water/Earth-as-suit, RWS scene names), and diff each card against the Four of Coins pilot for format-skeleton and line-count consistency.
+- Write a batch verification report at research/pilots/Cups_Pip_Batch_Verification_Report.md with a per-card verdict (PASS / PASS_WITH_CORRECTIONS / FAIL) for all ten cards and a recomputation table showing each card's sort_order, block-start arithmetic, and resulting rank-in-suit.
+- OUT OF SCOPE: the four Cups court cards including the existing Cavalier of Cups pilot (already handled, see above); any modern cartomancy content; any point value, card count, or combination reach not traceable to a named witness and locator; any other suit's cards.
+
+**Definition of Done:**
+- All ten files research/pilots/drafts/STANDARD_SUIT-CUPS-01_*.md through STANDARD_SUIT-CUPS-10_*.md exist, each following the SUIT_CARD_FORMAT_SPEC.md skeleton (header/maturity/IMG-001 blocker, sections 1-8 present, claims table with CU-NN-C-NN IDs), each 60-120 lines, none containing a court card id (SUIT-CUPS-11 through -14) or forbidden terms from the spec's section 5 list.
+- research/pilots/Cups_Pip_Batch_Verification_Report.md exists, naming all ten SUIT-CUPS-01..10 card ids with a verdict and recomputed rank-in-suit for each.
+- Every section-2 rank-in-suit arithmetic line is recomputed from the registry's sort_order column (block start 29), not asserted from memory.
+- Every section-3 scoring statement is sourced (RULE-1790 pp. 5-6 as transcribed via the Four of Coins pilot's claim chain, or the Justice pilot's verzicola hedge where relevant) or explicitly marked absent/[UNVERIFIED] -- no invented amounts.
+
+*Audited against SHA:* `0ff3c97`
 
 ---
 ### ✅ T-MIN-017 · P3 · codex · DONE

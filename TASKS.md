@@ -13,15 +13,23 @@ graph TD
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
+    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]
+    T-PTG-023 --> T-PTG-024
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::done
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::done
+    T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]
+    T-PTG-024 --> T-PTG-025
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-PTG-013["T-PTG-013<br/>Theme picker doesn't visibly recolor changelog.php (and 5 other pages) due to uncached-bust journal-chat.css links"]:::done
     T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::done
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
+    T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::active
+    T-PTG-015 --> T-PTG-018
+    T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
+    T-PTG-020 --> T-PTG-022
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
@@ -31,26 +39,36 @@ graph TD
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]
     T-PTG-001 --> T-PTG-003
     T-PTG-002 --> T-PTG-003
-    T-PTG-015["T-PTG-015<br/>JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)"]
+    T-PTG-015["T-PTG-015<br/>JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::review
+    T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]
+    T-PTG-022 --> T-PTG-023
+    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]
+    T-PTG-018 --> T-PTG-019
+    T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::done
     T-INTY-018 --> T-INTY-020
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
+    T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]
+    T-PTG-019 --> T-PTG-020
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
-    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]
+    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
+    T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
-    T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::review
+    T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::done
     T-MIN-019["T-MIN-019<br/>Apply the Bernardi verzicola reconciliation queue — hedge-phrase citation fix only"]:::done
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
-    T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::review
+    T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::review
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
+    T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
+    T-PTG-025 --> T-PTG-026
+    T-PTG-015 --> T-PTG-026
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
     T-PTG-011["T-PTG-011<br/>'Good Answer' upvote click fails in production with 'Invalid or missing CSRF security token'"]:::done
@@ -85,7 +103,7 @@ graph TD
 *Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
-### ⏳ T-INTY-018 · P1 · ANY · HUMAN_REVIEW
+### ✅ T-INTY-018 · P1 · ANY · DONE
 **Add dedicated gazelle_id column, decoupled from piano_code**
 **Owner:** Worker-Gazelle1
 
@@ -547,7 +565,7 @@ graph TD
 *Audited against SHA:* `6d955d9962a89d24af8a5d8052eb1d67b1ea0186`
 
 ---
-### ⏳ T-INTY-020 · P3 · ANY · HUMAN_REVIEW
+### ✅ T-INTY-020 · P3 · ANY · DONE
 **Design (not build) nightly sync of Gazelle service history keyed on gazelle_id**
 **Owner:** Worker-GazelleSync1
 
@@ -1002,6 +1020,24 @@ graph TD
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
+### 📋 T-PTG-021 · P1 · ANY · AUDITED
+**Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)**
+**Owner:** None
+
+**Scope:**
+- FINDING: Chip asked that no future work be pushed to main without running the full "golden hammer" regression suite (`journalgpt/tests/security_and_eval_suite.php`, which runs 8 PHP suites plus the Python eval_runner.py -- 9 suites total). Running it as a baseline check surfaced one pre-existing failure: `JournalChatRenderTest.php:115` asserts the rendered `index.php` HTML contains the exact literal substring `href="assets/journal-chat.css"` (no query string). `index.php`'s actual stylesheet link has ALWAYS included a cache-busting `?v=<hash>` query param (confirmed via git history -- this predates every task from today's session), so this exact-substring assertion has likely been failing since the test was first written (single commit in its git history, `b89a4d7`, never updated since). This is a stale/wrong test assertion, not a real product bug -- confirmed the actual rendered HTML is correct and functional (T-PTG-013 extended the same versioned-link pattern to 6 more pages earlier today specifically because it is the correct, intentional behavior).
+- FIX SCOPE: update `journalgpt/tests/JournalChatRenderTest.php:115` to check for a pattern that tolerates the version query string, e.g. a regex or `strpos` on `href="assets/journal-chat.css?v=` (matching the actual, correct, intentional markup) instead of the exact stale string. Do not weaken the assertion into something that would pass regardless of correctness (e.g. do not just delete the check) -- it should still fail if the stylesheet link is missing or malformed.
+- SCAN FOR SIMILAR STALENESS: since this test file has apparently never been updated since its original creation, check its other 10 required snippets (title, journal-chat.js src, csrf_token, allowanceCount, messagesContainer, questionForm, questionInput, sendButton, grounding disclaimer text, "Test Member") against the CURRENT index.php to confirm none of the others have silently drifted stale in the same way -- if any others are found stale, fix them too and note each one in the handoff.
+
+**Definition of Done:**
+- The full golden hammer suite (`DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php`) reports 9/9 suites passing, 0 failures.
+- The fixed assertion still meaningfully verifies the stylesheet is linked correctly -- confirm by temporarily breaking the link in a local copy (e.g. renaming the href) and re-running the test to see it correctly fail, then restoring it, per this repo's existing TDD convention (see other recent tasks' handoffs this session for the pattern: prove a test can fail before trusting that it can pass).
+- Any other stale snippet assertions found during the scan are fixed and listed in the handoff, or the handoff explicitly states none were found.
+- php -l passes on journalgpt/tests/JournalChatRenderTest.php.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
 ### ✅ T-PTG-012 · P1 · ANY · DONE
 **Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped**
 **Owner:** Worker-ColorSchemes1
@@ -1151,49 +1187,176 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-015 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)**
+### 📋 T-PTG-024 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
 **Owner:** None
 
 **Scope:**
-- BACKGROUND: journalgpt/v3/v3.md (currently untracked, not yet committed) is a full PRD for JournalGPT v2/v3 -- a 6-phase, ~15-25 developer-day rearchitecture of the answer pipeline (understand -> plan -> search -> evaluate evidence -> reason -> answer -> verify citations, replacing the current simple question -> File Search -> answer flow). Chip confirmed via AskUserQuestion that the fleet should proceed with ONLY Phase 0 for now, not the full project -- re-evaluate scope after Phase 0 lands. Nothing else in this PRD has been started (confirmed: no matching git branches, no lib files like ResearchPlanner.php/EvidenceRetriever.php exist, no other fleet tasks reference it).
-- WHAT PHASE 0 IS, PER THE PRD ITSELF (journalgpt/v3/v3.md section 24 "Evaluation Dataset" and section 32 "Phase 0 -- Establish benchmark"): "Before changing production behavior, construct a benchmark of approximately 30-50 actual disappointing JournalGPT interactions... Do not begin tuning without baseline examples." Each benchmark entry must include: original user question; prior conversation context; existing JournalGPT answer; citations returned; why the answer was disappointing; characteristics of a better answer. Required category coverage: simple questions; vague questions; follow-ups; comparisons; technical reasoning; historical questions; questions with no Journal answer; multi-source questions; attempted content extraction.
-- REAL PRODUCTION EVIDENCE GATHERED BY SCOUT (via debug_logs.php, the existing public debugging endpoint): as of this Scout pass, exactly 29 total logged interactions exist in production (this is a low-traffic pilot -- confirm the current count yourself, it will have grown by the time you work this). Of those 29, 10 show clear disappointing signals (status uncertain/error, model_declined=1, or zero parsed_citations_count on a nominally "success" response): log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22. Notably: log ids 2/3/5 are three SEPARATE attempts at the literal one-word question "why?" (a broken follow-up -- the member almost certainly meant it as a continuation of a prior turn, and the system has no persistent conversation state to resolve that, exactly the Primary Problem section 4 describes); log ids 4/6/7/1 show FOUR attempts at "have voicing technique changed over the years?" with alternating success/uncertain outcomes for what looks like the same underlying question (retrieval-quality inconsistency); log ids 9/10/12/13 are real technical piano-repair questions returning uncertain/error. This is real, valuable seed data but far short of 30-50 -- do not fabricate additional entries to LOOK like they came from debug_logs.php; clearly separate real production examples from synthetic ones in the benchmark file (see FIX SCOPE below).
-- WHY REAL DATA ALONE ISN'T ENOUGH: 10 real examples cannot cover the PRD's required category diversity (simple/vague/follow-up/comparison/technical-reasoning/historical/no-Journal-answer/multi-source/attempted-extraction -- 9 categories, and the 10 real examples cluster heavily in only 2-3 of them: broken follow-ups and technical-reasoning uncertainty). The benchmark must be supplemented with hand-authored synthetic examples covering the missing categories, written using genuine piano-technician domain knowledge (not vague placeholders) so they're realistic stand-ins for what a member might actually ask.
-- THIS IS A JUDGMENT-HEAVY TASK, NOT A MECHANICAL ONE: "why was this disappointing" and "what would a better answer look like" require actual reasoning about each example, not boilerplate. For the real examples, ground the "why disappointing" explanation in the actual logged metadata (status, model_declined, is_grounded, retrieved_chunks_count, parsed_citations_count) plus a plausible reconstruction of what happened (you do not have access to the full answer TEXT via debug_logs.php, only metadata -- state this limitation explicitly per entry rather than inventing answer text you don't actually have).
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
+- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
+- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
 
 **Definition of Done:**
-- A new file journalgpt/v3/benchmark.md contains 30-50 entries, each as its own `### ` markdown heading (e.g. `### Entry 1 [REAL, debug_logs id 22]` or `### Entry 17 [SYNTHETIC, category: comparison]`), each with: original question, prior conversation context (or "none" if a fresh conversation), the existing answer or a clear statement that the raw answer text isn't available (for real entries sourced only from debug_logs.php metadata), citations returned (or "0, confirmed via parsed_citations_count"), a specific and non-generic explanation of why it was/would be disappointing, and concrete characteristics of a better answer.
-- At least the 10 real production examples identified in this task's scope (log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22 -- re-verify against current debug_logs.php state, ids may have grown) are included and clearly labeled as REAL, with their debug_logs.php id cited for traceability.
-- Every one of the 9 required categories from v3.md section 24 (simple, vague, follow-up, comparison, technical reasoning, historical, no-Journal-answer, multi-source, attempted content extraction) has at least 2 examples in the benchmark, whether real or synthetic -- state in the file which categories are real-only, synthetic-only, or mixed.
-- Synthetic examples are clearly labeled SYNTHETIC (not presented as if they came from debug_logs.php) and are grounded in genuine piano-technician domain topics (not generic placeholder text) -- reference actual PTJ-relevant concepts consistent with the topics already visible in the real corpus (e.g. tuning stability, voicing, regulation, string rendering, bearing points -- the Worker should draw on the Journal corpus topics already visible in existing test fixtures/real questions, not invent unrelated domains).
-- The file includes a short header section explaining its purpose (baseline for comparing JournalGPT v2/v3 against current behavior, per v3.md Phase 0/section 24) and explicitly states the current real-interaction count this benchmark was built against, so future re-runs know how much has changed.
-- This task does NOT modify journalgpt/lib/JournalAnswerService.php or any other production answer-pipeline code -- Phase 0 is benchmark construction only, per the PRD's own phasing (\"Do not begin tuning without baseline examples\"). If the Worker is tempted to start implementing ConversationStateService or ResearchPlanner while building the benchmark, stop -- that is explicitly out of scope for this task and would violate the PRD's own sequencing.
+- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
+- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
+- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
+- php -l passes on all new/modified PHP files.
 
-*Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 📋 T-PTG-017 · P2 · ANY · AUDITED
-**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
+### 📋 T-PTG-025 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
 **Owner:** None
 
 **Scope:**
-- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
-- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
-- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
-- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
-- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 2.1, 17-19 (Intellectual Property Protection, Bulk Extraction Protection, Public Sharing Review) before starting. Gated on T-PTG-024 (ClaimValidator) -- by this point the answer pipeline has fundamentally changed (planning, multi-query retrieval, ranking, synthesis with explanation-vs-Journal distinction, per-claim validation), so this phase re-audits the existing IP/security protections against the NEW pipeline shape, not just the old one.
+- WHAT TO REVIEW/HARDEN, per v3.md exactly: (1) section 17 -- confirm the browser never receives OpenAI API keys, vector-store credentials, corpus filesystem paths, extracted corpus dumps, or private storage credentials, across ALL the new lib classes added in Phases 1-4 (ConversationStateService, ResearchPlanner, EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator) -- a new class is a new place a leak could be introduced. (2) section 18 -- confirm bulk-extraction refusal (already tested in security_and_eval_suite.php's TC-SEC-001/002 cases) still works correctly against the new multi-query retrieval pipeline, which by design fetches MORE passages per question than the old single-search pipeline -- verify this increased retrieval breadth has not created a new bulk-extraction loophole. (3) section 19 -- review the existing public conversation-sharing feature (find it in the codebase -- grep for "shared" conversations, `SharedConversationsTest.php` already exists) and confirm unauthenticated users still cannot gain protected PDF access via a shared conversation, even though shared conversations may now include the new explanation-vs-Journal-distinguished content and per-claim-validated citations from Phases 3-4.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions, including SharedConversationsTest.php and AuthAccessTest.php specifically.
+- EXPLICITLY OUT OF SCOPE: Phase 6 evaluation/tuning. This is a review-and-harden task, not a new-feature task -- if the review finds everything already correctly protected against the new pipeline, the DoD is still satisfied by documenting that finding with evidence, not by inventing unnecessary new restrictions.
 
 **Definition of Done:**
-- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
-- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
-- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
-- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
-- php -l passes on journalgpt/index.php.
-- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
-- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
+- A written review (in the handoff, not a new doc file unless the Worker judges one is needed) explicitly addresses all three v3.md areas (secret/credential exposure across the new Phase 1-4 classes, bulk-extraction refusal against the wider multi-query retrieval, and public-sharing PDF-access boundary) with concrete evidence for each -- either "confirmed already safe, here is the test/grep that proves it" or "found a gap, here is the fix."
+- Any gap found is fixed, with a new or extended test proving the fix (e.g. extending SharedConversationsTest.php or security_and_eval_suite.php's existing TC-SEC-* cases).
+- Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- php -l passes on all modified PHP files.
 
-*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-022 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 2b: EvidenceRanker**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated on T-PTG-020 (EvidenceRetriever) being DONE.
+- WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`. Not every passage T-PTG-020's EvidenceRetriever collects should go directly to the final answering model. Rank evidence by: relevance to user intent, relevance to conversation context, source quality, specificity, redundancy, citation resolvability. Output a compact evidence bundle for synthesis (v3.md section 11's exact phrase).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not change the live wiring T-PTG-020 established beyond inserting this ranking step between retrieval and synthesis.
+
+**Definition of Done:**
+- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably reduces/reorders a raw evidence set into a compact bundle.
+- A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate passage being down-ranked or dropped, and a highly relevant passage being ranked above a tangentially related one for a specific test question.
+- Wired into the live path after T-PTG-020's retriever, before wherever synthesis currently happens (still the existing JournalAnswerService synthesis step at this point, since AnswerSynthesizer.php doesn't exist yet).
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest, ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still passes in full.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-023 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022 (EvidenceRanker).
+- WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`. Receives: the member's question, recent conversation, T-PTG-018's persistent research state, T-PTG-019's research plan, and T-PTG-022's ranked evidence bundle. Produces the best useful answer possible.
+- THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly distinguish "Journal-supported information" (requires evidence and citation, e.g. "The Journal describes friction at the bearing points as...") from "Assistant explanation" (interpretation/comparison/general reasoning, e.g. "A useful way to picture this mechanically is..." -- must NOT be falsely represented as something PTJ published). This is v3.md's stated mechanism for "how JournalGPT can become significantly more conversational without compromising citation integrity" -- the single most important behavioral change in this phase.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims is a separate, later step; this phase only produces the answer with the two kinds of content clearly distinguished, it does not yet verify each Journal-attributed claim against evidence). Do not weaken the existing hard requirement (v3.md section 2.2/2.3) that Journal-attributed claims must be cited and citations must resolve -- this phase adds explanation capability, it does not loosen grounding requirements.
+
+**Definition of Done:**
+- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers that visibly/structurally distinguish Journal-supported content from assistant explanation (Worker's exact mechanism -- e.g. distinct markup, a structured field separating the two -- documented in the handoff).
+- A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction works: at least one test case where the answer correctly separates a cited Journal fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged as if it were a Journal claim.
+- Wired into the live path, replacing/extending wherever synthesis currently happens in JournalAnswerService.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, including the existing citation-grounding test cases in JournalAnswerServiceTest.php and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase must not regress citation accuracy while adding explanatory capability.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-019 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
+- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
+- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
+- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
+- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
+
+**Definition of Done:**
+- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
+- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-020 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 9-10 (Multi-Query Journal Search, Evidence Retriever) and section 32's Phase 2 description before starting. This is the first task that actually integrates prior work into the live pipeline -- v3.md section 32 says "At this point, run the benchmark again. This is the first major go/no-go checkpoint," so this task's DoD requires a benchmark comparison, not just unit tests.
+- WHAT TO BUILD, per v3.md section 10 exactly: create `journalgpt/lib/EvidenceRetriever.php`. Responsibilities: execute T-PTG-019's ResearchPlanner-produced search queries (plural -- multiple targeted searches per v3.md section 9, not one literal-interpretation search) against the existing OpenAI File Search / vector store integration (reuse `journalgpt/lib/OpenAIClient.php`, do not rebuild retrieval plumbing that already works -- v3.md section 3 is explicit that existing OpenAI integration, vector-store indexing, and File Search must be preserved, not replaced); collect passages; normalize retrieval metadata; preserve source identity and page information; deduplicate overlapping chunks; prevent one source from dominating results; limit total evidence size.
+- THIS TASK DOES THE FIRST LIVE INTEGRATION: unlike T-PTG-018/019, this task DOES wire ResearchPlanner + EvidenceRetriever into an actual code path -- but per v3.md section 27 (Failure Handling), it must degrade gracefully: "Planner unavailable -> use direct retrieval" and "One search fails -> continue with successful searches when sufficient." Do not make the new pipeline a hard replacement with no fallback -- if you cannot safely make it the default live path without risking a production regression, wire it behind a clearly-named feature flag/tier option instead and say so explicitly in the handoff (Worker's judgment call, but must be justified, not silently punted).
+- THE GO/NO-GO CHECKPOINT, per v3.md section 32: after this task, replay T-PTG-015's benchmark against BOTH the old pipeline and the new EvidenceRetriever-based pipeline and compare retrieval quality (did it find the right Journal material for the benchmark's documented disappointing cases, especially the follow-up and multi-source categories). This comparison result belongs in the handoff and determines whether later phases (3-6) are worth continuing -- do not just claim success without this comparison.
+- EXPLICITLY OUT OF SCOPE: EvidenceRanker (T-PTG-021), AnswerSynthesizer, ClaimValidator. Do not remove or bypass the existing citation resolver -- v3.md section 15 requires preserving it; this task only improves what evidence FEEDS the existing resolver, it does not replace the resolver itself.
+
+**Definition of Done:**
+- EvidenceRetriever.php exists per v3.md section 10's responsibilities, executes multi-query plans from ResearchPlanner, deduplicates, and bounds evidence size.
+- A new test file (journalgpt/tests/EvidenceRetrieverTest.php) covers multi-query execution, deduplication of overlapping chunks, and graceful degradation when a single search fails.
+- The new pipeline is wired into an actual reachable code path (default or behind a stated flag/tier per this task's scope), with graceful fallback to direct retrieval if the planner is unavailable, per v3.md section 27.
+- The Go/No-Go benchmark comparison from this task's scope is performed and its result (better, worse, or mixed retrieval quality vs. the old pipeline, with specifics) is recorded plainly in the handoff -- this is the single most important piece of evidence for whether Phase 3+ should proceed.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions. This task is the FIRST to wire new code into a live path -- this gate is especially critical here, since a mistake could break the app for members using it today.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php, ResearchPlannerTest.php) -- 0 regressions to the existing citation-grounded RAG lane.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-026 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32's Phase 6 description before starting. This is the final phase, gated on T-PTG-025 (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after comparison).
+- WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts, retrieval breadth, model choice, evidence limits, tier behavior, latency, cost." Run T-PTG-015's full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline (Phases 1-5 all merged) and score it against v3.md section 25's metrics: conversational understanding, retrieval quality, answer usefulness, citation accuracy, citation relevance, continuity, uncertainty handling, IP compliance, latency, cost.
+- THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015's original disappointing examples, the handoff must state whether the new pipeline actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up now that ConversationStateService + ResearchPlanner exist?) or whether it does not -- do not present an average score improvement as success if specific, previously-broken cases documented in the benchmark are still broken. v3.md's own Success Criteria (section 34) is a concrete multi-turn conversation example ("What does the Journal say about false beats?" -> "What causes them?" -> "Is that different in wound strings?" -> "So what would you check first?") -- test this exact flow live as part of the evaluation.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions after every tuning iteration, not just once at the end.
+- EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are done by this point, this phase only tunes what exists (prompts, thresholds, retrieval breadth, model/tier choice) based on the benchmark replay results. Do not add new lib classes here.
+
+**Definition of Done:**
+- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results are scored per v3.md section 25's metrics, with per-example before/after comparison (not just aggregate scores) for every originally-disappointing example.
+- v3.md's section 34 success-criteria conversation flow (false beats -> causes -> wound strings comparison -> practical synthesis) is tested live and the handoff states plainly whether it now works as the PRD envisions.
+- At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
+- The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 🛠 T-PTG-018 · P2 · ANY · CLAIMED
+**JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP (Claude, Antigravity, Codex, Gemini, etc. -- this task carries no assumed prior conversation, read everything you need from the files cited below): journalgpt/v3/v3.md is the full JournalGPT v2/v3 PRD (commit it to git if it is still untracked -- check `git status` first; if untracked, add and commit it as your first step so the source-of-truth PRD is in version control for future agents, not just a local file). Read v3.md sections 1-7 (Executive Summary through Conversation Understanding) and section 28 (Code Organization) before starting. This task implements ONLY the first bullet of Phase 1 (v3.md section 32): "persistent conversation state." A separate, later task (T-PTG-019) covers ResearchPlanner and depends on this one.
+- GATE: this task depends on T-PTG-015 (the Phase 0 benchmark) being DONE. Per v3.md's own words: "Do not begin tuning without baseline examples." Do not start this task's actual implementation work until T-PTG-015 is DONE -- the fleet CLI's dependency check on `claim` already enforces this mechanically, so if you can claim this task at all, the gate has been satisfied.
+- WHAT TO BUILD, per v3.md section 7 exactly: create `journalgpt/lib/ConversationStateService.php` and an appropriate database migration (follow this repo's existing migration numbering/naming convention in `journalgpt/migrations/*.sql` -- read the highest-numbered existing migration first to pick the next number). Suggested stored state per conversation: conversation_id, topic, research_summary, technical_context, important_entities, important_sources, open_questions, updated_at (v3.md gives a full example JSON shape -- read it directly rather than relying on this summary). This must SUPPLEMENT the existing `ConversationContext.php` short-term context, not replace it (v3.md section 7: "Current ConversationContext behavior should remain as short-term context").
+- WHY THIS MATTERS, per real production evidence: T-PTG-015's benchmark (once it exists -- read it) documents real member conversations that broke on bare follow-ups like a literal "why?" with no context. This service is the mechanism that will let a later phase (ResearchPlanner, T-PTG-019) resolve "What about an upright?" or "why?" against prior turns instead of treating each message in isolation.
+- EXPLICITLY OUT OF SCOPE: do not build ResearchPlanner, do not change JournalAnswerService's actual answer-generation flow to USE this new state yet (that integration is T-PTG-019's job) -- this task only builds and tests the storage/retrieval service itself as a standalone, correctly-designed unit. Do not attempt Phases 2-6.
+
+**Definition of Done:**
+- ConversationStateService.php exists per v3.md section 7's suggested shape, with methods to read and update a conversation's persistent state (Worker's exact method names/signatures, but must be usable by a later phase without redesign -- keep the interface clean).
+- A new migration adds whatever table(s)/columns are needed, following this repo's existing migration file conventions (see journalgpt/migrations/010_feature_request_conversations.sql for the most recent example of style/structure).
+- A new test file (journalgpt/tests/ConversationStateServiceTest.php, self-runner convention per AskEndpointTest.php) covers create/read/update of a conversation's state, and confirms it does not interfere with or replace the existing ConversationContext.php behavior (both must coexist).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` (the full 9-suite regression gate: AuthAccessTest, CorpusIndexerTest, JournalAnswerServiceTest, AskEndpointTest, UsagePolicyTest, MigrationTest, JournalChatRenderTest, OperationsJobTest, plus the Python eval_runner.py) and confirm 9/9 PASS with zero regressions, not just the narrower per-task test list. This is broader than the individual test files listed below and supersedes them as the actual merge gate -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-008 · P2 · ANY · DONE
@@ -1225,25 +1388,29 @@ graph TD
 *Audited against SHA:* `2915a622d26b0dfa151f5da6070cad4c9688d3ae`
 
 ---
-### ✅ T-PTG-007 · P2 · ANY · DONE
-**Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario**
-**Owner:** Claude-FleetCommander
+### ✅ T-PTG-015 · P2 · ANY · DONE
+**JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)**
+**Owner:** Antigravity
 
 **Scope:**
-- journalgpt/tests/scenarios/frequent_contributors_aggregate.json (new) — real production conversation (2026-08-12, conversation_id=47, user_id=1) found via the reviewing-production-conversations skill: 'who writes the most articles?' -> 'enuermate the top 10 most frequent contributoprs' (typos preserved verbatim) -> 'list the names of their articles along with them'.
-- This is a genuinely new cognitive mode beyond the 4 T-PTG-006 covers (factual retrieval / synthesis / speculative / sentiment aggregation): a question that requires a COUNT or RANKING across the entire corpus, which a single ~20-chunk semantic retrieval architecturally cannot produce reliably — it only ever sees a small, unrepresentative sample, never the full corpus.
-- Production evidence (debug_logs id=15) shows the model DID verbally hedge ('did not specify a definitive list... a comprehensive ranking... is not available in the provided excerpts') but still printed a confident-looking numbered 1-10 list beneath that caveat — the visual formatting undercuts the verbal honesty.
+- BACKGROUND: journalgpt/v3/v3.md (currently untracked, not yet committed) is a full PRD for JournalGPT v2/v3 -- a 6-phase, ~15-25 developer-day rearchitecture of the answer pipeline (understand -> plan -> search -> evaluate evidence -> reason -> answer -> verify citations, replacing the current simple question -> File Search -> answer flow). Chip confirmed via AskUserQuestion that the fleet should proceed with ONLY Phase 0 for now, not the full project -- re-evaluate scope after Phase 0 lands. Nothing else in this PRD has been started (confirmed: no matching git branches, no lib files like ResearchPlanner.php/EvidenceRetriever.php exist, no other fleet tasks reference it).
+- WHAT PHASE 0 IS, PER THE PRD ITSELF (journalgpt/v3/v3.md section 24 "Evaluation Dataset" and section 32 "Phase 0 -- Establish benchmark"): "Before changing production behavior, construct a benchmark of approximately 30-50 actual disappointing JournalGPT interactions... Do not begin tuning without baseline examples." Each benchmark entry must include: original user question; prior conversation context; existing JournalGPT answer; citations returned; why the answer was disappointing; characteristics of a better answer. Required category coverage: simple questions; vague questions; follow-ups; comparisons; technical reasoning; historical questions; questions with no Journal answer; multi-source questions; attempted content extraction.
+- REAL PRODUCTION EVIDENCE GATHERED BY SCOUT (via debug_logs.php, the existing public debugging endpoint): as of this Scout pass, exactly 29 total logged interactions exist in production (this is a low-traffic pilot -- confirm the current count yourself, it will have grown by the time you work this). Of those 29, 10 show clear disappointing signals (status uncertain/error, model_declined=1, or zero parsed_citations_count on a nominally "success" response): log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22. Notably: log ids 2/3/5 are three SEPARATE attempts at the literal one-word question "why?" (a broken follow-up -- the member almost certainly meant it as a continuation of a prior turn, and the system has no persistent conversation state to resolve that, exactly the Primary Problem section 4 describes); log ids 4/6/7/1 show FOUR attempts at "have voicing technique changed over the years?" with alternating success/uncertain outcomes for what looks like the same underlying question (retrieval-quality inconsistency); log ids 9/10/12/13 are real technical piano-repair questions returning uncertain/error. This is real, valuable seed data but far short of 30-50 -- do not fabricate additional entries to LOOK like they came from debug_logs.php; clearly separate real production examples from synthetic ones in the benchmark file (see FIX SCOPE below).
+- WHY REAL DATA ALONE ISN'T ENOUGH: 10 real examples cannot cover the PRD's required category diversity (simple/vague/follow-up/comparison/technical-reasoning/historical/no-Journal-answer/multi-source/attempted-extraction -- 9 categories, and the 10 real examples cluster heavily in only 2-3 of them: broken follow-ups and technical-reasoning uncertainty). The benchmark must be supplemented with hand-authored synthetic examples covering the missing categories, written using genuine piano-technician domain knowledge (not vague placeholders) so they're realistic stand-ins for what a member might actually ask.
+- THIS IS A JUDGMENT-HEAVY TASK, NOT A MECHANICAL ONE: "why was this disappointing" and "what would a better answer look like" require actual reasoning about each example, not boilerplate. For the real examples, ground the "why disappointing" explanation in the actual logged metadata (status, model_declined, is_grounded, retrieved_chunks_count, parsed_citations_count) plus a plausible reconstruction of what happened (you do not have access to the full answer TEXT via debug_logs.php, only metadata -- state this limitation explicitly per entry rather than inventing answer text you don't actually have).
 
 **Definition of Done:**
-- Scenario executed across enough preset/tier combinations to know whether the hedge-but-still-rank behavior is consistent or occasional (model-specific).
-- Determine whether the current verbal caveat is sufficient, or whether a concrete change is warranted: e.g. system-instruction guidance requiring the model to state the sample-vs-corpus limitation BEFORE presenting any list for a count/ranking question, or to avoid a definitively-numbered list format entirely when the underlying data is acknowledged incomplete.
-- If a fix is implemented, verify it doesn't regress the 4 existing cognitive modes (T-PTG-005/006 coverage) or the citation-format checks.
-- Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
+- A new file journalgpt/v3/benchmark.md contains 30-50 entries, each as its own `### ` markdown heading (e.g. `### Entry 1 [REAL, debug_logs id 22]` or `### Entry 17 [SYNTHETIC, category: comparison]`), each with: original question, prior conversation context (or "none" if a fresh conversation), the existing answer or a clear statement that the raw answer text isn't available (for real entries sourced only from debug_logs.php metadata), citations returned (or "0, confirmed via parsed_citations_count"), a specific and non-generic explanation of why it was/would be disappointing, and concrete characteristics of a better answer.
+- At least the 10 real production examples identified in this task's scope (log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22 -- re-verify against current debug_logs.php state, ids may have grown) are included and clearly labeled as REAL, with their debug_logs.php id cited for traceability.
+- Every one of the 9 required categories from v3.md section 24 (simple, vague, follow-up, comparison, technical reasoning, historical, no-Journal-answer, multi-source, attempted content extraction) has at least 2 examples in the benchmark, whether real or synthetic -- state in the file which categories are real-only, synthetic-only, or mixed.
+- Synthetic examples are clearly labeled SYNTHETIC (not presented as if they came from debug_logs.php) and are grounded in genuine piano-technician domain topics (not generic placeholder text) -- reference actual PTJ-relevant concepts consistent with the topics already visible in the real corpus (e.g. tuning stability, voicing, regulation, string rendering, bearing points -- the Worker should draw on the Journal corpus topics already visible in existing test fixtures/real questions, not invent unrelated domains).
+- The file includes a short header section explaining its purpose (baseline for comparing JournalGPT v2/v3 against current behavior, per v3.md Phase 0/section 24) and explicitly states the current real-interaction count this benchmark was built against, so future re-runs know how much has changed.
+- This task does NOT modify journalgpt/lib/JournalAnswerService.php or any other production answer-pipeline code -- Phase 0 is benchmark construction only, per the PRD's own phasing (\"Do not begin tuning without baseline examples\"). If the Worker is tempted to start implementing ConversationStateService or ResearchPlanner while building the benchmark, stop -- that is explicitly out of scope for this task and would violate the PRD's own sequencing.
 
-*Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+*Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
 
 ---
-### ⏳ T-PTG-010 · P2 · ANY · HUMAN_REVIEW
+### ✅ T-PTG-010 · P2 · ANY · DONE
 **Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging**
 **Owner:** Worker-ContributorIndex1
 
@@ -1268,6 +1435,24 @@ graph TD
 *Audited against SHA:* `7a7c6212a575bb2743b3b26c32283b937f1e286f`
 
 ---
+### ✅ T-PTG-007 · P2 · ANY · DONE
+**Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario**
+**Owner:** Claude-FleetCommander
+
+**Scope:**
+- journalgpt/tests/scenarios/frequent_contributors_aggregate.json (new) — real production conversation (2026-08-12, conversation_id=47, user_id=1) found via the reviewing-production-conversations skill: 'who writes the most articles?' -> 'enuermate the top 10 most frequent contributoprs' (typos preserved verbatim) -> 'list the names of their articles along with them'.
+- This is a genuinely new cognitive mode beyond the 4 T-PTG-006 covers (factual retrieval / synthesis / speculative / sentiment aggregation): a question that requires a COUNT or RANKING across the entire corpus, which a single ~20-chunk semantic retrieval architecturally cannot produce reliably — it only ever sees a small, unrepresentative sample, never the full corpus.
+- Production evidence (debug_logs id=15) shows the model DID verbally hedge ('did not specify a definitive list... a comprehensive ranking... is not available in the provided excerpts') but still printed a confident-looking numbered 1-10 list beneath that caveat — the visual formatting undercuts the verbal honesty.
+
+**Definition of Done:**
+- Scenario executed across enough preset/tier combinations to know whether the hedge-but-still-rank behavior is consistent or occasional (model-specific).
+- Determine whether the current verbal caveat is sufficient, or whether a concrete change is warranted: e.g. system-instruction guidance requiring the model to state the sample-vs-corpus limitation BEFORE presenting any list for a count/ranking question, or to avoid a definitively-numbered list format entirely when the underlying data is acknowledged incomplete.
+- If a fix is implemented, verify it doesn't regress the 4 existing cognitive modes (T-PTG-005/006 coverage) or the citation-format checks.
+- Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
+
+*Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+
+---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW
 **Add an admin "reply to conversation" tool, then use it to notify conversation 51 that color schemes shipped**
 **Owner:** Worker-AdminReply1
@@ -1288,5 +1473,28 @@ graph TD
 - The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
 
 *Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
+
+---
+### ⏳ T-PTG-017 · P2 · ANY · PEER_REVIEW
+**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
+**Owner:** Worker-Mobile1
+
+**Scope:**
+- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
+- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
+- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
+- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
+- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
+
+**Definition of Done:**
+- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
+- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
+- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
+- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
+- php -l passes on journalgpt/index.php.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
+- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
+
+*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---

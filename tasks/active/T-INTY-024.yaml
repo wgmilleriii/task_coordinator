@@ -4,8 +4,8 @@ title: admin/v2/normalization.php edits inventory.make, not pianos.make/model --
 repo: intypiano
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-Normalize1
 created_at: '2026-08-13T00:00:00Z'
 dependencies: []
 scope:
@@ -61,3 +61,7 @@ events:
   action: AUDIT
   actor: FleetCoordinator-Chip
   details: Audited against c6ccca5e5adc10b3044cadd406eb6eae71ea43f2
+- timestamp: '2026-08-13T15:06:16.187426Z'
+  action: CLAIM
+  actor: Worker-Normalize1
+claimed_at: '2026-08-13T15:06:16.186841Z'

@@ -10,18 +10,17 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
+    T-MIN-021["T-MIN-021<br/>Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)"]
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
-    T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::done
-    T-PTG-028["T-PTG-028<br/>JournalGPT v3: add a dedicated end-to-end v3_beta regression test to the golden hammer suite"]
-    T-PTG-026 --> T-PTG-028
+    T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
-    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::done
+    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]
     T-PTG-023 --> T-PTG-024
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::done
     T-MIN-016 --> T-MIN-017
     T-MIN-001["T-MIN-001<br/>Initialize the Virtual Master Sheet Web Grid"]:::done
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::done
-    T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]:::done
+    T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]
     T-PTG-024 --> T-PTG-025
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
@@ -30,7 +29,7 @@ graph TD
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::done
     T-PTG-015 --> T-PTG-018
-    T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]:::done
+    T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
     T-PTG-020 --> T-PTG-022
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::done
@@ -43,23 +42,23 @@ graph TD
     T-PTG-002 --> T-PTG-003
     T-PTG-015["T-PTG-015<br/>JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]:::done
+    T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]
     T-PTG-022 --> T-PTG-023
-    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::done
+    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::active
     T-PTG-018 --> T-PTG-019
     T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::done
     T-INTY-018 --> T-INTY-020
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::done
-    T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]:::done
+    T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]
     T-PTG-019 --> T-PTG-020
     T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]:::done
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
-    T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::done
-    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::done
-    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::done
+    T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
+    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
+    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
@@ -70,12 +69,10 @@ graph TD
     T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::done
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
-    T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]:::done
+    T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
     T-PTG-025 --> T-PTG-026
     T-PTG-015 --> T-PTG-026
     T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::done
-    T-PTG-027["T-PTG-027<br/>JournalGPT v3: wire ConversationStateService.updateState() into ask() (persistent state is currently inert)"]:::active
-    T-PTG-026 --> T-PTG-027
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
     T-PTG-011["T-PTG-011<br/>'Good Answer' upvote click fails in production with 'Invalid or missing CSRF security token'"]:::done
@@ -935,6 +932,27 @@ graph TD
 *Audited against SHA:* `09f857d`
 
 ---
+### 📋 T-MIN-021 · P2 · ANY · OPEN
+**Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)**
+**Owner:** None
+
+**Scope:**
+- SCOUT-F6 SOURCE: this is D2's direct, already-recorded consequence for T-MIN-013 (tasks/human/editorial_decisions_2026-08-12.md, D2 section, decided by Chip 2026-08-13). D2 itself: branch-based comparative canon — where documented pattern variation exists (e.g. hybrid-bodied vs ordinary-rider Cavaliers), the canon shows both authentic historical forms rather than picking one. D2's consequence line, verbatim: "the 16 court cards get a middle tier, not the light tier used for the 40 pips — this is a direct downstream requirement of D2, since a branch-based canon needs room for pattern-variation content that the light-tier format doesn't carry. A middle-tier format spec for the 16 courts is follow-up work, not yet designed." This task IS that follow-up work.
+- SCOUT-F6 CONFIRMED THE GAP AND ITS EVIDENCE BASE (dry run against branch test @82721eb, 2026-08-13): research/pilots/SUIT_CARD_FORMAT_SPEC.md (T-MIN-013, merged) is the light tier and covers only the 56 suit cards uniformly; its §6 already flags the gap it does not fill ("the comparison doc ... finds the 16 courts carry load-bearing pattern findings (hybrid anatomy, gender presentation) that strain this format; it recommends the human consider a middle tier for courts"). research/pilots/SUIT_TIER_COMPARISON_T-MIN-013.md §4 states the actual finding driving this: "CUPS-12 (court) is tighter than comfortable: the hybrid-anatomy finding, its relatedness qualification, the gender-presentation caution, and the suit-by-suit grid dependency ... are all load-bearing pattern findings that the light format holds only by leaning on an existing full dossier. The other 15 courts have no such dossier to lean on" — and its recommendation: "consider a middle tier for the 16 courts — the same skeleton plus a bounded 'pattern findings' subsection under §4 ... and 100% rather than sampled verification for the four Cavaliers." No middle-tier spec file exists anywhere in research/pilots/ as of this commit — confirmed by find/grep, see verification_command.
+- Write research/pilots/COURT_CARD_FORMAT_SPEC.md, a NEW format spec for the 16 court cards (Fantina/Fante, Cavalier, Queen, King × 4 suits) that EXTENDS research/pilots/SUIT_CARD_FORMAT_SPEC.md — inherit its skeleton (§3), grading legend (§2: [F]/[SI]/[SCH]/[LT]/[PS]/[U]/[UNVERIFIED]), claim-namespace rule (§4), and FORBIDDEN list (§5) verbatim or by explicit reference; do not duplicate them wholesale or silently diverge from them. ADD one new section (a bounded subsection under the iconography baseline, matching the comparison doc's §4 recommendation) for documented pattern-variation content: the format must be able to present MULTIPLE authentic historical forms for a card side by side when specimen evidence supports it (the Cavalier of Cups hybrid-bodied-vs-ordinary-rider case, per D2, is the concrete example), with EACH form's evidentiary basis and confidence stated individually — not a single blended description, and not one form silently preferred over the other.
+- Scope boundary on the policy question: the new section IMPLEMENTS D2's "show both forms" decision — it must not relitigate, second-guess, or add conditions to whether variant forms get shown. D2 already decided that. The spec's job is the mechanics: how a form is stated, sourced, and confidence-graded, and how multiple forms coexist in one card study without either being flattened into the other or asserted as universal (the light tier's §5 FORBIDDEN item "universalizing one specimen or pattern" carries forward unchanged).
+- Write ONE pilot card to the new middle tier: SUIT-CUPS-12 (Cavalier of Cups) — deliberately the SAME card already covered by both the light-tier pilot (research/pilots/drafts/STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md) and the full dossier (research/pilots/Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md + its JSON), so there are now three treatments of the identical card for direct comparison. This is intentional redundancy, matching the project's established T-MIN-013 pattern for format-design tasks — do not substitute a different card. The pilot's pattern-findings section must cover the hybrid-anatomy vs ordinary-rider finding: BM 1896,0501.35 (corroborated by .103) catalogs ordinary men on horseback "instead of monsters with human bodies," the Cups Cavalier survives in that pack, and hybrid body is pattern-selectable rather than rank-defining — carried at the same confidence the full dossier gives it (catalog evidence, not re-opened at this tier = [UNVERIFIED], per the light-tier pilot's own precedent at claim CU12-C06), never upgraded.
+- Write a short comparison note (e.g. research/pilots/COURT_TIER_COMPARISON_T-MIN-021.md, or a section appended to COURT_TIER_COMPARISON... naming is the worker's call as long as it references all three tiers by filename) answering: what the middle tier adds over the light tier (specifically — does its pattern-findings section capture the hybrid-anatomy finding, its BM .35/.103 relatedness qualification, and the gender-presentation caution as well as the full dossier does, better, or worse), and what the middle tier still does NOT carry versus the full dossier (if anything remains). This is the evidence a human needs to decide whether the middle tier suffices for all 16 courts, or whether some edge case (e.g. a court with MORE than two documented variant forms, or no full dossier to lean on at all) still needs full treatment — flag that open question explicitly if the pilot doesn't resolve it, don't paper over it.
+- OUT OF SCOPE (do not do this work): rolling the middle tier out to the other 15 court cards: writing prompts, art-direction guidance, or deck-generation-pipeline material for branch-variation cards (D2's own consequence list in tasks/human/editorial_decisions_2026-08-12.md names this as separate follow-up); and updating the Visual Canon policy document (also D2's own separate follow-up item). This task is format design plus one pilot and its comparison note, nothing more.
+
+**Definition of Done:**
+- research/pilots/COURT_CARD_FORMAT_SPEC.md exists, explicitly extends (references, does not silently fork) SUIT_CARD_FORMAT_SPEC.md's skeleton/legend/claim-namespace/FORBIDDEN list, and adds a pattern-variation subsection requiring each documented historical form to carry its own evidentiary basis and confidence grade, per D2's "show both forms" decision (implemented, not relitigated).
+- One SUIT-CUPS-12 (Cavalier of Cups) pilot exists written to the new middle tier, distinct from both research/pilots/drafts/STANDARD_SUIT-CUPS-12_Cavalier_of_Cups.md (light) and research/pilots/Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md (full), and its pattern-findings section states the hybrid-vs-ordinary-rider finding with per-form evidentiary basis and confidence, carried at or below the full dossier's confidence (no upgrading).
+- A comparison note exists, references all three tiers (light/middle/full) by filename, and states explicitly what the middle tier adds over light and what (if anything) it still lacks versus full, including whether that gap is acceptable for rollout to the other 15 courts or leaves an open edge case.
+- Rollout to the other 15 court cards, prompt/art-direction guidance, and the Visual Canon policy document are NOT touched by this task.
+- human_review_required is honored — task ends at HUMAN_REVIEW with the format proposal and one pilot, not with additional court cards authored or the Visual Canon policy updated.
+
+---
 ### 📋 T-MIN-008 · P2 · ANY · OPEN
 **Pin down Bernardi's verzicola boundary from the 1790 rules directly**
 **Owner:** None
@@ -1014,7 +1032,7 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
-### ✅ T-PTG-016 · P0 · ANY · DONE
+### ⏳ T-PTG-016 · P0 · ANY · HUMAN_REVIEW
 **SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)**
 **Owner:** Worker-SecFix1
 
@@ -1039,7 +1057,7 @@ graph TD
 *Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
-### ✅ T-PTG-001 · P0 · ANY · DONE
+### ⏳ T-PTG-001 · P0 · ANY · HUMAN_REVIEW
 **Fix footnote list numbering to match inline citation markers**
 **Owner:** Claude-Worker
 
@@ -1056,27 +1074,6 @@ graph TD
 - Existing test suite (tests/JournalAnswerServiceTest.php) still passes in full, including the existing hedged-answer/citation-always-works regression tests.
 
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
-
----
-### 📋 T-PTG-028 · P1 · ANY · AUDITED
-**JournalGPT v3: add a dedicated end-to-end v3_beta regression test to the golden hammer suite**
-**Owner:** None
-
-**Scope:**
-- BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found that JournalAnswerService::ask() threw an uncaught TypeError on virtually every real v3_beta request that reached EvidenceRanker (a null conversation state passed into a non-nullable parameter) -- meaning the entire v3_beta pipeline could not complete a real multi-chunk request in production before T-PTG-026's fix. This was NOT caught by security_and_eval_suite.php's existing 9/9 golden hammer suite, even though that suite has run green through every one of Phases 1-5's merges. It was only caught because T-PTG-026 happened to be the first task that actually exercised the complete v3_beta pipeline end-to-end (planner -> retriever -> ranker -> synthesizer -> claim validator) against realistic multi-chunk retrieval, rather than a single-chunk/empty-retrieval/mocked-shortcut path.
-- THE GAP, SPECIFICALLY: JournalAnswerServiceTest.php's existing tests (including the T-PTG-025-added TEST 4b for bulk-extraction refusal) exercise v3_beta only far enough to hit the refusal shortcut (which fires before the pipeline is even reached) or return early. No existing test in the golden hammer suite actually drives a v3_beta request through EVERY stage -- ConversationStateService.getState() returning null, ResearchPlanner.createPlan(), EvidenceRetriever.retrieve() with the new MIN_RELEVANCE_SCORE floor, EvidenceRanker.rankEvidence(), AnswerSynthesizer.synthesize(), and ClaimValidator.validate() -- for a realistic multi-chunk, multi-claim question, the way journalgpt/v3/replay_benchmark.php (T-PTG-026's one-off replay tool, not part of the permanent test suite) does.
-- WHAT TO DO: add a new permanent test file (e.g. journalgpt/tests/V3PipelineEndToEndTest.php) to the security_and_eval_suite.php runner, using the same mock/stub OpenAIClient approach already established in this codebase's test suite (see how JournalAnswerServiceTest.php and T-PTG-026's replay_benchmark.php each set up mocked responses) -- but wired as a genuine permanent regression test, not a one-off script. It must: (1) drive at least one v3_beta request through every pipeline stage listed above with realistic multi-chunk retrieved evidence (not empty/single-chunk), asserting the request completes successfully rather than throwing; (2) specifically assert that a conversation with NO persisted conversation_state row (i.e. getState() returns null, the exact condition that caused T-PTG-026's bug) does not crash the pipeline -- this is the regression case that must never silently reappear; (3) assert the final response shape (answer text, citations, is_grounded) is well-formed.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): the new test becomes suite #10 (or is folded into an existing suite entry) in `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php`, which must show all suites PASS with zero regressions to the existing 9.
-- EXPLICITLY OUT OF SCOPE: changing pipeline behavior -- this task only adds test coverage for the pipeline as it exists after T-PTG-026's fixes. If the new test reveals ANOTHER latent bug, stop and report it rather than silently patching around it -- file it the way T-PTG-026's and T-PTG-027's findings were filed, with concrete reproduction evidence.
-
-**Definition of Done:**
-- A new permanent test (not a one-off script) exercises the complete v3_beta pipeline end-to-end with realistic multi-chunk evidence and is wired into security_and_eval_suite.php's runner.
-- The test specifically covers the null-conversation-state regression case that caused T-PTG-026's bug (a conversation with no persisted state must not crash the pipeline).
-- security_and_eval_suite.php shows all suites PASS with zero regressions to the existing 9, including the new test.
-- php -l passes on all new/modified PHP files.
-- The handoff states whether the new test would have caught T-PTG-026's bug if it had existed beforehand (i.e. prove the test is actually meaningful, not just present).
-
-*Audited against SHA:* `41f365fb71fac941fc8fac629b9f98371d35a9b1`
 
 ---
 ### 📋 T-PTG-002 · P1 · ANY · AUDITED
@@ -1132,27 +1129,6 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 🛠 T-PTG-027 · P1 · ANY · CLAIMED
-**JournalGPT v3: wire ConversationStateService.updateState() into ask() (persistent state is currently inert)**
-**Owner:** FleetCoordinator
-
-**Scope:**
-- BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found and directly reproduced a real architectural gap while testing v3.md section 34's live 4-turn conversation flow. journalgpt/lib/ConversationStateService.php has a fully-implemented updateState() method, but grep confirms NOTHING in JournalAnswerService::ask() (or anywhere else in the v3_beta pipeline) ever calls it. Running journalgpt/v3/section34_flow.php live (the exact false-beats -> causes -> wound-strings -> practical-check flow from v3.md section 34) proves this directly: every one of the 4 turns shows "Persistent Conversation State: None" reaching ResearchPlanner, on every single turn.
-- WHY THIS ISN'T A BLOCKING BUG TODAY, BUT IS A REAL GAP: the section-34 flow still "worked" in T-PTG-026's replay because it fit inside ConversationContext's bounded ~6-message recent-turn window, which independently carries enough of the last few turns' text for ResearchPlanner to derive a reasonable follow-up query. But this is a fallback the architecture was never meant to rely on alone -- v3.md's ConversationStateService is specifically meant to carry persistent topic/entity/research state ACROSS a conversation, not just the last few raw messages. Any conversation longer than that bounded window (a member asking many follow-ups over one extended session) will silently lose whatever the persistent-state layer was supposed to be tracking, with no error or degraded-mode signal to the user or to logs -- it just quietly never engages.
-- WHAT TO DO: wire ConversationStateService::updateState() into JournalAnswerService::ask()'s v3_beta branch so that persistent state is actually written after each turn (read ConversationStateService.php's existing updateState() signature and ResearchPlanner.php's consumption of getState() output to determine what state shape is expected -- do not redesign the state shape, just wire the existing write path that was never connected). Confirm via a live multi-turn test (extend or reuse journalgpt/v3/section34_flow.php, or a longer synthetic conversation exceeding ConversationContext's bounded window) that "Persistent Conversation State: None" no longer appears on turns after the first, and that a conversation LONGER than the bounded recent-turn window still correctly carries topic/entity context via the now-populated persistent state layer (this is the actual regression test the bounded-window fallback was masking -- a short flow like section 34's 4 turns won't prove this by itself).
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: redesigning ConversationStateService's state shape or ResearchPlanner's consumption of it -- both already exist and are presumed correct; this task only connects the missing write path. Do not flip any default-preset or rollout toggle -- v3_beta remains opt-in pending Chip's separate go/no-go decision referenced in T-PTG-026's handoff.
-
-**Definition of Done:**
-- ConversationStateService::updateState() is called from JournalAnswerService::ask()''s v3_beta branch after each turn, using the existing state shape (no redesign).
-- A live multi-turn test proves persistent state survives PAST ConversationContext''s bounded recent-turn window (not just within it, which the section-34 flow alone cannot prove) -- either a new automated test or an extended manual replay script, with before/after output showing "Persistent Conversation State: None" no longer appearing on later turns.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
-- php -l passes on all modified PHP files.
-- The handoff states plainly whether this closes the gap T-PTG-026 identified, or whether it surfaces a further issue.
-
-*Audited against SHA:* `41f365fb71fac941fc8fac629b9f98371d35a9b1`
-
----
 ### ✅ T-PTG-012 · P1 · ANY · DONE
 **Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped**
 **Owner:** Worker-ColorSchemes1
@@ -1174,25 +1150,6 @@ graph TD
 - The handoff notes explicitly confirm which of Tasks 3-9 were newly completed by this task (all of them, per the confirmed gap above) and that Tasks 1-2's existing work was left untouched, not redone.
 
 *Audited against SHA:* `c85cf52974abea992b872003706bb4cb7bc1dc33`
-
----
-### ✅ T-PTG-004 · P1 · ANY · DONE
-**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
-**Owner:** Claude-Worker
-
-**Scope:**
-- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
-- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
-- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
-
-**Definition of Done:**
-- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
-- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
-- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
-- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
-- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
-
-*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
 ### ✅ T-PTG-009 · P1 · ANY · DONE
@@ -1284,6 +1241,25 @@ graph TD
 *Audited against SHA:* `c85cf52974abea992b872003706bb4cb7bc1dc33`
 
 ---
+### ⏳ T-PTG-004 · P1 · ANY · HUMAN_REVIEW
+**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
+**Owner:** Claude-Worker
+
+**Scope:**
+- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
+- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
+- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
+
+**Definition of Done:**
+- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
+- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
+- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
+- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
+- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
 ### ⏳ T-PTG-005 · P1 · ANY · PEER_REVIEW
 **Voicing-technique continuity + citation-format test matrix (all preset x tier combos)**
 **Owner:** Claude-FleetCommander
@@ -1300,6 +1276,155 @@ graph TD
 - Findings written up (this task's own execution log / a feedback file) — not just raw JSON dumps — identifying any combination that fails continuity or citation format, with a specific hypothesis for why if one fails.
 
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
+
+---
+### 📋 T-PTG-024 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
+- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
+- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
+
+**Definition of Done:**
+- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
+- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
+- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-025 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 2.1, 17-19 (Intellectual Property Protection, Bulk Extraction Protection, Public Sharing Review) before starting. Gated on T-PTG-024 (ClaimValidator) -- by this point the answer pipeline has fundamentally changed (planning, multi-query retrieval, ranking, synthesis with explanation-vs-Journal distinction, per-claim validation), so this phase re-audits the existing IP/security protections against the NEW pipeline shape, not just the old one.
+- WHAT TO REVIEW/HARDEN, per v3.md exactly: (1) section 17 -- confirm the browser never receives OpenAI API keys, vector-store credentials, corpus filesystem paths, extracted corpus dumps, or private storage credentials, across ALL the new lib classes added in Phases 1-4 (ConversationStateService, ResearchPlanner, EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator) -- a new class is a new place a leak could be introduced. (2) section 18 -- confirm bulk-extraction refusal (already tested in security_and_eval_suite.php's TC-SEC-001/002 cases) still works correctly against the new multi-query retrieval pipeline, which by design fetches MORE passages per question than the old single-search pipeline -- verify this increased retrieval breadth has not created a new bulk-extraction loophole. (3) section 19 -- review the existing public conversation-sharing feature (find it in the codebase -- grep for "shared" conversations, `SharedConversationsTest.php` already exists) and confirm unauthenticated users still cannot gain protected PDF access via a shared conversation, even though shared conversations may now include the new explanation-vs-Journal-distinguished content and per-claim-validated citations from Phases 3-4.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions, including SharedConversationsTest.php and AuthAccessTest.php specifically.
+- EXPLICITLY OUT OF SCOPE: Phase 6 evaluation/tuning. This is a review-and-harden task, not a new-feature task -- if the review finds everything already correctly protected against the new pipeline, the DoD is still satisfied by documenting that finding with evidence, not by inventing unnecessary new restrictions.
+
+**Definition of Done:**
+- A written review (in the handoff, not a new doc file unless the Worker judges one is needed) explicitly addresses all three v3.md areas (secret/credential exposure across the new Phase 1-4 classes, bulk-extraction refusal against the wider multi-query retrieval, and public-sharing PDF-access boundary) with concrete evidence for each -- either "confirmed already safe, here is the test/grep that proves it" or "found a gap, here is the fix."
+- Any gap found is fixed, with a new or extended test proving the fix (e.g. extending SharedConversationsTest.php or security_and_eval_suite.php's existing TC-SEC-* cases).
+- Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- php -l passes on all modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-022 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 2b: EvidenceRanker**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated on T-PTG-020 (EvidenceRetriever) being DONE.
+- WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`. Not every passage T-PTG-020's EvidenceRetriever collects should go directly to the final answering model. Rank evidence by: relevance to user intent, relevance to conversation context, source quality, specificity, redundancy, citation resolvability. Output a compact evidence bundle for synthesis (v3.md section 11's exact phrase).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not change the live wiring T-PTG-020 established beyond inserting this ranking step between retrieval and synthesis.
+
+**Definition of Done:**
+- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably reduces/reorders a raw evidence set into a compact bundle.
+- A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate passage being down-ranked or dropped, and a highly relevant passage being ranked above a tangentially related one for a specific test question.
+- Wired into the live path after T-PTG-020's retriever, before wherever synthesis currently happens (still the existing JournalAnswerService synthesis step at this point, since AnswerSynthesizer.php doesn't exist yet).
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest, ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still passes in full.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-023 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022 (EvidenceRanker).
+- WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`. Receives: the member's question, recent conversation, T-PTG-018's persistent research state, T-PTG-019's research plan, and T-PTG-022's ranked evidence bundle. Produces the best useful answer possible.
+- THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly distinguish "Journal-supported information" (requires evidence and citation, e.g. "The Journal describes friction at the bearing points as...") from "Assistant explanation" (interpretation/comparison/general reasoning, e.g. "A useful way to picture this mechanically is..." -- must NOT be falsely represented as something PTJ published). This is v3.md's stated mechanism for "how JournalGPT can become significantly more conversational without compromising citation integrity" -- the single most important behavioral change in this phase.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims is a separate, later step; this phase only produces the answer with the two kinds of content clearly distinguished, it does not yet verify each Journal-attributed claim against evidence). Do not weaken the existing hard requirement (v3.md section 2.2/2.3) that Journal-attributed claims must be cited and citations must resolve -- this phase adds explanation capability, it does not loosen grounding requirements.
+
+**Definition of Done:**
+- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers that visibly/structurally distinguish Journal-supported content from assistant explanation (Worker's exact mechanism -- e.g. distinct markup, a structured field separating the two -- documented in the handoff).
+- A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction works: at least one test case where the answer correctly separates a cited Journal fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged as if it were a Journal claim.
+- Wired into the live path, replacing/extending wherever synthesis currently happens in JournalAnswerService.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, including the existing citation-grounding test cases in JournalAnswerServiceTest.php and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase must not regress citation accuracy while adding explanatory capability.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-020 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 9-10 (Multi-Query Journal Search, Evidence Retriever) and section 32's Phase 2 description before starting. This is the first task that actually integrates prior work into the live pipeline -- v3.md section 32 says "At this point, run the benchmark again. This is the first major go/no-go checkpoint," so this task's DoD requires a benchmark comparison, not just unit tests.
+- WHAT TO BUILD, per v3.md section 10 exactly: create `journalgpt/lib/EvidenceRetriever.php`. Responsibilities: execute T-PTG-019's ResearchPlanner-produced search queries (plural -- multiple targeted searches per v3.md section 9, not one literal-interpretation search) against the existing OpenAI File Search / vector store integration (reuse `journalgpt/lib/OpenAIClient.php`, do not rebuild retrieval plumbing that already works -- v3.md section 3 is explicit that existing OpenAI integration, vector-store indexing, and File Search must be preserved, not replaced); collect passages; normalize retrieval metadata; preserve source identity and page information; deduplicate overlapping chunks; prevent one source from dominating results; limit total evidence size.
+- THIS TASK DOES THE FIRST LIVE INTEGRATION: unlike T-PTG-018/019, this task DOES wire ResearchPlanner + EvidenceRetriever into an actual code path -- but per v3.md section 27 (Failure Handling), it must degrade gracefully: "Planner unavailable -> use direct retrieval" and "One search fails -> continue with successful searches when sufficient." Do not make the new pipeline a hard replacement with no fallback -- if you cannot safely make it the default live path without risking a production regression, wire it behind a clearly-named feature flag/tier option instead and say so explicitly in the handoff (Worker's judgment call, but must be justified, not silently punted).
+- THE GO/NO-GO CHECKPOINT, per v3.md section 32: after this task, replay T-PTG-015's benchmark against BOTH the old pipeline and the new EvidenceRetriever-based pipeline and compare retrieval quality (did it find the right Journal material for the benchmark's documented disappointing cases, especially the follow-up and multi-source categories). This comparison result belongs in the handoff and determines whether later phases (3-6) are worth continuing -- do not just claim success without this comparison.
+- EXPLICITLY OUT OF SCOPE: EvidenceRanker (T-PTG-021), AnswerSynthesizer, ClaimValidator. Do not remove or bypass the existing citation resolver -- v3.md section 15 requires preserving it; this task only improves what evidence FEEDS the existing resolver, it does not replace the resolver itself.
+
+**Definition of Done:**
+- EvidenceRetriever.php exists per v3.md section 10's responsibilities, executes multi-query plans from ResearchPlanner, deduplicates, and bounds evidence size.
+- A new test file (journalgpt/tests/EvidenceRetrieverTest.php) covers multi-query execution, deduplication of overlapping chunks, and graceful degradation when a single search fails.
+- The new pipeline is wired into an actual reachable code path (default or behind a stated flag/tier per this task's scope), with graceful fallback to direct retrieval if the planner is unavailable, per v3.md section 27.
+- The Go/No-Go benchmark comparison from this task's scope is performed and its result (better, worse, or mixed retrieval quality vs. the old pipeline, with specifics) is recorded plainly in the handoff -- this is the single most important piece of evidence for whether Phase 3+ should proceed.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions. This task is the FIRST to wire new code into a live path -- this gate is especially critical here, since a mistake could break the app for members using it today.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php, ResearchPlannerTest.php) -- 0 regressions to the existing citation-grounded RAG lane.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 📋 T-PTG-026 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
+**Owner:** None
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32's Phase 6 description before starting. This is the final phase, gated on T-PTG-025 (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after comparison).
+- WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts, retrieval breadth, model choice, evidence limits, tier behavior, latency, cost." Run T-PTG-015's full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline (Phases 1-5 all merged) and score it against v3.md section 25's metrics: conversational understanding, retrieval quality, answer usefulness, citation accuracy, citation relevance, continuity, uncertainty handling, IP compliance, latency, cost.
+- THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015's original disappointing examples, the handoff must state whether the new pipeline actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up now that ConversationStateService + ResearchPlanner exist?) or whether it does not -- do not present an average score improvement as success if specific, previously-broken cases documented in the benchmark are still broken. v3.md's own Success Criteria (section 34) is a concrete multi-turn conversation example ("What does the Journal say about false beats?" -> "What causes them?" -> "Is that different in wound strings?" -> "So what would you check first?") -- test this exact flow live as part of the evaluation.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions after every tuning iteration, not just once at the end.
+- EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are done by this point, this phase only tunes what exists (prompts, thresholds, retrieval breadth, model/tier choice) based on the benchmark replay results. Do not add new lib classes here.
+
+**Definition of Done:**
+- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results are scored per v3.md section 25's metrics, with per-example before/after comparison (not just aggregate scores) for every originally-disappointing example.
+- v3.md's section 34 success-criteria conversation flow (false beats -> causes -> wound strings comparison -> practical synthesis) is tested live and the handoff states plainly whether it now works as the PRD envisions.
+- At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
+- The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 🛠 T-PTG-019 · P2 · ANY · CLAIMED
+**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
+- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
+- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
+- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
+- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
+
+**Definition of Done:**
+- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
+- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-008 · P2 · ANY · DONE
@@ -1331,47 +1456,6 @@ graph TD
 *Audited against SHA:* `2915a622d26b0dfa151f5da6070cad4c9688d3ae`
 
 ---
-### ✅ T-PTG-024 · P2 · ANY · DONE
-**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
-**Owner:** Antigravity-Worker
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
-- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
-- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
-
-**Definition of Done:**
-- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
-- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
-- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-PTG-025 · P2 · ANY · DONE
-**JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
-**Owner:** FleetCoordinator
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 2.1, 17-19 (Intellectual Property Protection, Bulk Extraction Protection, Public Sharing Review) before starting. Gated on T-PTG-024 (ClaimValidator) -- by this point the answer pipeline has fundamentally changed (planning, multi-query retrieval, ranking, synthesis with explanation-vs-Journal distinction, per-claim validation), so this phase re-audits the existing IP/security protections against the NEW pipeline shape, not just the old one.
-- WHAT TO REVIEW/HARDEN, per v3.md exactly: (1) section 17 -- confirm the browser never receives OpenAI API keys, vector-store credentials, corpus filesystem paths, extracted corpus dumps, or private storage credentials, across ALL the new lib classes added in Phases 1-4 (ConversationStateService, ResearchPlanner, EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator) -- a new class is a new place a leak could be introduced. (2) section 18 -- confirm bulk-extraction refusal (already tested in security_and_eval_suite.php's TC-SEC-001/002 cases) still works correctly against the new multi-query retrieval pipeline, which by design fetches MORE passages per question than the old single-search pipeline -- verify this increased retrieval breadth has not created a new bulk-extraction loophole. (3) section 19 -- review the existing public conversation-sharing feature (find it in the codebase -- grep for "shared" conversations, `SharedConversationsTest.php` already exists) and confirm unauthenticated users still cannot gain protected PDF access via a shared conversation, even though shared conversations may now include the new explanation-vs-Journal-distinguished content and per-claim-validated citations from Phases 3-4.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions, including SharedConversationsTest.php and AuthAccessTest.php specifically.
-- EXPLICITLY OUT OF SCOPE: Phase 6 evaluation/tuning. This is a review-and-harden task, not a new-feature task -- if the review finds everything already correctly protected against the new pipeline, the DoD is still satisfied by documenting that finding with evidence, not by inventing unnecessary new restrictions.
-
-**Definition of Done:**
-- A written review (in the handoff, not a new doc file unless the Worker judges one is needed) explicitly addresses all three v3.md areas (secret/credential exposure across the new Phase 1-4 classes, bulk-extraction refusal against the wider multi-query retrieval, and public-sharing PDF-access boundary) with concrete evidence for each -- either "confirmed already safe, here is the test/grep that proves it" or "found a gap, here is the fix."
-- Any gap found is fixed, with a new or extended test proving the fix (e.g. extending SharedConversationsTest.php or security_and_eval_suite.php's existing TC-SEC-* cases).
-- Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
-- php -l passes on all modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### ✅ T-PTG-018 · P2 · ANY · DONE
 **JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
 **Owner:** Antigravity
@@ -1391,27 +1475,6 @@ graph TD
 - The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
 - php -l passes on all new/modified PHP files.
 - journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-PTG-022 · P2 · ANY · DONE
-**JournalGPT v3 Phase 2b: EvidenceRanker**
-**Owner:** Antigravity-Worker
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated on T-PTG-020 (EvidenceRetriever) being DONE.
-- WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`. Not every passage T-PTG-020's EvidenceRetriever collects should go directly to the final answering model. Rank evidence by: relevance to user intent, relevance to conversation context, source quality, specificity, redundancy, citation resolvability. Output a compact evidence bundle for synthesis (v3.md section 11's exact phrase).
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not change the live wiring T-PTG-020 established beyond inserting this ranking step between retrieval and synthesis.
-
-**Definition of Done:**
-- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably reduces/reorders a raw evidence set into a compact bundle.
-- A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate passage being down-ranked or dropped, and a highly relevant passage being ranked above a tangentially related one for a specific test question.
-- Wired into the live path after T-PTG-020's retriever, before wherever synthesis currently happens (still the existing JournalAnswerService synthesis step at this point, since AnswerSynthesizer.php doesn't exist yet).
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
-- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest, ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still passes in full.
-- php -l passes on all new/modified PHP files.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
@@ -1436,95 +1499,6 @@ graph TD
 - This task does NOT modify journalgpt/lib/JournalAnswerService.php or any other production answer-pipeline code -- Phase 0 is benchmark construction only, per the PRD's own phasing (\"Do not begin tuning without baseline examples\"). If the Worker is tempted to start implementing ConversationStateService or ResearchPlanner while building the benchmark, stop -- that is explicitly out of scope for this task and would violate the PRD's own sequencing.
 
 *Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
-
----
-### ✅ T-PTG-023 · P2 · ANY · DONE
-**JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction**
-**Owner:** Antigravity-Worker
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022 (EvidenceRanker).
-- WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`. Receives: the member's question, recent conversation, T-PTG-018's persistent research state, T-PTG-019's research plan, and T-PTG-022's ranked evidence bundle. Produces the best useful answer possible.
-- THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly distinguish "Journal-supported information" (requires evidence and citation, e.g. "The Journal describes friction at the bearing points as...") from "Assistant explanation" (interpretation/comparison/general reasoning, e.g. "A useful way to picture this mechanically is..." -- must NOT be falsely represented as something PTJ published). This is v3.md's stated mechanism for "how JournalGPT can become significantly more conversational without compromising citation integrity" -- the single most important behavioral change in this phase.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims is a separate, later step; this phase only produces the answer with the two kinds of content clearly distinguished, it does not yet verify each Journal-attributed claim against evidence). Do not weaken the existing hard requirement (v3.md section 2.2/2.3) that Journal-attributed claims must be cited and citations must resolve -- this phase adds explanation capability, it does not loosen grounding requirements.
-
-**Definition of Done:**
-- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers that visibly/structurally distinguish Journal-supported content from assistant explanation (Worker's exact mechanism -- e.g. distinct markup, a structured field separating the two -- documented in the handoff).
-- A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction works: at least one test case where the answer correctly separates a cited Journal fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged as if it were a Journal claim.
-- Wired into the live path, replacing/extending wherever synthesis currently happens in JournalAnswerService.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, including the existing citation-grounding test cases in JournalAnswerServiceTest.php and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase must not regress citation accuracy while adding explanatory capability.
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-PTG-019 · P2 · ANY · DONE
-**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
-**Owner:** Antigravity
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
-- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
-- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
-- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
-- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
-
-**Definition of Done:**
-- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
-- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
-- php -l passes on all new/modified PHP files.
-- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-PTG-020 · P2 · ANY · DONE
-**JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
-**Owner:** Antigravity-Worker
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 9-10 (Multi-Query Journal Search, Evidence Retriever) and section 32's Phase 2 description before starting. This is the first task that actually integrates prior work into the live pipeline -- v3.md section 32 says "At this point, run the benchmark again. This is the first major go/no-go checkpoint," so this task's DoD requires a benchmark comparison, not just unit tests.
-- WHAT TO BUILD, per v3.md section 10 exactly: create `journalgpt/lib/EvidenceRetriever.php`. Responsibilities: execute T-PTG-019's ResearchPlanner-produced search queries (plural -- multiple targeted searches per v3.md section 9, not one literal-interpretation search) against the existing OpenAI File Search / vector store integration (reuse `journalgpt/lib/OpenAIClient.php`, do not rebuild retrieval plumbing that already works -- v3.md section 3 is explicit that existing OpenAI integration, vector-store indexing, and File Search must be preserved, not replaced); collect passages; normalize retrieval metadata; preserve source identity and page information; deduplicate overlapping chunks; prevent one source from dominating results; limit total evidence size.
-- THIS TASK DOES THE FIRST LIVE INTEGRATION: unlike T-PTG-018/019, this task DOES wire ResearchPlanner + EvidenceRetriever into an actual code path -- but per v3.md section 27 (Failure Handling), it must degrade gracefully: "Planner unavailable -> use direct retrieval" and "One search fails -> continue with successful searches when sufficient." Do not make the new pipeline a hard replacement with no fallback -- if you cannot safely make it the default live path without risking a production regression, wire it behind a clearly-named feature flag/tier option instead and say so explicitly in the handoff (Worker's judgment call, but must be justified, not silently punted).
-- THE GO/NO-GO CHECKPOINT, per v3.md section 32: after this task, replay T-PTG-015's benchmark against BOTH the old pipeline and the new EvidenceRetriever-based pipeline and compare retrieval quality (did it find the right Journal material for the benchmark's documented disappointing cases, especially the follow-up and multi-source categories). This comparison result belongs in the handoff and determines whether later phases (3-6) are worth continuing -- do not just claim success without this comparison.
-- EXPLICITLY OUT OF SCOPE: EvidenceRanker (T-PTG-021), AnswerSynthesizer, ClaimValidator. Do not remove or bypass the existing citation resolver -- v3.md section 15 requires preserving it; this task only improves what evidence FEEDS the existing resolver, it does not replace the resolver itself.
-
-**Definition of Done:**
-- EvidenceRetriever.php exists per v3.md section 10's responsibilities, executes multi-query plans from ResearchPlanner, deduplicates, and bounds evidence size.
-- A new test file (journalgpt/tests/EvidenceRetrieverTest.php) covers multi-query execution, deduplication of overlapping chunks, and graceful degradation when a single search fails.
-- The new pipeline is wired into an actual reachable code path (default or behind a stated flag/tier per this task's scope), with graceful fallback to direct retrieval if the planner is unavailable, per v3.md section 27.
-- The Go/No-Go benchmark comparison from this task's scope is performed and its result (better, worse, or mixed retrieval quality vs. the old pipeline, with specifics) is recorded plainly in the handoff -- this is the single most important piece of evidence for whether Phase 3+ should proceed.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions. This task is the FIRST to wire new code into a live path -- this gate is especially critical here, since a mistake could break the app for members using it today.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php, ResearchPlannerTest.php) -- 0 regressions to the existing citation-grounded RAG lane.
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-PTG-017 · P2 · ANY · DONE
-**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
-**Owner:** Worker-Mobile1
-
-**Scope:**
-- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
-- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
-- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
-- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
-- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
-
-**Definition of Done:**
-- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
-- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
-- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
-- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
-- php -l passes on journalgpt/index.php.
-- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
-- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
-
-*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
 ### ✅ T-PTG-010 · P2 · ANY · DONE
@@ -1552,27 +1526,6 @@ graph TD
 *Audited against SHA:* `7a7c6212a575bb2743b3b26c32283b937f1e286f`
 
 ---
-### ✅ T-PTG-026 · P2 · ANY · DONE
-**JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
-**Owner:** FleetCoordinator
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32's Phase 6 description before starting. This is the final phase, gated on T-PTG-025 (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after comparison).
-- WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts, retrieval breadth, model choice, evidence limits, tier behavior, latency, cost." Run T-PTG-015's full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline (Phases 1-5 all merged) and score it against v3.md section 25's metrics: conversational understanding, retrieval quality, answer usefulness, citation accuracy, citation relevance, continuity, uncertainty handling, IP compliance, latency, cost.
-- THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015's original disappointing examples, the handoff must state whether the new pipeline actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up now that ConversationStateService + ResearchPlanner exist?) or whether it does not -- do not present an average score improvement as success if specific, previously-broken cases documented in the benchmark are still broken. v3.md's own Success Criteria (section 34) is a concrete multi-turn conversation example ("What does the Journal say about false beats?" -> "What causes them?" -> "Is that different in wound strings?" -> "So what would you check first?") -- test this exact flow live as part of the evaluation.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions after every tuning iteration, not just once at the end.
-- EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are done by this point, this phase only tunes what exists (prompts, thresholds, retrieval breadth, model/tier choice) based on the benchmark replay results. Do not add new lib classes here.
-
-**Definition of Done:**
-- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results are scored per v3.md section 25's metrics, with per-example before/after comparison (not just aggregate scores) for every originally-disappointing example.
-- v3.md's section 34 success-criteria conversation flow (false beats -> causes -> wound strings comparison -> practical synthesis) is tested live and the handoff states plainly whether it now works as the PRD envisions.
-- At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
-- The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### ✅ T-PTG-007 · P2 · ANY · DONE
 **Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario**
 **Owner:** Claude-FleetCommander
@@ -1589,6 +1542,29 @@ graph TD
 - Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
 
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+
+---
+### ⏳ T-PTG-017 · P2 · ANY · HUMAN_REVIEW
+**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
+**Owner:** Worker-Mobile1
+
+**Scope:**
+- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
+- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
+- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
+- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
+- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
+
+**Definition of Done:**
+- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
+- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
+- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
+- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
+- php -l passes on journalgpt/index.php.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
+- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
+
+*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

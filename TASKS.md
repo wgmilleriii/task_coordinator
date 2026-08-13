@@ -26,7 +26,7 @@ graph TD
     T-PTG-013["T-PTG-013<br/>Theme picker doesn't visibly recolor changelog.php (and 5 other pages) due to uncached-bust journal-chat.css links"]:::done
     T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::done
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
-    T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::active
+    T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::review
     T-PTG-015 --> T-PTG-018
     T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
     T-PTG-020 --> T-PTG-022
@@ -1336,29 +1336,6 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 🛠 T-PTG-018 · P2 · ANY · CLAIMED
-**JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
-**Owner:** Antigravity
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP (Claude, Antigravity, Codex, Gemini, etc. -- this task carries no assumed prior conversation, read everything you need from the files cited below): journalgpt/v3/v3.md is the full JournalGPT v2/v3 PRD (commit it to git if it is still untracked -- check `git status` first; if untracked, add and commit it as your first step so the source-of-truth PRD is in version control for future agents, not just a local file). Read v3.md sections 1-7 (Executive Summary through Conversation Understanding) and section 28 (Code Organization) before starting. This task implements ONLY the first bullet of Phase 1 (v3.md section 32): "persistent conversation state." A separate, later task (T-PTG-019) covers ResearchPlanner and depends on this one.
-- GATE: this task depends on T-PTG-015 (the Phase 0 benchmark) being DONE. Per v3.md's own words: "Do not begin tuning without baseline examples." Do not start this task's actual implementation work until T-PTG-015 is DONE -- the fleet CLI's dependency check on `claim` already enforces this mechanically, so if you can claim this task at all, the gate has been satisfied.
-- WHAT TO BUILD, per v3.md section 7 exactly: create `journalgpt/lib/ConversationStateService.php` and an appropriate database migration (follow this repo's existing migration numbering/naming convention in `journalgpt/migrations/*.sql` -- read the highest-numbered existing migration first to pick the next number). Suggested stored state per conversation: conversation_id, topic, research_summary, technical_context, important_entities, important_sources, open_questions, updated_at (v3.md gives a full example JSON shape -- read it directly rather than relying on this summary). This must SUPPLEMENT the existing `ConversationContext.php` short-term context, not replace it (v3.md section 7: "Current ConversationContext behavior should remain as short-term context").
-- WHY THIS MATTERS, per real production evidence: T-PTG-015's benchmark (once it exists -- read it) documents real member conversations that broke on bare follow-ups like a literal "why?" with no context. This service is the mechanism that will let a later phase (ResearchPlanner, T-PTG-019) resolve "What about an upright?" or "why?" against prior turns instead of treating each message in isolation.
-- EXPLICITLY OUT OF SCOPE: do not build ResearchPlanner, do not change JournalAnswerService's actual answer-generation flow to USE this new state yet (that integration is T-PTG-019's job) -- this task only builds and tests the storage/retrieval service itself as a standalone, correctly-designed unit. Do not attempt Phases 2-6.
-
-**Definition of Done:**
-- ConversationStateService.php exists per v3.md section 7's suggested shape, with methods to read and update a conversation's persistent state (Worker's exact method names/signatures, but must be usable by a later phase without redesign -- keep the interface clean).
-- A new migration adds whatever table(s)/columns are needed, following this repo's existing migration file conventions (see journalgpt/migrations/010_feature_request_conversations.sql for the most recent example of style/structure).
-- A new test file (journalgpt/tests/ConversationStateServiceTest.php, self-runner convention per AskEndpointTest.php) covers create/read/update of a conversation's state, and confirms it does not interfere with or replace the existing ConversationContext.php behavior (both must coexist).
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` (the full 9-suite regression gate: AuthAccessTest, CorpusIndexerTest, JournalAnswerServiceTest, AskEndpointTest, UsagePolicyTest, MigrationTest, JournalChatRenderTest, OperationsJobTest, plus the Python eval_runner.py) and confirm 9/9 PASS with zero regressions, not just the narrower per-task test list. This is broader than the individual test files listed below and supersedes them as the actual merge gate -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
-- php -l passes on all new/modified PHP files.
-- journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### ✅ T-PTG-008 · P2 · ANY · DONE
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
 **Owner:** Worker-PTG-FeatureRequest1
@@ -1451,6 +1428,29 @@ graph TD
 - Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
 
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+
+---
+### ⏳ T-PTG-018 · P2 · ANY · PEER_REVIEW
+**JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP (Claude, Antigravity, Codex, Gemini, etc. -- this task carries no assumed prior conversation, read everything you need from the files cited below): journalgpt/v3/v3.md is the full JournalGPT v2/v3 PRD (commit it to git if it is still untracked -- check `git status` first; if untracked, add and commit it as your first step so the source-of-truth PRD is in version control for future agents, not just a local file). Read v3.md sections 1-7 (Executive Summary through Conversation Understanding) and section 28 (Code Organization) before starting. This task implements ONLY the first bullet of Phase 1 (v3.md section 32): "persistent conversation state." A separate, later task (T-PTG-019) covers ResearchPlanner and depends on this one.
+- GATE: this task depends on T-PTG-015 (the Phase 0 benchmark) being DONE. Per v3.md's own words: "Do not begin tuning without baseline examples." Do not start this task's actual implementation work until T-PTG-015 is DONE -- the fleet CLI's dependency check on `claim` already enforces this mechanically, so if you can claim this task at all, the gate has been satisfied.
+- WHAT TO BUILD, per v3.md section 7 exactly: create `journalgpt/lib/ConversationStateService.php` and an appropriate database migration (follow this repo's existing migration numbering/naming convention in `journalgpt/migrations/*.sql` -- read the highest-numbered existing migration first to pick the next number). Suggested stored state per conversation: conversation_id, topic, research_summary, technical_context, important_entities, important_sources, open_questions, updated_at (v3.md gives a full example JSON shape -- read it directly rather than relying on this summary). This must SUPPLEMENT the existing `ConversationContext.php` short-term context, not replace it (v3.md section 7: "Current ConversationContext behavior should remain as short-term context").
+- WHY THIS MATTERS, per real production evidence: T-PTG-015's benchmark (once it exists -- read it) documents real member conversations that broke on bare follow-ups like a literal "why?" with no context. This service is the mechanism that will let a later phase (ResearchPlanner, T-PTG-019) resolve "What about an upright?" or "why?" against prior turns instead of treating each message in isolation.
+- EXPLICITLY OUT OF SCOPE: do not build ResearchPlanner, do not change JournalAnswerService's actual answer-generation flow to USE this new state yet (that integration is T-PTG-019's job) -- this task only builds and tests the storage/retrieval service itself as a standalone, correctly-designed unit. Do not attempt Phases 2-6.
+
+**Definition of Done:**
+- ConversationStateService.php exists per v3.md section 7's suggested shape, with methods to read and update a conversation's persistent state (Worker's exact method names/signatures, but must be usable by a later phase without redesign -- keep the interface clean).
+- A new migration adds whatever table(s)/columns are needed, following this repo's existing migration file conventions (see journalgpt/migrations/010_feature_request_conversations.sql for the most recent example of style/structure).
+- A new test file (journalgpt/tests/ConversationStateServiceTest.php, self-runner convention per AskEndpointTest.php) covers create/read/update of a conversation's state, and confirms it does not interfere with or replace the existing ConversationContext.php behavior (both must coexist).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` (the full 9-suite regression gate: AuthAccessTest, CorpusIndexerTest, JournalAnswerServiceTest, AskEndpointTest, UsagePolicyTest, MigrationTest, JournalChatRenderTest, OperationsJobTest, plus the Python eval_runner.py) and confirm 9/9 PASS with zero regressions, not just the narrower per-task test list. This is broader than the individual test files listed below and supersedes them as the actual merge gate -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

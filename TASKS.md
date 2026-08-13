@@ -13,7 +13,7 @@ graph TD
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::done
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
-    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::active
+    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::review
     T-PTG-023 --> T-PTG-024
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::done
     T-MIN-016 --> T-MIN-017
@@ -52,6 +52,7 @@ graph TD
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::done
     T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]:::done
     T-PTG-019 --> T-PTG-020
+    T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::done
@@ -82,6 +83,28 @@ graph TD
 
 ## Repo: `intypiano`
 
+### 📋 T-INTY-023 · P0 · ANY · AUDITED
+**master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher**
+**Owner:** None
+
+**Scope:**
+- Confirmed by reading master_migrate.php in full: it loops over every tenant in config.php's `$db_configs` (lines 83-117) and executes arbitrary SQL from a file in sql_scripts/ (or repo root) against each one via a raw PDO connection, with no per-tenant exclusion list. `$db_configs['unm']` (config.php lines 9-13) points at `dbname => 'unm_piano'` -- the same production database that scripts/bootstrap_v2_db.sh, scripts/migrate.php, and scripts/data_quality.php --fix all explicitly refuse to target (see docs/experts/schema-catalog.md "Protected databases" and CLAUDE.md). master_migrate.php has no such refusal. This is a real gap, not a hypothetical: any .sql file dropped in sql_scripts/ and launched via this tool runs against unm_piano today.
+- PART 1 -- Protection: port the same refusal pattern already used in scripts/bootstrap_v2_db.sh (see its `case "$DB_NAME" in unm_piano|...)` block) into master_migrate.php's tenant loop -- skip (with a clear logged warning, not a silent skip) any tenant whose `dbname` is `unm_piano`, `unm_piano_readonly`, or `unm_piano_test`, matched against the actual configured `dbname`, not the `$db_configs` key (a tenant could theoretically be renamed/aliased).
+- PART 2 -- Applied-tracking: master_migrate.php currently has no record of which .sql files have already been run against which tenant, unlike the real ddl/ migration system's `ddl_applied` table (see scripts/migrate.php). Add a new table, e.g. `sql_scripts_applied (id, filename, tenant, applied_at, applied_by, success, statement_count, error_count)`, in the `caut_central` tenant database (config.php `central` entry, dbname `caut_central`) -- confirmed via `SHOW TABLES` that caut_central is a small, separate management-console schema (age_lookups, password_resets, users, valuations) distinct from the per-tenant piano schema, and is the natural home for fleet-wide bookkeeping like this. Write a row per (file, tenant) after each tenant's run completes, whether it succeeded or partially failed, so a file that failed on one tenant is visibly distinguishable from one that succeeded everywhere.
+- PART 3 -- Dynamic launcher: system_hub.php currently has ONE hardcoded link (`master_migrate.php?file=sql_scripts/add_value_age_overrides.sql`) under "Global Migrations". Replace it with a dynamic list: scan sql_scripts/*.sql, cross-reference against `sql_scripts_applied` (from Part 2) to find files that have NOT been successfully applied to every currently-configured tenant, and render each as its own launch link/button. A file already applied everywhere should not be relaunchable from this list without an explicit "re-run anyway" affordance (out of scope to build the re-run affordance itself -- just don't let the normal list silently invite double-application).
+- Do not touch the ddl/ + scripts/migrate.php system itself, and do not attempt to unify the two migration mechanisms (ddl/ versioned migrations vs. sql_scripts/ ad-hoc fan-out) into one -- that's a larger, separate architectural question. This task only makes the existing sql_scripts/ mechanism safer and its state visible, it does not redesign it.
+- Existing sql_scripts/*.sql files (01_email_migration.sql, 02_sync_user_emails.sql, 03_enforce_email_unique.sql, 04_seed_central_valuations.sql, add_track_table.sql, add_value_age_overrides.sql, baseline_schema_sync.sql, create_busd_db.sql, create_dossier_tables.sql, create_ousd_db.sql, create_pending_research_table.sql, create_sfusd_db.sql, rbac_migration.sql) have never been run through this tracking mechanism (it doesn't exist yet) -- treat all of them as unknown status, not as already-applied. Do NOT auto-mark them applied as part of this task; that would be guessing at history that was never recorded.
+
+**Definition of Done:**
+- master_migrate.php refuses (with a clear message, exit code 1 for CLI / visible error for web) to execute against any tenant whose configured dbname is unm_piano, unm_piano_readonly, or unm_piano_test, verified by running it against a config where the unm tenant is present and confirming that tenant is skipped while others still run.
+- The `sql_scripts_applied` table exists in caut_central (created via a proper migration file, not a manual ALTER), and master_migrate.php writes a row to it per tenant after every run, verified by running master_migrate.php against a real test .sql file locally and querying the resulting rows.
+- system_hub.php''s "Global Migrations" card is replaced with a dynamic list driven by sql_scripts/*.sql minus what sql_scripts_applied shows as fully applied, verified by loading system_hub.php as the global_system role in a running server (php -S localhost:2027 -t ., per CLAUDE.md''s "prefer running over reading" rule) and confirming the list matches the current filesystem + tracking-table state, with a screenshot or terminal evidence attached to the handoff.
+- php -l on every changed .php file passes.
+- No regression to the existing global_system session-role gate on master_migrate.php (non-CLI requests still require session role system_admin/global_system).
+
+*Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
+
+---
 ### 📋 T-INTY-022 · P0 · ANY · AUDITED
 **Hardcoded plaintext global_system bypass credential in login_form.php**
 **Owner:** None
@@ -1252,27 +1275,6 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 🛠 T-PTG-024 · P2 · ANY · CLAIMED
-**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
-**Owner:** Antigravity-Worker
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
-- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
-- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
-
-**Definition of Done:**
-- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
-- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
-- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### ✅ T-PTG-008 · P2 · ANY · DONE
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
 **Owner:** Worker-PTG-FeatureRequest1
@@ -1498,6 +1500,27 @@ graph TD
 - Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
 
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
+
+---
+### ⏳ T-PTG-024 · P2 · ANY · HUMAN_REVIEW
+**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
+**Owner:** Antigravity-Worker
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
+- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
+- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
+
+**Definition of Done:**
+- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
+- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
+- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

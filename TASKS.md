@@ -13,7 +13,7 @@ graph TD
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
-    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]
+    T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::active
     T-PTG-023 --> T-PTG-024
     T-MIN-017["T-MIN-017<br/>Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)"]:::done
     T-MIN-016 --> T-MIN-017
@@ -28,10 +28,10 @@ graph TD
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::done
     T-PTG-015 --> T-PTG-018
-    T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
+    T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]:::done
     T-PTG-020 --> T-PTG-022
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
-    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
+    T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::done
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
     T-PTG-001 --> T-PTG-002
@@ -41,16 +41,16 @@ graph TD
     T-PTG-002 --> T-PTG-003
     T-PTG-015["T-PTG-015<br/>JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)"]:::done
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]
+    T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]:::done
     T-PTG-022 --> T-PTG-023
-    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::active
+    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::done
     T-PTG-018 --> T-PTG-019
     T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::done
     T-INTY-018 --> T-INTY-020
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
-    T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::review
-    T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]
+    T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::done
+    T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]:::done
     T-PTG-019 --> T-PTG-020
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
@@ -64,7 +64,7 @@ graph TD
     T-MIN-019["T-MIN-019<br/>Apply the Bernardi verzicola reconciliation queue — hedge-phrase citation fix only"]:::done
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
     T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
-    T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::review
+    T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::done
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
     T-PTG-025 --> T-PTG-026
@@ -647,6 +647,25 @@ graph TD
 *Audited against SHA:* `f8bb1b8`
 
 ---
+### ✅ T-MIN-003 · P1 · ANY · DONE
+**Apply the 93 pending card renames already recorded in ledger.json**
+**Owner:** Worker-F17
+
+**Scope:**
+- Verified by inspection of ledger.json on branch test-T-MIN-001 (worktree checkout of commit 0509f69): 93 of the 97 cards already carry identified: true, human_confirmed: true, and a populated type/value (Trump/Cups/Swords/ Batons/Coins + rank), but current_name still equals original_name for all 93 — meaning research/evidence/cards_raw/ still holds them under their raw geographic extraction filenames (e.g. 830124001_card_05.jpg) instead of their standardized archival names (e.g. Swords_6.jpg). Only 4 of 97 cards have actually been renamed.
+- CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 4 ("Final Standardization") defines this rename as the completion step of the identification workflow. The identification judgment work is already done and sitting unused in the ledger; this task is purely to apply it.
+- Write a small one-shot script (e.g. finalize_identifications.py, following the pattern of the existing single-purpose scripts in the repo root such as dedupe_cards.py) that, for every ledger entry where identified is true and current_name == original_name, computes the target archival filename (Trump_N.jpg / <Suit>_N.jpg per the existing /api/update naming convention in git history at 2c233c4^:minchiate_reviewer.py), renames the file under research/evidence/cards_raw/, and updates current_name in ledger.json.
+- Must refuse (log and skip, not crash) any rename whose target filename already exists, and must be safely re-runnable (a second run against an already-finalized ledger is a no-op).
+
+**Definition of Done:**
+- Running the script against the current ledger.json + cards_raw/ renames all 93 pending files to their archival names and updates ledger.json's current_name for each.
+- Re-running the script immediately afterward makes zero further changes (idempotent), verified by hashing ledger.json / directory listing before and after the second run.
+- No target-name collision silently overwrites an existing file.
+- python3 minchiate_reviewer.py --check still exits 0 afterward (renamed files still resolve to their sheet geography via original_name's 9-digit prefix, which the sort key already reads from original_name rather than current_name).
+
+*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
+
+---
 ### ✅ T-MIN-002 · P1 · ANY · DONE
 **Add card-identification write path to minchiate_reviewer.py**
 **Owner:** Worker-F14
@@ -662,25 +681,6 @@ graph TD
 - A request naming a target filename that already exists on disk is rejected (no rename performed, no file clobbered) with a non-200 response.
 - Grid page loaded after an update reflects the new identity without manual ledger editing.
 - python3 minchiate_reviewer.py --check still exits 0 (existing read-path behavior is not broken).
-
-*Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
-
----
-### ⏳ T-MIN-003 · P1 · ANY · HUMAN_REVIEW
-**Apply the 93 pending card renames already recorded in ledger.json**
-**Owner:** Worker-F17
-
-**Scope:**
-- Verified by inspection of ledger.json on branch test-T-MIN-001 (worktree checkout of commit 0509f69): 93 of the 97 cards already carry identified: true, human_confirmed: true, and a populated type/value (Trump/Cups/Swords/ Batons/Coins + rank), but current_name still equals original_name for all 93 — meaning research/evidence/cards_raw/ still holds them under their raw geographic extraction filenames (e.g. 830124001_card_05.jpg) instead of their standardized archival names (e.g. Swords_6.jpg). Only 4 of 97 cards have actually been renamed.
-- CARD_REVIEW_PROCESS_AND_IDENTIFYING.md Step 4 ("Final Standardization") defines this rename as the completion step of the identification workflow. The identification judgment work is already done and sitting unused in the ledger; this task is purely to apply it.
-- Write a small one-shot script (e.g. finalize_identifications.py, following the pattern of the existing single-purpose scripts in the repo root such as dedupe_cards.py) that, for every ledger entry where identified is true and current_name == original_name, computes the target archival filename (Trump_N.jpg / <Suit>_N.jpg per the existing /api/update naming convention in git history at 2c233c4^:minchiate_reviewer.py), renames the file under research/evidence/cards_raw/, and updates current_name in ledger.json.
-- Must refuse (log and skip, not crash) any rename whose target filename already exists, and must be safely re-runnable (a second run against an already-finalized ledger is a no-op).
-
-**Definition of Done:**
-- Running the script against the current ledger.json + cards_raw/ renames all 93 pending files to their archival names and updates ledger.json's current_name for each.
-- Re-running the script immediately afterward makes zero further changes (idempotent), verified by hashing ledger.json / directory listing before and after the second run.
-- No target-name collision silently overwrites an existing file.
-- python3 minchiate_reviewer.py --check still exits 0 afterward (renamed files still resolve to their sheet geography via original_name's 9-digit prefix, which the sort key already reads from original_name rather than current_name).
 
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
@@ -713,6 +713,23 @@ graph TD
 *Audited against SHA:* `09f857d`
 
 ---
+### ✅ T-MIN-007 · P2 · ANY · DONE
+**Triage the eleven GUIDEBOOK files from the fleet sweep**
+**Owner:** Worker-F7
+
+**Scope:**
+- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking authoritative but are unverified fleet output.
+- Establish first what a GUIDEBOOK file is supposed to be - no committed spec appears to exist; check the sweep's originating brief and whether the format duplicates, summarizes, or contradicts the personality studies.
+- Check each file for the three known disguises (wrong-but-fluent, stub-with-a-label, clone-with-a-costume) with diffs against the personality studies and each other; recompute any rank or scoring claims against the registry.
+- Recommend a disposition for the format itself - keep as a distinct deliverable (write the missing spec), fold into the personality studies, or archive - and per-file bins consistent with that recommendation.
+
+**Definition of Done:**
+- A triage report in research/pilots/ covers all eleven files with per-file bins and a reasoned recommendation on the GUIDEBOOK format's future.
+- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition note.
+
+*Audited against SHA:* `c4f389f`
+
+---
 ### ✅ T-MIN-006 · P2 · ANY · DONE
 **Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)**
 **Owner:** Worker-F6
@@ -729,6 +746,26 @@ graph TD
 - Any file failed as a clone or stub is archived with a disposition note, matching the Justice-clone precedent.
 
 *Audited against SHA:* `c4f389f`
+
+---
+### ✅ T-MIN-013 · P2 · ANY · DONE
+**Design the light-tier suit-card study format (spec + two pilot cards)**
+**Owner:** Worker-F13
+
+**Scope:**
+- Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study format for the 56 suit cards. Required sections: registry facts (restated, never improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where sourced (bounded-transcription caveat carried), iconography baseline, a brief project reading, and a mini claims table — every claim provenance-graded with the same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies.
+- This is the venture plan's dependency: teamwork/VENTURE_BRIEF.md §2 line 7 (trumps at full verified depth, 56 suit cards at a lighter standard tier so "research complete" is a reachable pre-launch milestone). The format must be cheap enough to produce 56 times but carry the same honesty discipline — [UNVERIFIED] over invention, no padding to look thorough.
+- Write TWO pilot cards to the new format — suggested SUIT-COINS-04 (Four of Coins) and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check against. This redundancy is intentional: the light-tier pilots must not contradict the full dossiers, and any divergence found is itself a finding to record.
+- Deliver a short comparison of the two light-tier pilots against their two existing full dossiers, stating what the light tier keeps, what it drops, and whether anything dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub maturity mechanic in the venture brief).
+- The format decision itself is the human's — this task produces the proposal and evidence, not a fleet-wide rollout; do not begin authoring the remaining 54 cards.
+
+**Definition of Done:**
+- research/pilots/SUIT_CARD_FORMAT_SPEC.md exists and defines the compact format with all required sections and the provenance-grading rules.
+- Two pilot suit-card studies written to the spec exist in research/pilots/ (or a drafts/ subpath the spec designates), each internally consistent with its existing full pilot dossier or with divergences explicitly recorded.
+- A short comparison document (or a comparison section in the spec) evaluates the light tier against the two full dossiers and states the trade-offs for the human's format decision.
+- human_review_required is honored — the task ends at HUMAN_REVIEW with the format proposal, not with additional suit cards authored.
+
+*Audited against SHA:* `f8bb1b8`
 
 ---
 ### ✅ T-MIN-019 · P2 · ANY · DONE
@@ -823,43 +860,6 @@ graph TD
 - This task's output note explicitly states it supersedes/replaces T-MIN-008's rationale; it does not archive or delete T-MIN-008 itself (that is a PM/human decision).
 
 *Audited against SHA:* `09f857d`
-
----
-### ⏳ T-MIN-007 · P2 · ANY · HUMAN_REVIEW
-**Triage the eleven GUIDEBOOK files from the fleet sweep**
-**Owner:** Worker-F7
-
-**Scope:**
-- Verification-triage all eleven GUIDEBOOK_*.md files in research/pilots/drafts/ (TRUMP-01 through -05, -08, -36 through -40), which sit on main and test looking authoritative but are unverified fleet output.
-- Establish first what a GUIDEBOOK file is supposed to be - no committed spec appears to exist; check the sweep's originating brief and whether the format duplicates, summarizes, or contradicts the personality studies.
-- Check each file for the three known disguises (wrong-but-fluent, stub-with-a-label, clone-with-a-costume) with diffs against the personality studies and each other; recompute any rank or scoring claims against the registry.
-- Recommend a disposition for the format itself - keep as a distinct deliverable (write the missing spec), fold into the personality studies, or archive - and per-file bins consistent with that recommendation.
-
-**Definition of Done:**
-- A triage report in research/pilots/ covers all eleven files with per-file bins and a reasoned recommendation on the GUIDEBOOK format's future.
-- No GUIDEBOOK file remains uninspected; any clone or stub is archived with a disposition note.
-
-*Audited against SHA:* `c4f389f`
-
----
-### ⏳ T-MIN-013 · P2 · ANY · HUMAN_REVIEW
-**Design the light-tier suit-card study format (spec + two pilot cards)**
-**Owner:** Worker-F13
-
-**Scope:**
-- Write research/pilots/SUIT_CARD_FORMAT_SPEC.md defining a compact per-card study format for the 56 suit cards. Required sections: registry facts (restated, never improved), rank-in-suit arithmetic (recomputed inline), Bernardi scoring where sourced (bounded-transcription caveat carried), iconography baseline, a brief project reading, and a mini claims table — every claim provenance-graded with the same [F]/[SI]/[U]/[UNVERIFIED] discipline as the trump studies.
-- This is the venture plan's dependency: teamwork/VENTURE_BRIEF.md §2 line 7 (trumps at full verified depth, 56 suit cards at a lighter standard tier so "research complete" is a reachable pre-launch milestone). The format must be cheap enough to produce 56 times but carry the same honesty discipline — [UNVERIFIED] over invention, no padding to look thorough.
-- Write TWO pilot cards to the new format — suggested SUIT-COINS-04 (Four of Coins) and SUIT-CUPS-12 (Cavalier of Cups), which have existing full pilot dossiers (research/pilots/Pilot1_SUIT-COINS-04_* and Pilot2_SUIT-CUPS-12_*) to cross-check against. This redundancy is intentional: the light-tier pilots must not contradict the full dossiers, and any divergence found is itself a finding to record.
-- Deliver a short comparison of the two light-tier pilots against their two existing full dossiers, stating what the light tier keeps, what it drops, and whether anything dropped is load-bearing for reader honesty (the visible Verified/Draft/Stub maturity mechanic in the venture brief).
-- The format decision itself is the human's — this task produces the proposal and evidence, not a fleet-wide rollout; do not begin authoring the remaining 54 cards.
-
-**Definition of Done:**
-- research/pilots/SUIT_CARD_FORMAT_SPEC.md exists and defines the compact format with all required sections and the provenance-grading rules.
-- Two pilot suit-card studies written to the spec exist in research/pilots/ (or a drafts/ subpath the spec designates), each internally consistent with its existing full pilot dossier or with divergences explicitly recorded.
-- A short comparison document (or a comparison section in the spec) evaluates the light tier against the two full dossiers and states the trade-offs for the human's format decision.
-- human_review_required is honored — the task ends at HUMAN_REVIEW with the format proposal, not with additional suit cards authored.
-
-*Audited against SHA:* `f8bb1b8`
 
 ---
 ### 📋 T-MIN-008 · P2 · ANY · OPEN
@@ -1187,27 +1187,6 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-024 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
-- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
-- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
-
-**Definition of Done:**
-- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
-- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
-- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### 📋 T-PTG-025 · P2 · ANY · AUDITED
 **JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)**
 **Owner:** None
@@ -1224,71 +1203,6 @@ graph TD
 - Add at least one NEW automated test case specifically targeting bulk-extraction attempts against the new multi-query retrieval pipeline (e.g. "give me everything you found across all your searches"), since this is a genuinely new attack surface the old single-search pipeline didn't have.
 - The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
 - php -l passes on all modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### 📋 T-PTG-022 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 2b: EvidenceRanker**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated on T-PTG-020 (EvidenceRetriever) being DONE.
-- WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`. Not every passage T-PTG-020's EvidenceRetriever collects should go directly to the final answering model. Rank evidence by: relevance to user intent, relevance to conversation context, source quality, specificity, redundancy, citation resolvability. Output a compact evidence bundle for synthesis (v3.md section 11's exact phrase).
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not change the live wiring T-PTG-020 established beyond inserting this ranking step between retrieval and synthesis.
-
-**Definition of Done:**
-- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably reduces/reorders a raw evidence set into a compact bundle.
-- A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate passage being down-ranked or dropped, and a highly relevant passage being ranked above a tangentially related one for a specific test question.
-- Wired into the live path after T-PTG-020's retriever, before wherever synthesis currently happens (still the existing JournalAnswerService synthesis step at this point, since AnswerSynthesizer.php doesn't exist yet).
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
-- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest, ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still passes in full.
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### 📋 T-PTG-023 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022 (EvidenceRanker).
-- WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`. Receives: the member's question, recent conversation, T-PTG-018's persistent research state, T-PTG-019's research plan, and T-PTG-022's ranked evidence bundle. Produces the best useful answer possible.
-- THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly distinguish "Journal-supported information" (requires evidence and citation, e.g. "The Journal describes friction at the bearing points as...") from "Assistant explanation" (interpretation/comparison/general reasoning, e.g. "A useful way to picture this mechanically is..." -- must NOT be falsely represented as something PTJ published). This is v3.md's stated mechanism for "how JournalGPT can become significantly more conversational without compromising citation integrity" -- the single most important behavioral change in this phase.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
-- EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims is a separate, later step; this phase only produces the answer with the two kinds of content clearly distinguished, it does not yet verify each Journal-attributed claim against evidence). Do not weaken the existing hard requirement (v3.md section 2.2/2.3) that Journal-attributed claims must be cited and citations must resolve -- this phase adds explanation capability, it does not loosen grounding requirements.
-
-**Definition of Done:**
-- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers that visibly/structurally distinguish Journal-supported content from assistant explanation (Worker's exact mechanism -- e.g. distinct markup, a structured field separating the two -- documented in the handoff).
-- A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction works: at least one test case where the answer correctly separates a cited Journal fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged as if it were a Journal claim.
-- Wired into the live path, replacing/extending wherever synthesis currently happens in JournalAnswerService.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, including the existing citation-grounding test cases in JournalAnswerServiceTest.php and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase must not regress citation accuracy while adding explanatory capability.
-- php -l passes on all new/modified PHP files.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### 📋 T-PTG-020 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 9-10 (Multi-Query Journal Search, Evidence Retriever) and section 32's Phase 2 description before starting. This is the first task that actually integrates prior work into the live pipeline -- v3.md section 32 says "At this point, run the benchmark again. This is the first major go/no-go checkpoint," so this task's DoD requires a benchmark comparison, not just unit tests.
-- WHAT TO BUILD, per v3.md section 10 exactly: create `journalgpt/lib/EvidenceRetriever.php`. Responsibilities: execute T-PTG-019's ResearchPlanner-produced search queries (plural -- multiple targeted searches per v3.md section 9, not one literal-interpretation search) against the existing OpenAI File Search / vector store integration (reuse `journalgpt/lib/OpenAIClient.php`, do not rebuild retrieval plumbing that already works -- v3.md section 3 is explicit that existing OpenAI integration, vector-store indexing, and File Search must be preserved, not replaced); collect passages; normalize retrieval metadata; preserve source identity and page information; deduplicate overlapping chunks; prevent one source from dominating results; limit total evidence size.
-- THIS TASK DOES THE FIRST LIVE INTEGRATION: unlike T-PTG-018/019, this task DOES wire ResearchPlanner + EvidenceRetriever into an actual code path -- but per v3.md section 27 (Failure Handling), it must degrade gracefully: "Planner unavailable -> use direct retrieval" and "One search fails -> continue with successful searches when sufficient." Do not make the new pipeline a hard replacement with no fallback -- if you cannot safely make it the default live path without risking a production regression, wire it behind a clearly-named feature flag/tier option instead and say so explicitly in the handoff (Worker's judgment call, but must be justified, not silently punted).
-- THE GO/NO-GO CHECKPOINT, per v3.md section 32: after this task, replay T-PTG-015's benchmark against BOTH the old pipeline and the new EvidenceRetriever-based pipeline and compare retrieval quality (did it find the right Journal material for the benchmark's documented disappointing cases, especially the follow-up and multi-source categories). This comparison result belongs in the handoff and determines whether later phases (3-6) are worth continuing -- do not just claim success without this comparison.
-- EXPLICITLY OUT OF SCOPE: EvidenceRanker (T-PTG-021), AnswerSynthesizer, ClaimValidator. Do not remove or bypass the existing citation resolver -- v3.md section 15 requires preserving it; this task only improves what evidence FEEDS the existing resolver, it does not replace the resolver itself.
-
-**Definition of Done:**
-- EvidenceRetriever.php exists per v3.md section 10's responsibilities, executes multi-query plans from ResearchPlanner, deduplicates, and bounds evidence size.
-- A new test file (journalgpt/tests/EvidenceRetrieverTest.php) covers multi-query execution, deduplication of overlapping chunks, and graceful degradation when a single search fails.
-- The new pipeline is wired into an actual reachable code path (default or behind a stated flag/tier per this task's scope), with graceful fallback to direct retrieval if the planner is unavailable, per v3.md section 27.
-- The Go/No-Go benchmark comparison from this task's scope is performed and its result (better, worse, or mixed retrieval quality vs. the old pipeline, with specifics) is recorded plainly in the handoff -- this is the single most important piece of evidence for whether Phase 3+ should proceed.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions. This task is the FIRST to wire new code into a live path -- this gate is especially critical here, since a mistake could break the app for members using it today.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php, ResearchPlannerTest.php) -- 0 regressions to the existing citation-grounded RAG lane.
-- php -l passes on all new/modified PHP files.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
@@ -1314,24 +1228,23 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 🛠 T-PTG-019 · P2 · ANY · CLAIMED
-**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
-**Owner:** Antigravity
+### 🛠 T-PTG-024 · P2 · ANY · CLAIMED
+**JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
+**Owner:** Antigravity-Worker
 
 **Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
-- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
-- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
-- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
-- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 14 (Claim Verification) and section 15 (Existing Citation System, which MUST be preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).
+- WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`. Journal-derived claims (as distinguished by T-PTG-023's AnswerSynthesizer) should be validated individually, not all-or-nothing. Desired behavior per v3.md's table: supported Journal claim -> retain + cite; unsupported Journal attribution -> remove, rewrite, or regenerate; assistant explanation -> retain when appropriately framed; uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit: "Do not automatically discard an entire useful answer because one citation cannot be resolved" -- this replaces today's coarser all-or-nothing grounding behavior with per-claim validation.
+- MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using the existing article mappings, provider file IDs, page markers, manifest data, local corpus matching, page verification, printed-page info, and protected source URLs. ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does not replace or duplicate the resolver's job of turning a supported claim into an exact citation link.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the existing resolver exactly per v3.md section 15's explicit instruction.
 
 **Definition of Done:**
-- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
-- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain), and integrates with the EXISTING citation resolver rather than reimplementing citation lookup.
+- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors in the table with concrete test cases, and specifically proves the "do not discard the whole answer over one bad citation" requirement -- a multi-claim answer where one claim's citation fails to resolve must still return the other, valid claims intact rather than a blanket refusal.
+- Wired into the live path after T-PTG-023's synthesis step, before the response is returned to the member.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, and eval_runner.py's citation-accuracy and grounding scoring specifically show no regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
 - php -l passes on all new/modified PHP files.
-- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
@@ -1388,6 +1301,27 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
+### ✅ T-PTG-022 · P2 · ANY · DONE
+**JournalGPT v3 Phase 2b: EvidenceRanker**
+**Owner:** Antigravity-Worker
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section 11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated on T-PTG-020 (EvidenceRetriever) being DONE.
+- WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`. Not every passage T-PTG-020's EvidenceRetriever collects should go directly to the final answering model. Rank evidence by: relevance to user intent, relevance to conversation context, source quality, specificity, redundancy, citation resolvability. Output a compact evidence bundle for synthesis (v3.md section 11's exact phrase).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not change the live wiring T-PTG-020 established beyond inserting this ranking step between retrieval and synthesis.
+
+**Definition of Done:**
+- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably reduces/reorders a raw evidence set into a compact bundle.
+- A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate passage being down-ranked or dropped, and a highly relevant passage being ranked above a tangentially related one for a specific test question.
+- Wired into the live path after T-PTG-020's retriever, before wherever synthesis currently happens (still the existing JournalAnswerService synthesis step at this point, since AnswerSynthesizer.php doesn't exist yet).
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest, ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still passes in full.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
 ### ✅ T-PTG-015 · P2 · ANY · DONE
 **JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)**
 **Owner:** Antigravity
@@ -1408,6 +1342,72 @@ graph TD
 - This task does NOT modify journalgpt/lib/JournalAnswerService.php or any other production answer-pipeline code -- Phase 0 is benchmark construction only, per the PRD's own phasing (\"Do not begin tuning without baseline examples\"). If the Worker is tempted to start implementing ConversationStateService or ResearchPlanner while building the benchmark, stop -- that is explicitly out of scope for this task and would violate the PRD's own sequencing.
 
 *Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
+
+---
+### ✅ T-PTG-023 · P2 · ANY · DONE
+**JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction**
+**Owner:** Antigravity-Worker
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022 (EvidenceRanker).
+- WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`. Receives: the member's question, recent conversation, T-PTG-018's persistent research state, T-PTG-019's research plan, and T-PTG-022's ranked evidence bundle. Produces the best useful answer possible.
+- THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly distinguish "Journal-supported information" (requires evidence and citation, e.g. "The Journal describes friction at the bearing points as...") from "Assistant explanation" (interpretation/comparison/general reasoning, e.g. "A useful way to picture this mechanically is..." -- must NOT be falsely represented as something PTJ published). This is v3.md's stated mechanism for "how JournalGPT can become significantly more conversational without compromising citation integrity" -- the single most important behavioral change in this phase.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims is a separate, later step; this phase only produces the answer with the two kinds of content clearly distinguished, it does not yet verify each Journal-attributed claim against evidence). Do not weaken the existing hard requirement (v3.md section 2.2/2.3) that Journal-attributed claims must be cited and citations must resolve -- this phase adds explanation capability, it does not loosen grounding requirements.
+
+**Definition of Done:**
+- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers that visibly/structurally distinguish Journal-supported content from assistant explanation (Worker's exact mechanism -- e.g. distinct markup, a structured field separating the two -- documented in the handoff).
+- A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction works: at least one test case where the answer correctly separates a cited Journal fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged as if it were a Journal claim.
+- Wired into the live path, replacing/extending wherever synthesis currently happens in JournalAnswerService.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions, including the existing citation-grounding test cases in JournalAnswerServiceTest.php and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase must not regress citation accuracy while adding explanatory capability.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### ✅ T-PTG-019 · P2 · ANY · DONE
+**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
+- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
+- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
+- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
+- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
+
+**Definition of Done:**
+- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
+- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### ✅ T-PTG-020 · P2 · ANY · DONE
+**JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
+**Owner:** Antigravity-Worker
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 9-10 (Multi-Query Journal Search, Evidence Retriever) and section 32's Phase 2 description before starting. This is the first task that actually integrates prior work into the live pipeline -- v3.md section 32 says "At this point, run the benchmark again. This is the first major go/no-go checkpoint," so this task's DoD requires a benchmark comparison, not just unit tests.
+- WHAT TO BUILD, per v3.md section 10 exactly: create `journalgpt/lib/EvidenceRetriever.php`. Responsibilities: execute T-PTG-019's ResearchPlanner-produced search queries (plural -- multiple targeted searches per v3.md section 9, not one literal-interpretation search) against the existing OpenAI File Search / vector store integration (reuse `journalgpt/lib/OpenAIClient.php`, do not rebuild retrieval plumbing that already works -- v3.md section 3 is explicit that existing OpenAI integration, vector-store indexing, and File Search must be preserved, not replaced); collect passages; normalize retrieval metadata; preserve source identity and page information; deduplicate overlapping chunks; prevent one source from dominating results; limit total evidence size.
+- THIS TASK DOES THE FIRST LIVE INTEGRATION: unlike T-PTG-018/019, this task DOES wire ResearchPlanner + EvidenceRetriever into an actual code path -- but per v3.md section 27 (Failure Handling), it must degrade gracefully: "Planner unavailable -> use direct retrieval" and "One search fails -> continue with successful searches when sufficient." Do not make the new pipeline a hard replacement with no fallback -- if you cannot safely make it the default live path without risking a production regression, wire it behind a clearly-named feature flag/tier option instead and say so explicitly in the handoff (Worker's judgment call, but must be justified, not silently punted).
+- THE GO/NO-GO CHECKPOINT, per v3.md section 32: after this task, replay T-PTG-015's benchmark against BOTH the old pipeline and the new EvidenceRetriever-based pipeline and compare retrieval quality (did it find the right Journal material for the benchmark's documented disappointing cases, especially the follow-up and multi-source categories). This comparison result belongs in the handoff and determines whether later phases (3-6) are worth continuing -- do not just claim success without this comparison.
+- EXPLICITLY OUT OF SCOPE: EvidenceRanker (T-PTG-021), AnswerSynthesizer, ClaimValidator. Do not remove or bypass the existing citation resolver -- v3.md section 15 requires preserving it; this task only improves what evidence FEEDS the existing resolver, it does not replace the resolver itself.
+
+**Definition of Done:**
+- EvidenceRetriever.php exists per v3.md section 10's responsibilities, executes multi-query plans from ResearchPlanner, deduplicates, and bounds evidence size.
+- A new test file (journalgpt/tests/EvidenceRetrieverTest.php) covers multi-query execution, deduplication of overlapping chunks, and graceful degradation when a single search fails.
+- The new pipeline is wired into an actual reachable code path (default or behind a stated flag/tier per this task's scope), with graceful fallback to direct retrieval if the planner is unavailable, per v3.md section 27.
+- The Go/No-Go benchmark comparison from this task's scope is performed and its result (better, worse, or mixed retrieval quality vs. the old pipeline, with specifics) is recorded plainly in the handoff -- this is the single most important piece of evidence for whether Phase 3+ should proceed.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions. This task is the FIRST to wire new code into a live path -- this gate is especially critical here, since a mistake could break the app for members using it today.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php, ResearchPlannerTest.php) -- 0 regressions to the existing citation-grounded RAG lane.
+- php -l passes on all new/modified PHP files.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-010 · P2 · ANY · DONE

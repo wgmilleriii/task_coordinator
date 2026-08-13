@@ -3,7 +3,7 @@ title: Apply the 93 pending card renames already recorded in ledger.json
 repo: minchiate_tarot
 priority: P1
 lane: ANY
-status: HUMAN_REVIEW
+status: DONE
 owner: Worker-F17
 created_at: '2026-08-10T23:53:38Z'
 audited_at: '2026-08-10T23:58:40.150761Z'
@@ -92,3 +92,6 @@ events:
   action: RECORD_REVIEW
   actor: Reviewer-F22
   details: 'Verdict: PASS'
+- timestamp: '2026-08-13T14:07:14.755552Z'
+  action: CLOSE
+  actor: Chip

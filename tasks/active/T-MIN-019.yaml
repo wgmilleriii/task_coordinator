@@ -4,8 +4,8 @@ title: "Apply the Bernardi verzicola reconciliation queue \u2014 hedge-phrase ci
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F21
 created_at: '2026-08-12T20:00:00-06:00'
 dependencies: []
 scope:
@@ -190,3 +190,7 @@ events:
   action: AUDIT
   actor: PM-F9
   details: Audited against d0052dc
+- timestamp: '2026-08-13T03:09:38.185034Z'
+  action: CLAIM
+  actor: Worker-F21
+claimed_at: '2026-08-13T03:09:38.184562Z'

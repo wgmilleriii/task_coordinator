@@ -58,7 +58,7 @@ graph TD
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
     T-MIN-025["T-MIN-025<br/>Author the nine remaining Coins pip cards to the light-tier suit-card format"]
-    T-MIN-024["T-MIN-024<br/>Author the ten remaining Cups pip cards to the light-tier suit-card format"]
+    T-MIN-024["T-MIN-024<br/>Author the ten remaining Cups pip cards to the light-tier suit-card format"]:::active
     T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
@@ -783,9 +783,9 @@ graph TD
 *Audited against SHA:* `0ff3c97`
 
 ---
-### 📋 T-MIN-024 · P2 · ANY · AUDITED
+### 🛠 T-MIN-024 · P2 · ANY · CLAIMED
 **Author the ten remaining Cups pip cards to the light-tier suit-card format**
-**Owner:** None
+**Owner:** Worker-F26
 
 **Scope:**
 - SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Cups occupies the contiguous sort-order block 29-42. The ten pip cards are SUIT-CUPS-01 through SUIT-CUPS-10, canonical names Ace of Cups through Ten of Cups, Italian Asso di Coppe through Dieci di Coppe, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 29 plus 1, i.e. for SUIT-CUPS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.

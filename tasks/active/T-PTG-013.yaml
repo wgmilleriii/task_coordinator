@@ -10,8 +10,7 @@ created_at: '2026-08-13T00:00:00Z'
 audited_at: '2026-08-13T03:45:35.164839Z'
 audited_by: FleetCoordinator
 audited_repo_sha: 604d1be6492f4f2ec8b477bae4f65b55fcd5d146
-dependencies:
-- T-PTG-012
+dependencies: []
 scope:
 - 'PROBLEM (reported directly by the product owner, Chip, live in production): selecting
   a different theme from the Theme picker on https://newmexicoptg.org/journalgpt/changelog.php
@@ -122,3 +121,18 @@ events:
   action: AUDIT
   actor: FleetCoordinator
   details: Audited against 604d1be6492f4f2ec8b477bae4f65b55fcd5d146
+- timestamp: '2026-08-13T03:55:00.000000Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: 'Removed dependencies: [T-PTG-012] (added out of caution, but this task
+    was already audited against 604d1be, the sha AFTER T-PTG-012 merged, so the
+    prerequisite line-shift concern is already satisfied by the pinned audited_repo_sha).
+    A Worker attempted to claim T-PTG-013 and was correctly rejected by the fleet
+    claim command''s dependency check (T-PTG-012 status was PEER_REVIEW, not DONE,
+    since it awaits human close), but the Worker''s own stated reasoning that
+    "T-PTG-012''s actual work lives only on the unmerged worktree-color-schemes
+    branch, not on main" was independently verified false: direct inspection of
+    the newmexicoptg.org checkout on main (604d1be) confirms data-theme-picker
+    markup is present in all 7 pages right now. Removing the dependency so a
+    Worker can proceed; the fleet claim rejection was correct, the Worker''s
+    diagnosis of why was not.'

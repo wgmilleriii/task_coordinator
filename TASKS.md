@@ -20,7 +20,6 @@ graph TD
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-PTG-013["T-PTG-013<br/>Theme picker doesn't visibly recolor changelog.php (and 5 other pages) due to uncached-bust journal-chat.css links"]
-    T-PTG-012 --> T-PTG-013
     T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::done
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done

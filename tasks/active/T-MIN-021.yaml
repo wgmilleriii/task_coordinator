@@ -3,7 +3,7 @@ title: Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 p
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F23
 created_at: '2026-08-13T00:00:00-06:00'
 dependencies: []
@@ -136,6 +136,9 @@ events:
   details: Audited against 82721eb
 - timestamp: '2026-08-13T22:05:46.778708Z'
   action: CLAIM
+  actor: Worker-F23
+- timestamp: '2026-08-13T22:12:46.515259Z'
+  action: SUBMIT
   actor: Worker-F23
 audited_at: '2026-08-13T22:01:49.399790Z'
 audited_by: PM-F10

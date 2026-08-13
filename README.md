@@ -71,7 +71,7 @@ Tasks must follow a strict linear progression:
 3. **`CLAIMED`**: An agent has locked the task.
 4. **`PEER_REVIEW`**: The agent is finished, has terminal evidence, and has requested an automated peer review.
 5. **`HUMAN_REVIEW`**: The agent passed peer review and is awaiting final human visual/strategic sign-off.
-6. **`DONE`**: The work is merged.
+6. **`DONE`**: The work is merged into the repo's integration branch (see **Merge Target** below — this is not necessarily `main`/production).
 
 ---
 
@@ -103,7 +103,9 @@ Read the generated `.fleet_context.md` file in the target repository's root. It 
 ```bash
 git -C ../<repo_name> worktree add ../<repo_name>-<task_id> -b test-<TASK-ID> <base_sha_or_branch>
 ```
-Do all work, testing, and local server usage inside that worktree directory. Never leave the primary clone's checked-out branch changed when you're done — if you must inspect the primary clone (e.g. to confirm what's on `main`), use `git -C ../<repo_name> log`/`show`/`fetch`, which don't change the checkout, not `checkout`/`switch`/`merge --no-ff` performed directly in it. Merges of a finished task branch into `main` are the one exception where operating in the primary clone is appropriate, since that's the point at which the work is meant to become the new shared state — but even then, `git fetch` first and confirm no one else's checkout is mid-edit.
+Do all work, testing, and local server usage inside that worktree directory. Never leave the primary clone's checked-out branch changed when you're done — if you must inspect the primary clone (e.g. to confirm what's on `main`), use `git -C ../<repo_name> log`/`show`/`fetch`, which don't change the checkout, not `checkout`/`switch`/`merge --no-ff` performed directly in it. Merging a finished task branch into the repo's integration branch (see **Merge Target** below) is the one exception where operating in the primary clone is appropriate, since that's the point at which the work is meant to become new shared state — but even then, `git fetch` first and confirm no one else's checkout is mid-edit.
+
+**Merge Target — do not assume `main`:** A finished, reviewed task branch merges into the repo's designated integration branch, which is **not automatically `main`/`master`**. Check the repo's own deploy workflow (e.g. `.github/workflows/deploy.yml`) — many Spoke repos deploy `test` to a staging site and `main`/`master` to production as two separate jobs, in which case `test` is the default merge target for ordinary task completion, and pushing to `main` is a separate, deliberate production-release step. **Never merge or push to `main`/`master` without current, explicit authorization from the project owner for that specific push** — a task reaching `DONE` in the fleet means the work is finished and merged into the integration branch, not that it is now authorized for production. As of 2026-08-13, `newmexicoptg.org` is explicitly in test-branch-only mode (Chip's direction) while `v3` work is in progress: all task branches merge into `test`, and `main` stays frozen until he says otherwise. Policies like this can change — if in doubt, ask rather than assume the last-known rule still holds.
 
 **Janitor Protocol:** If the `.fleet_context.md` file contains a "DOCUMENTATION UPDATE REQUIRED" warning, you MUST pause your regular assignment. Act as the Documentation Janitor: 
 1. Run `./bin/fleet sweep-docs <repo_name>` to find scattered `.md` files or missing frontmatter. Move them into `docs/` using the Dewey Decimal protocol.

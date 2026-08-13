@@ -78,7 +78,7 @@ graph TD
     T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
-    T-MIN-022["T-MIN-022<br/>Author the ten remaining Swords pip cards to the light-tier suit-card format"]
+    T-MIN-022["T-MIN-022<br/>Author the ten remaining Swords pip cards to the light-tier suit-card format"]:::active
     T-PTG-011["T-PTG-011<br/>'Good Answer' upvote click fails in production with 'Invalid or missing CSRF security token'"]:::done
     T-PTG-007["T-PTG-007<br/>Aggregate/statistical question handling (5th cognitive mode) — frequent contributors scenario"]:::done
     T-MIN-018["T-MIN-018<br/>Attempt direct web access to Bernardi 1790 (archive.org) to resolve the verzicola boundary before requiring a human download — supersedes T-MIN-008"]:::done
@@ -829,9 +829,9 @@ graph TD
 *Audited against SHA:* `0ff3c97`
 
 ---
-### 📋 T-MIN-022 · P2 · ANY · AUDITED
+### 🛠 T-MIN-022 · P2 · ANY · CLAIMED
 **Author the ten remaining Swords pip cards to the light-tier suit-card format**
-**Owner:** None
+**Owner:** Worker-F24
 
 **Scope:**
 - SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Swords occupies the contiguous sort-order block 1-14 (registry column sort_order). The ten pip cards are SUIT-SWORDS-01 through SUIT-SWORDS-10, canonical names Ace of Swords through Ten of Swords, Italian Asso di Spade through Dieci di Spade, historical_names column simply Ace/One, Two, Three, ... Ten -- i.e. the registrys own pip rank labels ARE the plain English ordinals Ace-Ten (period Italian numerals Asso, Due, Tre, Quattro, Cinque, Sei, Sette, Otto, Nove, Dieci); do not assume some other Minchiate-specific pip naming scheme exists in the registry -- it does not. Rank-in-suit for each card = sort_order minus 1 plus 1 (block start 1), i.e. rank-in-suit equals the cards own -NN suffix for every Swords card; show this arithmetic per card, do not just assert it. None of these ten cards has a light-tier study yet.

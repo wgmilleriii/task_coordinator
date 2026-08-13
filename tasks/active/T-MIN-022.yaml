@@ -3,8 +3,8 @@ title: Author the ten remaining Swords pip cards to the light-tier suit-card for
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F24
 created_at: '2026-08-13T00:00:00-06:00'
 dependencies: []
 scope:
@@ -111,3 +111,7 @@ events:
   action: AUDIT
   actor: PM-F11
   details: Audited against 0ff3c97
+- timestamp: '2026-08-13T23:20:19.110976Z'
+  action: CLAIM
+  actor: Worker-F24
+claimed_at: '2026-08-13T23:20:19.110302Z'

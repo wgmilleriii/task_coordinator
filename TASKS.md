@@ -26,7 +26,7 @@ graph TD
     T-PTG-013["T-PTG-013<br/>Theme picker doesn't visibly recolor changelog.php (and 5 other pages) due to uncached-bust journal-chat.css links"]:::done
     T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::done
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
-    T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::review
+    T-PTG-018["T-PTG-018<br/>JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)"]:::done
     T-PTG-015 --> T-PTG-018
     T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
     T-PTG-020 --> T-PTG-022
@@ -43,7 +43,7 @@ graph TD
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
     T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]
     T-PTG-022 --> T-PTG-023
-    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]
+    T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::active
     T-PTG-018 --> T-PTG-019
     T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::done
     T-INTY-018 --> T-INTY-020
@@ -1270,28 +1270,6 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### 📋 T-PTG-019 · P2 · ANY · AUDITED
-**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
-**Owner:** None
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
-- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
-- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
-- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
-- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
-
-**Definition of Done:**
-- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
-- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
-- php -l passes on all new/modified PHP files.
-- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
 ### 📋 T-PTG-020 · P2 · ANY · AUDITED
 **JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)**
 **Owner:** None
@@ -1336,6 +1314,28 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
+### 🛠 T-PTG-019 · P2 · ANY · CLAIMED
+**JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 4 (Primary Problem), 8-9 (Research Planner, Multi-Query Journal Search), and 28-29 (Code Organization, Target JournalAnswerService Flow) before starting. This is Phase 1's second deliverable, building on T-PTG-018's ConversationStateService (already DONE if you can claim this task -- the fleet dependency check enforces it).
+- WHAT TO BUILD, per v3.md section 8 exactly: create `journalgpt/lib/ResearchPlanner.php`. Given a member's question plus recent conversation plus T-PTG-018's persistent conversation state, it must determine (structured output, NOT prose meant for the member -- v3.md is explicit: "Planner output must be structured data, not prose intended for the user" and "Do not expose private model chain-of-thought"): user intent, the underlying technical topic, relevant prior context, PTJ-likely terminology, whether multiple searches are needed, and what kind of answer is expected. v3.md gives a full example JSON shape (intent/topic/search_queries) -- read it directly.
+- INTEGRATION POINT, per v3.md section 9 and the real production evidence in T-PTG-015's benchmark: this is what fixes the exact failure mode documented there -- a member typing a bare "why?" or "what about an upright?" as a follow-up, which the current pipeline treats as a standalone, context-free question. The planner must consult T-PTG-018's ConversationStateService to resolve such follow-ups against the actual prior topic.
+- DO NOT WIRE THIS INTO THE LIVE ANSWER PATH YET: build ResearchPlanner.php as a standalone, independently testable unit (matching v3.md section 28's target architecture where JournalAnswerService.php becomes "primarily an orchestrator" -- that orchestration wiring is a LATER integration step, not this task). Do not modify JournalAnswerService.php's actual production `ask()` flow in this task -- that risks a live regression before the full pipeline (retrieval, ranking, synthesis, validation) exists to actually consume the planner's output correctly. Building it in isolation first, proven against the benchmark's follow-up examples via direct unit tests, is the safer sequencing.
+- EXPLICITLY OUT OF SCOPE: EvidenceRetriever, EvidenceRanker, AnswerSynthesizer, ClaimValidator (all later phases). Wiring ResearchPlanner into the live `ask()` endpoint (a follow-up integration task once Phase 2's retrieval work also exists, since a planner alone with no new retrieval to consume its multi-query output isn't useful in production yet).
+
+**Definition of Done:**
+- ResearchPlanner.php exists per v3.md section 8's shape, consumes T-PTG-018's ConversationStateService output plus recent conversation, and returns structured planning data (not prose).
+- A new test file (journalgpt/tests/ResearchPlannerTest.php) demonstrates, using at least 2 of T-PTG-015's benchmark follow-up examples (the "why?" and "what about an upright?"-style cases) as fixtures, that the planner correctly resolves the follow-up's intent using persistent conversation state rather than treating it as context-free.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php, ConversationStateServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- The handoff states explicitly that ResearchPlanner is NOT yet wired into the live ask() endpoint, per this task's scope, and names which future task should do that integration (Phase 2's retrieval task, once EvidenceRetriever exists to consume multi-query plans).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
 ### ✅ T-PTG-008 · P2 · ANY · DONE
 **Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline**
 **Owner:** Worker-PTG-FeatureRequest1
@@ -1363,6 +1363,29 @@ graph TD
 - Existing RAG-pipeline behavior for untagged messages is unchanged -- no regression in citation resolution, Zero-Guessing withholding, or the 4-5 cognitive modes covered by T-PTG-005/006/007.
 
 *Audited against SHA:* `2915a622d26b0dfa151f5da6070cad4c9688d3ae`
+
+---
+### ✅ T-PTG-018 · P2 · ANY · DONE
+**JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
+**Owner:** Antigravity
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP (Claude, Antigravity, Codex, Gemini, etc. -- this task carries no assumed prior conversation, read everything you need from the files cited below): journalgpt/v3/v3.md is the full JournalGPT v2/v3 PRD (commit it to git if it is still untracked -- check `git status` first; if untracked, add and commit it as your first step so the source-of-truth PRD is in version control for future agents, not just a local file). Read v3.md sections 1-7 (Executive Summary through Conversation Understanding) and section 28 (Code Organization) before starting. This task implements ONLY the first bullet of Phase 1 (v3.md section 32): "persistent conversation state." A separate, later task (T-PTG-019) covers ResearchPlanner and depends on this one.
+- GATE: this task depends on T-PTG-015 (the Phase 0 benchmark) being DONE. Per v3.md's own words: "Do not begin tuning without baseline examples." Do not start this task's actual implementation work until T-PTG-015 is DONE -- the fleet CLI's dependency check on `claim` already enforces this mechanically, so if you can claim this task at all, the gate has been satisfied.
+- WHAT TO BUILD, per v3.md section 7 exactly: create `journalgpt/lib/ConversationStateService.php` and an appropriate database migration (follow this repo's existing migration numbering/naming convention in `journalgpt/migrations/*.sql` -- read the highest-numbered existing migration first to pick the next number). Suggested stored state per conversation: conversation_id, topic, research_summary, technical_context, important_entities, important_sources, open_questions, updated_at (v3.md gives a full example JSON shape -- read it directly rather than relying on this summary). This must SUPPLEMENT the existing `ConversationContext.php` short-term context, not replace it (v3.md section 7: "Current ConversationContext behavior should remain as short-term context").
+- WHY THIS MATTERS, per real production evidence: T-PTG-015's benchmark (once it exists -- read it) documents real member conversations that broke on bare follow-ups like a literal "why?" with no context. This service is the mechanism that will let a later phase (ResearchPlanner, T-PTG-019) resolve "What about an upright?" or "why?" against prior turns instead of treating each message in isolation.
+- EXPLICITLY OUT OF SCOPE: do not build ResearchPlanner, do not change JournalAnswerService's actual answer-generation flow to USE this new state yet (that integration is T-PTG-019's job) -- this task only builds and tests the storage/retrieval service itself as a standalone, correctly-designed unit. Do not attempt Phases 2-6.
+
+**Definition of Done:**
+- ConversationStateService.php exists per v3.md section 7's suggested shape, with methods to read and update a conversation's persistent state (Worker's exact method names/signatures, but must be usable by a later phase without redesign -- keep the interface clean).
+- A new migration adds whatever table(s)/columns are needed, following this repo's existing migration file conventions (see journalgpt/migrations/010_feature_request_conversations.sql for the most recent example of style/structure).
+- A new test file (journalgpt/tests/ConversationStateServiceTest.php, self-runner convention per AskEndpointTest.php) covers create/read/update of a conversation's state, and confirms it does not interfere with or replace the existing ConversationContext.php behavior (both must coexist).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` (the full 9-suite regression gate: AuthAccessTest, CorpusIndexerTest, JournalAnswerServiceTest, AskEndpointTest, UsagePolicyTest, MigrationTest, JournalChatRenderTest, OperationsJobTest, plus the Python eval_runner.py) and confirm 9/9 PASS with zero regressions, not just the narrower per-task test list. This is broader than the individual test files listed below and supersedes them as the actual merge gate -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
+- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
+- php -l passes on all new/modified PHP files.
+- journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-015 · P2 · ANY · DONE
@@ -1430,27 +1453,27 @@ graph TD
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
 
 ---
-### ⏳ T-PTG-018 · P2 · ANY · PEER_REVIEW
-**JournalGPT v3 Phase 1a: persistent conversation state (ConversationStateService)**
-**Owner:** Antigravity
+### ⏳ T-PTG-017 · P2 · ANY · HUMAN_REVIEW
+**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
+**Owner:** Worker-Mobile1
 
 **Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP (Claude, Antigravity, Codex, Gemini, etc. -- this task carries no assumed prior conversation, read everything you need from the files cited below): journalgpt/v3/v3.md is the full JournalGPT v2/v3 PRD (commit it to git if it is still untracked -- check `git status` first; if untracked, add and commit it as your first step so the source-of-truth PRD is in version control for future agents, not just a local file). Read v3.md sections 1-7 (Executive Summary through Conversation Understanding) and section 28 (Code Organization) before starting. This task implements ONLY the first bullet of Phase 1 (v3.md section 32): "persistent conversation state." A separate, later task (T-PTG-019) covers ResearchPlanner and depends on this one.
-- GATE: this task depends on T-PTG-015 (the Phase 0 benchmark) being DONE. Per v3.md's own words: "Do not begin tuning without baseline examples." Do not start this task's actual implementation work until T-PTG-015 is DONE -- the fleet CLI's dependency check on `claim` already enforces this mechanically, so if you can claim this task at all, the gate has been satisfied.
-- WHAT TO BUILD, per v3.md section 7 exactly: create `journalgpt/lib/ConversationStateService.php` and an appropriate database migration (follow this repo's existing migration numbering/naming convention in `journalgpt/migrations/*.sql` -- read the highest-numbered existing migration first to pick the next number). Suggested stored state per conversation: conversation_id, topic, research_summary, technical_context, important_entities, important_sources, open_questions, updated_at (v3.md gives a full example JSON shape -- read it directly rather than relying on this summary). This must SUPPLEMENT the existing `ConversationContext.php` short-term context, not replace it (v3.md section 7: "Current ConversationContext behavior should remain as short-term context").
-- WHY THIS MATTERS, per real production evidence: T-PTG-015's benchmark (once it exists -- read it) documents real member conversations that broke on bare follow-ups like a literal "why?" with no context. This service is the mechanism that will let a later phase (ResearchPlanner, T-PTG-019) resolve "What about an upright?" or "why?" against prior turns instead of treating each message in isolation.
-- EXPLICITLY OUT OF SCOPE: do not build ResearchPlanner, do not change JournalAnswerService's actual answer-generation flow to USE this new state yet (that integration is T-PTG-019's job) -- this task only builds and tests the storage/retrieval service itself as a standalone, correctly-designed unit. Do not attempt Phases 2-6.
+- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
+- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
+- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
+- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
+- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
 
 **Definition of Done:**
-- ConversationStateService.php exists per v3.md section 7's suggested shape, with methods to read and update a conversation's persistent state (Worker's exact method names/signatures, but must be usable by a later phase without redesign -- keep the interface clean).
-- A new migration adds whatever table(s)/columns are needed, following this repo's existing migration file conventions (see journalgpt/migrations/010_feature_request_conversations.sql for the most recent example of style/structure).
-- A new test file (journalgpt/tests/ConversationStateServiceTest.php, self-runner convention per AskEndpointTest.php) covers create/read/update of a conversation's state, and confirms it does not interfere with or replace the existing ConversationContext.php behavior (both must coexist).
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` (the full 9-suite regression gate: AuthAccessTest, CorpusIndexerTest, JournalAnswerServiceTest, AskEndpointTest, UsagePolicyTest, MigrationTest, JournalChatRenderTest, OperationsJobTest, plus the Python eval_runner.py) and confirm 9/9 PASS with zero regressions, not just the narrower per-task test list. This is broader than the individual test files listed below and supersedes them as the actual merge gate -- the current app must keep working exactly as before for members using it today while this v3 work proceeds in parallel.
-- The existing test suite still passes in full (AskEndpointTest.php, UsagePolicyTest.php, JournalAnswerServiceTest.php) -- 0 regressions, since this task does not touch the live answer pipeline.
-- php -l passes on all new/modified PHP files.
-- journalgpt/v3/v3.md is committed to git if it was not already (confirm and note in the handoff either way).
+- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
+- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
+- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
+- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
+- php -l passes on journalgpt/index.php.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
+- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
 
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW
@@ -1473,28 +1496,5 @@ graph TD
 - The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
 
 *Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
-
----
-### ⏳ T-PTG-017 · P2 · ANY · PEER_REVIEW
-**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
-**Owner:** Worker-Mobile1
-
-**Scope:**
-- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
-- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
-- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
-- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
-- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
-
-**Definition of Done:**
-- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
-- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
-- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
-- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
-- php -l passes on journalgpt/index.php.
-- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
-- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
-
-*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---

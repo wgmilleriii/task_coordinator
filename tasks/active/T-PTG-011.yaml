@@ -4,7 +4,7 @@ title: '"Good Answer" upvote click fails in production with "Invalid or missing 
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: HUMAN_REVIEW
+status: DONE
 owner: Worker-CSRF1
 created_at: '2026-08-12T00:00:00Z'
 audited_at: '2026-08-13T03:10:34.483837Z'
@@ -156,3 +156,6 @@ events:
   action: RECORD_REVIEW
   actor: FleetCoordinator
   details: 'Verdict: PASS'
+- timestamp: '2026-08-13T04:22:00.358744Z'
+  action: CLOSE
+  actor: Chip

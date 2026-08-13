@@ -12,6 +12,8 @@ graph TD
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::done
+    T-PTG-028["T-PTG-028<br/>JournalGPT v3: add a dedicated end-to-end v3_beta regression test to the golden hammer suite"]
+    T-PTG-026 --> T-PTG-028
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
     T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::done
     T-PTG-023 --> T-PTG-024
@@ -52,14 +54,14 @@ graph TD
     T-MIN-013["T-MIN-013<br/>Design the light-tier suit-card study format (spec + two pilot cards)"]:::done
     T-PTG-020["T-PTG-020<br/>JournalGPT v3 Phase 2: intelligent retrieval (EvidenceRetriever, multi-query search, dedup)"]:::done
     T-PTG-019 --> T-PTG-020
-    T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]:::review
+    T-INTY-023["T-INTY-023<br/>master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher"]:::done
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::done
     T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::done
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::done
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
-    T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]:::review
+    T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::done
@@ -68,10 +70,12 @@ graph TD
     T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::done
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
-    T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]:::active
+    T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]:::done
     T-PTG-025 --> T-PTG-026
     T-PTG-015 --> T-PTG-026
-    T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::review
+    T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::done
+    T-PTG-027["T-PTG-027<br/>JournalGPT v3: wire ConversationStateService.updateState() into ask() (persistent state is currently inert)"]:::active
+    T-PTG-026 --> T-PTG-027
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
     T-PTG-011["T-PTG-011<br/>'Good Answer' upvote click fails in production with 'Invalid or missing CSRF security token'"]:::done
@@ -106,7 +110,7 @@ graph TD
 *Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
-### ⏳ T-INTY-023 · P0 · ANY · HUMAN_REVIEW
+### ✅ T-INTY-023 · P0 · ANY · DONE
 **master_migrate.php has no unm_piano protection; add applied-tracking and a dynamic system_hub.php launcher**
 **Owner:** Worker-MigrateSafety1
 
@@ -128,7 +132,7 @@ graph TD
 *Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
 
 ---
-### ⏳ T-INTY-022 · P0 · ANY · HUMAN_REVIEW
+### ✅ T-INTY-022 · P0 · ANY · DONE
 **Hardcoded plaintext global_system bypass credential in login_form.php**
 **Owner:** Worker-LoginFix1
 
@@ -174,7 +178,7 @@ graph TD
 *Audited against SHA:* `3cf4775d3561b3746c6e55586921beb4492ec57d`
 
 ---
-### ⏳ T-INTY-024 · P1 · ANY · HUMAN_REVIEW
+### ✅ T-INTY-024 · P1 · ANY · DONE
 **admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data**
 **Owner:** Worker-Normalize1
 
@@ -1054,6 +1058,27 @@ graph TD
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
+### 📋 T-PTG-028 · P1 · ANY · AUDITED
+**JournalGPT v3: add a dedicated end-to-end v3_beta regression test to the golden hammer suite**
+**Owner:** None
+
+**Scope:**
+- BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found that JournalAnswerService::ask() threw an uncaught TypeError on virtually every real v3_beta request that reached EvidenceRanker (a null conversation state passed into a non-nullable parameter) -- meaning the entire v3_beta pipeline could not complete a real multi-chunk request in production before T-PTG-026's fix. This was NOT caught by security_and_eval_suite.php's existing 9/9 golden hammer suite, even though that suite has run green through every one of Phases 1-5's merges. It was only caught because T-PTG-026 happened to be the first task that actually exercised the complete v3_beta pipeline end-to-end (planner -> retriever -> ranker -> synthesizer -> claim validator) against realistic multi-chunk retrieval, rather than a single-chunk/empty-retrieval/mocked-shortcut path.
+- THE GAP, SPECIFICALLY: JournalAnswerServiceTest.php's existing tests (including the T-PTG-025-added TEST 4b for bulk-extraction refusal) exercise v3_beta only far enough to hit the refusal shortcut (which fires before the pipeline is even reached) or return early. No existing test in the golden hammer suite actually drives a v3_beta request through EVERY stage -- ConversationStateService.getState() returning null, ResearchPlanner.createPlan(), EvidenceRetriever.retrieve() with the new MIN_RELEVANCE_SCORE floor, EvidenceRanker.rankEvidence(), AnswerSynthesizer.synthesize(), and ClaimValidator.validate() -- for a realistic multi-chunk, multi-claim question, the way journalgpt/v3/replay_benchmark.php (T-PTG-026's one-off replay tool, not part of the permanent test suite) does.
+- WHAT TO DO: add a new permanent test file (e.g. journalgpt/tests/V3PipelineEndToEndTest.php) to the security_and_eval_suite.php runner, using the same mock/stub OpenAIClient approach already established in this codebase's test suite (see how JournalAnswerServiceTest.php and T-PTG-026's replay_benchmark.php each set up mocked responses) -- but wired as a genuine permanent regression test, not a one-off script. It must: (1) drive at least one v3_beta request through every pipeline stage listed above with realistic multi-chunk retrieved evidence (not empty/single-chunk), asserting the request completes successfully rather than throwing; (2) specifically assert that a conversation with NO persisted conversation_state row (i.e. getState() returns null, the exact condition that caused T-PTG-026's bug) does not crash the pipeline -- this is the regression case that must never silently reappear; (3) assert the final response shape (answer text, citations, is_grounded) is well-formed.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): the new test becomes suite #10 (or is folded into an existing suite entry) in `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php`, which must show all suites PASS with zero regressions to the existing 9.
+- EXPLICITLY OUT OF SCOPE: changing pipeline behavior -- this task only adds test coverage for the pipeline as it exists after T-PTG-026's fixes. If the new test reveals ANOTHER latent bug, stop and report it rather than silently patching around it -- file it the way T-PTG-026's and T-PTG-027's findings were filed, with concrete reproduction evidence.
+
+**Definition of Done:**
+- A new permanent test (not a one-off script) exercises the complete v3_beta pipeline end-to-end with realistic multi-chunk evidence and is wired into security_and_eval_suite.php's runner.
+- The test specifically covers the null-conversation-state regression case that caused T-PTG-026's bug (a conversation with no persisted state must not crash the pipeline).
+- security_and_eval_suite.php shows all suites PASS with zero regressions to the existing 9, including the new test.
+- php -l passes on all new/modified PHP files.
+- The handoff states whether the new test would have caught T-PTG-026's bug if it had existed beforehand (i.e. prove the test is actually meaningful, not just present).
+
+*Audited against SHA:* `41f365fb71fac941fc8fac629b9f98371d35a9b1`
+
+---
 ### 📋 T-PTG-002 · P1 · ANY · AUDITED
 **Stop citing every retrieved chunk — only cite what the model actually referenced**
 **Owner:** None
@@ -1105,6 +1130,27 @@ graph TD
 - php -l passes on journalgpt/tests/JournalChatRenderTest.php.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### 🛠 T-PTG-027 · P1 · ANY · CLAIMED
+**JournalGPT v3: wire ConversationStateService.updateState() into ask() (persistent state is currently inert)**
+**Owner:** FleetCoordinator
+
+**Scope:**
+- BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found and directly reproduced a real architectural gap while testing v3.md section 34's live 4-turn conversation flow. journalgpt/lib/ConversationStateService.php has a fully-implemented updateState() method, but grep confirms NOTHING in JournalAnswerService::ask() (or anywhere else in the v3_beta pipeline) ever calls it. Running journalgpt/v3/section34_flow.php live (the exact false-beats -> causes -> wound-strings -> practical-check flow from v3.md section 34) proves this directly: every one of the 4 turns shows "Persistent Conversation State: None" reaching ResearchPlanner, on every single turn.
+- WHY THIS ISN'T A BLOCKING BUG TODAY, BUT IS A REAL GAP: the section-34 flow still "worked" in T-PTG-026's replay because it fit inside ConversationContext's bounded ~6-message recent-turn window, which independently carries enough of the last few turns' text for ResearchPlanner to derive a reasonable follow-up query. But this is a fallback the architecture was never meant to rely on alone -- v3.md's ConversationStateService is specifically meant to carry persistent topic/entity/research state ACROSS a conversation, not just the last few raw messages. Any conversation longer than that bounded window (a member asking many follow-ups over one extended session) will silently lose whatever the persistent-state layer was supposed to be tracking, with no error or degraded-mode signal to the user or to logs -- it just quietly never engages.
+- WHAT TO DO: wire ConversationStateService::updateState() into JournalAnswerService::ask()'s v3_beta branch so that persistent state is actually written after each turn (read ConversationStateService.php's existing updateState() signature and ResearchPlanner.php's consumption of getState() output to determine what state shape is expected -- do not redesign the state shape, just wire the existing write path that was never connected). Confirm via a live multi-turn test (extend or reuse journalgpt/v3/section34_flow.php, or a longer synthetic conversation exceeding ConversationContext's bounded window) that "Persistent Conversation State: None" no longer appears on turns after the first, and that a conversation LONGER than the bounded recent-turn window still correctly carries topic/entity context via the now-populated persistent state layer (this is the actual regression test the bounded-window fallback was masking -- a short flow like section 34's 4 turns won't prove this by itself).
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions.
+- EXPLICITLY OUT OF SCOPE: redesigning ConversationStateService's state shape or ResearchPlanner's consumption of it -- both already exist and are presumed correct; this task only connects the missing write path. Do not flip any default-preset or rollout toggle -- v3_beta remains opt-in pending Chip's separate go/no-go decision referenced in T-PTG-026's handoff.
+
+**Definition of Done:**
+- ConversationStateService::updateState() is called from JournalAnswerService::ask()''s v3_beta branch after each turn, using the existing state shape (no redesign).
+- A live multi-turn test proves persistent state survives PAST ConversationContext''s bounded recent-turn window (not just within it, which the section-34 flow alone cannot prove) -- either a new automated test or an extended manual replay script, with before/after output showing "Persistent Conversation State: None" no longer appearing on later turns.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- php -l passes on all modified PHP files.
+- The handoff states plainly whether this closes the gap T-PTG-026 identified, or whether it surfaces a further issue.
+
+*Audited against SHA:* `41f365fb71fac941fc8fac629b9f98371d35a9b1`
 
 ---
 ### ✅ T-PTG-012 · P1 · ANY · DONE
@@ -1254,27 +1300,6 @@ graph TD
 - Findings written up (this task's own execution log / a feedback file) — not just raw JSON dumps — identifying any combination that fails continuity or citation format, with a specific hypothesis for why if one fails.
 
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
-
----
-### 🛠 T-PTG-026 · P2 · ANY · CLAIMED
-**JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
-**Owner:** FleetCoordinator
-
-**Scope:**
-- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32's Phase 6 description before starting. This is the final phase, gated on T-PTG-025 (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after comparison).
-- WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts, retrieval breadth, model choice, evidence limits, tier behavior, latency, cost." Run T-PTG-015's full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline (Phases 1-5 all merged) and score it against v3.md section 25's metrics: conversational understanding, retrieval quality, answer usefulness, citation accuracy, citation relevance, continuity, uncertainty handling, IP compliance, latency, cost.
-- THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015's original disappointing examples, the handoff must state whether the new pipeline actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up now that ConversationStateService + ResearchPlanner exist?) or whether it does not -- do not present an average score improvement as success if specific, previously-broken cases documented in the benchmark are still broken. v3.md's own Success Criteria (section 34) is a concrete multi-turn conversation example ("What does the Journal say about false beats?" -> "What causes them?" -> "Is that different in wound strings?" -> "So what would you check first?") -- test this exact flow live as part of the evaluation.
-- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions after every tuning iteration, not just once at the end.
-- EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are done by this point, this phase only tunes what exists (prompts, thresholds, retrieval breadth, model/tier choice) based on the benchmark replay results. Do not add new lib classes here.
-
-**Definition of Done:**
-- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results are scored per v3.md section 25's metrics, with per-example before/after comparison (not just aggregate scores) for every originally-disappointing example.
-- v3.md's section 34 success-criteria conversation flow (false beats -> causes -> wound strings comparison -> practical synthesis) is tested live and the handoff states plainly whether it now works as the PRD envisions.
-- At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
-- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
-- The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
-
-*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-008 · P2 · ANY · DONE
@@ -1525,6 +1550,27 @@ graph TD
 - All four load-bearing constraints above are confirmed true by reading the diff, not just inferred from tests passing -- no vector-store call added to the new path, no LLM-generated count/ranking text, router is a fixed phrase list, and low-confidence matches create pending contributors rather than auto-merging.
 
 *Audited against SHA:* `7a7c6212a575bb2743b3b26c32283b937f1e286f`
+
+---
+### ✅ T-PTG-026 · P2 · ANY · DONE
+**JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)**
+**Owner:** FleetCoordinator
+
+**Scope:**
+- CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections 24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32's Phase 6 description before starting. This is the final phase, gated on T-PTG-025 (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after comparison).
+- WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts, retrieval breadth, model choice, evidence limits, tier behavior, latency, cost." Run T-PTG-015's full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline (Phases 1-5 all merged) and score it against v3.md section 25's metrics: conversational understanding, retrieval quality, answer usefulness, citation accuracy, citation relevance, continuity, uncertainty handling, IP compliance, latency, cost.
+- THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015's original disappointing examples, the handoff must state whether the new pipeline actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up now that ConversationStateService + ResearchPlanner exist?) or whether it does not -- do not present an average score improvement as success if specific, previously-broken cases documented in the benchmark are still broken. v3.md's own Success Criteria (section 34) is a concrete multi-turn conversation example ("What does the Journal say about false beats?" -> "What causes them?" -> "Is that different in wound strings?" -> "So what would you check first?") -- test this exact flow live as part of the evaluation.
+- GOLDEN HAMMER GATE (hard requirement, per Chip's explicit direction this session): before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS with zero regressions after every tuning iteration, not just once at the end.
+- EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are done by this point, this phase only tunes what exists (prompts, thresholds, retrieval breadth, model/tier choice) based on the benchmark replay results. Do not add new lib classes here.
+
+**Definition of Done:**
+- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results are scored per v3.md section 25's metrics, with per-example before/after comparison (not just aggregate scores) for every originally-disappointing example.
+- v3.md's section 34 success-criteria conversation flow (false beats -> causes -> wound strings comparison -> practical synthesis) is tested live and the handoff states plainly whether it now works as the PRD envisions.
+- At least one tuning iteration is made based on benchmark results (prompt, retrieval breadth, evidence limit, or tier behavior adjustment) with a documented before/after score change, proving the tuning loop actually works, not just that a single pass was run.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions after all tuning changes.
+- The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready to be the default experience for all members, or does it need further work before full rollout, with specific reasoning tied to the benchmark results.
+
+*Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
 ### ✅ T-PTG-007 · P2 · ANY · DONE

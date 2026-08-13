@@ -1,0 +1,67 @@
+task_id: T-PTG-017
+agent: Worker-Mobile1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-017
+base_sha: e2edf343520a3418114da8997f31ae5dc3f245ec
+head_sha: 1bd4ad49077d140f52f0215adc6feaf4d001fc0b
+evidence_output: "Exit code: 0\n\nSTDOUT:\n=== Running api/ask.php Endpoint Tests\
+  \ ===\n[TEST 1] Testing anonymous access denial (401/403)...\n[OK] Anonymous access\
+  \ denial check passed.\n[TEST 2] Testing CSRF validation and missing token rejection...\n\
+  [OK] CSRF token validation & rejection verified.\n[TEST 3] Testing valid JSON response\
+  \ format and secret leakage protection...\n[OK] JSON response structure & secret\
+  \ leakage protection verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\
+  === Running UsagePolicy & Quota Tests ===\n[TEST 1] Testing pre-invocation quota\
+  \ enforcement...\n[OK] Pre-invocation quota enforcement verified (3 allowed, 4th\
+  \ denied).\n[TEST 2] Testing administrator exemption from per-user question cap...\n\
+  [OK] Administrator quota exemption verified.\n[TEST 3] Testing organization monthly\
+  \ budget hard cap enforcement...\n[OK] Organization monthly budget hard cap enforcement\
+  \ verified.\n[TEST 4] Testing race-safe atomic transaction allowance check...\n\
+  [OK] Atomic transaction allowance check verified.\n[TEST 5] Testing detailed usage\
+  \ ledger recording & stats...\n[OK] Detailed usage ledger recording & stats aggregation\
+  \ verified.\n=== ALL USAGE POLICY TESTS PASSED SUCCESSFULLY ===\n=== Running JournalAnswerService\
+  \ Unit Tests ===\n[OK] Test database populated for service tests.\n[TEST 9] Physical\
+  \ PDF page -> printed page mapping via per-issue front-matter offset...\n[OK] Physical->printed\
+  \ page mapping verified.\n[TEST 11] Reverse-quote matcher tolerates punctuation\
+  \ between words...\n[OK] Tolerant quote matching verified (punctuation, newlines,\
+  \ guards).\n[TEST 1] Grounded answers with correct issue/article/page citations...\n\
+  [OK] Grounded answer and citations verified successfully.\n[TEST 2] Uncertainty\
+  \ signaling when no supporting Journal chunks retrieved...\n[OK] Uncertainty signaling\
+  \ verified.\n[TEST 3] Page boundary marker parsing ([[page:N]] -> page number)...\n\
+  [OK] Page marker parsing verified.\n[TEST 3b] PUA-delimited (o1/o3) citation markers\
+  \ are stripped like \u3010\u2026\u3011...\n[OK] Both citation marker encodings are\
+  \ stripped and detected correctly.\n[TEST 7] Reverse quote match page lookup for\
+  \ exact page numbers...\n[OK] Reverse quote match page lookup verified (Page 18\
+  \ resolved correctly).\n[TEST 8] Verify 'what is fred up to' refers strictly to\
+  \ March 2026 issue (PTJ-2026-03)...\n[OK] Fred Sturm article resolution verified\
+  \ (Resolved to March 2026 Issue PTJ-2026-03).\n[TEST 10] In-corpus 'Fourier' passage\
+  \ resolves to June 2026, physical p.26 / printed p.24...\n[OK] 'Fourier' resolved\
+  \ to June 2026 (PTJ-2026-06), printed p.24 / physical PDF p.26.\n[TEST 12] Assistants\
+  \ v2 run-step file_search results become grounded chunks...\n[OK] v2 run-step grounding\
+  \ content captured with page markers intact.\n[TEST 13] Unevidenced chunk must not\
+  \ fabricate 'p. 1'...\n[OK] Unevidenced chunks no longer assert a fabricated page.\n\
+  [TEST 14] Manifest-path citations use the correct front-matter offset direction...\n\
+  [OK] Manifest fallback maps physical 26 -> printed 24.\n[TEST 15] Fallback citations\
+  \ resolve the real articles.id for their UID...\n[OK] Fallback citations carry the\
+  \ correct article_id.\n[TEST 17] Chunk with a page marker but an unknown file_id\
+  \ still cites...\n[OK] Unknown file_id degrades to corpus-text identification.\n\
+  [TEST 18] ask() returns and persists citations end-to-end...\n[OK] ask() returned\
+  \ 1 citation(s), persisted to citations_json.\n[TEST 18b] Hedged answer carrying\
+  \ real annotations still resolves citations...\n[OK] Hedged answer still resolved\
+  \ 1 citation(s).\n[TEST 18c] Over-retrieval doesn't leak into citations; adjacent\
+  \ pages collapse...\n[OK] Over-retrieved-but-uncited chunks excluded; adjacent pages\
+  \ collapsed to 19-20.\n[TEST 19] Unattributable answer is withheld, never shipped\
+  \ uncited...\n[OK] Unattributable answer withheld behind the PTJ-012 phrase.\n[TEST\
+  \ 16] Corpus boilerplate must not be attributed to an arbitrary issue...\n[OK] Non-distinctive\
+  \ boilerplate yields no citation.\n[TEST 4] Refusal behavior on bulk export request...\n\
+  [OK] Bulk export refusal verified.\n[TEST 5] Refusal behavior on prompt injection\
+  \ request...\n[OK] Prompt injection refusal verified.\n[TEST 6] Bounded conversation\
+  \ context loading...\n[OK] Bounded conversation context verified.\n=== ALL JOURNAL\
+  \ ANSWER SERVICE TESTS PASSED SUCCESSFULLY ===\nNo syntax errors detected in journalgpt/index.php\n\
+  \nSTDERR:\nJournalAnswerService: withheld unattributable answer (user=192, chunks=1,\
+  \ answer_len=158) \u2014 retrieval returned content but no citation could be resolved."
+peer_review_notes: null
+human_action_required: null
+token_spend: null
+cost_usd: null

@@ -4,7 +4,7 @@ title: 'Implement member feature request (conversation 53): better mobile screen
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-Mobile1
 created_at: '2026-08-13T00:00:00Z'
 audited_at: '2026-08-13T04:55:07.781127Z'
@@ -121,4 +121,7 @@ events:
   actor: Worker-Mobile1
 - timestamp: '2026-08-13T12:55:40.395578Z'
   action: CLAIM
+  actor: Worker-Mobile1
+- timestamp: '2026-08-13T12:58:12.471397Z'
+  action: SUBMIT
   actor: Worker-Mobile1

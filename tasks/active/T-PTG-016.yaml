@@ -1,0 +1,125 @@
+id: T-PTG-016
+title: 'SECURITY: admin_reply.php lets any logged-in member post fake assistant messages
+  into ANY member''s conversation (IDOR)'
+repo: newmexicoptg.org
+priority: P0
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T04:52:59.089060Z'
+audited_by: FleetCoordinator
+audited_repo_sha: e2edf343520a3418114da8997f31ae5dc3f245ec
+dependencies: []
+scope:
+- 'FINDING SOURCE: an automated post-commit security review flagged `journalgpt/admin_reply.php`
+  (shipped by T-PTG-014, merged to `main` at commit e2edf34, already pushed -- confirm
+  whether it has auto-deployed to production, per this repo''s known git-push-auto-deploy
+  behavior) as HIGH severity: Authorization (IDOR) -- cross-user assistant-message
+  injection.'
+- 'THE ACTUAL BUG: `admin_reply.php` calls `Authorization::requireRole(null)` (any
+  authenticated pilot user, member or administrator) and then looks up the target
+  conversation with a plain `SELECT id FROM conversations WHERE id = :id` -- NOT scoped
+  to the current user. This means ANY logged-in member can POST to this page with
+  an arbitrary `conversation_id` and have a fake `role=assistant` message inserted
+  into ANY OTHER member''s private conversation, impersonating the AI assistant (or
+  effectively PTG staff) in a conversation they have no relationship to.'
+- 'WHY THE FLEET COORDINATOR''S OWN GUIDANCE ON T-PTG-014 WAS WRONG AND MUST NOT BE
+  REPEATED: T-PTG-014''s scope explicitly told the Worker to match `admin_migrate.php`''s
+  precedent of `Authorization::requireRole(null)`, reasoning that no administrator-role
+  account exists in production. That reasoning does not transfer to this tool. `admin_migrate.php`
+  lets any member trigger idempotent, blast-radius-limited schema migrations against
+  the whole app -- annoying if misused, but not a content-injection or impersonation
+  vector against a SPECIFIC OTHER MEMBER. `admin_reply.php` lets one member inject
+  fake "assistant" content directly into another specific member''s private conversation,
+  which is a materially different and more dangerous capability (social engineering
+  / trust manipulation against a real person, not just operational friction). Do not
+  copy the `requireRole(null)` pattern here just because another admin-ish page in
+  this codebase uses it -- evaluate each tool''s actual blast radius on its own.'
+- 'REAL-WORLD EXPOSURE CHECK (Scout verified via `debug_logs.php`): every logged production
+  interaction to date shows `user_id: 1` -- there is currently no second real member
+  account visible in production activity, so this has almost certainly not been exploited
+  against a real second party yet. This is P0 because it must be fixed BEFORE any
+  second member is onboarded, not because there is known active exploitation today
+  -- do not downgrade priority on the assumption it is already fine.'
+- 'FIX SCOPE, PART 1 (code): change `journalgpt/admin_reply.php` to require the real
+  administrator role -- `Authorization::requireRole(Authorization::ROLE_ADMIN)` --
+  instead of `requireRole(null)`. Do NOT take the "scope to own conversations only"
+  alternative (`WHERE id = :id AND user_id = :uid`) -- that would defeat the tool''s
+  actual purpose, which is specifically to let an admin (Chip) post into OTHER members''
+  conversations for announcements (this is exactly how T-PTG-014 was used: Chip needed
+  to reply into member conversation 51, which is not his own conversation).'
+- 'FIX SCOPE, PART 2 (data): since no `administrator`-role account exists in production
+  today (confirmed during T-PTG-014''s scoping), the ROLE_ADMIN gate alone would lock
+  Chip out of his own tool unless his account is promoted. Add a small, idempotent
+  CLI script (matching the existing convention in `journalgpt/cli/*.php`, e.g. `journalgpt/cli/promote_admin.php`)
+  that takes an email argument and sets that user''s `role_id` to the `administrator`
+  role''s id (looked up by name, not a hardcoded id, in case seed order ever changes).
+  The Worker cannot run this against production directly (no production DB credentials
+  are available in this environment, confirmed repeatedly this session) -- the DoD
+  requires handing Chip the exact command to run himself against production, not attempting
+  to run it there.'
+- 'REGRESSION CHECK: `journalgpt/tests/AdminReplyTest.php` (added by T-PTG-014) currently
+  asserts that an authenticated MEMBER can successfully post a reply -- that assertion
+  is now WRONG per this fix and must be updated to assert the opposite (a plain member
+  is rejected with 403, only an administrator-role user succeeds). Do not leave the
+  old test passing against the old, insecure behavior -- update it to actually test
+  the fixed access control, not just keep tests green by coincidence.'
+- 'EXPLICITLY OUT OF SCOPE: do not touch `admin_migrate.php`''s own `requireRole(null)`
+  -- that tool''s tradeoff is a separate judgment call already made and not part of
+  this security finding. Do not build a full RBAC system or per-conversation ACLs
+  -- a single ROLE_ADMIN gate is sufficient and matches this codebase''s existing
+  two-role model (member/administrator).'
+definition_of_done:
+- journalgpt/admin_reply.php requires Authorization::ROLE_ADMIN, not requireRole(null)
+  -- a plain member account gets a 403, matching Authorization::denyAccess()'s existing
+  behavior.
+- journalgpt/tests/AdminReplyTest.php is updated so its test assertions match the
+  new, correct access control (member rejected, administrator succeeds) -- not just
+  left passing by accident.
+- A new journalgpt/cli/promote_admin.php script exists, idempotent, looks up the administrator
+  role id by name (not hardcoded), takes an email argument, and the handoff includes
+  the EXACT command for Chip to run against production himself (since the Worker cannot
+  reach production DB credentials from this environment).
+- The handoff explicitly states this fix has NOT yet been applied to production role
+  data (only the code gate ships automatically via merge) -- Chip must run the promote_admin.php
+  command himself before he can use admin_reply.php again post-fix, and the handoff
+  must say this plainly so it isn't missed.
+- php -l passes on journalgpt/admin_reply.php and journalgpt/cli/promote_admin.php.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php,
+  journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php
+  all run clean (0 failures).
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/AskEndpointTest.php && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/UsagePolicyTest.php && DB_HOST=127.0.0.1
+  DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/JournalAnswerServiceTest.php
+  && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/AdminReplyTest.php
+  && php -l journalgpt/admin_reply.php && php -l journalgpt/cli/promote_admin.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: 'An automated post-commit security review flagged admin_reply.php (T-PTG-014,
+    merged to main at e2edf34) as a HIGH-severity IDOR -- any logged-in member could
+    post fake assistant-role messages into any other member''s conversation, since
+    the page used requireRole(null) (copying admin_migrate.php''s precedent, which
+    the Fleet Coordinator itself specified in T-PTG-014''s scope) and did not scope
+    the conversation lookup to the current user. Verified via debug_logs.php that
+    only user_id=1 has ever appeared in production activity, so no real second-party
+    exploitation has occurred yet, but this must close before any second member is
+    onboarded. Scoped the fix as a real ROLE_ADMIN gate plus a one-time CLI script
+    to promote Chip''s account, explicitly not the alternative of scoping replies
+    to the poster''s own conversations (which would defeat the tool''s actual purpose).
+    Corrected the Fleet Coordinator''s own earlier bad guidance in the record so it
+    isn''t repeated: admin_migrate.php''s requireRole(null) precedent does not transfer
+    to a tool that can inject content into a specific other member''s private conversation.'
+- timestamp: '2026-08-13T04:52:59.090096Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against e2edf343520a3418114da8997f31ae5dc3f245ec

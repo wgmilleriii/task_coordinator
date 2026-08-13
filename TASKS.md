@@ -69,7 +69,7 @@ graph TD
     T-MIN-019["T-MIN-019<br/>Apply the Bernardi verzicola reconciliation queue — hedge-phrase citation fix only"]:::done
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
     T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
-    T-MIN-023["T-MIN-023<br/>Author the ten remaining Batons pip cards to the light-tier suit-card format"]:::review
+    T-MIN-023["T-MIN-023<br/>Author the ten remaining Batons pip cards to the light-tier suit-card format"]:::done
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::done
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
@@ -943,6 +943,29 @@ graph TD
 *Audited against SHA:* `d0052dc`
 
 ---
+### ✅ T-MIN-023 · P2 · ANY · DONE
+**Author the ten remaining Batons pip cards to the light-tier suit-card format**
+**Owner:** Worker-F25
+
+**Scope:**
+- SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Batons occupies the contiguous sort-order block 15-28. The ten pip cards are SUIT-BATONS-01 through SUIT-BATONS-10, canonical names Ace of Batons through Ten of Batons, Italian Asso di Bastoni through Dieci di Bastoni, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 15 plus 1, i.e. for SUIT-BATONS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.
+- COURTS EXCLUDED (confirm, do not re-derive from scratch): SUIT-BATONS-11 (Jack/Fante), SUIT-BATONS-12 (Cavalier/Cavallo), SUIT-BATONS-13 (Queen/Regina), SUIT-BATONS-14 (King/Re) are the four Batons court cards, sort orders 25-28, already scoped under the middle court tier (T-MIN-013 pilot 2 of 2; T-MIN-021 middle-tier format, closed DONE). They are OUT OF SCOPE here -- do not write, restate, or touch any Batons court file under this task.
+- Write all ten pip cards fresh, one file per card, to research/pilots/drafts/STANDARD_SUIT-BATONS-NN_Card_Name.md (NN zero-padded, e.g. STANDARD_SUIT-BATONS-01_Ace_of_Batons.md), following research/pilots/SUIT_CARD_FORMAT_SPEC.md's section skeleton exactly (header block with maturity state and IMG-001 blocker; section 1 registry facts [F]; section 2 rank in suit recomputed from sort_order, not memory; section 3 scoring sourced-or-absent; section 4 iconography baseline at true confidence; section 5 confusion resolvers or 'none required'; section 6 project reading [PS], at most 10 lines, built only from sections 1-5 anchors; section 7 boundaries; section 8 mini claims table, 6-12 rows, claim IDs namespaced BA-NN-C-NN per the spec's claim-namespace rule). Diff every card against drafts/STANDARD_SUIT-COINS-04_Four_of_Coins.md (the working pilot) for structural and disciplinary consistency (line-count band 60-120, same grading legend, same bounded-transcription caveat wording).
+- SCORING DISCIPLINE (already settled by the format spec section 3, do not re-litigate or invent a new rule): RULE-1790 pp. 5-6 gives five points to each King and none to the other thirteen cards of a suit; every captured card (including each Batons pip) contributes one card to the captured-card count, never more; no combination (verzicola) value is demonstrated on the record for any suit numeral, and no categorical exclusion is asserted either -- state this as sourced-or-absent per pip, never invent an amount. Swords/Batons are the LONG suits: state their trick order only where a witness transcription for the long-suit order is actually on the corpus; otherwise mark the ordering [UNVERIFIED] rather than assuming an ascending numeral order by default -- do not silently import the round-suit inverse rule, which is sourced only for Coins/Cups.
+- No modern cartomancy meanings, no RWS bleed-over (no Three of Wands foresight scene, no baton-suit-as-fire imagery, no upright/reversed keywords), no elemental/astrological/Kabbalah/numerology correspondences, no unsourced point amounts or combination values -- identical discipline to every batch this project has run (trump/arie/papi-fool/zodiac/element).
+- Work in waves with self-verification before final submission, matching the trump/arie/papi-fool batch pattern: recompute every section-2 rank-in-suit line against the registry sort_order column, check every claims-table row resolves to a source cell or an explicit [UNVERIFIED]/absent marker, grep every drafted file for forbidden terms (pentacles, upright, reversed, Water/Earth-as-suit, RWS scene names), and diff each card against the Four of Coins pilot for format-skeleton and line-count consistency.
+- Write a batch verification report at research/pilots/Batons_Pip_Batch_Verification_Report.md with a per-card verdict (PASS / PASS_WITH_CORRECTIONS / FAIL) for all ten cards and a recomputation table showing each card's sort_order, block-start arithmetic, and resulting rank-in-suit.
+- OUT OF SCOPE: the four Batons court cards (already handled, see above); any modern cartomancy content; any point value, card count, or combination reach not traceable to a named witness and locator; any other suit's cards.
+
+**Definition of Done:**
+- All ten files research/pilots/drafts/STANDARD_SUIT-BATONS-01_*.md through STANDARD_SUIT-BATONS-10_*.md exist, each following the SUIT_CARD_FORMAT_SPEC.md skeleton (header/maturity/IMG-001 blocker, sections 1-8 present, claims table with BA-NN-C-NN IDs), each 60-120 lines, none containing a court card id (SUIT-BATONS-11 through -14) or forbidden terms from the spec's section 5 list.
+- research/pilots/Batons_Pip_Batch_Verification_Report.md exists, naming all ten SUIT-BATONS-01..10 card ids with a verdict and recomputed rank-in-suit for each.
+- Every section-2 rank-in-suit arithmetic line is recomputed from the registry's sort_order column (block start 15), not asserted from memory.
+- Every section-3 scoring statement is sourced (RULE-1790 pp. 5-6 as transcribed via the Four of Coins pilot's claim chain, or the Justice pilot's verzicola hedge where relevant) or explicitly marked absent/[UNVERIFIED] -- no invented amounts.
+
+*Audited against SHA:* `0ff3c97`
+
+---
 ### ✅ T-MIN-015 · P2 · ANY · DONE
 **Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged**
 **Owner:** Worker-F16
@@ -1043,29 +1066,6 @@ graph TD
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the verzicola examples with exact locators and states what the record can and cannot support.
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
-
----
-### ⏳ T-MIN-023 · P2 · ANY · PEER_REVIEW
-**Author the ten remaining Batons pip cards to the light-tier suit-card format**
-**Owner:** Worker-F25
-
-**Scope:**
-- SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Batons occupies the contiguous sort-order block 15-28. The ten pip cards are SUIT-BATONS-01 through SUIT-BATONS-10, canonical names Ace of Batons through Ten of Batons, Italian Asso di Bastoni through Dieci di Bastoni, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 15 plus 1, i.e. for SUIT-BATONS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.
-- COURTS EXCLUDED (confirm, do not re-derive from scratch): SUIT-BATONS-11 (Jack/Fante), SUIT-BATONS-12 (Cavalier/Cavallo), SUIT-BATONS-13 (Queen/Regina), SUIT-BATONS-14 (King/Re) are the four Batons court cards, sort orders 25-28, already scoped under the middle court tier (T-MIN-013 pilot 2 of 2; T-MIN-021 middle-tier format, closed DONE). They are OUT OF SCOPE here -- do not write, restate, or touch any Batons court file under this task.
-- Write all ten pip cards fresh, one file per card, to research/pilots/drafts/STANDARD_SUIT-BATONS-NN_Card_Name.md (NN zero-padded, e.g. STANDARD_SUIT-BATONS-01_Ace_of_Batons.md), following research/pilots/SUIT_CARD_FORMAT_SPEC.md's section skeleton exactly (header block with maturity state and IMG-001 blocker; section 1 registry facts [F]; section 2 rank in suit recomputed from sort_order, not memory; section 3 scoring sourced-or-absent; section 4 iconography baseline at true confidence; section 5 confusion resolvers or 'none required'; section 6 project reading [PS], at most 10 lines, built only from sections 1-5 anchors; section 7 boundaries; section 8 mini claims table, 6-12 rows, claim IDs namespaced BA-NN-C-NN per the spec's claim-namespace rule). Diff every card against drafts/STANDARD_SUIT-COINS-04_Four_of_Coins.md (the working pilot) for structural and disciplinary consistency (line-count band 60-120, same grading legend, same bounded-transcription caveat wording).
-- SCORING DISCIPLINE (already settled by the format spec section 3, do not re-litigate or invent a new rule): RULE-1790 pp. 5-6 gives five points to each King and none to the other thirteen cards of a suit; every captured card (including each Batons pip) contributes one card to the captured-card count, never more; no combination (verzicola) value is demonstrated on the record for any suit numeral, and no categorical exclusion is asserted either -- state this as sourced-or-absent per pip, never invent an amount. Swords/Batons are the LONG suits: state their trick order only where a witness transcription for the long-suit order is actually on the corpus; otherwise mark the ordering [UNVERIFIED] rather than assuming an ascending numeral order by default -- do not silently import the round-suit inverse rule, which is sourced only for Coins/Cups.
-- No modern cartomancy meanings, no RWS bleed-over (no Three of Wands foresight scene, no baton-suit-as-fire imagery, no upright/reversed keywords), no elemental/astrological/Kabbalah/numerology correspondences, no unsourced point amounts or combination values -- identical discipline to every batch this project has run (trump/arie/papi-fool/zodiac/element).
-- Work in waves with self-verification before final submission, matching the trump/arie/papi-fool batch pattern: recompute every section-2 rank-in-suit line against the registry sort_order column, check every claims-table row resolves to a source cell or an explicit [UNVERIFIED]/absent marker, grep every drafted file for forbidden terms (pentacles, upright, reversed, Water/Earth-as-suit, RWS scene names), and diff each card against the Four of Coins pilot for format-skeleton and line-count consistency.
-- Write a batch verification report at research/pilots/Batons_Pip_Batch_Verification_Report.md with a per-card verdict (PASS / PASS_WITH_CORRECTIONS / FAIL) for all ten cards and a recomputation table showing each card's sort_order, block-start arithmetic, and resulting rank-in-suit.
-- OUT OF SCOPE: the four Batons court cards (already handled, see above); any modern cartomancy content; any point value, card count, or combination reach not traceable to a named witness and locator; any other suit's cards.
-
-**Definition of Done:**
-- All ten files research/pilots/drafts/STANDARD_SUIT-BATONS-01_*.md through STANDARD_SUIT-BATONS-10_*.md exist, each following the SUIT_CARD_FORMAT_SPEC.md skeleton (header/maturity/IMG-001 blocker, sections 1-8 present, claims table with BA-NN-C-NN IDs), each 60-120 lines, none containing a court card id (SUIT-BATONS-11 through -14) or forbidden terms from the spec's section 5 list.
-- research/pilots/Batons_Pip_Batch_Verification_Report.md exists, naming all ten SUIT-BATONS-01..10 card ids with a verdict and recomputed rank-in-suit for each.
-- Every section-2 rank-in-suit arithmetic line is recomputed from the registry's sort_order column (block start 15), not asserted from memory.
-- Every section-3 scoring statement is sourced (RULE-1790 pp. 5-6 as transcribed via the Four of Coins pilot's claim chain, or the Justice pilot's verzicola hedge where relevant) or explicitly marked absent/[UNVERIFIED] -- no invented amounts.
-
-*Audited against SHA:* `0ff3c97`
 
 ---
 ### ✅ T-MIN-017 · P3 · codex · DONE

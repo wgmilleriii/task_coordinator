@@ -1,0 +1,65 @@
+task_id: T-MIN-023
+reviewer_agent: Reviewer-F30
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 183b8ce
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Verification command re-run in an isolated worktree at 183b8ce (base
+    0ff3c97): PASSED, "OK, found 10 cards", exit 0. Matches the submitted handoff
+    evidence exactly.'
+- severity: INFO
+  description: 'Registry recomputation independently re-derived from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv
+    at 183b8ce: Batons block is confirmed to be the contiguous sort_order rows 15-28
+    (SUIT-BATONS-01..10 at sort_order 15-24, SUIT-BATONS-11..14 courts at 25-28
+    Fante/Cavallo/Regina/Re). All ten drafted files section-2 arithmetic lines (rank-in-suit
+    = sort_order - 15 + 1) recomputed and match the registry exactly for every card
+    (Ace=1 at sort 15 through Ten=10 at sort 24). Block boundaries as claimed are
+    correct, not some other range.'
+- severity: INFO
+  description: 'Independently re-verified (not inherited from the Swords review)
+    the "no Batons/long-suit trick order sourced" claim: grepped research/pilots/Pilot3_TRUMP-08_Justice.md
+    and research/pilots/Bernardi_1790_Verzicola_Boundary_Resolution_Note.md for
+    baston/bastoni/long-suit/long suit -- zero matches in either file. Confirms
+    the batch correctly declines to import the Coins/Cups round-suit inverse rule
+    and correctly marks Batons trick order [UNVERIFIED] on all ten cards.'
+- severity: INFO
+  description: 'Cross-checked the "Kings=5, others=0" scoring claim against the
+    actual source, research/pilots/drafts/STANDARD_SUIT-COINS-04_Four_of_Coins.md
+    section 3: "Bernardi gives five points to each King and none to the other thirteen
+    cards of a suit (RULE-1790 pp. 5-6, via CL-SC04-010)." All ten Batons files
+    section 3 restate this chain verbatim (via the Four of Coins pilot''s transcription
+    CL-SC04-010/-011) with no invented amounts. Grep of all ten files for point-value
+    language found only the sourced "zero intrinsic points" restatement -- no unsourced
+    amount anywhere.'
+- severity: INFO
+  description: 'Format compliance spot-check on 4 of 10 files (Ace/01, Four/04,
+    Ten/10 fully; Two/02 partially) against SUIT_CARD_FORMAT_SPEC.md: all required
+    sections 1-8 present in fixed order, header block has maturity state + IMG-001
+    blocker, claims tables carry 7 rows each with BA<NN>-C<NN> namespace IDs (disjoint
+    from SW/CU/CO and trump namespaces, confirmed via grep across all 10 files --
+    no cross-namespace leakage found), RWS Wands scene descriptions and "elemental
+    Fire" appear only inside section 5/7 as explicitly excluded imports, never as
+    historical content. No court-card ID (SUIT-BATONS-11..14) leaked into any pip
+    file. All 10 files are exactly 106 lines, within the 60-120 band. Repo-wide
+    grep for pentacles/upright/reversed/Rider-Waite/Golden Dawn/Kabbalah/astrology
+    across all 10 files: zero hits.'
+- severity: INFO
+  description: 'Batch verification report (research/pilots/Batons_Pip_Batch_Verification_Report.md)
+    contains a genuine per-card recomputation table (sort_order, arithmetic, rank-in-suit,
+    verdict for all 10 cards) and a separate per-card structural verdict table (lines,
+    markers, court-ID leak check, claim-ID range, verdict) -- not a templated restatement.
+    All 10 cards verdicted PASS with a substantive, batch-specific "long-suit trick
+    order remains unsourced" finding section and correct scoring/iconography disposition
+    sections. No iconography dossier exists for any Batons pip (confirmed: no Pilot*_SUIT-BATONS-*
+    file anywhere under research/pilots/), correctly stated as sourced absence on
+    every card.'
+- severity: INFO
+  description: 'Scope diff 0ff3c97..183b8ce touches exactly 11 files: the 10 new
+    STANDARD_SUIT-BATONS-01..10 drafts plus the batch verification report -- all
+    pure additions, no modification to spec, registry, or any other-suit file.
+    Confirmed no conflict/duplication with the now-merged Swords batch (T-MIN-022,
+    merged into test at 493605c): test does not contain any STANDARD_SUIT-BATONS-*
+    file prior to this branch, and a merge-tree dry run against current test showed
+    no conflict markers -- only clean additions.'
+reviewed_at: '2026-08-13T23:39:23.116234Z'

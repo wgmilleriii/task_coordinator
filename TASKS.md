@@ -10,7 +10,7 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
-    T-MIN-021["T-MIN-021<br/>Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)"]
+    T-MIN-021["T-MIN-021<br/>Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)"]:::active
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
@@ -755,9 +755,9 @@ graph TD
 *Audited against SHA:* `0509f6914e201ba192717c7a90c3c4154e5120fc`
 
 ---
-### 📋 T-MIN-021 · P2 · ANY · AUDITED
+### 🛠 T-MIN-021 · P2 · ANY · CLAIMED
 **Design the middle-tier court-card study format (spec + one SUIT-CUPS-12 pilot)**
-**Owner:** None
+**Owner:** Worker-F23
 
 **Scope:**
 - SCOUT-F6 SOURCE: this is D2's direct, already-recorded consequence for T-MIN-013 (tasks/human/editorial_decisions_2026-08-12.md, D2 section, decided by Chip 2026-08-13). D2 itself: branch-based comparative canon — where documented pattern variation exists (e.g. hybrid-bodied vs ordinary-rider Cavaliers), the canon shows both authentic historical forms rather than picking one. D2's consequence line, verbatim: "the 16 court cards get a middle tier, not the light tier used for the 40 pips — this is a direct downstream requirement of D2, since a branch-based canon needs room for pattern-variation content that the light-tier format doesn't carry. A middle-tier format spec for the 16 courts is follow-up work, not yet designed." This task IS that follow-up work.

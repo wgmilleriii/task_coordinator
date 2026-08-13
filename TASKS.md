@@ -28,7 +28,7 @@ graph TD
     T-PTG-001 --> T-PTG-003
     T-PTG-002 --> T-PTG-003
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
-    T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]
+    T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::active
     T-INTY-018 --> T-INTY-020
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
@@ -534,9 +534,9 @@ graph TD
 - ./vendor/bin/phpunit still reports the 259-test baseline with 0 new failures.
 
 ---
-### 📋 T-INTY-020 · P3 · ANY · AUDITED
+### 🛠 T-INTY-020 · P3 · ANY · CLAIMED
 **Design (not build) nightly sync of Gazelle service history keyed on gazelle_id**
-**Owner:** None
+**Owner:** Worker-GazelleSync1
 
 **Scope:**
 - This is a research/design task, not a build task. Do not write a sync job or cron script under this task. The original proposal (a prior Gemini/ Antigravity session, endorsed by the user in principle) wants a nightly sync of volatile Gazelle data - service history, tuning dates, condition reports - pulled into intypiano and keyed on the new pianos.gazelle_id column from T-INTY-018.

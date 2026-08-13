@@ -40,7 +40,7 @@ graph TD
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::review
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
-    T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]
+    T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::active
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::review
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
@@ -993,9 +993,9 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-010 · P2 · ANY · AUDITED
+### 🛠 T-PTG-010 · P2 · ANY · CLAIMED
 **Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging**
-**Owner:** None
+**Owner:** Worker-ContributorIndex1
 
 **Scope:**
 - See docs/superpowers/specs/2026-08-12-contributor-index-design.md and docs/superpowers/plans/2026-08-12-contributor-index.md for the full design and task-by-task implementation plan; this task's scope is exactly what those documents specify. Do not re-derive the design or re-plan the work -- the plan already gives 7 concrete tasks with exact file paths and code (migration 011_contributor_index.sql, lib/ContributorNormalizer.php, the ingestion hook in lib/CorpusIndexer.php, cli/backfill_contributors.php, lib/ContributorStatsService.php, and the api/ask.php router wiring), and a PM/Worker should follow it directly rather than reinvent it.

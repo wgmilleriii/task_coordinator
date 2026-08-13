@@ -4,8 +4,8 @@ title: "Contributor index \u2014 answer authorship count/ranking questions from 
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-ContributorIndex1
 created_at: '2026-08-12T00:00:00Z'
 audited_at: '2026-08-13T01:30:08.555925Z'
 audited_by: PM-ContributorIndex1
@@ -112,7 +112,7 @@ verification_command: DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=journal_ai_test DB_
   php journalgpt/tests/manual_conversation_matrix.php journalgpt/tests/scenarios/frequent_contributors_aggregate.json
   scholarly quick
 human_review_required: true
-claimed_at: null
+claimed_at: '2026-08-13T01:37:23.597376Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -151,11 +151,14 @@ events:
     rows share one generic institutional byline ("Piano Technicians Guild Authors",
     no comma/ampersand/semicolon), and the only 2 comma-containing author values are
     both single-person "Name, RPT" credential-suffix rows -- zero real comma-separated
-    co-author bylines exist. ContributorNormalizer''s splitAuthors() design (comma is
-    never a person-separator) holds against the actual data. Compared scope/DoD shape
-    against T-PTG-008 (DONE, same repo, same shape: new migration + new service + router
-    wiring + new test file) and judged this task consistently sized -- not a split
-    candidate. Ran journalgpt/tests/FeatureRequestServiceTest.php locally against journal_ai_test
-    to confirm the repo is healthy at the audited SHA before unlocking. human_review_required
-    stays true (Scout-set, architecturally warranted -- new entity index + new query
-    lane) and this audit does not waive it.'
+    co-author bylines exist. ContributorNormalizer''s splitAuthors() design (comma
+    is never a person-separator) holds against the actual data. Compared scope/DoD
+    shape against T-PTG-008 (DONE, same repo, same shape: new migration + new service
+    + router wiring + new test file) and judged this task consistently sized -- not
+    a split candidate. Ran journalgpt/tests/FeatureRequestServiceTest.php locally
+    against journal_ai_test to confirm the repo is healthy at the audited SHA before
+    unlocking. human_review_required stays true (Scout-set, architecturally warranted
+    -- new entity index + new query lane) and this audit does not waive it.'
+- timestamp: '2026-08-13T01:37:23.598431Z'
+  action: CLAIM
+  actor: Worker-ContributorIndex1

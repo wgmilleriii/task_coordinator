@@ -3,8 +3,8 @@ title: Author the nine remaining Coins pip cards to the light-tier suit-card for
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F27
 created_at: '2026-08-13T00:00:00-06:00'
 dependencies: []
 scope:
@@ -121,3 +121,7 @@ events:
   action: AUDIT
   actor: PM-F11
   details: Audited against 0ff3c97
+- timestamp: '2026-08-13T23:49:24.482709Z'
+  action: CLAIM
+  actor: Worker-F27
+claimed_at: '2026-08-13T23:49:24.482459Z'

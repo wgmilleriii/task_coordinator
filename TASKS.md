@@ -11,7 +11,7 @@ graph TD
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-012["T-PTG-012<br/>Finish and ship the color-schemes feature — Tasks 3-9 of the existing plan are unstarted, nothing member-facing has shipped"]:::done
-    T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
+    T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::done
     T-PTG-008["T-PTG-008<br/>Tag-triggered feature-request conversation lane, parallel to the citation-grounded RAG pipeline"]:::done
     T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]:::active
     T-PTG-023 --> T-PTG-024
@@ -54,10 +54,11 @@ graph TD
     T-PTG-019 --> T-PTG-020
     T-MIN-009["T-MIN-009<br/>Verify the zodiac batch's UNVERIFIED doctrine locators"]:::done
     T-MIN-005 --> T-MIN-009
-    T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
-    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
-    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
+    T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::done
+    T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::done
+    T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::done
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
+    T-INTY-022["T-INTY-022<br/>Hardcoded plaintext global_system bypass credential in login_form.php"]
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-MIN-012["T-MIN-012<br/>Author the Papi/Fool batch — TRUMP-01/02/04 and the Fool fresh, TRUMP-03 corrections applied"]:::done
     T-INTY-018["T-INTY-018<br/>Add dedicated gazelle_id column, decoupled from piano_code"]:::done
@@ -81,6 +82,29 @@ graph TD
 
 ## Repo: `intypiano`
 
+### 📋 T-INTY-022 · P0 · ANY · AUDITED
+**Hardcoded plaintext global_system bypass credential in login_form.php**
+**Owner:** None
+
+**Scope:**
+- Confirmed by reading login_form.php lines 17-25 directly: any POST to login_form.php with email exactly `system@cauttools.com` OR the bare string `system`, and password exactly `CAUTSystem!!@@`, bypasses the normal users-table/bcrypt auth path entirely and grants a session with `$_SESSION['role'] = 'global_system'` -- the highest privilege role in the app, no user record, no rate limiting, no MFA, nothing.
+- Confirmed the blast radius by grepping for `global_system` across the repo (not guessing): it gates system_hub.php, system_users.php, system_health.php, system_cleanup.php, system_analytics.php, system_user_manager.php, system_insights.php, and master_migrate.php -- the last of which (per admin/v2/help.php line 125) "loops through all active tenant databases (SFUSD, demos, etc.) defined in config.php and applies SQL schema updates to all of them at once." A leaked or brute-forced copy of this one hardcoded password is a path to running arbitrary migrations against every tenant database, not just one.
+- login_form.php is reachable at unm.cauttools.com/login_form.php (and presumably every other cauttools-app hostname sharing this same file) -- this is a live, internet-facing entry point, not a local-dev-only shortcut. Confirm during investigation whether this is exposed on every tenant hostname or just some, by reading the hostname-dispatch branches in classes/core/DatabaseManager.php that T-INTY-021 already investigated.
+- Do not assume this is unintentional/accidental -- the user (project owner) uses this exact bypass today as their own system-account login (confirmed 2026-08-13, see conversation this task was scoped from). This is a known, currently-relied-upon login path, not a forgotten backdoor. The fix must replace the mechanism, not just delete it, or it will lock the project owner out of system-level administration.
+- This repo already solved an analogous problem for staff logins: forgot_password.php -> emailed single-use token -> password_reset.php, backed by ddl/140's `password_resets` table (hashed single-use tokens, bcrypt on set), replacing the old `reset_password.php?secret=123123` backdoor (see CLAUDE.md "Open and live" item 4). Investigate whether the system account can be onboarded into that same `users` table (with a real, unguessable password and a real or synthetic email such as `system@cauttools.internal`) rather than inventing a second bespoke mechanism -- the login form's existing bcrypt/users-table path already works, and a `role`/`is_active` combination for `global_system` may already be representable there.
+- If reusing the `users` table is not viable (e.g. the account genuinely needs no email and the schema requires one, or `global_system` is not a role the `users.role` column currently supports), scope and implement the smallest secure replacement instead: e.g. a long random token issued out-of-band and stored only as a hash, following the config/api_token.php gitignored-secret pattern already used by api/v1/admin/logRefill.php and addTicket.php. Either way, the literal string `CAUTSystem!!@@` must not remain live in the codebase or in git history as a still-working credential after this task closes.
+- Out of scope: do not touch the bcrypt/users-table login path itself (lines 27-65 of login_form.php) beyond what's needed to onboard the system account into it, and do not touch forgot_password.php/password_reset.php -- reuse them, do not redesign them.
+
+**Definition of Done:**
+- The literal hardcoded password `CAUTSystem!!@@` (and the bare-`system` / `system@cauttools.com` special-case branch that checks it) is removed from login_form.php.
+- The project owner has a working replacement login path for the same `global_system` role-level access, verified end-to-end against a running server (php -S localhost:2027 -t ., per CLAUDE.md's "prefer running over reading" rule) -- log in with the new credential, land on system_hub.php, and confirm session role is `global_system`.
+- grep -rn "CAUTSystem" . (excluding databasedumps/ and .git/) returns zero hits after the fix, confirming no copy of the literal password remains live in tracked files.
+- If a new credential/token is generated, it is delivered to the project owner through the handoff (not just committed silently) so they can actually log in after this ships -- a "fixed" migration that leaves the owner locked out fails this DoD.
+- No regression to the existing bcrypt/users-table staff login path (the branch at login_form.php lines 27-65) -- spot-check at least one existing non-system staff login still works after the change.
+
+*Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
+
+---
 ### ✅ T-INTY-021 · P0 · ANY · DONE
 **Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline**
 **Owner:** Worker-DBFallback1
@@ -941,7 +965,7 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
-### ⏳ T-PTG-016 · P0 · ANY · HUMAN_REVIEW
+### ✅ T-PTG-016 · P0 · ANY · DONE
 **SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)**
 **Owner:** Worker-SecFix1
 
@@ -966,7 +990,7 @@ graph TD
 *Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
-### ⏳ T-PTG-001 · P0 · ANY · HUMAN_REVIEW
+### ✅ T-PTG-001 · P0 · ANY · DONE
 **Fix footnote list numbering to match inline citation markers**
 **Owner:** Claude-Worker
 
@@ -1061,6 +1085,25 @@ graph TD
 *Audited against SHA:* `c85cf52974abea992b872003706bb4cb7bc1dc33`
 
 ---
+### ✅ T-PTG-004 · P1 · ANY · DONE
+**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
+**Owner:** Claude-Worker
+
+**Scope:**
+- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
+- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
+- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
+
+**Definition of Done:**
+- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
+- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
+- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
+- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
+- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
 ### ✅ T-PTG-009 · P1 · ANY · DONE
 **Feature-request tag router misses no-space variant, misrouting real member intent into RAG**
 **Owner:** Worker-TagFix1
@@ -1148,25 +1191,6 @@ graph TD
 - The handoff explicitly states which failure mode (401, 403, or both) was confirmed as the actual production trigger, so the PM/human reviewer can judge whether the shipped fix actually covers the reported bug rather than a plausible-but-wrong theory.
 
 *Audited against SHA:* `c85cf52974abea992b872003706bb4cb7bc1dc33`
-
----
-### ⏳ T-PTG-004 · P1 · ANY · HUMAN_REVIEW
-**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
-**Owner:** Claude-Worker
-
-**Scope:**
-- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
-- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
-- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
-
-**Definition of Done:**
-- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
-- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
-- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
-- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
-- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
-
-*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
 ### ⏳ T-PTG-005 · P1 · ANY · PEER_REVIEW
@@ -1410,6 +1434,29 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
+### ✅ T-PTG-017 · P2 · ANY · DONE
+**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
+**Owner:** Worker-Mobile1
+
+**Scope:**
+- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
+- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
+- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
+- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
+- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
+
+**Definition of Done:**
+- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
+- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
+- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
+- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
+- php -l passes on journalgpt/index.php.
+- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
+- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
+
+*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
+
+---
 ### ✅ T-PTG-010 · P2 · ANY · DONE
 **Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging**
 **Owner:** Worker-ContributorIndex1
@@ -1451,29 +1498,6 @@ graph TD
 - Findings written up (task_coordinator/feedback/) with a clear recommendation even if the conclusion is 'current hedged behavior is acceptable, no code change needed' — per the skill, 'no action needed' is a valid outcome.
 
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
-
----
-### ⏳ T-PTG-017 · P2 · ANY · HUMAN_REVIEW
-**Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar**
-**Owner:** Worker-Mobile1
-
-**Scope:**
-- SOURCE: a real member (user_id 1, conversation_id 53) used the `/featurerequest` triage lane (shipped T-PTG-008, tag-matching fixed T-PTG-009) on 2026-08-12 21:22-21:25 and completed all three triage dimensions -- confirmed via `debug_logs.php?conversation_id=53` (log ids 26-29, `preset: feature_request`, final `status: fr_complete`): idea = "better mobile support"; who/context = "for when you're in the car"; how_often = "once a week"; what_it_would_look_like = "better screen real estate management". This is the first feature request to make it through the triage lane end-to-end successfully (conversation 51, the earlier color-schemes request, only worked after T-PTG-009's fix and was handled as a separate task). No automated script exists yet to convert `feature_request_details.status = 'complete'` rows into fleet tasks (confirmed: no such script in journalgpt/cli/) -- the Fleet Coordinator is doing this conversion manually this time.
-- INTERPRETING THE VAGUE REQUEST: "better screen real estate management" plus "for when you're in the car" plus "once a week" points at quick, low-frequency mobile glances at journalgpt, where wasted horizontal/vertical space on a small screen is the actual pain point -- not a request for a native app, offline mode, or voice interface (those would be separate, much larger asks the member did not describe). Scout confirmed a concrete, scoped root cause by reading the CSS directly: `journalgpt/assets/journal-chat.css:727` has a single `@media (max-width: 768px)` breakpoint that already handles the sidebar, chat header, message bubbles, and input area responsively -- but the `.engine-controls-bar` (containing the "Thinking Tier" and "Theme" dropdowns, added inline in `journalgpt/index.php:325-350` with no dedicated CSS class rules at all, `display: flex; justify-content: space-between`) has ZERO responsive handling. On a narrow phone viewport, two label+dropdown pairs side by side with `justify-content: space-between` is a plausible source of exactly the complaint: cramped controls, wasted/overflowing horizontal space, poor screen-real-estate use.
-- FIX SCOPE: add a `@media (max-width: 768px)` rule (reuse/extend the EXISTING breakpoint at journalgpt/assets/journal-chat.css:727 -- do not introduce a second, differently-valued breakpoint) that makes `.engine-controls-bar` and its two child groups (`.model-select-group`, `.theme-select-group`) lay out compactly on mobile: reduce wasted horizontal space (e.g. stack the two groups vertically, or shrink label text/hide the "Thinking Tier:"/"Theme:" text labels down to compact icon-only or abbreviated controls at this breakpoint, Worker's design call -- state the chosen approach and why in the handoff) while keeping both controls fully usable (44px minimum touch target height, matching this codebase's existing mobile touch-target convention already used elsewhere in the same media query, e.g. `.sidebar-toggle-btn`'s `min-height: 44px`).
-- DO NOT MOVE THE INLINE STYLES WHOLESALE INTO CSS AS PART OF THIS TASK unless necessary for the responsive fix itself -- `.engine-controls-bar`'s current inline-style approach in index.php is pre-existing and out of scope to refactor generally; only add what's needed to make it responsive at the mobile breakpoint (a `@media` block naturally overrides inline styles via specificity/`!important` if truly needed, or the Worker may add a plain CSS class selector matching the existing class names already present in the markup -- `.engine-controls-bar`, `.model-select-group`, `.theme-select-group` -- which is the cleaner approach and should be preferred).
-- EXPLICITLY OUT OF SCOPE: no native app, no offline mode, no voice interface, no changes to any other page's mobile layout (this request is specifically about the Thinking Tier/Theme controls bar on index.php, the only place this bar exists). Do not touch the already-working mobile responsive rules for sidebar/header/messages/input in the same media query block -- only add to it.
-
-**Definition of Done:**
-- A `@media (max-width: 768px)` rule targets `.engine-controls-bar`, `.model-select-group`, and `.theme-select-group` and demonstrably reduces wasted horizontal space compared to today's layout (Worker's chosen approach, documented in the handoff with before/after screenshots via the `/browse` skill -- never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md -- at a 375px-wide viewport, a common phone width).
-- Both the Thinking Tier and Theme dropdowns remain fully functional and reachable with at least a 44px touch target at the mobile breakpoint, matching this codebase's existing mobile touch-target convention.
-- No regression to the existing desktop layout (viewport wider than 768px) -- verify via `/browse` screenshot that the engine-controls-bar looks unchanged above the breakpoint.
-- No regression to any other already-working mobile responsive behavior in the same media query block (sidebar toggle, chat header, message bubbles, input area) -- confirm via `/browse` screenshot at 375px that these still look correct.
-- php -l passes on journalgpt/index.php.
-- The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
-- The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
-
-*Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

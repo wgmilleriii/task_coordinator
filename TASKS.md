@@ -19,7 +19,7 @@ graph TD
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::done
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
-    T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::active
+    T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::review
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
@@ -855,26 +855,6 @@ graph TD
 - The hedge is superseded only by direct transcription, never by memory.
 
 ---
-### 🛠 T-MIN-020 · P3 · ANY · CLAIMED
-**Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON**
-**Owner:** Worker-F22
-
-**Scope:**
-- SCOUT-F5 SOURCE: T-MIN-017's worker (Worker-F20) and an independent reviewer both found that `grep -A20 "card_id"` doesn't reliably reach fields positioned late in a JSON card object in research/05-registry-and-audit/Stage5_Master_Card_Registry.json (each card object has ~26 fields). Worker-F20 fixed this locally for the four cavalier rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12) by repositioning the `aliases` key to sit immediately after `historical_names` (key-order-only change, no value changes). T-MIN-016's own SPECIAL-FOOL row, which introduced the `aliases` field in the first place, was never checked or fixed for the same issue.
-- SCOUT-F5 CONFIRMED THE PROBLEM IS REAL (dry run against branch test @d0052dc, 2026-08-12): in research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL card object starts at `"card_id": "SPECIAL-FOOL"` and its `aliases` key (holding `["TRUMP-FOOL"]`) is the LAST key in the object, 25 lines later — outside a `grep -A20` window. Verified directly: `grep -n -A20 '"card_id": "SPECIAL-FOOL"' Stage5_Master_Card_Registry.json | grep -c aliases` returns 0 (fails to find it); `grep -n -A30 ...` does find it, 26 lines after the `-A` start. This is the exact same class of failure T-MIN-017 fixed for the cavalier rows, unfixed here.
-- Fix: reposition the `aliases` key in the SPECIAL-FOOL card object ONLY, in research/05-registry-and-audit/Stage5_Master_Card_Registry.json, to sit immediately after `historical_names` and before `names_to_avoid` — the exact same position T-MIN-017 used for the four cavalier rows (see e.g. the SUIT-CUPS-12 row for the reference ordering: card_id, canonical_name, italian_name, historical_names, aliases, names_to_avoid, family, ...). This is a KEY-ORDER-ONLY change: do not add, remove, rename, or change the value of `aliases` (must remain exactly `["TRUMP-FOOL"]`) or any other field in the SPECIAL-FOOL object.
-- Do NOT touch Stage5_Master_Card_Registry.csv — the fragility is specific to `grep -A<N>` windowing over the multi-line JSON representation; a CSV row is a single line and is not affected. Do NOT touch any other card row's key order (the cavalier rows are already fixed by T-MIN-017; leave every other row exactly as-is).
-- Do not touch Card_Dossier_Skeletons.json, Stage4_Card_Dossier_Schema.json, or any personality/dossier study file — this task's blast radius is the one SPECIAL-FOOL object in Stage5_Master_Card_Registry.json only.
-
-**Definition of Done:**
-- In research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL card object's `aliases` key is repositioned to immediately follow `historical_names` (and precede `names_to_avoid`), matching the cavalier-row convention T-MIN-017 established.
-- The SPECIAL-FOOL object's `aliases` value is unchanged (`["TRUMP-FOOL"]`), and no other field or value in that object, or in any other object in the file, changes.
-- The full file remains valid JSON, confirmed by an actual JSON parser (not just visual inspection).
-- A `grep -A20 "\"card_id\": \"SPECIAL-FOOL\""` window over the fixed file now contains the string `"aliases"`.
-
-*Audited against SHA:* `d0052dc`
-
----
 ### ✅ T-MIN-017 · P3 · codex · DONE
 **Apply D4 — Cavalier/Knight naming policy (write policy + audit four cavalier registry rows)**
 **Owner:** Worker-F20
@@ -913,6 +893,26 @@ graph TD
 - A short locator-resolution note records which sources were opened and what each yielded.
 
 *Audited against SHA:* `274b981`
+
+---
+### ⏳ T-MIN-020 · P3 · ANY · PEER_REVIEW
+**Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON**
+**Owner:** Worker-F22
+
+**Scope:**
+- SCOUT-F5 SOURCE: T-MIN-017's worker (Worker-F20) and an independent reviewer both found that `grep -A20 "card_id"` doesn't reliably reach fields positioned late in a JSON card object in research/05-registry-and-audit/Stage5_Master_Card_Registry.json (each card object has ~26 fields). Worker-F20 fixed this locally for the four cavalier rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12) by repositioning the `aliases` key to sit immediately after `historical_names` (key-order-only change, no value changes). T-MIN-016's own SPECIAL-FOOL row, which introduced the `aliases` field in the first place, was never checked or fixed for the same issue.
+- SCOUT-F5 CONFIRMED THE PROBLEM IS REAL (dry run against branch test @d0052dc, 2026-08-12): in research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL card object starts at `"card_id": "SPECIAL-FOOL"` and its `aliases` key (holding `["TRUMP-FOOL"]`) is the LAST key in the object, 25 lines later — outside a `grep -A20` window. Verified directly: `grep -n -A20 '"card_id": "SPECIAL-FOOL"' Stage5_Master_Card_Registry.json | grep -c aliases` returns 0 (fails to find it); `grep -n -A30 ...` does find it, 26 lines after the `-A` start. This is the exact same class of failure T-MIN-017 fixed for the cavalier rows, unfixed here.
+- Fix: reposition the `aliases` key in the SPECIAL-FOOL card object ONLY, in research/05-registry-and-audit/Stage5_Master_Card_Registry.json, to sit immediately after `historical_names` and before `names_to_avoid` — the exact same position T-MIN-017 used for the four cavalier rows (see e.g. the SUIT-CUPS-12 row for the reference ordering: card_id, canonical_name, italian_name, historical_names, aliases, names_to_avoid, family, ...). This is a KEY-ORDER-ONLY change: do not add, remove, rename, or change the value of `aliases` (must remain exactly `["TRUMP-FOOL"]`) or any other field in the SPECIAL-FOOL object.
+- Do NOT touch Stage5_Master_Card_Registry.csv — the fragility is specific to `grep -A<N>` windowing over the multi-line JSON representation; a CSV row is a single line and is not affected. Do NOT touch any other card row's key order (the cavalier rows are already fixed by T-MIN-017; leave every other row exactly as-is).
+- Do not touch Card_Dossier_Skeletons.json, Stage4_Card_Dossier_Schema.json, or any personality/dossier study file — this task's blast radius is the one SPECIAL-FOOL object in Stage5_Master_Card_Registry.json only.
+
+**Definition of Done:**
+- In research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL card object's `aliases` key is repositioned to immediately follow `historical_names` (and precede `names_to_avoid`), matching the cavalier-row convention T-MIN-017 established.
+- The SPECIAL-FOOL object's `aliases` value is unchanged (`["TRUMP-FOOL"]`), and no other field or value in that object, or in any other object in the file, changes.
+- The full file remains valid JSON, confirmed by an actual JSON parser (not just visual inspection).
+- A `grep -A20 "\"card_id\": \"SPECIAL-FOOL\""` window over the fixed file now contains the string `"aliases"`.
+
+*Audited against SHA:* `d0052dc`
 
 ---
 

@@ -3,7 +3,7 @@ title: Author the ten remaining Batons pip cards to the light-tier suit-card for
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 owner: Worker-F25
 created_at: '2026-08-13T00:00:00-06:00'
 dependencies: []
@@ -110,5 +110,8 @@ events:
   details: Audited against 0ff3c97
 - timestamp: '2026-08-13T23:29:47.410823Z'
   action: CLAIM
+  actor: Worker-F25
+- timestamp: '2026-08-13T23:35:10.893566Z'
+  action: SUBMIT
   actor: Worker-F25
 claimed_at: '2026-08-13T23:29:47.410231Z'

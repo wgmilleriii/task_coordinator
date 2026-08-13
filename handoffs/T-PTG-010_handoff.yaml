@@ -1,0 +1,164 @@
+task_id: T-PTG-010
+agent: Worker-ContributorIndex1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-010
+base_sha: 7a7c6212a575bb2743b3b26c32283b937f1e286f
+head_sha: 41734cd6c0596aed10d48fcbbe57a06ac4929cb7
+evidence_output: "`fleet verify` ran the verification_command against\n/Users/willismiller/Documents/GitHub/newmexicoptg.org\
+  \ (branch main, at the\naudited base_sha, no T-PTG-010 changes) instead of this\
+  \ worker's isolated\nworktree at ../newmexicoptg.org-t010 -- same recurring tooling\
+  \ gap as\nT-PTG-008's and T-INTY-018's handoffs. All evidence below was captured\n\
+  directly in ../newmexicoptg.org-t010 on branch test-T-PTG-010 (head_sha\n41734cd),\
+  \ against MySQL local (DB_HOST=127.0.0.1 DB_USER=root DB_PASS=root\njournal_ai_test),\
+  \ exactly as the task's own verification convention\nrequires.\n\n=== 1. All 7 plan\
+  \ tasks implemented, each committed separately ===\n01b05bd feat(db): add contributors/article_contributors\
+  \ entity index tables\n6a6d82e feat: add ContributorNormalizer name-splitting/normalization\
+  \ and resolveAndLink() DB resolution (Tasks 2+3 combined -- see deviation notes)\n\
+  f53377d feat: link ingested articles into the contributor index\n2bac0ad feat: add\
+  \ one-time contributor index backfill script\nae3150a feat: add ContributorStatsService\
+  \ (templated authorship count/ranking answers)\n41734cd feat: route authorship count/ranking\
+  \ questions to ContributorStatsService\n\n=== 2. Migration applied and verified\
+  \ against journal_ai_test ===\n$ DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=journal_ai_test\
+  \ DB_USER=root DB_PASS=root php journalgpt/cli/migrate.php\n[...] Applying migration\
+  \ 011_contributor_index.sql...\n[...] Successfully applied migration 011_contributor_index.sql.\n\
+  [...] Migration run complete. Applied 1 new migration(s).\nDESCRIBE contributors\
+  \ / article_contributors confirmed exact column shape from the plan,\nincluding\
+  \ UNIQUE KEY on normalized_key and composite UNIQUE KEY on (article_id, contributor_id).\n\
+  \n=== 3. New test files, run directly, all green ===\n$ DB_HOST=127.0.0.1 DB_PORT=3306\
+  \ DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/ContributorNormalizerTest.php\n\
+  === Running ContributorNormalizer Tests === ... 14/14 [OK] ... === ALL CONTRIBUTOR\
+  \ NORMALIZER TESTS PASSED SUCCESSFULLY ===\n(includes TEST 11-14, the DB-backed\
+  \ resolveAndLink() tests: new-contributor-as-pending,\nexact-match reuse, multi-author\
+  \ independent linking, idempotent re-run.)\n\n$ DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=journal_ai_test\
+  \ DB_USER=root DB_PASS=root php journalgpt/tests/CorpusIndexerTest.php\n=== Running\
+  \ CorpusIndexerTest === ... 8 test(s) run, 0 failure(s) === ALL CORPUS INDEXER TESTS\
+  \ PASSED SUCCESSFULLY ===\n(includes the new testIndexArticleLinksContributor --\
+  \ confirms indexArticle() links the\ncontributor index automatically. This file\
+  \ needed a CLI self-runner added; see deviation notes.)\n\n$ DB_HOST=127.0.0.1 DB_PORT=3306\
+  \ DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/ContributorStatsServiceTest.php\n\
+  === Running ContributorStatsService Tests === ... 8/8 [OK] === ALL CONTRIBUTOR STATS\
+  \ SERVICE TESTS PASSED SUCCESSFULLY ===\n(includes the real production phrase match\
+  \ test, false-positive avoidance against genuine\ntechnical questions, templated-answer-from-real-data\
+  \ test, and empty-index honest-message test.)\n\n=== 4. Full existing suite, zero\
+  \ regressions ===\n$ DB_HOST=127.0.0.1 ... php journalgpt/tests/AskEndpointTest.php\
+  \          => ALL PASSED\n$ DB_HOST=127.0.0.1 ... php journalgpt/tests/UsagePolicyTest.php\
+  \          => ALL PASSED (5/5)\n$ DB_HOST=127.0.0.1 ... php journalgpt/tests/JournalAnswerServiceTest.php\
+  \ => ALL PASSED\n$ DB_HOST=127.0.0.1 ... php journalgpt/tests/FeatureRequestServiceTest.php=>\
+  \ ALL PASSED\n\n=== 5. T-PTG-007 regression re-run -- concrete proof of fix ===\n\
+  $ DB_HOST=127.0.0.1 DB_PORT=3306 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root\
+  \ \\\n  php journalgpt/tests/manual_conversation_matrix.php \\\n  journalgpt/tests/scenarios/frequent_contributors_aggregate.json\
+  \ scholarly quick\n\nTurn 1 (\"who writes the most articles ?\", the exact real\
+  \ production wording from\ndebug_logs id=14/15/16 conversation_id=47) now routes\
+  \ to ContributorStatsService.\nmysql journal_ai_test:\n  SELECT id, conversation_id,\
+  \ preset, status, question, LEFT(clean_answer,150)\n  FROM debug_logs WHERE preset='contributor_index'\
+  \ ORDER BY id DESC LIMIT 1;\n=>\n  id=80, conversation_id=97, preset='contributor_index',\
+  \ status='success',\n  question='who writes the most articles ?',\n  clean_answer\
+  \ starts: \"Based on the indexed contributor records, the top 2\n  contributors\
+  \ by article count are:\\n\\n1. Piano Technicians Guild Authors\n  (90 articles)\\\
+  n2. Jane Smith...\"\nThis is a templated SQL answer (real backfilled corpus data,\
+  \ 91 articles/2\ncontributors after backfill_contributors.php), not an LLM-generated\
+  \ count,\nand is a debug_logs row with preset='contributor_index' -- the exact\n\
+  proof-of-fix this task's DoD requires, replacing the old hedge-and-RAG\nbehavior\
+  \ for this exact real-world question.\n\nTurn 2/3 of that same scenario turn (typo'd\
+  \ \"enuermate the top 10 most\nfrequent contributoprs\" and a follow-up) do NOT\
+  \ match the fixed trigger\nphrase list (by design -- the plan explicitly notes this\
+  \ typo is not\nexpected to match a fixed phrase list) and fall through to\nJournalAnswerService,\
+  \ which then fails with a live 404 from OpenAI\n(\"Vector store with id 'vs_default_mock_store'\
+  \ not found\") -- a\npre-existing, unrelated local-environment gap: JournalAnswerService.php's\n\
+  getActiveVectorStoreId() fallback resolves to a hardcoded mock ID that does\nnot\
+  \ exist on the configured OpenAI account, and this harness makes live\n(non-mocked)\
+  \ API calls. Confirmed unrelated to this change:\nJournalAnswerServiceTest.php passes\
+  \ because it mocks the OpenAI client\nrather than calling it live. Turn 1's routing\
+  \ and debug_logs proof stand\nindependent of this pre-existing gap.\n\n=== 6. Load-bearing\
+  \ constraints verified by reading the diff ===\n1. No vector store call in the new\
+  \ path: grepped ContributorStatsService.php,\n   ContributorNormalizer.php, and\
+  \ the new api/ask.php block for\n   getActiveVectorStoreId/callOpenAIResponsesApi/queryVectorStoreAndAnswer/\n\
+  \   file_search/vector_store -- zero hits in new code (one comment-only mention\n\
+  \   in ask.php referring to the pre-existing feature-request block above it).\n\
+  2. No LLM-generated numbers: formatAnswer() in ContributorStatsService.php is\n\
+  \   pure string templating over a SQL GROUP BY result set; ask() makes no\n   OpenAIClient\
+  \ calls at all.\n3. Fixed router, no NLU: isCountRankingQuestion() is a str_contains()\
+  \ loop over\n   a private const TRIGGER_PHRASES array; the only preg_match in the\
+  \ file is\n   extractRequestedLimit()'s \"top N\" digit extraction, not intent classification.\n\
+  4. Pending, never auto-merge: resolveAndLink() only reuses an existing\n   contributors\
+  \ row on an EXACT normalized_key match (SELECT ... WHERE\n   normalized_key = :key);\
+  \ any miss inserts a new row with review_status =\n   'pending' hardcoded in the\
+  \ INSERT literal -- verified by TEST 11/12 above\n   and by direct code read.\n\
+  5. Router miss falls through unchanged: the new block in api/ask.php returns/\n\
+  \   exits only on a match; on no match, execution continues into the\n   pre-existing\
+  \ $tier = ... code completely unmodified from before this diff.\n\n=== Deviations\
+  \ from the plan found while executing (full detail in\nfeedback/FEEDBACK_Worker-ContributorIndex1_claude-sonnet-5_20260812.md)\
+  \ ===\n- Tasks 2 and 3 were combined into one commit/test-run cycle rather than\
+  \ two\n  separate TDD cycles, since both target the same two files and splitting\n\
+  \  would have meant a throwaway intermediate commit; still verified failing\n  before\
+  \ implementing and passing after.\n- ContributorNormalizer::resolveAndLink() had\
+  \ to be made driver-aware\n  (INSERT IGNORE for MySQL vs INSERT OR IGNORE for SQLite,\
+  \ plus an inline\n  CREATE TABLE IF NOT EXISTS for the SQLite case) because CorpusIndexerTest.php\n\
+  \  runs indexArticle() against an in-memory SQLite PDO, not journal_ai_test --\n\
+  \  the plan's literal INSERT IGNORE would have silently thrown/failed there.\n-\
+  \ CorpusIndexerTest.php is a PHPUnit-style TestCase class with no PHPUnit\n  installed\
+  \ anywhere in this environment (no vendor/, no phpunit binary) and,\n  unlike every\
+  \ other standalone-runnable test file in this repo, had no\n  bottom-of-file self-invocation\
+  \ block -- `php tests/CorpusIndexerTest.php`\n  silently ran zero tests and exited\
+  \ 0 before this task. Added a small\n  reflection-based CLI runner (matching this\
+  \ repo's own AskEndpointTest.php\n  convention) plus two missing require_once lines\
+  \ (OpenAIClient.php,\n  CorpusIndexer.php) so the file can actually execute and\
+  \ prove anything.\n  Pre-existing gap, unrelated to the contributor-index feature\
+  \ itself, but\n  blocking for this task's DoD.\n- ContributorStatsService::recordDebugLog()\
+  \ as drafted in the plan reused the\n  same `:answer` named PDO placeholder twice\
+  \ in one INSERT, which throws\n  SQLSTATE[HY093] under this repo's PDO::ATTR_EMULATE_PREPARES=false\
+  \ setting\n  (Database.php) -- silently caught by the surrounding try/catch, so\
+  \ every\n  debug_logs row silently failed to write until fixed. Split into distinct\n\
+  \  :raw_answer/:clean_answer params, matching FeatureRequestService's own\n  working\
+  \ pattern for the same two columns.\n- tests/manual_conversation_matrix.php (the\
+  \ harness the DoD's regression\n  re-run command targets) calls JournalAnswerService::ask()\
+  \ directly and has\n  never gone through api/ask.php's router logic at all (same\
+  \ pre-existing gap\n  for T-PTG-008's FeatureRequestService tag) -- without adding\
+  \ the same fixed-\n  phrase router check to this harness, the DoD's literal regression\
+  \ command\n  could never have produced a preset='contributor_index' row no matter\
+  \ what\n  was built in api/ask.php. Added the same isCountRankingQuestion() check\
+  \ here,\n  mirroring api/ask.php exactly.\n"
+peer_review_notes: "`fleet verify` re-ran verification_command against\n/Users/willismiller/Documents/GitHub/newmexicoptg.org\
+  \ (main, at base_sha, no\ndiff) rather than this worker's isolated worktree at ../newmexicoptg.org-t010,\n\
+  producing nothing useful (immediate file-not-found, since none of the new\nfiles\
+  \ exist on main). Same gap flagged in T-PTG-008's and T-INTY-018's\nhandoffs --\
+  \ recommend fleet verify accept a --worktree-path override or infer\nit from an\
+  \ active CLAIMED task's known worktree convention.\n\nDoD checklist:\n- All 7 plan\
+  \ tasks implemented as specified: migration 011, ContributorNormalizer\n  (pure\
+  \ functions + resolveAndLink()), CorpusIndexer ingestion hook,\n  cli/backfill_contributors.php,\
+  \ ContributorStatsService, api/ask.php router\n  wiring -- all present, all committed,\
+  \ all directly verified running (not\n  inferred from reading code alone).\n- New\
+  \ test files pass: ContributorNormalizerTest.php (14/14, including the\n  4 DB-backed\
+  \ resolveAndLink() tests and the explicit pending-not-auto-merge\n  assertion at\
+  \ TEST 11), CorpusIndexerTest.php (8/8, including the appended\n  contributor-hook\
+  \ test), ContributorStatsServiceTest.php (8/8, including\n  router phrase matching,\
+  \ a genuine RAG question correctly NOT matching, and\n  the templated SQL answer\
+  \ content assertion).\n- Full existing suite passes with zero regressions: AskEndpointTest,\n\
+  \  UsagePolicyTest, JournalAnswerServiceTest, FeatureRequestServiceTest all\n  green\
+  \ against journal_ai_test.\n- Concrete proof this fixes the real production problem:\
+  \ re-running the exact\n  T-PTG-007 regression scenario now produces debug_logs\
+  \ id=80\n  (conversation_id=97), preset='contributor_index', with a real templated\n\
+  \  answer for the exact real member question that previously hedged. This\n  required\
+  \ patching tests/manual_conversation_matrix.php to route the same\n  way api/ask.php\
+  \ does (see deviation notes) -- without that the DoD's\n  literal command could\
+  \ never have succeeded.\n- All five load-bearing constraints confirmed true by reading\
+  \ the diff, not\n  just inferred from tests passing: no vector-store call added\
+  \ to the new\n  path, no LLM-generated count/ranking text (pure SQL-templated string),\
+  \ the\n  router is a fixed str_contains() phrase list, and low-confidence matches\n\
+  \  create pending contributors (never auto-merge, verified by both code read\n \
+  \ and a direct test).\n\nTwo real bugs were found and fixed during execution, not\
+  \ just typed in from\nthe plan verbatim: the recordDebugLog() double-placeholder\
+  \ bug (silently\ndropped every debug_logs row) and the manual_conversation_matrix.php\n\
+  routing gap (would have made the DoD's own regression-proof command\nimpossible\
+  \ to satisfy). Both are documented above and in the feedback file.\nhuman_review_required\
+  \ is true per the task YAML (architecturally new\nsurface: new entity index + new\
+  \ query lane) -- this handoff does not\nattempt to waive that; a human must still\
+  \ close T-PTG-010.\n"
+human_action_required: 'Task YAML sets human_review_required: true (new entity index
+  + new query lane in api/ask.php, matching the T-PTG-008/T-INTY-018 bar). Please
+  review and, if satisfied, close with ./bin/fleet close T-PTG-010 --human <name>.
+  Not closed by this worker.'
+token_spend: null
+cost_usd: null

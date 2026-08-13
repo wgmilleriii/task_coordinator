@@ -69,7 +69,7 @@ graph TD
     T-MIN-019["T-MIN-019<br/>Apply the Bernardi verzicola reconciliation queue — hedge-phrase citation fix only"]:::done
     T-PTG-006["T-PTG-006<br/>Enhanced multi-turn conversational-quality testing system (Golden Hammer deep dive)"]:::done
     T-PTG-010["T-PTG-010<br/>Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging"]:::done
-    T-MIN-023["T-MIN-023<br/>Author the ten remaining Batons pip cards to the light-tier suit-card format"]
+    T-MIN-023["T-MIN-023<br/>Author the ten remaining Batons pip cards to the light-tier suit-card format"]:::active
     T-MIN-003["T-MIN-003<br/>Apply the 93 pending card renames already recorded in ledger.json"]:::done
     T-MIN-015["T-MIN-015<br/>Reconcile the Papi/Fool batch's deferred arie edges now that T-MIN-011 is merged"]:::done
     T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
@@ -806,9 +806,9 @@ graph TD
 *Audited against SHA:* `0ff3c97`
 
 ---
-### 📋 T-MIN-023 · P2 · ANY · AUDITED
+### 🛠 T-MIN-023 · P2 · ANY · CLAIMED
 **Author the ten remaining Batons pip cards to the light-tier suit-card format**
-**Owner:** None
+**Owner:** Worker-F25
 
 **Scope:**
 - SCOUT-F7 REGISTRY FACTS (queried live from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv, test at 0ff3c97 on branch test): Batons occupies the contiguous sort-order block 15-28. The ten pip cards are SUIT-BATONS-01 through SUIT-BATONS-10, canonical names Ace of Batons through Ten of Batons, Italian Asso di Bastoni through Dieci di Bastoni, historical_names column simply Ace/One, Two, ... Ten -- same plain English ordinal pip naming as every other suit; there is no separate Minchiate-specific pip-rank vocabulary in the registry. Rank-in-suit = sort_order minus 15 plus 1, i.e. for SUIT-BATONS-NN, rank-in-suit = NN; show this arithmetic per card from the registry column, do not just assert it. None of these ten cards has a light-tier study yet.

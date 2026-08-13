@@ -4,7 +4,7 @@ title: admin/v2/normalization.php edits inventory.make, not pianos.make/model --
 repo: intypiano
 priority: P1
 lane: ANY
-status: PEER_REVIEW
+status: HUMAN_REVIEW
 owner: Worker-Normalize1
 created_at: '2026-08-13T00:00:00Z'
 dependencies: []
@@ -67,4 +67,8 @@ events:
 - timestamp: '2026-08-13T15:12:20.300420Z'
   action: SUBMIT
   actor: Worker-Normalize1
+- timestamp: '2026-08-13T15:14:57.800295Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator-Chip
+  details: 'Verdict: PASS'
 claimed_at: '2026-08-13T15:06:16.186841Z'

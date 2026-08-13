@@ -1,0 +1,28 @@
+task_id: T-INTY-024
+reviewer_agent: FleetCoordinator-Chip
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: d4dba711792c5368808ff9a989f5307d50fb0f4c
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Independently re-verified against the worktree at
+    /Users/willismiller/Documents/GitHub/intypiano-T-INTY-024, commit d4dba711.
+    php -l passed. Diff reviewed: adds UPDATE pianos SET make alongside the
+    existing inventory write (neither removed nor regressed), adds a parallel
+    normalize_model action for pianos.model with correct NULL/blank-matching
+    when old_model is empty, unions pianos+inventory for the makes listing so
+    pianos-only tenants (caut_sfusd) actually have rows to act on, and adds a
+    models listing sourced from pianos. CSRF check (hash_equals) is present
+    and correctly duplicated on the new normalize_model branch, not just the
+    original normalize branch. Gazelle sync call path untouched, matching
+    scope.'
+- severity: INFO
+  description: 'Worker found and fixed a pre-existing, out-of-scope fatal
+    error (renderV2Header()/renderV2Footer() do not exist anywhere in the
+    codebase -- every other v2 page uses v2_head()/v2_foot()) that caused this
+    page to 500 on every load. Confirmed via grep that v2_head/v2_foot are
+    the real functions (admin/v2/_layout.php lines 17, 109) and the old names
+    do not exist. This was a necessary fix, not scope creep -- the page could
+    not have been live-tested or used at all before it, so the task''s DoD
+    (verified live against a running server) was unreachable without it.'
+reviewed_at: '2026-08-13T15:14:44.951039Z'

@@ -77,6 +77,15 @@ human_action_required: "CHIP: your login for the system/global_system account ha
   \ instead of the generated\none: log in with the generated password once, then there\
   \ is currently no\nself-service change-password UI for this account -- reuse\nforgot_password.php's\
   \ flow (it requires an email on file, which this\naccount has: system@cauttools.com)\
-  \ or ask a follow-up task to add one.\n"
+  \ or ask a follow-up task to add one.\n\nUPDATE (2026-08-13, post-review): Chip wants to keep using the familiar\
+  \ CAUTSystem!!@@\nas the actual password, not the generated one. Done locally (intypiano_demo)\
+  \ via a\ndirect UPDATE of users.password_hash to bcrypt('CAUTSystem!!@@') -- NOT by\
+  \ putting the\nliteral string back into ddl/147 or any other committed file, since that would\
+  \ recreate\nthe exact problem this task fixed. When deploying to production, run the same\
+  \ one-off\nstatement after ddl/147 mints its random password there, e.g.:\n  php -r\
+  \ '$h=password_hash(\"CAUTSystem!!@@\",PASSWORD_DEFAULT);$c=mysqli_connect(...);\
+  \ $c->query(\"UPDATE users SET password_hash=\".$c->real_escape_string($h)...);'\n\
+  \ (adjust connection details for the target tenant) -- never commit this command or\
+  \ the password string to git.\n"
 token_spend: null
 cost_usd: null

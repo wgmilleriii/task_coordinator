@@ -1,0 +1,109 @@
+task_id: T-MIN-021
+reviewer_agent: Reviewer-F28
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 353abdc56fcb3d11b3a8b4afdf3239f35be35fe0
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Re-ran the audited verification_command in an isolated worktree at head
+    sha 353abdc56fcb3d11b3a8b4afdf3239f35be35fe0 (git worktree add --detach
+    from the sha, not touching the primary minchiate_tarot checkout, which
+    is on branch test with other agents' work). All grep/find assertions
+    passed and the script printed PASS.
+- severity: INFO
+  description: >-
+    Read research/pilots/COURT_CARD_FORMAT_SPEC.md in full (180 lines).
+    Confirmed it is a genuine extension, not a copy-paste fork: a line-level
+    diff against SUIT_CARD_FORMAT_SPEC.md (146 lines) shows only the
+    frontmatter author line overlapping; every substantive section is new
+    prose that explicitly defers to the light tier by reference ("§2
+    grading legend... §5 FORBIDDEN list — applies to court studies verbatim
+    unless this document explicitly says otherwise"). The new §4a
+    "Pattern-variation findings" register is concrete, not vague prose
+    dressed as structure: it names five required fields per form (form
+    label; evidentiary basis incl. a mandatory relatedness qualification
+    for related-pack corroboration; confidence grade, stated per form, never
+    averaged; scope of the claim; rank-vs-pattern separation), and includes
+    a normative worked table for the Cavalier hybrid/ordinary-rider case
+    itself. Two new FORBIDDEN clauses (no form-averaging, no silent
+    preference) are stated as corollaries of the inherited "universalizing
+    one specimen or pattern" rule, not free-floating additions.
+- severity: INFO
+  description: >-
+    Read research/pilots/drafts/COURT_SUIT-CUPS-12_Cavalier_of_Cups.md in
+    full (181 lines). Both historical forms appear as genuinely separate
+    §4a entries (Form A hybrid-bodied, Form B ordinary mounted rider), each
+    with its own evidentiary-basis paragraph, confidence grade, and scope
+    line, and each graded [UNVERIFIED] individually (also reflected as two
+    split claims, CU12-C06a and CU12-C06b, in §8's claims table, plus a
+    third claim CU12-C06c isolating the relatedness qualification). The
+    BM 1896,0501.35/.103 relatedness caveat is stated explicitly and
+    repeatedly (§4a Form B evidentiary basis, the rank-vs-pattern paragraph,
+    claim CU12-C06c, and again in the comparison note) as "a related pack
+    (same cataloged pattern family, not an independent workshop)" rather
+    than being allowed to read as two independent confirmations. The
+    gender-presentation caution is present and explicitly tied to both
+    forms, not left as a generic §4 line.
+- severity: INFO
+  description: >-
+    Fact-checked the "doesn't stand alone" claim directly against
+    research/pilots/Pilot2_SUIT-CUPS-12_Cavalier_of_Cups.md (392 lines).
+    Confirmed accurate in both directions. The middle-tier pilot's Form B
+    claims (CU12-C06b/c) are explicitly sourced as "via Pilot2
+    C-CUPS12-005/-006/-007" rather than citing BM .35/.103 with independent
+    primary citations — Pilot2 is where those institutional catalog records
+    were actually opened (Pilot2 lines 62-63, 83-86: BM-35/BM-103 source-
+    ledger rows and claims C-CUPS12-005/-006/-007, with web citations
+    turn32search2/turn32search3 appearing only in Pilot2, not reproduced or
+    re-derived in the middle-tier pilot). This matches the comparison note's
+    claim precisely: the evidentiary chain of custody for the BM catalog
+    claims terminates at Pilot2. The note is not falsely modest either: it
+    correctly scopes the "doesn't stand alone" claim narrowly to the BM
+    catalog / pattern-variation finding, and does not claim the whole
+    middle-tier document is Pilot2-derivative — the registry facts
+    (CU12-C01/C02, Cups sort-block and rank-in-suit arithmetic) are sourced
+    directly to Stage5_Master_Card_Registry, independent of Pilot2, and the
+    comparison note does not misrepresent that as also Pilot2-dependent.
+    No overclaiming or underclaiming found.
+- severity: INFO
+  description: >-
+    Grepped the middle-tier pilot for RWS/modern-cartomancy language and
+    universalizing claims in both directions. §5 and §7 explicitly forbid
+    "no RWS Knight of Cups," "no romantic-messenger characterization," "no
+    elemental Water glyphs or Cups=Water correspondence," "no modern
+    fantasy centaur without specimen basis," and, symmetrically, "no hybrid
+    anatomy presented as universal, and — the mirror image, equally
+    binding — no ordinary-rider form presented as universal either." §4a's
+    closing paragraph independently restates "no form-averaging, no silent
+    preference." The binding negative-concepts list from the light tier
+    pilot is carried forward and honored in both directions.
+- severity: MINOR
+  description: >-
+    The 100%-verification-for-Cavaliers rule (spec §6) is a real, specific,
+    actionable rule, not a passing mention: it states 100% adversarial
+    verification (vs. the light tier's sampled 3-of-14) applies to all four
+    Cavaliers specifically, gives the rationale (Cavalier pattern-variation
+    findings are exactly what sampling could miss), and states an escalation
+    trigger for the other three court ranks if a pattern-variation finding
+    is later found for them. However, the deliverable itself does not
+    demonstrate what a completed 100% adversarial pass looks like: the
+    Cavalier of Cups pilot's own header states "Maturity state: Draft...not
+    adversarially verified," so the rule remains prescriptive/abstract in
+    this deliverable rather than exercised on the one Cavalier pilot in
+    hand. This is a legitimate gap to flag for the human, but not
+    disqualifying — the task's definition_of_done calls for specifying the
+    verification workflow, not executing it, and the comparison note's own
+    open-edge-cases section already surfaces related unresolved-verification
+    territory (3+-form scenarios untested) rather than hiding it.
+- severity: INFO
+  description: >-
+    Confirmed scope via git show --stat 353abdc56fcb3d11b3a8b4afdf3239f35be35fe0:
+    exactly three files touched — research/pilots/COURT_CARD_FORMAT_SPEC.md,
+    research/pilots/COURT_TIER_COMPARISON_T-MIN-021.md, and
+    research/pilots/drafts/COURT_SUIT-CUPS-12_Cavalier_of_Cups.md, all
+    additions (476 insertions, 0 deletions/modifications). Nothing in the
+    other 15 court cards, prompt files, art-direction guidance, or the
+    Visual Canon policy document was touched, matching the task's explicit
+    OUT OF SCOPE line and the audited scope boundary.
+reviewed_at: '2026-08-13T22:30:00.000000Z'

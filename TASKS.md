@@ -24,13 +24,14 @@ graph TD
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
-    T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]
+    T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::active
     T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
     T-PTG-001 --> T-PTG-002
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]
     T-PTG-001 --> T-PTG-003
     T-PTG-002 --> T-PTG-003
+    T-PTG-015["T-PTG-015<br/>JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)"]
     T-MIN-006["T-MIN-006<br/>Triage the fleet sweep's untouched personality drafts (rulers, Fool, arie)"]:::done
     T-INTY-020["T-INTY-020<br/>Design (not build) nightly sync of Gazelle service history keyed on gazelle_id"]:::review
     T-INTY-018 --> T-INTY-020
@@ -1123,9 +1124,31 @@ graph TD
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
-### 📋 T-PTG-014 · P2 · ANY · AUDITED
-**Add an admin "reply to conversation" tool, then use it to notify conversation 51 that color schemes shipped**
+### 📋 T-PTG-015 · P2 · ANY · AUDITED
+**JournalGPT v3 Phase 0: build the 30-50 example benchmark of disappointing interactions (gates all later v3 phases)**
 **Owner:** None
+
+**Scope:**
+- BACKGROUND: journalgpt/v3/v3.md (currently untracked, not yet committed) is a full PRD for JournalGPT v2/v3 -- a 6-phase, ~15-25 developer-day rearchitecture of the answer pipeline (understand -> plan -> search -> evaluate evidence -> reason -> answer -> verify citations, replacing the current simple question -> File Search -> answer flow). Chip confirmed via AskUserQuestion that the fleet should proceed with ONLY Phase 0 for now, not the full project -- re-evaluate scope after Phase 0 lands. Nothing else in this PRD has been started (confirmed: no matching git branches, no lib files like ResearchPlanner.php/EvidenceRetriever.php exist, no other fleet tasks reference it).
+- WHAT PHASE 0 IS, PER THE PRD ITSELF (journalgpt/v3/v3.md section 24 "Evaluation Dataset" and section 32 "Phase 0 -- Establish benchmark"): "Before changing production behavior, construct a benchmark of approximately 30-50 actual disappointing JournalGPT interactions... Do not begin tuning without baseline examples." Each benchmark entry must include: original user question; prior conversation context; existing JournalGPT answer; citations returned; why the answer was disappointing; characteristics of a better answer. Required category coverage: simple questions; vague questions; follow-ups; comparisons; technical reasoning; historical questions; questions with no Journal answer; multi-source questions; attempted content extraction.
+- REAL PRODUCTION EVIDENCE GATHERED BY SCOUT (via debug_logs.php, the existing public debugging endpoint): as of this Scout pass, exactly 29 total logged interactions exist in production (this is a low-traffic pilot -- confirm the current count yourself, it will have grown by the time you work this). Of those 29, 10 show clear disappointing signals (status uncertain/error, model_declined=1, or zero parsed_citations_count on a nominally "success" response): log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22. Notably: log ids 2/3/5 are three SEPARATE attempts at the literal one-word question "why?" (a broken follow-up -- the member almost certainly meant it as a continuation of a prior turn, and the system has no persistent conversation state to resolve that, exactly the Primary Problem section 4 describes); log ids 4/6/7/1 show FOUR attempts at "have voicing technique changed over the years?" with alternating success/uncertain outcomes for what looks like the same underlying question (retrieval-quality inconsistency); log ids 9/10/12/13 are real technical piano-repair questions returning uncertain/error. This is real, valuable seed data but far short of 30-50 -- do not fabricate additional entries to LOOK like they came from debug_logs.php; clearly separate real production examples from synthetic ones in the benchmark file (see FIX SCOPE below).
+- WHY REAL DATA ALONE ISN'T ENOUGH: 10 real examples cannot cover the PRD's required category diversity (simple/vague/follow-up/comparison/technical-reasoning/historical/no-Journal-answer/multi-source/attempted-extraction -- 9 categories, and the 10 real examples cluster heavily in only 2-3 of them: broken follow-ups and technical-reasoning uncertainty). The benchmark must be supplemented with hand-authored synthetic examples covering the missing categories, written using genuine piano-technician domain knowledge (not vague placeholders) so they're realistic stand-ins for what a member might actually ask.
+- THIS IS A JUDGMENT-HEAVY TASK, NOT A MECHANICAL ONE: "why was this disappointing" and "what would a better answer look like" require actual reasoning about each example, not boilerplate. For the real examples, ground the "why disappointing" explanation in the actual logged metadata (status, model_declined, is_grounded, retrieved_chunks_count, parsed_citations_count) plus a plausible reconstruction of what happened (you do not have access to the full answer TEXT via debug_logs.php, only metadata -- state this limitation explicitly per entry rather than inventing answer text you don't actually have).
+
+**Definition of Done:**
+- A new file journalgpt/v3/benchmark.md contains 30-50 entries, each as its own `### ` markdown heading (e.g. `### Entry 1 [REAL, debug_logs id 22]` or `### Entry 17 [SYNTHETIC, category: comparison]`), each with: original question, prior conversation context (or "none" if a fresh conversation), the existing answer or a clear statement that the raw answer text isn't available (for real entries sourced only from debug_logs.php metadata), citations returned (or "0, confirmed via parsed_citations_count"), a specific and non-generic explanation of why it was/would be disappointing, and concrete characteristics of a better answer.
+- At least the 10 real production examples identified in this task's scope (log ids 2, 3, 4, 5, 7, 9, 10, 12, 13, 22 -- re-verify against current debug_logs.php state, ids may have grown) are included and clearly labeled as REAL, with their debug_logs.php id cited for traceability.
+- Every one of the 9 required categories from v3.md section 24 (simple, vague, follow-up, comparison, technical reasoning, historical, no-Journal-answer, multi-source, attempted content extraction) has at least 2 examples in the benchmark, whether real or synthetic -- state in the file which categories are real-only, synthetic-only, or mixed.
+- Synthetic examples are clearly labeled SYNTHETIC (not presented as if they came from debug_logs.php) and are grounded in genuine piano-technician domain topics (not generic placeholder text) -- reference actual PTJ-relevant concepts consistent with the topics already visible in the real corpus (e.g. tuning stability, voicing, regulation, string rendering, bearing points -- the Worker should draw on the Journal corpus topics already visible in existing test fixtures/real questions, not invent unrelated domains).
+- The file includes a short header section explaining its purpose (baseline for comparing JournalGPT v2/v3 against current behavior, per v3.md Phase 0/section 24) and explicitly states the current real-interaction count this benchmark was built against, so future re-runs know how much has changed.
+- This task does NOT modify journalgpt/lib/JournalAnswerService.php or any other production answer-pipeline code -- Phase 0 is benchmark construction only, per the PRD's own phasing (\"Do not begin tuning without baseline examples\"). If the Worker is tempted to start implementing ConversationStateService or ResearchPlanner while building the benchmark, stop -- that is explicitly out of scope for this task and would violate the PRD's own sequencing.
+
+*Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
+
+---
+### 🛠 T-PTG-014 · P2 · ANY · CLAIMED
+**Add an admin "reply to conversation" tool, then use it to notify conversation 51 that color schemes shipped**
+**Owner:** Worker-AdminReply1
 
 **Scope:**
 - BACKGROUND: conversation_id=51 (https://newmexicoptg.org/journalgpt/index.php?c=51) is the exact real member conversation from T-PTG-009's evidence -- the member typed `/featurerequest different color schemes` on 2026-08-12, and because the tag router had a bug at the time (fixed same day by T-PTG-009), it fell through to the RAG pipeline and returned a confusing non-answer instead of being triaged as a feature request. Confirmed via `debug_logs.php?conversation_id=51`: exactly one log row (id 22), `status: uncertain`, `is_grounded: 0`. Since the tag never matched, this conversation's `conversation_type` is almost certainly the default `rag`, NOT `feature_request` -- confirm this directly rather than assuming (query `SELECT conversation_type FROM conversations WHERE id = 51`). There is correspondingly no `feature_request_details` row for it (that table has a UNIQUE key on `conversation_id` and is only populated by the tagged lane). The product owner (Chip) wants this member to know their request WAS heard and has now shipped (T-PTG-012, live on main as of commit 604d1be, confirmed working by Chip in production), even though the original conversation never got properly triaged at the time.

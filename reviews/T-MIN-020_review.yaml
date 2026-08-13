@@ -1,0 +1,54 @@
+task_id: T-MIN-020
+reviewer_agent: Reviewer-F27
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 8a2a7e73a9768d18dbe5284a4d5b8442dc03af64
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Re-ran the audited verification_command in an isolated worktree checked
+    out at head sha 8a2a7e73a9768d18dbe5284a4d5b8442dc03af64. Ran the python3
+    assertion block and the bash grep -A20 block as two separate commands
+    (matching the verification_command's structure); both exited 0 and the
+    grep block printed PASS.
+- severity: INFO
+  description: >-
+    Parsed the full file with python3's json module at both base (19d0e60)
+    and head (8a2a7e73) via git show <sha>:path into two Python dicts. Built
+    card_id-keyed maps of all 97 cards in each version and diffed
+    programmatically, not eyeballed. set(base_cards) equals set(head_cards),
+    97 cards both sides. Top-level metadata keys, everything except 'cards',
+    are equal. A per-card dict equality check, order-insensitive since Python
+    dict equality ignores key order, found zero cards with any value
+    difference, meaning every card object in the file, including
+    SPECIAL-FOOL, is value-identical between base and head.
+- severity: INFO
+  description: >-
+    Confirmed SPECIAL-FOOL's values are unchanged by dict equality directly;
+    base_cards['SPECIAL-FOOL'] equals head_cards['SPECIAL-FOOL'] as Python
+    dicts (order-insensitive), and separately confirmed aliases equals
+    ["TRUMP-FOOL"] unchanged in both versions. A separate key-order-only
+    check, comparing list of keys between base and head for every card,
+    found exactly one card with an order difference: SPECIAL-FOOL. This
+    confirms the change is key-order-only as scoped, and no other card's
+    key order was touched (the T-MIN-017 cavalier rows' order was untouched
+    by this task, as required).
+- severity: INFO
+  description: >-
+    Confirmed in the raw file
+    (research/05-registry-and-audit/Stage5_Master_Card_Registry.json, lines
+    1542-1550) that aliases now sits immediately after historical_names and
+    before names_to_avoid, matching the exact SUIT-CUPS-12/T-MIN-017
+    ordering precedent: card_id, canonical_name, italian_name,
+    historical_names, aliases, names_to_avoid, family, etc. A grep -n -A20
+    for the SPECIAL-FOOL card_id line now reaches aliases at relative line 5
+    from card_id, well inside the 20-line window (previously required
+    -A30, per the task's own scout finding).
+- severity: INFO
+  description: >-
+    git diff --name-only 19d0e60..8a2a7e73a9768d18dbe5284a4d5b8442dc03af64
+    touches exactly one file:
+    research/05-registry-and-audit/Stage5_Master_Card_Registry.json. No CSV,
+    dossier, schema, or personality/study files touched, matching the
+    task's stated blast radius.
+reviewed_at: '2026-08-13T03:30:00.000000Z'

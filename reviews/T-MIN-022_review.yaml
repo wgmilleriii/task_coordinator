@@ -1,0 +1,55 @@
+task_id: T-MIN-022
+reviewer_agent: Reviewer-F29
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 57b6066
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Verification command re-run in an isolated worktree at 57b6066:
+    PASS ("OK, found 10 cards"), exit 0.'
+- severity: INFO
+  description: 'Rank-in-suit recomputed independently from research/05-registry-and-audit/Stage5_Master_Card_Registry.csv
+    for all 10 Swords pips (sort_order 1-10, block start 1): every card''s stated
+    rank-in-suit (SW01=1 through SW10=10) matches the registry sort_order column
+    exactly, and equals the card''s own -NN suffix as the task scope predicted.
+    No court IDs (SUIT-SWORDS-11..14) referenced in any pip file.'
+- severity: INFO
+  description: 'The "no long-suit trick order sourced" negative finding independently
+    verified: grepped Pilot3_TRUMP-08_Justice.md and Bernardi_1790_Verzicola_Boundary_Resolution_Note.md
+    directly. Justice pilot''s many "sword" hits are all about the physical sword
+    held by the Justice trump figure (iconography), never about a Swords-suit trick
+    order; Bernardi boundary note has zero matches for sword/baton/trick order/long
+    suit. Confirms the worker''s negative claim is real, not a missed citation.
+    Cross-checked that the round-suit inverse rule IS genuinely sourced elsewhere
+    (Pilot1_SUIT-COINS-04 dossier, claim CL-SC04-008: "Bernardi''s 1790 rules rank
+    Coins and Cups numerals inversely..." RULE-1790 pp.5-6) and is explicitly scoped
+    to Coins/Cups only -- confirming the worker correctly declined to import it into
+    Swords rather than inventing a distinction.'
+- severity: INFO
+  description: 'Scoring discipline: grepped all 10 files for point/pts/value numbers.
+    The only figure present is "five points to each King" (RULE-1790 pp.5-6 via
+    CL-SC04-010), cited as sourced background context explaining why the pip itself
+    has zero intrinsic points -- not an unsourced amount attributed to the pip. No
+    other point/combination values appear anywhere across the 10 files.'
+- severity: INFO
+  description: 'Format compliance spot-check (Ace, Five, Eight, Ten of Swords):
+    all 4 have the full 8-section skeleton, land in the 60-120 line band (102-105
+    lines), 7 claims-table rows each in the SW<NN>-C<NN> namespace, [UNVERIFIED]
+    used correctly for the trick-order gap, Draft maturity state + IMG-001 blocker
+    stated per card. Ten of Swords explicitly names and rejects the RWS "ruin" scene
+    (figure face down with ten swords in the back) in its Confusion Resolvers and
+    Boundaries sections rather than describing it as Minchiate content. No forbidden
+    terms (pentacles, upright/reversed, Water/Earth-as-suit, Kabbalah, astrology)
+    found as asserted content anywhere in the batch -- only as named exclusions.'
+- severity: INFO
+  description: 'Swords_Pip_Batch_Verification_Report.md contains genuine per-card
+    verdicts (10x PASS) plus a real recomputation table (card ID, canonical name,
+    Italian, sort_order, arithmetic, rank-in-suit) matching my own independent recomputation
+    exactly. Report also documents the trick-order and scoring source-checks in
+    detail rather than rubber-stamping.'
+- severity: INFO
+  description: 'Scope diff 0ff3c97..57b6066 touches exactly 11 files: the 10 new
+    STANDARD_SUIT-SWORDS-01..10 drafts plus the batch verification report. No edits
+    to SUIT_CARD_FORMAT_SPEC.md, the registry, any other suit''s files, or any Swords
+    court file.'
+reviewed_at: '2026-08-13T23:30:27.150324Z'

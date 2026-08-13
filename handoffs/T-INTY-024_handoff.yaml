@@ -1,0 +1,89 @@
+task_id: T-INTY-024
+agent: Worker-Normalize1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test-T-INTY-024
+base_sha: c6ccca5e5adc10b3044cadd406eb6eae71ea43f2
+head_sha: d4dba711792c5368808ff9a989f5307d50fb0f4c
+evidence_output: "NOTE: `fleet verify`'s automated run executed `php -l` against the\
+  \ primary\nintypiano clone (branch master, unmodified files), not the isolated\n\
+  worktree (intypiano-T-INTY-024, branch test-T-INTY-024) where the actual\nchanges\
+  \ live -- the CLI doesn't know about the worktree. `php -l` passes\ntrivially on\
+  \ both the old and new versions of this file (both are\nsyntactically valid PHP),\
+  \ so that automated result, reproduced below, is\ntrue but not meaningful evidence\
+  \ of correctness. The real verification is\nthe manual run recorded after it, executed\
+  \ in the worktree against the\nactual changed file.\n\n=== Automated verification_command\
+  \ output (primary clone, master) ===\nExit code: 0\nSTDOUT:\nNo syntax errors detected\
+  \ in admin/v2/normalization.php\nSTDERR:\n(empty)\n\n=== Manual verification (worktree\
+  \ intypiano-T-INTY-024, branch test-T-INTY-024, commit d4dba711) ===\n\n1. php -l\
+  \ admin/v2/normalization.php in the worktree: No syntax errors detected.\n\n2. Discovered\
+  \ and fixed a pre-existing, unrelated fatal error blocking any\n   live test of\
+  \ this page at all: the file called renderV2Header()/\n   renderV2Footer(), which\
+  \ are not defined anywhere in the codebase (grepped\n   the whole admin/v2/ tree).\
+  \ The real functions in admin/v2/_layout.php are\n   v2_head()/v2_foot(), used by\
+  \ every other v2 admin page (building.php,\n   email.php, dossier_edit.php, etc.).\
+  \ Without this fix the page 500'd on\n   every load. Fixed to call v2_head()/v2_foot()\
+  \ to match the rest of v2.\n\n3. Local dev login fix (per CLAUDE.md's documented\
+  \ workaround): intypiano_demo's\n   users.password_hash for cmiller was NULL. Set\
+  \ it to bcrypt('localdev1');\n   users.email already had cmiller@example.edu on\
+  \ file. Logged in successfully\n   via POST to login_form.php (302 to hub.php, session\
+  \ cookies set).\n\n4. intypiano_demo make-normalize test (php -S localhost:2027\
+  \ -t . in the\n   worktree, real HTTP session + CSRF token scraped from the rendered\
+  \ form):\n   POSTed action=normalize, old_make=Petrof, new_make=Petrof-Test,\n \
+  \  gazelle_api_key=faketestkey123.\n     Before: pianos.make='Petrof' x3, inventory.make='Petrof'\
+  \ x3\n     After:  pianos.make='Petrof-Test' x3, inventory.make='Petrof-Test' x3\n\
+  \     (confirmed via direct SELECT, not just the UI notice)\n   The Gazelle call\
+  \ correctly ran and failed on the fake key with a real\n   GraphQL error from gazelleapp.io\
+  \ (\"access violation... try logging out\n   and back in\") -- proving network reachability\
+  \ and that the API key\n   requirement still gates that step, without blocking the\
+  \ two local writes\n   that happen before it in the same try block. Reverted both\
+  \ tables back\n   to 'Petrof' afterward.\n\n5. intypiano_demo model-normalize test\
+  \ (same live server/session): POSTed\n   action=normalize_model, old_model='' (blank),\
+  \ new_model=TEST-MODEL-FILL.\n   Before: 44 pianos rows with NULL/blank model. After:\
+  \ all 44 rows now\n   model='TEST-MODEL-FILL' (confirmed via SELECT). Reverted back\
+  \ to NULL.\n\n6. caut_sfusd test (0 inventory rows for this tenant, per the task's\
+  \ own\n   audit): rather than fight the hostname-based DatabaseManager tenant\n\
+  \   routing to reach this DB through the dev server, ran the exact same\n   UPDATE\
+  \ statements the handler now issues via a throwaway script reusing\n   the app's\
+  \ real DatabaseManager connection path (same $r->dbdb override\n   technique scripts/set_password.php\
+  \ and the Integration test suite use).\n     Before: pianos.id=2 make='Steinway\
+  \ #444'\n     UPDATE inventory SET make=? WHERE make=? -> inventoryAffected=0 (correct,\n\
+  \       tenant has 0 inventory rows)\n     UPDATE pianos SET make=? WHERE make=?\
+  \ -> pianosAffected=1\n     After: pianos.id=2 make='Steinway'\n   Reverted back\
+  \ to 'Steinway #444'.\n\n7. Confirmed the display-query bug/fix: original code listed\
+  \ \"Unique Piano\n   Makes\" from inventory only (0 rows for caut_sfusd-style tenants\
+  \ -- the\n   UI had literally nothing to click). Fixed to UNION pianos + inventory;\n\
+  \   confirmed live in intypiano_demo the makes table now renders 44 rows\n   (union\
+  \ of both tables) vs. what would have been fewer from inventory\n   alone. Added\
+  \ a parallel \"Unique Piano Models\" table sourced from pianos,\n   confirmed it\
+  \ rendered 37 distinct model rows including a \"(blank)\" row\n   for the 44 NULL/empty-model\
+  \ pianos.\n\n8. CSRF and gazelle_api_key requirement unchanged: verified `hash_equals`\n\
+  \   check is still the first thing executed on the normalize action, and\n   the\
+  \ HTML input still carries `required`, and the PHP-side check\n   `$apiKey !== ''`\
+  \ is still present and unchanged.\n\n9. Regression check on phpunit: ran the full\
+  \ suite (330 tests) twice on\n   the same worktree/commit, once with my change and\
+  \ once with it\n   `git stash`ed back to the original file -- both produced the\
+  \ identical\n   330 tests / 1 error / 68 failures. These failures are pre-existing\
+  \ and\n   unrelated to this change, not a regression it introduces.\n\n10. Cleanup:\
+  \ all mutated rows in intypiano_demo and caut_sfusd were\n    reverted to their\
+  \ pre-test values (confirmed via SELECT after revert).\n    The throwaway verification\
+  \ script lives only in the session scratchpad,\n    never committed. The test PHP\
+  \ server was killed.\n"
+peer_review_notes: "Scope note: two things were done beyond the literal \"retarget\
+  \ the query\"\ninstruction, both because the DoD (\"verified live against a running\n\
+  server\") was otherwise unreachable or the fix would have been unusable by\na human:\n\
+  \  - Fixed the renderV2Header()/renderV2Footer() undefined-function fatal\n    error\
+  \ (pre-existing, unrelated to this bug) so the page could load at\n    all for live\
+  \ testing.\n  - Fixed the makes-listing query (inventory-only -> UNION with pianos)\
+  \ and\n    added a models-listing table, since without it a pianos-only tenant\n\
+  \    like caut_sfusd would still have an empty \"No pianos found\" table with\n\
+  \    no button to click, even though the write path underneath would now be\n  \
+  \  correct. The task's own scope note said the tool should let \"a human\n    still\
+  \ drive corrections through the form\" -- an empty form doesn't\n    satisfy that\
+  \ for the exact tenant this task is about.\nNo fuzzy-matching/typo-correction automation\
+  \ was added; every write still\nrequires an explicit human-supplied old/new pair\
+  \ submitted through the\nexisting Mass Edit UI.\n"
+human_action_required: null
+token_spend: null
+cost_usd: null

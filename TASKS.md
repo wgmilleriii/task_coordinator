@@ -71,7 +71,7 @@ graph TD
     T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]:::active
     T-PTG-025 --> T-PTG-026
     T-PTG-015 --> T-PTG-026
-    T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::active
+    T-INTY-024["T-INTY-024<br/>admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data"]:::review
     T-MIN-014["T-MIN-014<br/>Write back resolved dispositions into the Quarantine Register (CW-5/6/7/10 and their QC rows)"]:::done
     T-MIN-002["T-MIN-002<br/>Add card-identification write path to minchiate_reviewer.py"]:::done
     T-PTG-011["T-PTG-011<br/>'Good Answer' upvote click fails in production with 'Invalid or missing CSRF security token'"]:::done
@@ -149,27 +149,6 @@ graph TD
 - No regression to the existing bcrypt/users-table staff login path (the branch at login_form.php lines 27-65) -- spot-check at least one existing non-system staff login still works after the change.
 
 *Audited against SHA:* `e09372e4155dbdef35fdb569ca1a0d112b6ae226`
-
----
-### 🛠 T-INTY-024 · P1 · ANY · CLAIMED
-**admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data**
-**Owner:** Worker-Normalize1
-
-**Scope:**
-- Confirmed by reading admin/v2/normalization.php lines 22-36: the "Mass Edit" form runs `UPDATE inventory SET make = ? WHERE make = ?` against the legacy v1 `inventory` table, then separately calls GazelleAPI to rename the same make on Gazelle's side. It never touches the v2 `pianos` table (`make`/`model` columns). Per docs/experts/schema-catalog.md, `inventory` and `pianos` do not stay in sync -- there is no ongoing job that copies inventory rows into pianos, so this tool silently does nothing for data that only exists in `pianos`.
-- Confirmed this is a live, current problem, not theoretical: as of this audit, caut_sfusd (built by T-INTY-018/T-INTY-020-era work plus a fresh SFUSD import, see scripts/import_sfusd_v2.php) has 162 rows in `pianos`, zero rows in `inventory`, 74 pianos with a NULL `model`, and makes like `Steinway #444` and `School Piano` that are not real manufacturer names. intypiano_demo (the UNM tenant) has 126 rows in `pianos` with 19 `Unknown` makes and 44 NULL models. Running normalization.php against either tenant today updates 0 relevant rows.
-- Fix: retarget normalization.php's local-update query at `pianos.make` (and extend it to also support `pianos.model`, since the DoD-relevant data quality problem includes blank models, not just wrong-spelling makes -- the current tool only ever handles make). Keep the Gazelle-side sync call (`GazelleAPI::getPianosByMake` / `updatePianoMakeModel`) -- that part is already correct, it just needs to also update the local pianos row set correctly.
-- Do NOT touch the `inventory` table write path -- leave it in place alongside the new `pianos` write path rather than removing it, since some other live surface may still read `inventory.make` and this task has not audited every caller. Adding a second, correct write path is in scope; deleting the old one is not.
-- Do NOT attempt an automated fuzzy-match/typo-correction pass across all makes in this task -- this is a UI/query-target fix, not a data-cleaning pass. A human (or a later task) still drives which old-make to new-make corrections get applied through the existing Mass Edit form.
-- CSRF protection (already present, hash_equals check at line 13) and the gazelle_api_key requirement must be preserved unchanged.
-
-**Definition of Done:**
-- Submitting the Mass Edit form with an old_make that exists in `pianos.make` (not `inventory.make`) actually updates the matching `pianos` rows, verified live against a running server (php -S localhost:2027 -t ., per CLAUDE.md's "prefer running over reading" rule) -- e.g. correct 'Steinway #444' to 'Steinway' against caut_sfusd or a local copy of it, and confirm via a direct SELECT that pianos.make changed and the row count matches what the UI reported.
-- The existing inventory.make write path still runs (no regression) -- confirm by checking a make that exists in a tenant's inventory table still updates there too, if such a tenant/row is available to test against locally.
-- php -l admin/v2/normalization.php passes.
-- No change to the CSRF check or the Gazelle API key requirement.
-
-*Audited against SHA:* `c6ccca5e5adc10b3044cadd406eb6eae71ea43f2`
 
 ---
 ### ✅ T-INTY-018 · P1 · ANY · DONE
@@ -610,6 +589,27 @@ graph TD
 **Definition of Done:**
 
 *Audited against SHA:* `efef90953c62f09c2e6c74e3cee15c97ddf57980`
+
+---
+### ⏳ T-INTY-024 · P1 · ANY · PEER_REVIEW
+**admin/v2/normalization.php edits inventory.make, not pianos.make/model -- normalizing does nothing for v2 tenant data**
+**Owner:** Worker-Normalize1
+
+**Scope:**
+- Confirmed by reading admin/v2/normalization.php lines 22-36: the "Mass Edit" form runs `UPDATE inventory SET make = ? WHERE make = ?` against the legacy v1 `inventory` table, then separately calls GazelleAPI to rename the same make on Gazelle's side. It never touches the v2 `pianos` table (`make`/`model` columns). Per docs/experts/schema-catalog.md, `inventory` and `pianos` do not stay in sync -- there is no ongoing job that copies inventory rows into pianos, so this tool silently does nothing for data that only exists in `pianos`.
+- Confirmed this is a live, current problem, not theoretical: as of this audit, caut_sfusd (built by T-INTY-018/T-INTY-020-era work plus a fresh SFUSD import, see scripts/import_sfusd_v2.php) has 162 rows in `pianos`, zero rows in `inventory`, 74 pianos with a NULL `model`, and makes like `Steinway #444` and `School Piano` that are not real manufacturer names. intypiano_demo (the UNM tenant) has 126 rows in `pianos` with 19 `Unknown` makes and 44 NULL models. Running normalization.php against either tenant today updates 0 relevant rows.
+- Fix: retarget normalization.php's local-update query at `pianos.make` (and extend it to also support `pianos.model`, since the DoD-relevant data quality problem includes blank models, not just wrong-spelling makes -- the current tool only ever handles make). Keep the Gazelle-side sync call (`GazelleAPI::getPianosByMake` / `updatePianoMakeModel`) -- that part is already correct, it just needs to also update the local pianos row set correctly.
+- Do NOT touch the `inventory` table write path -- leave it in place alongside the new `pianos` write path rather than removing it, since some other live surface may still read `inventory.make` and this task has not audited every caller. Adding a second, correct write path is in scope; deleting the old one is not.
+- Do NOT attempt an automated fuzzy-match/typo-correction pass across all makes in this task -- this is a UI/query-target fix, not a data-cleaning pass. A human (or a later task) still drives which old-make to new-make corrections get applied through the existing Mass Edit form.
+- CSRF protection (already present, hash_equals check at line 13) and the gazelle_api_key requirement must be preserved unchanged.
+
+**Definition of Done:**
+- Submitting the Mass Edit form with an old_make that exists in `pianos.make` (not `inventory.make`) actually updates the matching `pianos` rows, verified live against a running server (php -S localhost:2027 -t ., per CLAUDE.md's "prefer running over reading" rule) -- e.g. correct 'Steinway #444' to 'Steinway' against caut_sfusd or a local copy of it, and confirm via a direct SELECT that pianos.make changed and the row count matches what the UI reported.
+- The existing inventory.make write path still runs (no regression) -- confirm by checking a make that exists in a tenant's inventory table still updates there too, if such a tenant/row is available to test against locally.
+- php -l admin/v2/normalization.php passes.
+- No change to the CSRF check or the Gazelle API key requirement.
+
+*Audited against SHA:* `c6ccca5e5adc10b3044cadd406eb6eae71ea43f2`
 
 ---
 ### 📋 T-INTY-019 · P2 · ANY · AUDITED

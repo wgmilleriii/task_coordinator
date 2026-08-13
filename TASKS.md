@@ -1040,7 +1040,7 @@ graph TD
 *Audited against SHA:* `ae296aee492b1d0ed245b4497027c43f0907e902`
 
 ---
-### ⏳ T-PTG-010 · P2 · ANY · PEER_REVIEW
+### ⏳ T-PTG-010 · P2 · ANY · HUMAN_REVIEW
 **Contributor index — answer authorship count/ranking questions from a real entity index instead of hedging**
 **Owner:** Worker-ContributorIndex1
 

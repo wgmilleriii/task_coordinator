@@ -1,0 +1,120 @@
+task_id: T-PTG-010
+reviewer_agent: Reviewer-ContributorIndex1
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 41734cd6c0596aed10d48fcbbe57a06ac4929cb7
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    All 6 claimed commits present on the branch (01b05bd migration,
+    6a6d82e ContributorNormalizer + resolveAndLink, f53377d CorpusIndexer
+    hook, 2bac0ad backfill script, ae3150a ContributorStatsService,
+    41734cd api/ask.php router wiring). Reviewed in an independent worktree
+    at ../newmexicoptg.org-t010-review, separate from both the shared
+    checkout and the Worker's own worktree.
+- severity: INFO
+  description: >-
+    Deviation 1 (SQLite-vs-MySQL INSERT IGNORE) verified real and correctly
+    handled: read ContributorNormalizer::resolveAndLink() directly, confirmed
+    it branches on PDO::ATTR_DRIVER_NAME to use 'INSERT OR IGNORE' for sqlite
+    and 'INSERT IGNORE' for mysql. The branch only changes the
+    ignore-duplicate-link SQL dialect; the match/create logic (exact
+    normalized_key lookup, else INSERT new row with review_status='pending')
+    is identical on both drivers, so the never-auto-merge guarantee is not
+    weakened on either path.
+- severity: INFO
+  description: >-
+    Deviation 2 (CorpusIndexerTest previously unrunnable) independently
+    reproduced: checked out parent commit 7a7c621's version of
+    CorpusIndexerTest.php (a PHPUnit-style TestCase with a polyfilled
+    BaseTestCase but no bottom-of-file invocation) and ran
+    `php tests/CorpusIndexerTest.php` directly against it -- confirmed it
+    produces zero output and exits 0, doing nothing, exactly as claimed.
+    Confirmed no vendor/ or phpunit binary exists in this environment. Read
+    the Worker's added reflection-based CLI runner at the bottom of the new
+    file -- it iterates public testX() methods via ReflectionClass, calls
+    setUp() before each, and reports pass/fail -- a legitimate, minimal
+    self-runner matching this repo's existing AskEndpointTest.php convention.
+    Ran the new file directly: 8/8 tests pass for real, including the new
+    testIndexArticleLinksContributor.
+- severity: INFO
+  description: >-
+    recordDebugLog() bug fix verified as a real fix for a real bug, not just
+    trusted: read the final code, confirmed distinct :raw_answer/:clean_answer
+    placeholders replace the plan's literal duplicate :answer placeholder.
+    Independently wrote a standalone PHP/PDO script against journal_ai_test
+    with PDO::ATTR_EMULATE_PREPARES=false (confirmed this is this repo's
+    actual Database.php setting) executing a duplicate-named-placeholder
+    prepared statement -- it throws SQLSTATE[HY093]: Invalid parameter
+    number, proving the plan's literal code as drafted would have silently
+    failed (caught by the surrounding try/catch) and never written a
+    debug_logs row. The fix is real and necessary.
+- severity: INFO
+  description: >-
+    Deviation 3 (manual_conversation_matrix.php router mirror) verified via
+    direct diff read: the added block calls
+    ContributorStatsService::isCountRankingQuestion($question) and only
+    diverts within the test harness's own code path; it does not touch
+    api/ask.php at all. Diffed api/ask.php itself separately (7a7c621..
+    41734cd) and confirmed the new router block is a pure, self-contained
+    insertion (require/use lines + one if-block that only exits on a match)
+    immediately before the pre-existing `$tier = ...` line, which is
+    otherwise byte-for-byte unchanged -- the harness gaining router logic
+    does not imply or accompany any change to api/ask.php's own behavior.
+- severity: INFO
+  description: >-
+    Proof-of-fix debug_logs row independently re-verified against
+    journal_ai_test (id numbers shift because it's a shared local DB across
+    Worker/PM/Reviewer runs, as expected -- looked up the actual current
+    rows rather than trusting id=80 literally). Also independently re-ran
+    `php journalgpt/tests/manual_conversation_matrix.php
+    frequent_contributors_aggregate.json scholarly quick` myself in my own
+    worktree: turn 1 ("who writes the most articles ?") produced a fresh
+    debug_logs row (id=104 in my run) with preset='contributor_index',
+    status='success', and a templated real answer ("Based on the indexed
+    contributor records, the top 2 contributors by article count are:
+    1. Piano Technicians Guild Authors (90 articles) 2. Jane Smith ...") --
+    a genuine templated SQL answer, not a hedge. Turn 2 ("enuermate the top
+    10...") did not match the fixed phrase list by design and fell through
+    to JournalAnswerService, which threw the same pre-existing
+    vs_default_mock_store 404 the Worker described -- reproduced identically
+    in my independent run.
+- severity: INFO
+  description: >-
+    Confirmed the turn-2 404 is genuinely pre-existing/unrelated, not a
+    disguised regression: grepped JournalAnswerServiceTest.php and confirmed
+    every OpenAIClient it constructs uses mock mode (`new OpenAIClient(null,
+    null, true)`), so the test suite never exercises the live
+    getActiveVectorStoreId()/'vs_default_mock_store' path that the manual
+    harness does. Confirmed via `git diff --stat` that this task's 10 changed
+    files do not include JournalAnswerService.php or OpenAIClient.php at all
+    -- the 404 path is untouched by this diff.
+- severity: INFO
+  description: >-
+    Full test suite run directly by the reviewer (not inferred from claims),
+    all green: ContributorNormalizerTest.php 14/14, CorpusIndexerTest.php
+    8/8, ContributorStatsServiceTest.php 8/8, AskEndpointTest.php 3/3,
+    UsagePolicyTest.php 5/5, JournalAnswerServiceTest.php (all scenarios
+    incl. citation/grounding suite), FeatureRequestServiceTest.php 6/6 --
+    zero regressions, zero failures across all 7 required files.
+- severity: INFO
+  description: >-
+    Load-bearing constraints re-checked directly against code, not tests
+    alone: grepped ContributorStatsService.php and ContributorNormalizer.php
+    for OpenAIClient/vector_store/file_search -- zero hits, confirming no
+    vector-store call in the new path. formatAnswer() is pure string
+    templating over a SQL GROUP BY result set; ask() makes no LLM calls.
+    isCountRankingQuestion() is a str_contains() loop over a fixed const
+    array, not NLU. resolveAndLink() only reuses a contributor on an exact
+    normalized_key match; any miss inserts review_status='pending', verified
+    both by direct code read and TEST 11/12 in ContributorNormalizerTest.
+    api/ask.php's new block only exits on a match; the pre-existing RAG code
+    that follows is confirmed byte-identical to the parent commit via diff.
+- severity: INFO
+  description: >-
+    human_review_required is true in the task YAML (Scout-set, PM-confirmed
+    at audit). Per bin/fleet.py's record_review logic, a PASS on a task with
+    human_review_required=true moves status to HUMAN_REVIEW rather than
+    DONE -- a human must still run `./bin/fleet close T-PTG-010 --human
+    <name>` to finalize. This review does not and cannot waive that.
+reviewed_at: '2026-08-13T01:47:27.450087Z'

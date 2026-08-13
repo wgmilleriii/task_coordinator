@@ -1,0 +1,75 @@
+id: T-PTG-021
+title: Fix stale JournalChatRenderTest assertion breaking the golden hammer suite
+  (pre-existing, not caused by today's tasks)
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T12:55:18.879668Z'
+audited_by: FleetCoordinator
+audited_repo_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+dependencies: []
+scope:
+- 'FINDING: Chip asked that no future work be pushed to main without running the full
+  "golden hammer" regression suite (`journalgpt/tests/security_and_eval_suite.php`,
+  which runs 8 PHP suites plus the Python eval_runner.py -- 9 suites total). Running
+  it as a baseline check surfaced one pre-existing failure: `JournalChatRenderTest.php:115`
+  asserts the rendered `index.php` HTML contains the exact literal substring `href="assets/journal-chat.css"`
+  (no query string). `index.php`''s actual stylesheet link has ALWAYS included a cache-busting
+  `?v=<hash>` query param (confirmed via git history -- this predates every task from
+  today''s session), so this exact-substring assertion has likely been failing since
+  the test was first written (single commit in its git history, `b89a4d7`, never updated
+  since). This is a stale/wrong test assertion, not a real product bug -- confirmed
+  the actual rendered HTML is correct and functional (T-PTG-013 extended the same
+  versioned-link pattern to 6 more pages earlier today specifically because it is
+  the correct, intentional behavior).'
+- 'FIX SCOPE: update `journalgpt/tests/JournalChatRenderTest.php:115` to check for
+  a pattern that tolerates the version query string, e.g. a regex or `strpos` on `href="assets/journal-chat.css?v=`
+  (matching the actual, correct, intentional markup) instead of the exact stale string.
+  Do not weaken the assertion into something that would pass regardless of correctness
+  (e.g. do not just delete the check) -- it should still fail if the stylesheet link
+  is missing or malformed.'
+- 'SCAN FOR SIMILAR STALENESS: since this test file has apparently never been updated
+  since its original creation, check its other 10 required snippets (title, journal-chat.js
+  src, csrf_token, allowanceCount, messagesContainer, questionForm, questionInput,
+  sendButton, grounding disclaimer text, "Test Member") against the CURRENT index.php
+  to confirm none of the others have silently drifted stale in the same way -- if
+  any others are found stale, fix them too and note each one in the handoff.'
+definition_of_done:
+- The full golden hammer suite (`DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php`) reports 9/9 suites
+  passing, 0 failures.
+- 'The fixed assertion still meaningfully verifies the stylesheet is linked correctly
+  -- confirm by temporarily breaking the link in a local copy (e.g. renaming the href)
+  and re-running the test to see it correctly fail, then restoring it, per this repo''s
+  existing TDD convention (see other recent tasks'' handoffs this session for the
+  pattern: prove a test can fail before trusting that it can pass).'
+- Any other stale snippet assertions found during the scan are fixed and listed in
+  the handoff, or the handoff explicitly states none were found.
+- php -l passes on journalgpt/tests/JournalChatRenderTest.php.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Chip asked that all future merges to main run the full golden hammer suite
+    (security_and_eval_suite.php) as a hard gate, not the narrower 3-4-file chain
+    the Fleet Coordinator had been using in verification_commands this session. Running
+    it as a baseline surfaced this pre-existing stale test assertion (unrelated to
+    any of today's shipped work -- git history shows the test was never touched since
+    its single original commit, while index.php's versioned stylesheet link predates
+    this session entirely). Fixing this is a prerequisite for establishing a trustworthy
+    clean baseline before continuing v3 or any other work.
+- timestamp: '2026-08-13T12:55:18.882092Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c

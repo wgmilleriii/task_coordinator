@@ -1,0 +1,66 @@
+id: T-PTG-022
+title: 'JournalGPT v3 Phase 2b: EvidenceRanker'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T12:55:21.500219Z'
+audited_by: FleetCoordinator
+audited_repo_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+dependencies:
+- T-PTG-020
+scope:
+- 'CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section
+  11 (Evidence Ranking) before starting. This is the second half of Phase 2, gated
+  on T-PTG-020 (EvidenceRetriever) being DONE.'
+- 'WHAT TO BUILD, per v3.md section 11 exactly: create `journalgpt/lib/EvidenceRanker.php`.
+  Not every passage T-PTG-020''s EvidenceRetriever collects should go directly to
+  the final answering model. Rank evidence by: relevance to user intent, relevance
+  to conversation context, source quality, specificity, redundancy, citation resolvability.
+  Output a compact evidence bundle for synthesis (v3.md section 11''s exact phrase).'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS
+  with zero regressions -- the current app must keep working exactly as before for
+  members using it today while this v3 work proceeds in parallel.'
+- 'EXPLICITLY OUT OF SCOPE: AnswerSynthesizer, ClaimValidator (Phase 3-4). Do not
+  change the live wiring T-PTG-020 established beyond inserting this ranking step
+  between retrieval and synthesis.'
+definition_of_done:
+- EvidenceRanker.php exists per v3.md section 11's six ranking criteria, and demonstrably
+  reduces/reorders a raw evidence set into a compact bundle.
+- 'A new test file (journalgpt/tests/EvidenceRankerTest.php) covers at least: a redundant/duplicate
+  passage being down-ranked or dropped, and a highly relevant passage being ranked
+  above a tangentially related one for a specific test question.'
+- Wired into the live path after T-PTG-020's retriever, before wherever synthesis
+  currently happens (still the existing JournalAnswerService synthesis step at this
+  point, since AnswerSynthesizer.php doesn't exist yet).
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- The existing test suite chain (AskEndpointTest, UsagePolicyTest, JournalAnswerServiceTest,
+  ConversationStateServiceTest, ResearchPlannerTest, EvidenceRetrieverTest) still
+  passes in full.
+- php -l passes on all new/modified PHP files.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/EvidenceRetrieverTest.php && DB_HOST=127.0.0.1
+  DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/EvidenceRankerTest.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Second half of v3.md Phase 2, gated on T-PTG-020 (EvidenceRetriever). Kept
+    as a separate task from T-PTG-020 since v3.md names EvidenceRetriever and EvidenceRanker
+    as two distinct classes with distinct responsibilities (collect+dedup vs. rank+compact),
+    and T-PTG-020 already carries the Go/No-Go checkpoint as its own significant deliverable.
+- timestamp: '2026-08-13T12:55:21.500651Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c

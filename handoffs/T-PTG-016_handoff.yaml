@@ -1,0 +1,87 @@
+task_id: T-PTG-016
+agent: Worker-SecFix1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-016
+base_sha: e2edf343520a3418114da8997f31ae5dc3f245ec
+head_sha: 73e7a36e743b541452dcf3ffedd788c31403dcd1
+evidence_output: "Exit code: 0\n\nSTDOUT:\n=== Running api/ask.php Endpoint Tests\
+  \ ===\n[TEST 1] Testing anonymous access denial (401/403)...\n[OK] Anonymous access\
+  \ denial check passed.\n[TEST 2] Testing CSRF validation and missing token rejection...\n\
+  [OK] CSRF token validation & rejection verified.\n[TEST 3] Testing valid JSON response\
+  \ format and secret leakage protection...\n[OK] JSON response structure & secret\
+  \ leakage protection verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\
+  === Running UsagePolicy & Quota Tests ===\n[TEST 1] Testing pre-invocation quota\
+  \ enforcement...\n[OK] Pre-invocation quota enforcement verified (3 allowed, 4th\
+  \ denied).\n[TEST 2] Testing administrator exemption from per-user question cap...\n\
+  [OK] Administrator quota exemption verified.\n[TEST 3] Testing organization monthly\
+  \ budget hard cap enforcement...\n[OK] Organization monthly budget hard cap enforcement\
+  \ verified.\n[TEST 4] Testing race-safe atomic transaction allowance check...\n\
+  [OK] Atomic transaction allowance check verified.\n[TEST 5] Testing detailed usage\
+  \ ledger recording & stats...\n[OK] Detailed usage ledger recording & stats aggregation\
+  \ verified.\n=== ALL USAGE POLICY TESTS PASSED SUCCESSFULLY ===\n=== Running JournalAnswerService\
+  \ Unit Tests ===\n[OK] Test database populated for service tests.\n[TEST 9] Physical\
+  \ PDF page -> printed page mapping via per-issue front-matter offset...\n[OK] Physical->printed\
+  \ page mapping verified.\n[TEST 11] Reverse-quote matcher tolerates punctuation\
+  \ between words...\n[OK] Tolerant quote matching verified (punctuation, newlines,\
+  \ guards).\n[TEST 1] Grounded answers with correct issue/article/page citations...\n\
+  [OK] Grounded answer and citations verified successfully.\n[TEST 2] Uncertainty\
+  \ signaling when no supporting Journal chunks retrieved...\n[OK] Uncertainty signaling\
+  \ verified.\n[TEST 3] Page boundary marker parsing ([[page:N]] -> page number)...\n\
+  [OK] Page marker parsing verified.\n[TEST 3b] PUA-delimited (o1/o3) citation markers\
+  \ are stripped like \u3010\u2026\u3011...\n[OK] Both citation marker encodings are\
+  \ stripped and detected correctly.\n[TEST 7] Reverse quote match page lookup for\
+  \ exact page numbers...\n[OK] Reverse quote match page lookup verified (Page 18\
+  \ resolved correctly).\n[TEST 8] Verify 'what is fred up to' refers strictly to\
+  \ March 2026 issue (PTJ-2026-03)...\n[OK] Fred Sturm article resolution verified\
+  \ (Resolved to March 2026 Issue PTJ-2026-03).\n[TEST 10] In-corpus 'Fourier' passage\
+  \ resolves to June 2026, physical p.26 / printed p.24...\n[OK] 'Fourier' resolved\
+  \ to June 2026 (PTJ-2026-06), printed p.24 / physical PDF p.26.\n[TEST 12] Assistants\
+  \ v2 run-step file_search results become grounded chunks...\n[OK] v2 run-step grounding\
+  \ content captured with page markers intact.\n[TEST 13] Unevidenced chunk must not\
+  \ fabricate 'p. 1'...\n[OK] Unevidenced chunks no longer assert a fabricated page.\n\
+  [TEST 14] Manifest-path citations use the correct front-matter offset direction...\n\
+  [OK] Manifest fallback maps physical 26 -> printed 24.\n[TEST 15] Fallback citations\
+  \ resolve the real articles.id for their UID...\n[OK] Fallback citations carry the\
+  \ correct article_id.\n[TEST 17] Chunk with a page marker but an unknown file_id\
+  \ still cites...\n[OK] Unknown file_id degrades to corpus-text identification.\n\
+  [TEST 18] ask() returns and persists citations end-to-end...\n[OK] ask() returned\
+  \ 1 citation(s), persisted to citations_json.\n[TEST 18b] Hedged answer carrying\
+  \ real annotations still resolves citations...\n[OK] Hedged answer still resolved\
+  \ 1 citation(s).\n[TEST 18c] Over-retrieval doesn't leak into citations; adjacent\
+  \ pages collapse...\n[OK] Over-retrieved-but-uncited chunks excluded; adjacent pages\
+  \ collapsed to 19-20.\n[TEST 19] Unattributable answer is withheld, never shipped\
+  \ uncited...\n[OK] Unattributable answer withheld behind the PTJ-012 phrase.\n[TEST\
+  \ 16] Corpus boilerplate must not be attributed to an arbitrary issue...\n[OK] Non-distinctive\
+  \ boilerplate yields no citation.\n[TEST 4] Refusal behavior on bulk export request...\n\
+  [OK] Bulk export refusal verified.\n[TEST 5] Refusal behavior on prompt injection\
+  \ request...\n[OK] Prompt injection refusal verified.\n[TEST 6] Bounded conversation\
+  \ context loading...\n[OK] Bounded conversation context verified.\n=== ALL JOURNAL\
+  \ ANSWER SERVICE TESTS PASSED SUCCESSFULLY ===\n=== Running admin_reply.php Tests\
+  \ ===\n[OK] Test database seeded with member user #170, administrator user #171,\
+  \ and conversation #232.\n[TEST 1] Testing authenticated MEMBER is rejected with\
+  \ 403...\n[OK] Authenticated member correctly rejected with 403; no message inserted.\n\
+  [TEST 2] Testing authenticated administrator can post a reply...\n[OK] Authenticated\
+  \ administrator successfully posted a reply (into a conversation it does not own);\
+  \ role=assistant row inserted with exact content.\n[TEST 3] Testing unauthenticated\
+  \ request rejection...\n[OK] Unauthenticated request correctly redirected to login.php;\
+  \ no message inserted.\n[TEST 4] Testing missing/invalid CSRF token rejection (as\
+  \ administrator)...\n[OK] Missing/invalid CSRF tokens correctly rejected with 403;\
+  \ no message inserted.\n[TEST 5] Testing non-existent conversation_id rejection\
+  \ (as administrator)...\n[OK] Non-existent conversation_id correctly rejected with\
+  \ a clear error; no row inserted.\n=== ALL ADMIN REPLY TESTS PASSED SUCCESSFULLY\
+  \ ===\nNo syntax errors detected in journalgpt/admin_reply.php\nNo syntax errors\
+  \ detected in journalgpt/cli/promote_admin.php\n\nSTDERR:\nJournalAnswerService:\
+  \ withheld unattributable answer (user=169, chunks=1, answer_len=158) \u2014 retrieval\
+  \ returned content but no citation could be resolved."
+peer_review_notes: null
+human_action_required: 'ACTION NEEDED IN PRODUCTION: this fix has NOT yet taken effect
+  against production role data. The code gate (Authorization::ROLE_ADMIN) ships automatically
+  on merge/push, but no administrator-role account exists in production today, so
+  Chip''s own account is still role=member and he will now get a 403 from admin_reply.php
+  until he promotes his account. He must run this himself against production (the
+  Worker has no production DB credentials reachable from this environment): php journalgpt/cli/promote_admin.php
+  <his-production-email> This is idempotent -- safe to re-run.'
+token_spend: null
+cost_usd: null

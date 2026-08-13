@@ -1,0 +1,30 @@
+task_id: T-PTG-016
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 73e7a36e743b541452dcf3ffedd788c31403dcd1
+verdict: PASS
+findings:
+- severity: INFO
+  description: Independently confirmed admin_reply.php now calls
+    Authorization::requireRole(Authorization::ROLE_ADMIN) (not requireRole(null)),
+    and independently re-ran AdminReplyTest.php myself rather than trusting the
+    Worker's report -- all 5 scenarios pass, including the critical regression
+    check (a plain member now gets 403, not a successful post) and the new
+    administrator-success case (admin posting into a conversation it does not
+    own, matching the tool's actual intended use).
+  file_reference: journalgpt/admin_reply.php
+- severity: INFO
+  description: promote_admin.php is idempotent and looks up the administrator
+    role id by name rather than hardcoding it, matching the DoD. php -l passes.
+  file_reference: journalgpt/cli/promote_admin.php
+- severity: MINOR
+  description: This fix has NOT yet taken effect against production role data --
+    no account currently has the administrator role in production, so
+    admin_reply.php is effectively unusable there until Chip runs
+    `php journalgpt/cli/promote_admin.php <his-email>` himself (Worker could not
+    reach production DB credentials from this environment, consistent with every
+    other task this session). This is expected and stated plainly in the
+    handoff/feedback, not an oversight -- flagging here only so HUMAN_REVIEW
+    doesn't get closed before that command is actually run.
+  file_reference: journalgpt/cli/promote_admin.php
+reviewed_at: '2026-08-13T05:45:46.700657Z'

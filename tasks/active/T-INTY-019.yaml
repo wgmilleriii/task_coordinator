@@ -1,62 +1,109 @@
 id: T-INTY-019
-title: "\"Open in Gazelle\" deep-link button on the Piano Dossier page"
+title: '"Open in Gazelle" deep-link button on the Piano Dossier page'
 repo: intypiano
 priority: P2
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-12T00:00:00-06:00'
 dependencies:
 - T-INTY-018
 requires_doc_update: false
 scope:
-- PM NOTE (2026-08-12, left OPEN not audited) - this task's DoD requires
-  manually verifying admin/v2/piano.php in a running local server with
-  before/after evidence. As of repo-sha 3cf4775d, EVERY admin/v2/* page 500s
-  on a fresh local checkout ("Uncaught mysqli_sql_exception - Unknown database
-  'caut_sfusd'" from classes/core/DatabaseManager.php:307), unrelated to
-  Gazelle - it is a regression in the new multi-tenant config.php/
-  DatabaseManager dispatch added 2026-08-11 (commits 40d00b89..4751c925).
-  Verified 3 independent ways (fresh php -S, direct curl, standalone PHP CLI
-  repro). This task also structurally cannot be claimed before T-INTY-018 is
-  DONE (bin/fleet.py's claim command checks dependency status == DONE, not
-  just AUDITED/existence - confirmed by reading bin/fleet.py lines ~296-303),
-  so there is no urgency to unlock it now. Recommended - file a separate bug
-  task for the admin/v2 DatabaseManager regression and get it fixed BEFORE
-  auditing this one, otherwise a Worker will be blocked on an unrelated
-  pre-existing bug through no fault of their own. Re-run this scope's own
-  verification (php -l admin/v2/piano.php && ./vendor/bin/phpunit) against a
-  fresh sha before auditing.
-- Small, low-risk UI addition. Add an "Open in Gazelle" button/link to
-  admin/v2/piano.php (the Piano Dossier / instrument page shipped in
-  T-INTY-017, integrated with dossier_edit.php) that opens the piano's record
-  in the Gazelle CRM in a new tab, built from the new pianos.gazelle_id column
-  added by T-INTY-018.
-- Confirm the actual Gazelle web URL pattern before hardcoding it (this scout
-  pass did not have access to a Gazelle account/docs to confirm the URL
-  scheme - e.g. whether it's a path like https://app.gazellecrm.com/pianos/{id}
-  or a query-string form). Do not guess and ship a link that 404s - verify
-  with the user or find it in the CSV/API docs referenced by the original
-  Gazelle Data Normalization tool work (git log shows commit
-  1ea83713 'feat(integrations) - build Gazelle Data Normalization tool' -
-  check that work for any recorded Gazelle URL conventions first).
-- Render conditionally - if pianos.gazelle_id IS NULL for this piano (e.g. it
-  predates the Gazelle integration or was hand-entered), do not show a dead
-  link; either hide the button or show a disabled/greyed state with a tooltip
-  explaining why.
-- Follow admin/v2/piano.php's existing conventions for buttons/links (CSRF
-  is irrelevant here since this is a pure outbound GET link, not a form post,
-  but match the existing visual style in that file rather than introducing a
-  new button pattern).
+- PM NOTE (2026-08-12, previously left OPEN, now AUDITED) - the admin/v2 regression
+  that blocked this task is fixed. Verified live, not by reading - started `php -S
+  localhost:2027 -t .` against repo-sha 6d955d99, logged in as cmiller (had to reset
+  both `tuner.tpassword` via the documented MD5 UPDATE AND set a bcrypt `users.password_hash`
+  + `users.email` locally - the demo DB's `users` row for cmiller had a NULL email,
+  which the email-based login added by the 2026-08-11 auth migration requires; TESTING-LOCALLY.md's
+  cmiller/localdev1 instructions are stale on this exact point), then hit admin/v2/piano.php?id=1
+  (pianos.gazelle_id = '110641', NOT NULL) and ?id=6 (gazelle_id NULL) directly. Both
+  returned HTTP 200 with real page content ("Yamaha U-1 (1978)" / "Unknown (2010)"
+  titles), zero occurrences of "caut_sfusd", "Fatal", "Uncaught", or "Exception" in
+  either response body. T-INTY-021 (the fix) is confirmed DONE in task_coordinator.
+  The admin/v2 blocker is gone.
+- DEPENDENCY STATUS CORRECTION - T-INTY-018 is HUMAN_REVIEW, NOT DONE, as of this
+  audit (peer review passed, ReviewerSonnet5 verdict PASS 2026-08-12, awaiting a human
+  `fleet close`). Do not take a prior claim that it is "DONE" at face value - checked
+  the YAML directly. This does not block auditing (bin/fleet.py's `cmd_audit` has
+  no dependency check at all, only `cmd_claim` does, confirmed by reading both functions),
+  so auditing now is safe and saves a round-trip once T-INTY-018 closes. But `fleet
+  claim` WILL still correctly refuse this task until T-INTY-018's status is exactly
+  DONE - a Worker hitting that refusal is expected, not a bug, and should wait / ping
+  a PM to close T-INTY-018 rather than work around it. The underlying schema work
+  is real already, independent of the close - ddl/146 (001-004) adds `pianos.gazelle_id
+  VARCHAR(24)` and `inventory.gazelle_id`, both backfilled - verified live in intypiano_demo
+  (`SELECT id, piano_code, gazelle_id FROM pianos` shows populated rows for 126 pianos
+  and NULLs for the rest).
+- GAZELLE WEB URL PATTERN - STILL GENUINELY UNKNOWN, DO NOT GUESS. Re-checked per
+  this audit's instructions - grepped the whole repo (including the new classes/integration/GazelleAPI.php
+  from commit 1ea83713, and admin/v2/normalization.php which uses it) for any Gazelle
+  URL. The ONLY Gazelle URL anywhere in the codebase is the private GraphQL API endpoint
+  `https://gazelleapp.io/graphql/private` (classes/integration/GazelleAPI.php line
+  5) - a machine API endpoint, not a human-facing web app URL, and POSTing GraphQL
+  queries there tells you nothing about what path a browser needs to open a piano's
+  record (e.g. `/pianos/{id}`, a query string, a UUID-based route, etc - all unconfirmed).
+  T-INTY-020 (the parallel Gazelle-sync design task) also does not resolve this -
+  it is scoped to the GraphQL API, not the web UI, and its own scope text does not
+  mention a web URL either. This repo has no way to discover the answer without a
+  live Gazelle account/docs. Per PM instruction, this is not being left as an open-ended
+  "confirm before hardcoding" - the Worker MUST NOT guess a URL pattern and ship it.
+  Definition of Done below is revised accordingly.
+- Small, low-risk UI addition. Add an "Open in Gazelle" button/link to admin/v2/piano.php
+  (the Piano Dossier / instrument page shipped in T-INTY-017, integrated with dossier_edit.php)
+  that opens the piano's record in the Gazelle CRM in a new tab, built from the new
+  pianos.gazelle_id column added by T-INTY-018.
+- STOP CONDITION, do not skip - this PM audit re-confirmed the Gazelle web URL pattern
+  is genuinely unknown and unresolvable from this repo (see PM note above). Before
+  writing any URL-construction code, the Worker MUST ask the user (or whoever owns
+  the Gazelle account) for the exact URL pattern used to open a piano record in the
+  Gazelle web app - e.g. by opening a piano in the Gazelle UI and reading the address
+  bar - and record the confirmed pattern in the commit message. If that answer is
+  not obtainable in this session, STOP and hand the task back with the specific blocking
+  question ("what is the URL to view a piano record in the Gazelle web UI, given its
+  Gazelle ID?") rather than shipping a guessed URL. A guessed URL that silently 404s
+  is worse than an admittedly-incomplete feature.
+- Render conditionally - if pianos.gazelle_id IS NULL for this piano (e.g. it predates
+  the Gazelle integration or was hand-entered), do not show a dead link; either hide
+  the button or show a disabled/greyed state with a tooltip explaining why.
+- Follow admin/v2/piano.php's existing conventions for buttons/links (CSRF is irrelevant
+  here since this is a pure outbound GET link, not a form post, but match the existing
+  visual style in that file rather than introducing a new button pattern).
 definition_of_done:
-- admin/v2/piano.php shows an "Open in Gazelle" link/button when the piano's
-  gazelle_id is set, pointing at a confirmed-correct Gazelle URL pattern, and
-  hides or disables it when gazelle_id is NULL.
+- EITHER (a) admin/v2/piano.php shows an "Open in Gazelle" link/button when the piano's
+  gazelle_id is set, pointing at a Gazelle URL pattern the Worker has EXPLICITLY CONFIRMED
+  (not guessed) via the user/account owner, with that confirmation source stated in
+  the commit message, and hides or disables the button when gazelle_id is NULL; OR
+  (b) if confirmation is not obtainable this session, the Worker submits nothing and
+  instead returns the task to the PM/user with the specific blocking question spelled
+  out in the PM-audit note above. Shipping a hardcoded, unconfirmed URL guess is an
+  explicit non-goal and fails this DoD even if the code otherwise works.
 - php -l admin/v2/piano.php passes.
-- Manually verified in a running server (php -S localhost:2027 -t .) against
-  at least one piano with a gazelle_id and one without, per CLAUDE.md's
-  "prefer running over reading" rule - screenshot or terminal evidence of both
-  states attached to the handoff.
-- ./vendor/bin/phpunit still reports the 259-test baseline with 0 new failures.
-verification_command: php -l admin/v2/piano.php && ./vendor/bin/phpunit
+- Manually verified in a running server (php -S localhost:2027 -t .) against at least
+  one piano with a gazelle_id and one without, per CLAUDE.md's "prefer running over
+  reading" rule - screenshot or terminal evidence of both states attached to the handoff.
+  Note for the Worker - as of this audit, local login for cmiller required resetting
+  BOTH `tuner.tpassword` (MD5, per TESTING-LOCALLY.md) AND `users.email` + `users.password_hash`
+  (bcrypt) on intypiano_demo, because the 2026-08-11 auth migration made login email-based
+  and the demo `users` row for cmiller had a NULL email. If login fails with "Invalid
+  email or password" using the documented cmiller/localdev1, check `users.email` first
+  before assuming something else broke.
+- PM AUDIT NOTE ON TEST BASELINE (2026-08-12, repo-sha 6d955d99) - neither CLAUDE.md's
+  stale "259 tests, 0 failures" nor T-INTY-018's captured "330/564/Errors=18/Failures=114/Skipped=6"
+  is reproducible right now. A clean run on this exact sha (server up on :2027, then
+  ./vendor/bin/phpunit) produced Tests=330, Assertions=666, Errors=1, Failures=68
+  - fewer errors/failures than T-INTY-018's snapshot, consistent with T-INTY-021's
+  admin/v2 fix landing in between, but still not 0. Do NOT let a Worker chase these
+  pre-existing failures as part of this task - they are unrelated to Gazelle. The
+  bar for this task is - no NEW errors/failures beyond this 330/666/1/68 shape.
+verification_command: php -S localhost:2027 -t . & sleep 1; php -l admin/v2/piano.php
+  && ./vendor/bin/phpunit
 human_review_required: true
+audited_at: '2026-08-13T03:00:52.458858Z'
+audited_by: PM-GazelleLink1
+audited_repo_sha: 6d955d9962a89d24af8a5d8052eb1d67b1ea0186
+events:
+- timestamp: '2026-08-13T03:00:52.459281Z'
+  action: AUDIT
+  actor: PM-GazelleLink1
+  details: Audited against 6d955d9962a89d24af8a5d8052eb1d67b1ea0186

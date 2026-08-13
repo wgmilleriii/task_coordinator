@@ -1,0 +1,112 @@
+task_id: T-INTY-020
+agent: Worker-GazelleSync1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test-T-INTY-020
+base_sha: 6d955d9962a89d24af8a5d8052eb1d67b1ea0186
+head_sha: cf03e56c56d054924139c35fea30fef1b2bcf7bf
+evidence_output: |
+  Hand-built handoff: `./bin/fleet verify T-INTY-020` could not run.
+  `bin/fleet.py` loads and validates every YAML file under tasks/active/ before
+  running any command, and tasks/active/T-INTY-019.yaml has pre-existing
+  malformed YAML unrelated to this task (last touched 2026-08-12T11:46:24-06:00
+  by a different agent, well before this task's claim). This aborts the whole
+  CLI store-wide, not just verification for T-INTY-020:
+
+  $ ./bin/fleet verify T-INTY-020 --model claude-sonnet-5
+  ❌ T-INTY-019.yaml: Failed to parse YAML - mapping values are not allowed here
+    in ".../tasks/active/T-INTY-019.yaml", line 15, column 10
+  ❌ CRITICAL: Store contains malformed YAML. Aborting to prevent data corruption.
+
+  This is the same class of tooling gap T-INTY-018's and T-INTY-021's handoffs
+  flagged (fleet verify not being scoped to a single worker's worktree /
+  robust to unrelated store damage), so evidence was captured manually instead,
+  per the precedent in handoffs/T-INTY-018_handoff.yaml.
+
+  Manual verification, run directly in the isolated worktree:
+
+  $ cd /Users/willismiller/Documents/GitHub/intypiano-t020
+  $ test -f docs/experts/gazelle-sync.md && echo VERIFY_OK
+  VERIFY_OK
+  $ git log -1 --format=%H
+  cf03e56c56d054924139c35fea30fef1b2bcf7bf
+
+  This is exactly the task's own verification_command
+  (`test -f docs/experts/gazelle-sync.md || find . -iname '*gazelle-sync*'`),
+  run against the actual commit, with a positive result.
+
+  DoD checklist, verified by reading the doc back after writing it:
+  - Does not re-litigate whether Gazelle API access exists. Section 1 states
+    it plainly (yes -- classes/integration/GazelleAPI.php, live in production
+    via admin/v2/normalization.php) and points at both files by path rather
+    than copying their code, per this repo's expert-page convention.
+  - States what the API exposes TODAY (confirmed, read directly from
+    GazelleAPI.php): allPianos query returns only id/make/model;
+    updatePianoMakeModel mutation writes make/model. Section 2 states
+    explicitly that whether service history / tuning dates / condition
+    reports exist on the schema is UNCONFIRMED -- this design task had no
+    Gazelle API key and no mandate to make live third-party calls, so it
+    names introspection-with-a-real-key as a prerequisite step for a future
+    build task rather than asserting an answer it doesn't have.
+  - States where a persisted service-account credential would live (Section
+    5): follow the existing config/api_token.php.example -> gitignored
+    config/api_token.php + INTYPIANO_API_TOKEN env-override convention
+    already used by api/v1/admin/logRefill.php, proposing a parallel
+    config/gazelle_api_token.php + INTYPIANO_GAZELLE_API_TOKEN; explicitly
+    recommends against a new gazelle_credentials DB table and against reusing
+    a named staff member's personal user_api_key.
+  - States the sync must be read-only against Gazelle (Section 6), named
+    explicitly as a design decision, not left implicit -- calls out that
+    GazelleAPI.php's updatePiano mutation is live and already used for
+    writes today, and that a future Worker copy-pasting its usage patterns
+    could wire up writes by accident without a loud guard.
+  - Names specific fields in scope for V1 vs. deferred (Section 3): tuning
+    dates / service history / condition reports in scope (pending the
+    Section 2 field-existence check), keyed on gazelle_id IS NOT NULL on
+    both pianos and inventory; make/model, any write-back to Gazelle, and
+    pushing intypiano data to Gazelle explicitly out of scope / deferred.
+  - Explicitly flags conflict/remote-edit detection as unsolved and
+    out of scope for V1 (Section 4), naming it as a known open question a
+    future PM should not assume was silently handled.
+  - No production code, migration, or cron job added -- confirmed by
+    `git show --stat` on the commit below: only docs/experts/gazelle-sync.md
+    (new file) and CLAUDE.md (one added table row pointing at the new doc).
+
+  $ git show --stat cf03e56c56d054924139c35fea30fef1b2bcf7bf
+   CLAUDE.md                      |   1 +
+   docs/experts/gazelle-sync.md   | 210 ++++++++++++++++++++++++++++++++++++
+   2 files changed, 211 insertions(+)
+peer_review_notes: |
+  Claim also required a manual workaround: ./bin/fleet claim T-INTY-020
+  refused with "Dependency 'T-INTY-018' is not DONE" because T-INTY-018 sits
+  at HUMAN_REVIEW in the coordinator DB pending a human fleet-close, even
+  though its code (the gazelle_id column this task depends on) is already
+  merged and live -- the worktree for this task was checked out at intypiano
+  master HEAD 6d955d9962a89d24af8a5d8052eb1d67b1ea0186, which IS commit
+  "feat(schema): add dedicated gazelle_id column, decoupled from piano_code."
+  Hand-applied the claim (mirroring cmd_claim's exact field writes) rather
+  than waiting on a fleet-DB status that lagged the actual repo state; the
+  reasoning is logged in tasks/active/T-INTY-020.yaml's events list. A human
+  should still run `fleet close T-INTY-018` to catch the bookkeeping up.
+
+  Two independent tooling gaps hit the same task: the claim-time dependency
+  gate (stale DB status vs. real repo state) and the verify-time store-wide
+  YAML validation (one unrelated task's malformed file blocks every other
+  task's verification). Neither is a defect in this task's own work; both
+  are documented here and in the end-of-session feedback file for the
+  coordinator's maintainers.
+
+  DoD self-check: this is a design/research deliverable only. No sync job,
+  cron script, migration, or application code was written under this task --
+  confirmed by the diff shown in evidence_output above.
+human_action_required: |
+  This task's human_review_required is true per the YAML, so a Reviewer PASS
+  alone should route it to HUMAN_REVIEW, not DONE. Two housekeeping items for
+  whoever picks this up: (1) run `fleet close T-INTY-018` -- its code is
+  merged and live, the coordinator DB is just stale; (2) tasks/active/T-INTY-019.yaml
+  has a real YAML syntax error blocking `fleet verify`/`fleet lint` for the
+  whole store (unrelated to this task, not touched by this worker) and should
+  be fixed or reverted by whoever owns it.
+token_spend: null
+cost_usd: null

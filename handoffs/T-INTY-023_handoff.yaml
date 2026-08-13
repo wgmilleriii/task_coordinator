@@ -1,0 +1,67 @@
+task_id: T-INTY-023
+agent: Worker-MigrateSafety1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test-T-INTY-023
+base_sha: c6ccca5e5adc10b3044cadd406eb6eae71ea43f2
+head_sha: f4890795eaa963cb74f34ec48836235b41b6a476
+evidence_output: "NOTE: `fleet verify`'s automated run executed `php -l` against the\
+  \ primary\nintypiano clone (branch master, unmodified files), not the isolated\n\
+  worktree (intypiano-T-INTY-023, branch test-T-INTY-023) where the actual\nchanges\
+  \ live -- the CLI doesn't know about the worktree. `php -l` passes\ntrivially on\
+  \ both the old and new versions of these files (both are\nsyntactically valid PHP),\
+  \ so that automated result, reproduced below, is\ntrue but not meaningful evidence\
+  \ of correctness. The real verification is\nthe manual run recorded after it, executed\
+  \ in the worktree against the\nactual changed files.\n\n=== Automated verification_command\
+  \ output (primary clone, master) ===\nExit code: 0\nSTDOUT:\nNo syntax errors detected\
+  \ in master_migrate.php\nNo syntax errors detected in system_hub.php\nSTDERR:\n\
+  (empty)\n\n=== Manual verification (worktree intypiano-T-INTY-023, branch test-T-INTY-023,\
+  \ commit f4890795) ===\n\n1. php -l on both changed files, run directly in the worktree:\n\
+  \   No syntax errors detected in master_migrate.php\n   No syntax errors detected\
+  \ in system_hub.php\n\n2. Part 1 (protection) + Part 2 (tracking), via a gitignored\n\
+  \   config_local.php (never committed) pointing a fake 'unm' tenant at the\n   REAL\
+  \ dbnames unm_piano/unm_piano_readonly/unm_piano_test, plus a\n   throwaway scratch\
+  \ tenant, then `php master_migrate.php <test file>`:\n\n     Tenant: central   \
+  \       -> [OK] Successfully applied to central.\n     Tenant: unm             \
+  \ -> [SKIPPED] 'unm' (dbname 'unm_piano') is a\n                               \
+  \   protected database and is never targeted\n                                 \
+  \ by sql_scripts/ fan-out.\n     Tenant: unm_ro           -> [SKIPPED] 'unm_ro'\
+  \ (dbname\n                                  'unm_piano_readonly') is a protected\n\
+  \                                  database ...\n     Tenant: unm_test         ->\
+  \ [SKIPPED] 'unm_test' (dbname\n                                  'unm_piano_test')\
+  \ is a protected\n                                  database ...\n     Tenant: scratch_normal\
+  \   -> [OK] Successfully applied to\n                                  scratch_normal.\n\
+  \     Migration complete. Success: 2  Failed: 0  Skipped (protected): 3\n\n   Confirmed\
+  \ via `SHOW TABLES LIKE 't_inty_023_scratch_marker'` against\n   unm_piano, unm_piano_readonly,\
+  \ and unm_piano_test directly: all three\n   returned zero rows -- no connection\
+  \ was ever opened to the protected\n   databases, and no SQL ran against them.\n\
+  \n   Confirmed `sql_scripts_applied` in caut_central got exactly 2 rows\n   (central,\
+  \ scratch_normal) -- none for the 3 skipped tenants, since they\n   were never attempted.\n\
+  \n3. Part 3 (dynamic hub launcher), via `php -S localhost:2027 -t .` in the\n  \
+  \ worktree, logging in as global_system (the pre-existing bypass in\n   login_form.php\
+  \ on this commit -- T-INTY-022's fix for that bypass\n   lives on a separate unmerged\
+  \ branch) and GETting system_hub.php:\n   the \"Global Migrations\" section rendered\
+  \ a dynamic list of all\n   sql_scripts/*.sql files not yet successfully applied\
+  \ to every\n   effective (non-protected) configured tenant, each with its own\n\
+  \   \"Execute\" link to master_migrate.php?file=<name>. After running the\n   scratch\
+  \ test file through master_migrate.php (both via CLI and via an\n   authenticated\
+  \ web GET to master_migrate.php), it disappeared from the\n   list on the next page\
+  \ load, since it was then fully applied to both\n   effective tenants (central,\
+  \ scratch_normal) -- confirming the \"already\n   applied everywhere allowed\" exclusion\
+  \ works, not just the initial\n   listing.\n\n4. Auth regression check: an unauthenticated\
+  \ GET to\n   master_migrate.php?file=... still returned 403 Forbidden\n   (\"Access\
+  \ Denied: Fleet Migration requires System Admin privileges.\");\n   the authenticated\
+  \ global_system session still ran successfully.\n\n5. Full phpunit suite (330 tests)\
+  \ shows the identical 68 failures / 1\n   error with and without this change on\
+  \ this same base commit (confirmed\n   via `git stash` / `git stash pop`) -- these\
+  \ are pre-existing failures\n   unrelated to T-INTY-023, not a regression it introduces.\n\
+  \n6. All test data was cleaned up: scratch databases dropped, test rows\n   deleted\
+  \ from caut_central.sql_scripts_applied (it is empty again,\n   correctly reflecting\
+  \ that none of the real sql_scripts/*.sql files\n   have ever been tracked through\
+  \ this mechanism -- per task scope, they\n   are NOT auto-marked applied), config_local.php\
+  \ removed (it was never\n   committed), and the test PHP server killed.\n"
+peer_review_notes: null
+human_action_required: null
+token_spend: null
+cost_usd: null

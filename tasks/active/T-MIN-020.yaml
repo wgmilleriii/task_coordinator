@@ -1,44 +1,44 @@
 id: T-MIN-020
-title: "Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field\
-  \ in the master registry JSON"
+title: Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field
+  in the master registry JSON
 repo: minchiate_tarot
 priority: P3
 lane: ANY
-status: OPEN
+status: AUDITED
 owner: null
 created_at: '2026-08-12T20:05:00-06:00'
 dependencies: []
 scope:
-- "SCOUT-F5 SOURCE: T-MIN-017's worker (Worker-F20) and an independent reviewer both\
-  \ found that `grep -A20 \"card_id\"` doesn't reliably reach fields positioned late\
-  \ in a JSON card object in research/05-registry-and-audit/Stage5_Master_Card_Registry.json\
-  \ (each card object has ~26 fields). Worker-F20 fixed this locally for the four cavalier\
-  \ rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12) by repositioning\
-  \ the `aliases` key to sit immediately after `historical_names` (key-order-only change,\
-  \ no value changes). T-MIN-016's own SPECIAL-FOOL row, which introduced the `aliases`\
-  \ field in the first place, was never checked or fixed for the same issue."
+- 'SCOUT-F5 SOURCE: T-MIN-017''s worker (Worker-F20) and an independent reviewer both
+  found that `grep -A20 "card_id"` doesn''t reliably reach fields positioned late
+  in a JSON card object in research/05-registry-and-audit/Stage5_Master_Card_Registry.json
+  (each card object has ~26 fields). Worker-F20 fixed this locally for the four cavalier
+  rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12) by repositioning
+  the `aliases` key to sit immediately after `historical_names` (key-order-only change,
+  no value changes). T-MIN-016''s own SPECIAL-FOOL row, which introduced the `aliases`
+  field in the first place, was never checked or fixed for the same issue.'
 - "SCOUT-F5 CONFIRMED THE PROBLEM IS REAL (dry run against branch test @d0052dc, 2026-08-12):\
   \ in research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL\
   \ card object starts at `\"card_id\": \"SPECIAL-FOOL\"` and its `aliases` key (holding\
-  \ `[\"TRUMP-FOOL\"]`) is the LAST key in the object, 25 lines later — outside a `grep\
-  \ -A20` window. Verified directly: `grep -n -A20 '\"card_id\": \"SPECIAL-FOOL\"'\
-  \ Stage5_Master_Card_Registry.json | grep -c aliases` returns 0 (fails to find it);\
+  \ `[\"TRUMP-FOOL\"]`) is the LAST key in the object, 25 lines later \u2014 outside\
+  \ a `grep -A20` window. Verified directly: `grep -n -A20 '\"card_id\": \"SPECIAL-FOOL\"\
+  ' Stage5_Master_Card_Registry.json | grep -c aliases` returns 0 (fails to find it);\
   \ `grep -n -A30 ...` does find it, 26 lines after the `-A` start. This is the exact\
   \ same class of failure T-MIN-017 fixed for the cavalier rows, unfixed here."
 - "Fix: reposition the `aliases` key in the SPECIAL-FOOL card object ONLY, in research/05-registry-and-audit/Stage5_Master_Card_Registry.json,\
-  \ to sit immediately after `historical_names` and before `names_to_avoid` — the exact\
-  \ same position T-MIN-017 used for the four cavalier rows (see e.g. the SUIT-CUPS-12\
-  \ row for the reference ordering: card_id, canonical_name, italian_name, historical_names,\
-  \ aliases, names_to_avoid, family, ...). This is a KEY-ORDER-ONLY change: do not add,\
-  \ remove, rename, or change the value of `aliases` (must remain exactly `[\"TRUMP-FOOL\"\
-  ]`) or any other field in the SPECIAL-FOOL object."
-- "Do NOT touch Stage5_Master_Card_Registry.csv — the fragility is specific to `grep\
-  \ -A<N>` windowing over the multi-line JSON representation; a CSV row is a single\
-  \ line and is not affected. Do NOT touch any other card row's key order (the cavalier\
-  \ rows are already fixed by T-MIN-017; leave every other row exactly as-is)."
-- Do not touch Card_Dossier_Skeletons.json, Stage4_Card_Dossier_Schema.json, or any
-  personality/dossier study file — this task's blast radius is the one SPECIAL-FOOL
-  object in Stage5_Master_Card_Registry.json only.
+  \ to sit immediately after `historical_names` and before `names_to_avoid` \u2014\
+  \ the exact same position T-MIN-017 used for the four cavalier rows (see e.g. the\
+  \ SUIT-CUPS-12 row for the reference ordering: card_id, canonical_name, italian_name,\
+  \ historical_names, aliases, names_to_avoid, family, ...). This is a KEY-ORDER-ONLY\
+  \ change: do not add, remove, rename, or change the value of `aliases` (must remain\
+  \ exactly `[\"TRUMP-FOOL\"]`) or any other field in the SPECIAL-FOOL object."
+- "Do NOT touch Stage5_Master_Card_Registry.csv \u2014 the fragility is specific to\
+  \ `grep -A<N>` windowing over the multi-line JSON representation; a CSV row is a\
+  \ single line and is not affected. Do NOT touch any other card row's key order (the\
+  \ cavalier rows are already fixed by T-MIN-017; leave every other row exactly as-is)."
+- "Do not touch Card_Dossier_Skeletons.json, Stage4_Card_Dossier_Schema.json, or any\
+  \ personality/dossier study file \u2014 this task's blast radius is the one SPECIAL-FOOL\
+  \ object in Stage5_Master_Card_Registry.json only."
 definition_of_done:
 - In research/05-registry-and-audit/Stage5_Master_Card_Registry.json, the SPECIAL-FOOL
   card object's `aliases` key is repositioned to immediately follow `historical_names`
@@ -49,13 +49,33 @@ definition_of_done:
   inspection).
 - 'A `grep -A20 "\"card_id\": \"SPECIAL-FOOL\""` window over the fixed file now contains
   the string `"aliases"`.'
-verification_command: "python3 -c \"\nimport json\nd = json.load(open('research/05-registry-and-audit/Stage5_Master_Card_Registry.json'))\n\
-  card = next(c for c in d['cards'] if c['card_id'] == 'SPECIAL-FOOL')\nassert card['aliases']\
-  \ == ['TRUMP-FOOL'], 'aliases value changed: ' + repr(card['aliases'])\nkeys = list(card.keys())\n\
-  assert keys.index('aliases') == keys.index('historical_names') + 1, 'aliases not\
-  \ immediately after historical_names: ' + repr(keys)\n\"\nbash -c 'grep -n -A20\
-  \ \"\\\"card_id\\\": \\\"SPECIAL-FOOL\\\"\" research/05-registry-and-audit/Stage5_Master_Card_Registry.json\
-  \ | grep -q aliases && echo PASS || { echo FAIL_aliases_still_outside_A20_window;\
-  \ exit 1; }'\n"
+verification_command: 'python3 -c "
+
+  import json
+
+  d = json.load(open(''research/05-registry-and-audit/Stage5_Master_Card_Registry.json''))
+
+  card = next(c for c in d[''cards''] if c[''card_id''] == ''SPECIAL-FOOL'')
+
+  assert card[''aliases''] == [''TRUMP-FOOL''], ''aliases value changed: '' + repr(card[''aliases''])
+
+  keys = list(card.keys())
+
+  assert keys.index(''aliases'') == keys.index(''historical_names'') + 1, ''aliases
+  not immediately after historical_names: '' + repr(keys)
+
+  "
+
+  bash -c ''grep -n -A20 "\"card_id\": \"SPECIAL-FOOL\"" research/05-registry-and-audit/Stage5_Master_Card_Registry.json
+  | grep -q aliases && echo PASS || { echo FAIL_aliases_still_outside_A20_window;
+  exit 1; }'''
 human_review_required: false
 requires_doc_update: false
+audited_at: '2026-08-13T03:07:37.042239Z'
+audited_by: PM-F9
+audited_repo_sha: d0052dc
+events:
+- timestamp: '2026-08-13T03:07:37.042445Z'
+  action: AUDIT
+  actor: PM-F9
+  details: Audited against d0052dc

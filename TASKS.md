@@ -19,7 +19,7 @@ graph TD
     T-MIN-016["T-MIN-016<br/>Apply D3 — rename TRUMP-FOOL to SPECIAL-FOOL, sort_order 0, permanent alias"]:::done
     T-PTG-009["T-PTG-009<br/>Feature-request tag router misses no-space variant, misrouting real member intent into RAG"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
-    T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]
+    T-MIN-020["T-MIN-020<br/>Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON"]:::active
     T-INTY-021["T-INTY-021<br/>Local dev DB fallback hardcodes nonexistent caut_sfusd, breaking phpunit baseline"]:::done
     T-MIN-011["T-MIN-011<br/>Author the arie batch fresh — five celestial trump personality studies (TRUMP-36..40)"]:::done
     T-MIN-007["T-MIN-007<br/>Triage the eleven GUIDEBOOK files from the fleet sweep"]:::review
@@ -855,9 +855,9 @@ graph TD
 - The hedge is superseded only by direct transcription, never by memory.
 
 ---
-### 📋 T-MIN-020 · P3 · ANY · AUDITED
+### 🛠 T-MIN-020 · P3 · ANY · CLAIMED
 **Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases field in the master registry JSON**
-**Owner:** None
+**Owner:** Worker-F22
 
 **Scope:**
 - SCOUT-F5 SOURCE: T-MIN-017's worker (Worker-F20) and an independent reviewer both found that `grep -A20 "card_id"` doesn't reliably reach fields positioned late in a JSON card object in research/05-registry-and-audit/Stage5_Master_Card_Registry.json (each card object has ~26 fields). Worker-F20 fixed this locally for the four cavalier rows (SUIT-SWORDS-12, SUIT-BATONS-12, SUIT-CUPS-12, SUIT-COINS-12) by repositioning the `aliases` key to sit immediately after `historical_names` (key-order-only change, no value changes). T-MIN-016's own SPECIAL-FOOL row, which introduced the `aliases` field in the first place, was never checked or fixed for the same issue.

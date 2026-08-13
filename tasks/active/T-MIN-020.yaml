@@ -4,8 +4,8 @@ title: Fix grep-A20 verification-window fragility on SPECIAL-FOOL's aliases fiel
 repo: minchiate_tarot
 priority: P3
 lane: ANY
-status: AUDITED
-owner: null
+status: CLAIMED
+owner: Worker-F22
 created_at: '2026-08-12T20:05:00-06:00'
 dependencies: []
 scope:
@@ -79,3 +79,7 @@ events:
   action: AUDIT
   actor: PM-F9
   details: Audited against d0052dc
+- timestamp: '2026-08-13T03:18:19.332245Z'
+  action: CLAIM
+  actor: Worker-F22
+claimed_at: '2026-08-13T03:18:19.332049Z'

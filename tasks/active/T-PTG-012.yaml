@@ -1,0 +1,115 @@
+id: T-PTG-012
+title: "Finish and ship the color-schemes feature \u2014 Tasks 3-9 of the existing\
+  \ plan are unstarted, nothing member-facing has shipped"
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+owner: null
+created_at: '2026-08-12T00:00:00Z'
+audited_at: '2026-08-13T03:10:39.538418Z'
+audited_by: FleetCoordinator
+audited_repo_sha: c85cf52974abea992b872003706bb4cb7bc1dc33
+dependencies: []
+scope:
+- 'BACKGROUND: T-PTG-009 fixed the `/featurerequest` tag router so a real member''s
+  "different color schemes" request was correctly triaged. A full design spec (docs/superpowers/plans/2026-08-12-color-schemes.md,
+  docs/superpowers/specs/2026-08-12-color-schemes-design.md) and 9-task implementation
+  plan already exist on `main` (committed as c85cf52 and 4f3d681). The product owner
+  (Chip) reported today that the feature "hasn''t been implemented" and asked the
+  Fleet Coordinator to investigate.'
+- 'CONFIRMED STATE (via direct inspection, not the plan''s own checkbox state, which
+  is unreliable/unmodified): a git worktree exists at `.claude/worktrees/color-schemes`
+  on branch `worktree-color-schemes` (pushed to origin, currently `git worktree list`-locked),
+  3 commits ahead of the `c85cf52`/`4f3d681` plan-doc commits. Of those 3 commits,
+  only 2 are this plan''s work: `6e11fdd feat: add Dark/Sepia/PTG theme variable overrides
+  to journal-chat.css` (= plan Task 1) and `37656cf feat: add theme-switcher.js with
+  getStoredTheme/applyTheme/setTheme` (= plan Task 2). The third commit, `183e5fb
+  Add v3 whitepaper teaser to changelog and featured pages`, is UNRELATED to this
+  feature (it touches changelog.php/featured.php for a different reason) -- do not
+  mistake it for plan Task 6 or Task 8 progress.'
+- 'CONFIRMED GAP: `grep -rn ''data-theme-picker\|theme-switcher.js'' .claude/worktrees/color-schemes/journalgpt/*.php`
+  returns ZERO matches. No page -- not `index.php`, not any of the six utility pages
+  -- links `theme-switcher.js`, sets the flash-prevention inline snippet, or renders
+  a `<select data-theme-picker>` control. This means Tasks 3 through 9 of the plan
+  (wiring `index.php`, migrating `source.php`/`admin_migrate.php`/`changelog.php`/`login.php`
+  off their own hardcoded dark-only `:root` blocks onto the shared variables, adding
+  pickers to `featured.php`/`help.php` which already share the variables, and the
+  final manual cross-theme visual pass) are entirely unstarted, despite Task 1/2''s
+  underlying plumbing already existing on the branch. Nothing here is reachable by
+  a member today -- there is no UI control anywhere to change the theme, which fully
+  explains the "hasn''t been implemented" report.'
+- 'WHY THIS IS NOT A NEW SCOUT/PM DESIGN TASK: the plan at docs/superpowers/plans/2026-08-12-color-schemes.md
+  is already complete, self-reviewed (see its own "Self-Review Notes" section confirming
+  full spec coverage), and written to the level of literal diffs and exact verification
+  commands per task. This fleet task''s job is EXECUTION of the plan''s remaining
+  Tasks 3-9 exactly as written, continuing on the existing `worktree-color-schemes`
+  branch/worktree (do not start a fresh worktree or branch) -- not re-planning or
+  re-designing the feature.'
+- 'HOW TO EXECUTE: the plan document itself instructs "Use superpowers:subagent-driven-development
+  (recommended) or superpowers:executing-plans to implement this plan task-by-task."
+  The Worker should follow that instruction directly, working inside `.claude/worktrees/color-schemes`
+  on the `worktree-color-schemes` branch, starting at Task 3 (Task 1 and 2 are already
+  done and must not be redone or reverted). Each task''s own commit step in the plan
+  should be followed as written (one commit per task, matching the plan''s prescribed
+  commit messages) so history stays legible.'
+- 'SCOPE BOUNDARY: this task covers finishing Tasks 3-9 of the existing plan AND merging
+  the resulting `worktree-color-schemes` branch to `main` once Task 9''s manual verification
+  passes clean -- the feature is not "done" from the product owner''s perspective
+  until it is live in production, matching the bar T-PTG-009 and T-PTG-008 were held
+  to. Do not leave the finished work stranded on the branch again.'
+- 'EXPLICITLY OUT OF SCOPE (per the plan''s own Global Constraints, do not relitigate):
+  more than the 4 specified themes (light/dark/sepia/ptg); server-side persisted theme
+  preference; `prefers-color-scheme` auto-detection; any new CSS variable names beyond
+  the plan''s specified set; any `mcp__claude-in-chrome__*` tool use for the manual
+  verification in Task 9 -- use the `/browse` skill per this project''s CLAUDE.md,
+  exactly as the plan itself already states.'
+definition_of_done:
+- Plan Tasks 3 through 8 are each implemented exactly as specified in docs/superpowers/plans/2026-08-12-color-schemes.md
+  (index.php wired with flash-prevention script + picker in the engine-controls-bar;
+  source.php, admin_migrate.php, changelog.php, and login.php migrated off their own
+  hardcoded `:root` blocks onto the shared journal-chat.css variables per each task's
+  variable-mapping table, each with a picker added; featured.php and help.php get
+  the flash-prevention snippet + switcher script + picker without needing variable
+  migration). Each task's own Step-N verification command (grep counts, `php -l`)
+  in the plan passes as specified before moving to the next task.
+- 'Plan Task 9''s automated regression check passes: `cd journalgpt && php tests/JournalAnswerServiceTest.php
+  && php tests/AskEndpointTest.php` both report full pass with 0 failures.'
+- Plan Task 9's manual cross-theme visual verification is performed via the `/browse`
+  skill (never `mcp__claude-in-chrome__*` tools directly, per this project's CLAUDE.md)
+  across all 4 themes on index.php and all 6 migrated utility pages, confirming readable
+  contrast and no leftover hardcoded-dark elements, with any issues found fixed and
+  re-verified per the plan's own Task 9 Step 4.
+- The `worktree-color-schemes` branch is merged into `main` and pushed, after all
+  of the above passes clean -- the feature is verified live in production (a member
+  visiting index.php sees a working Theme picker and can switch themes) before this
+  task is submitted for review.
+- The handoff notes explicitly confirm which of Tasks 3-9 were newly completed by
+  this task (all of them, per the confirmed gap above) and that Tasks 1-2's existing
+  work was left untouched, not redone.
+verification_command: cd journalgpt && php tests/JournalAnswerServiceTest.php && php
+  tests/AskEndpointTest.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: null
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-12T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Investigated the product owner's report that the color-schemes feature
+    requested via T-PTG-009's tag router "hasn't been implemented." Found a complete
+    design spec and 9-task plan already on main, and a worktree/branch (worktree-color-schemes)
+    with 2 of the plan's 9 tasks done (CSS variable blocks, theme-switcher.js module)
+    but zero pages actually wired up -- confirmed via a repo-wide grep for data-theme-picker
+    and theme-switcher.js returning no matches in any .php file. Distinguished the
+    branch's third commit (v3 whitepaper teaser) as unrelated work, not plan progress,
+    to avoid the next agent mistakenly assuming more was done than actually was. Scoped
+    this task as execution-only (finish Tasks 3-9 of the existing plan and merge),
+    not re-design, since the plan itself is already complete and self-reviewed.
+- timestamp: '2026-08-13T03:10:39.539389Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against c85cf52974abea992b872003706bb4cb7bc1dc33

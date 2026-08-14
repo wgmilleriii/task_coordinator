@@ -1,0 +1,88 @@
+id: T-PTG-046
+title: 'Phase 1: Metadata Index (corrected re-implementation)'
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+owner: FleetCoordinator
+created_at: '2026-08-14T07:28:03-06:00'
+audited_at: '2026-08-13T16:45:00-06:00'
+audited_by: FleetCoordinator
+audited_repo_sha: fef36ac
+dependencies: []
+scope:
+- 'SUPERSEDES T-PTG-042 ("Phase 1: Metadata Index"), which was filed against an original,
+  unrelated agent session''s worktree and never actually landed on `test` (it sat
+  in PEER_REVIEW with no merge). T-PTG-042 is left unmodified in tasks/active/ as
+  a historical record of what the original session claimed vs. what an independent
+  audit found -- see journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+  Background section for the full audit findings across all four original phases.'
+- 'REAL SCOPE ACTUALLY SHIPPED: a new CLI script `journalgpt/cli/build_metadata_index.php`
+  scans `journalgpt/corpus/manifest.json` and writes `journalgpt/corpus_metadata.json`
+  -- one entry per manifest item, containing article_id/title/author/publication_date/
+  volume_issue (derived, e.g. "Vol 63, Issue 1")/summary/tags. summary and tags are
+  intentionally written empty (''''/[]) by this script -- they are populated separately
+  by T-PTG-046''s sibling task, the backfill script (see Task 5 commit range below),
+  not by this builder, so the fast/free index-build step never pays LLM cost.'
+- 'CORRECTION vs the original T-PTG-042 narrative: the original task''s definition_of_done
+  claimed only that "Database table journalgpt_articles or metadata JSON is created
+  and populated" -- it did not surface that summary/tags would ship permanently empty
+  for all ~92 articles, which the audit specifically flagged as a defect (see spec
+  Background, bullet 2). This corrected implementation keeps the same empty-at-build-time
+  design but treats it as an explicit, documented, two-step pipeline (build index, then
+  separately backfill) rather than a silent gap -- and the backfill actually ran for
+  real against the live OpenAI API in Task 5 (commit 5599f94), closing the gap the
+  original branch left open indefinitely.'
+- 'The real, generated corpus_metadata.json (90 articles, matching manifest.json''s
+  entry count at the time) was committed alongside the CLI script.'
+definition_of_done:
+- '`journalgpt/cli/build_metadata_index.php` exists, scans the real manifest, and
+  writes `journalgpt/corpus_metadata.json` with the documented schema (article_id,
+  title, author, publication_date, volume_issue, summary, tags).'
+- 'The real corpus_metadata.json is generated and committed (not a stub/fixture).'
+- '`journalgpt/tests/MetadataIndexTest.php` covers the manifest-to-index transform
+  (testBuildsIndexEntryPerManifestItem) and is registered in the golden hammer suite
+  (journalgpt/tests/security_and_eval_suite.php, suite 14/18) via T-PTG-046''s own
+  registration commit.'
+- 'Golden hammer suite (security_and_eval_suite.php) passes with zero regressions,
+  including this suite: `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` -- confirmed 18/18
+  suites PASS.'
+- 'php -l clean on build_metadata_index.php and MetadataIndexTest.php.'
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-14T07:28:03-06:00'
+last_transition: '2026-08-14T08:09:33-06:00'
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: 'Filed as part of the metadata-analytics-epic-integration plan after an
+    independent audit found the original T-PTG-042-045 branches (built by a concurrent,
+    unrelated Gemini-based FleetCoordinator session) did not match their own narrated
+    scope. See journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+    for the full audit. This task re-implements Phase 1''s real, working scope from
+    scratch on top of current test tip, rather than merging the original branch.'
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against fef36ac (spec commit, design phase). Plan committed at
+    fe6f839.
+- timestamp: '2026-08-14T07:28:03-06:00'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-14T07:28:03-06:00'
+  action: SUBMIT
+  actor: FleetCoordinator
+  details: 'Landed at commit ef0da83 "feat: add article metadata index builder (Phase
+    1)" on branch test-T-META-01-metadata-analytics.'
+- timestamp: '2026-08-14T08:09:33-06:00'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS. Golden hammer suite registration landed at b2bc8d9 ("test:
+    register metadata-analytics epic test suites in golden hammer"); 18/18 suites
+    PASS including MetadataIndexTest. Commit range for this phase: ef0da83.'

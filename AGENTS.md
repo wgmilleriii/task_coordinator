@@ -21,7 +21,7 @@ Because you are an agent, you technically possess the file-system permissions to
 
 4. **Self-Modification (Updating the Engine):** If you *are* dispatched to upgrade the `task_coordinator` itself (e.g., a task tells you to add a new command to `fleet.py`):
    - You must NEVER commit your code directly to the `main` branch. 
-   - You must create a `test` branch.
+   - All work must be done using an isolated Git worktree detached from the `test` branch (e.g., `git worktree add --detach ../task_coordinator-fixes test`). Do NOT create any new branches and do NOT use the primary clone's `main` or `test` branch to avoid clobbering.
    - You must use `./bin/fleet verify` to prove your new code hasn't broken the state machine.
    - You must submit your work for human review before any code is merged into `main`.
 

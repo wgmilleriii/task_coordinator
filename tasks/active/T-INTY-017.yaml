@@ -4,21 +4,17 @@ status: PEER_REVIEW
 repo: intypiano
 priority: P1
 lane: ANY
-created_at: 2026-08-11 16:00:00+00:00
-scope: "Implement a modernized EAV architecture for collecting detailed Piano condition\
-  \ dossiers, based on the Stanford Template PDF.\nIncludes schema (`dossier_field_definitions`,\
-  \ `piano_dossiers`, `piano_dossier_values`), \na mobile-first data entry interface\
-  \ (`admin/v2/dossier_edit.php`) with segmented touch-friendly grading buttons, \n\
-  and integration into the existing V2 piano view (`admin/v2/piano.php`).\n"
-dod: '- [ ] SQL migration script created for the new tables and base seed data.
-
-  - [ ] `dossier_edit.php` is fully functional on mobile viewports.
-
-  - [ ] `piano.php` correctly links to the new dossier view.
-
-  - [ ] Tested via PHP linting.
-
-  '
+created_at: "2026-08-11T16:00:00Z"
+scope:
+  - "Implement a modernized EAV architecture for collecting detailed Piano condition dossiers, based on the Stanford Template PDF."
+  - "Includes schema (`dossier_field_definitions`, `piano_dossiers`, `piano_dossier_values`)."
+  - "Mobile-first data entry interface (`admin/v2/dossier_edit.php`) with segmented touch-friendly grading buttons."
+  - "Integration into the existing V2 piano view (`admin/v2/piano.php`)."
+definition_of_done:
+  - "SQL migration script created for the new tables and base seed data."
+  - "`dossier_edit.php` is fully functional on mobile viewports."
+  - "`piano.php` correctly links to the new dossier view."
+  - "Tested via PHP linting."
 audited_at: '2026-08-11T22:00:14.664083Z'
 audited_by: TaskForce
 audited_repo_sha: efef90953c62f09c2e6c74e3cee15c97ddf57980

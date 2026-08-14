@@ -831,7 +831,7 @@ def main():
     start_review_parser.add_argument("--reviewer", required=True, help="Agent performing the review")
     start_review_parser.add_argument("--model", required=True, help="Model performing the review")
     
-    record_review_parser = subparsers.add_parser("record-review", help="Record the verdict of a peer review")
+    record_review_parser = subparsers.add_parser("record-review", help="Record the verdict of a peer review (Reads verdict from reviews/<TASK_ID>_review.yaml)")
     record_review_parser.add_argument("task_id")
     record_review_parser.add_argument("--model", required=False, help="Ignored (for agent compatibility)")
     

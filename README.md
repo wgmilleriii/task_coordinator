@@ -2,7 +2,7 @@
 
 Welcome to the **Task Coordinator (V2)** for the Dollers AI Agent Fleet. This repository acts as the central Hub for dispatching, tracking, and verifying work across all Spoke repositories (like `artmetrics.co`, `minchiate_tarot`, etc.).
 
-This system replaces the monolithic `TASKS.md` flat-file with a database-backed, schema-enforced architecture that supports massively parallel agent swarms without Git merge conflicts.
+This system replaces the monolithic `TASKS.md` flat-file with a Git-tracked, YAML-backed, schema-enforced architecture that supports massively parallel agent swarms without Git merge conflicts. Note: The system is currently a rapidly improving alpha and is undergoing sequential hardening.
 
 ---
 

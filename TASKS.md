@@ -2,6 +2,12 @@
 
 *(Auto-generated. Do not edit manually. Use `./bin/fleet` commands to transition tasks.)*
 
+## 💸 Fleet Burn Rate (All Time)
+- **Total Tokens Spent:** 0
+- **Total Cost (USD):** $0.05
+
+---
+
 ## 🕸️ Task Dependency Graph
 
 ```mermaid
@@ -10,25 +16,37 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
-    T-PTG-045["T-PTG-045<br/>Phase 4: Member Knowledge Profiles"]:::review
+    T-PTG-045["T-PTG-045<br/>Phase 4: Member Knowledge Profiles"]
     T-PTG-004["T-PTG-004<br/>Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title"]:::review
+    T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]
+    T-PTG-052 --> T-PTG-053
+    T-PTG-049["T-PTG-049<br/>Transcribe Airtable ground-truth screenshots (27 issues, Nov-2023 to Jan-2026) and cross-check against T-PTG-047 extraction output"]
+    T-PTG-047 --> T-PTG-049
     T-PTG-024["T-PTG-024<br/>JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)"]
     T-PTG-023 --> T-PTG-024
     T-PTG-025["T-PTG-025<br/>JournalGPT v3 Phase 5: IP hardening review (public sharing, bulk-extraction, source authorization)"]
     T-PTG-024 --> T-PTG-025
+    T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
+    T-PTG-047 --> T-PTG-048
+    T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]
+    T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
-    T-PTG-044["T-PTG-044<br/>Phase 3: Citation Analytics & Logging"]:::review
+    T-PTG-044["T-PTG-044<br/>Phase 3: Citation Analytics & Logging"]
     T-PTG-022["T-PTG-022<br/>JournalGPT v3 Phase 2b: EvidenceRanker"]
     T-PTG-020 --> T-PTG-022
-    T-PTG-043["T-PTG-043<br/>Phase 2: RAG Pipeline Optimization"]:::review
+    T-PTG-043["T-PTG-043<br/>Phase 2: RAG Pipeline Optimization"]
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-002["T-PTG-002<br/>Stop citing every retrieved chunk — only cite what the model actually referenced"]
     T-PTG-001 --> T-PTG-002
+    T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]
+    T-PTG-054 --> T-PTG-055
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
+    T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]
+    T-PTG-051 --> T-PTG-054
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]
     T-PTG-001 --> T-PTG-003
     T-PTG-002 --> T-PTG-003
-    T-PTG-042["T-PTG-042<br/>Phase 1: Metadata Index"]:::review
+    T-PTG-042["T-PTG-042<br/>Phase 1: Metadata Index"]
     T-PTG-023["T-PTG-023<br/>JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction"]
     T-PTG-022 --> T-PTG-023
     T-PTG-019["T-PTG-019<br/>JournalGPT v3 Phase 1b: ResearchPlanner + contextual follow-up understanding"]:::done
@@ -40,12 +58,18 @@ graph TD
     T-PTG-016["T-PTG-016<br/>SECURITY: admin_reply.php lets any logged-in member post fake assistant messages into ANY member's conversation (IDOR)"]:::review
     T-PTG-017["T-PTG-017<br/>Implement member feature request (conversation 53): better mobile screen real estate management for the engine-controls-bar"]:::review
     T-PTG-001["T-PTG-001<br/>Fix footnote list numbering to match inline citation markers"]:::review
+    T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]
+    T-PTG-054 --> T-PTG-056
+    T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
+    T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]
+    T-PTG-047["T-PTG-047<br/>Build and test page-range coverage-validation + repair pass for per-article extraction spike"]:::done
     T-PTG-026["T-PTG-026<br/>JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)"]
     T-PTG-025 --> T-PTG-026
     T-PTG-015 --> T-PTG-026
     T-PTG-046["T-PTG-046<br/>Fix broken citation links in history viewer for article_id=0"]:::done
+    T-PTG-050["T-PTG-050<br/>CSV-driven per-article extraction pilot (5-8 issues) using human-curated Airtable ground truth instead of LLM boundary inference"]:::done
 ```
 
 ---
@@ -213,195 +237,7 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### ✅ T-PTG-046 · P1 · ANY · DONE
-**Fix broken citation links in history viewer for article_id=0**
-**Owner:** Antigravity
-
-**Scope:**
-
-**Definition of Done:**
-- i
-- n
-- d
-- e
-- x
-- .
-- p
-- h
-- p
--  
-- a
-- n
-- d
--  
-- f
-- e
-- a
-- t
-- u
-- r
-- e
-- d
-- .
-- p
-- h
-- p
--  
-- a
-- r
-- e
--  
-- u
-- p
-- d
-- a
-- t
-- e
-- d
--  
-- t
-- o
--  
-- c
-- h
-- e
-- c
-- k
--  
-- i
-- f
--  
-- $
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- I
-- d
--  
-- >
--  
-- 0
--  
-- b
-- e
-- f
-- o
-- r
-- e
--  
-- w
-- r
-- a
-- p
-- p
-- i
-- n
-- g
--  
-- t
-- h
-- e
--  
-- c
-- i
-- t
-- a
-- t
-- i
-- o
-- n
--  
-- c
-- h
-- i
-- p
--  
-- i
-- n
--  
-- a
-- n
--  
-- <
-- a
--  
-- h
-- r
-- e
-- f
-- >
--  
-- t
-- a
-- g
-- .
--  
-- I
-- f
--  
-- $
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- I
-- d
--  
-- i
-- s
--  
-- 0
-- ,
--  
-- i
-- t
--  
-- r
-- e
-- n
-- d
-- e
-- r
-- s
--  
-- a
--  
-- s
-- p
-- a
-- n
-- .
-
-*Audited against SHA:* `aec972badc76340e73dc2334d812d18d4ae7a65f`
-
----
-### ⏳ T-PTG-004 · P1 · ANY · HUMAN_REVIEW
-**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
-**Owner:** Claude-Worker
-
-**Scope:**
-- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
-- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
-- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
-
-**Definition of Done:**
-- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
-- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
-- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
-- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
-- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
-
-*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
-
----
-### ⏳ T-PTG-045 · P1 · ANY · PEER_REVIEW
+### 📋 T-PTG-045 · P1 · ANY · CANCELLED
 **Phase 4: Member Knowledge Profiles**
 **Owner:** Worker-Phase4
 
@@ -608,25 +444,32 @@ graph TD
 *Audited against SHA:* `32132e5bb4912764677e47cdd11bd39de9621698`
 
 ---
-### ⏳ T-PTG-005 · P1 · ANY · PEER_REVIEW
-**Voicing-technique continuity + citation-format test matrix (all preset x tier combos)**
-**Owner:** Claude-FleetCommander
+### 📋 T-PTG-049 · P1 · ANY · CANCELLED
+**Transcribe Airtable ground-truth screenshots (27 issues, Nov-2023 to Jan-2026) and cross-check against T-PTG-047 extraction output**
+**Owner:** Worker-AirtableGroundTruth1
 
 **Scope:**
-- journalgpt/tests/manual_voicing_continuity_matrix.php (new) — runs a real two-turn conversation through JournalAnswerService::ask() for a given (preset, tier) combination: turn 1 asks 'Have voicing technique changed over the years? Are there different viewpoints of what should be done? Do any contradict another?'; turn 2 asks the follow-up 'Who talks about this first?' in the SAME conversation_id.
-- Exercises all 6 combinations: preset in {scholarly, quick} x tier in {quick, medium, deep} (quick=gpt-4o-mini, medium=gpt-4o, deep=o3-mini). Makes REAL OpenAI API calls against the configured key — not free, not part of the automated test suite.
-- Purpose: (a) verify turn 2 actually resolves 'this'/'first' against turn 1's context (conversation continuity, per Chip's question about whether follow-ups work at all), and (b) verify citation format correctness (page_verified, url/pdf_url shape, page-range collapsing, no leaked 【…】 markers) holds across every tier, not just the tiers already covered by the automated unit tests with a StubOpenAIClient.
+- Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md, docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md (T-PTG-047, DONE, merged into test), and docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md (T-PTG-048, currently in PEER_REVIEW on branch test-T-PTG-048 / worktree ../newmexicoptg.org-T-PTG-048 -- confirmed NOT yet merged into test as of this task's creation via `git merge-base --is-ancestor test-T-PTG-048 test`, which fails; re-check merge status at task start since it may land before this task is claimed). T-PTG-048 found that article/editorial completeness cannot be trusted from raw extraction output even with zero page-coverage gaps/overlaps -- short department columns get silently dropped or absorbed into neighboring pieces, and one article was found truncated to 1 of its 6 real pages despite a correct title/author/start_page. That finding was derived by hand from a single issue's own table of contents (PTJ-2020-02). This task's job is to widen that kind of ground-truth check using a new, independently-sourced dataset instead of hand-deriving TOCs one issue at a time.
+- New resource: the user maintains a human-curated Airtable base (public share view, not part of this repo) cataloguing the Piano Technicians Journal back to 1979, one record per article, with fields Page (printed page number), Article Title, Author(s), Summary/Keywords, Core skills tags, and a link to the parent Issue (Month-Year format, e.g. "Jan-26"). The user took 10 screenshots of this Airtable grid view and saved them directly into journalgpt/pdfs/ (they are a screenshot dump sitting alongside the PDFs, not corpus data): journalgpt/pdfs/Screenshot 2026-08-14 at 6.19.33 PM.png, ...6.19.45 PM.png, ...6.19.54 PM.png, ...6.20.06 PM.png, ...6.20.19 PM.png, ...6.20.32 PM.png, ...6.20.42 PM.png, ...6.20.50 PM.png, ...6.20.59 PM.png, ...6.21.07 PM.png. These 10 screenshots are consecutive scroll captures covering Airtable record numbers approximately 3918 through 4126 (some overlap expected at the boundary of each screenshot), spanning issues Nov-2023 through Jan-2026 -- confirmed this range covers 27 issues (PTJ-2023-11 through PTJ-2026-01), all of which are present in journalgpt/corpus/manifest.json and all of which already have a PDF in journalgpt/pdfs/. This span includes 3 of the original 8 T-PTG-047 spike-sample issues -- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 -- which already have extraction output at journalgpt/spikes/T-PTG-047/output/PTJ-2024-01.result.json, PTJ-2025-03.result.json, and PTJ-2025-10.result.json (confirmed present on branch test, already merged). Page numbers in this Airtable data have already been visually spot-checked by the requester against recurring department page conventions independently found in PTJ-2020-02's own TOC (TT&T ~p.7-8, Q&A Roundtable ~p.10-12, Tuner's Life ~p.36, Foundation Focus ~p.30-31) -- a strong signal this data is reliable, though not yet proven at scale.
+- Known limitation to respect: long article titles are visually truncated with an ellipsis in the Airtable grid view screenshots (fixed column width), so some transcribed titles will be partial. Short titles (TT&T, Tuner's Life: X, Q&A Roundtable: X, Foundation Focus: X) are mostly complete. Page numbers, issue month, and author are reliably legible throughout the screenshots.
+- In scope, required, step 1 (transcription): read all 10 screenshot PNGs directly with the Read tool (it supports images) -- do not guess, infer, or hallucinate any field. Transcribe every row visible into a structured ground-truth JSON file, one record per row, with fields: airtable_number, issue (convert the screenshot's "Mon-YY" issue format to this repo's PTJ-YYYY-MM convention, e.g. "Jan-26" -> "PTJ-2026-01"), page, title, title_truncated (boolean -- true if the screenshot itself shows the title cut off with an ellipsis; never guess the missing portion, just flag it), author(s), and core_skills. De-duplicate rows that appear in more than one screenshot (adjacent screenshots overlap at their scroll boundary) by airtable_number. Save this file under a new directory journalgpt/spikes/T-PTG-049/ (NOT under journalgpt/corpus/ -- this is external reference data, not corpus content) as ground_truth_2023-11_2026-01.json or an equivalently clear name.
+- In scope, required, step 2 (coverage check): using the transcribed ground truth, report which of the 27 issues in range (PTJ-2023-11 through PTJ-2026-01) received at least one ground-truth row, and explicitly flag any issue in that range with zero rows as a possible screenshot gap or scroll-boundary miss -- do not silently assume full coverage just because the record-number range nominally spans it.
+- In scope, required, step 3 (cross-check against existing extraction): for the 3 issues where both this task's ground truth and T-PTG-047's extraction output already exist -- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 -- diff the Airtable ground-truth rows for each issue against journalgpt/spikes/T-PTG-047/output/<issue>.result.json. If T-PTG-048 is merged/available by the time this task is worked, its PTJ-2020-02-specific diff methodology under journalgpt/spikes/T-PTG-048/ should be reused or extended for this comparison rather than reimplemented from scratch; if T-PTG-048 is still unmerged, reference its worktree (../newmexicoptg.org-T-PTG-048) directly the same way T-PTG-048 itself had to reference T-PTG-047's still-unmerged branch. Report hit / miss / merged per ground-truth row, in the same explicit per-row table style T-PTG-048 used for its PTJ-2020-02 diff (not just an aggregate count).
+- Explicitly NOT required: a full QC content-read pass across all 27 issues -- T-PTG-048 already established that raw page-coverage checking is insufficient and that finding does not need to be re-proven here. This task is about breadth (27 issues via a new, independently-sourced ground truth) not depth (re-reading every article's full text). If the worker has time or interest to spot-check 1-2 completeness reads against this new ground truth (similar in spirit to T-PTG-048's source-text read, but not the primary deliverable), that is a bonus, not a requirement.
+- In scope, required, step 4 (report): a written report under docs/30-Engineering/ (Dewey Decimal protocol per task_coordinator/README.md), with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json, presenting: the coverage check from step 2 (27-issue table, flagging any zero-row issues), the 3-issue cross-check diff tables from step 3 (hit/miss/merged per row), and a clear recommendation on whether this Airtable data should become the primary ground-truth source for a future piece-level schema, versus continuing to rely on LLM extraction plus repair heuristics (T-PTG-047's coverage.py / toc_offset_repair.py / boundary_trim.py / continued_scan.py approach).
+- Out of scope, do not do: no articles/pieces schema design or database migration; no touching test/prod in any way (no migration, no backfill, no admin-page changes -- test.newmexicoptg.org shares prod's database, confirm before any migration/backfill/data-write on test, not just prod); no production code changes (journalgpt/corpus/extract_corpus.py or any other shipped pipeline code); no full-corpus pass -- only the 27 issues covered by the 10 screenshots, plus the 3-issue cross-check; no scraping or live-browsing the actual Airtable site -- the 10 screenshots already saved in journalgpt/pdfs/ are the only data source for this task (the user may provide better/direct Airtable access later, which would be a separate future task, not this one).
 
 **Definition of Done:**
-- All 6 (preset, tier) combinations executed successfully (or their failure mode is understood and recorded — e.g. Deep tier timing out before the T-PTG-timeout fix).
-- For each combination, record: did turn 2 correctly resolve the follow-up against turn 1's topic, or did it behave as if starting fresh?
-- For each combination, record whether citations are well-formed: every citation has a real article_id + page, citation_label matches the printed_page/printed_page_end shown, url/pdf_url follow the source.php?article_id=X&page=Y shape, and the answer text carries no raw 【…】 annotation markers.
-- Findings written up (this task's own execution log / a feedback file) — not just raw JSON dumps — identifying any combination that fails continuity or citation format, with a specific hypothesis for why if one fails.
+- All 10 screenshot PNGs in journalgpt/pdfs/ (Screenshot 2026-08-14 at 6.19.33 PM.png through ...6.21.07 PM.png) were read directly with the Read tool and transcribed -- not inferred or hallucinated -- into a single structured ground-truth JSON file under a new journalgpt/spikes/T-PTG-049/ directory, with fields airtable_number, issue (in PTJ-YYYY-MM form), page, title, title_truncated, author(s), and core_skills per row, de-duplicated across overlapping screenshots by airtable_number.
+- The report explicitly states, for every one of the 27 issues PTJ-2023-11 through PTJ-2026-01, whether it received at least one ground-truth row, and calls out by name any issue with zero rows as a possible screenshot gap rather than silently omitting it.
+- For each of PTJ-2024-01, PTJ-2025-03, and PTJ-2025-10, the report contains a per-row diff table (ground-truth row vs. T-PTG-047 extraction output) explicitly marking each row hit, miss, or merged, in the same style as T-PTG-048's PTJ-2020-02 diff table -- not just an aggregate hit-rate number.
+- A written report exists under docs/30-Engineering/ with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json, and ends with a clear, explicit recommendation on whether the Airtable data should become the primary ground-truth source for a future piece-level schema versus continuing to rely on LLM extraction plus repair heuristics.
+- No changes were made to journalgpt/corpus/extract_corpus.py or any other production code path, no database migration was created or run, and no test/prod endpoint was touched -- all work is local files under journalgpt/spikes/T-PTG-049/ and the docs/ report.
 
-*Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
+*Audited against SHA:* `a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87`
 
 ---
-### ⏳ T-PTG-044 · P1 · ANY · PEER_REVIEW
+### 📋 T-PTG-044 · P1 · ANY · CANCELLED
 **Phase 3: Citation Analytics & Logging**
 **Owner:** Worker-Phase3
 
@@ -824,7 +667,7 @@ graph TD
 *Audited against SHA:* `32132e5bb4912764677e47cdd11bd39de9621698`
 
 ---
-### ⏳ T-PTG-043 · P1 · ANY · PEER_REVIEW
+### 📋 T-PTG-043 · P1 · ANY · CANCELLED
 **Phase 2: RAG Pipeline Optimization**
 **Owner:** Worker-Phase2
 
@@ -1061,7 +904,7 @@ graph TD
 *Audited against SHA:* `32132e5bb4912764677e47cdd11bd39de9621698`
 
 ---
-### ⏳ T-PTG-042 · P1 · ANY · PEER_REVIEW
+### 📋 T-PTG-042 · P1 · ANY · CANCELLED
 **Phase 1: Metadata Index**
 **Owner:** None
 
@@ -1268,6 +1111,397 @@ graph TD
 *Audited against SHA:* `32132e5bb4912764677e47cdd11bd39de9621698`
 
 ---
+### ✅ T-PTG-047 · P1 · ANY · DONE
+**Build and test page-range coverage-validation + repair pass for per-article extraction spike**
+**Owner:** Worker-ExtractionRepair1
+
+**Scope:**
+- Background: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md (read in full, including the Addendum) is the entire basis for this task. An LLM (gpt-4o-mini) spike broke 8 sampled issues into per-piece title/author/type/page-range breakdowns. Title/author/type extraction was reliable. Page-range boundaries were NOT: every one of the 8 sampled issues had missing and/or overlapping page coverage. Two confirmed root causes plus one pipeline quirk are documented in the findings doc's "What didn't" section and Addendum. This task builds the validation + repair pass the findings doc's Recommendation section calls for, and re-tests it against the same 8 issues to see if it actually closes the gaps.
+
+- In scope, required: implement a programmatic page-coverage checker that, for a given issue's LLM-produced pieces list, verifies every page from 1 to the issue's last [[page:N]] anchor belongs to exactly one piece, and reports gaps (unclaimed pages) and overlaps (pages claimed by 2+ pieces) per issue — same methodology the spike used (see the findings doc's gap table for the exact per-issue baseline numbers to compare against).
+
+- In scope, required: implement the TOC-anchor-offset repair idea from the Addendum's proposal #1. Extract the printed page number from page-footer text on each [[page:N]] anchor page (footer text is already present in this corpus, e.g. "April 2020 / Piano Technicians Journal 1" per finding #3), diff it against the real anchor number to derive the issue's front-matter offset, and use that to detect/correct pieces where the model used a printed TOC page number instead of the real anchor number (finding #2 in the spike doc is the concrete reproduction case, PTJ-2025-10, off by 13 pages). This MUST reuse or explicitly extend the existing `articles.pdf_page_offset` mechanism (journalgpt/migrations/002_pdf_page_offset.sql, default offset 2) rather than inventing a second, parallel offset concept — read that migration file and journalgpt/lib usage of pdf_page_offset before designing this.
+
+- In scope, required: implement "continued on p. X" / "continued from p. X" text scanning (Addendum proposal #2) as an independent, non-LLM validation signal — scan each issue's raw extracted text for this near-universal magazine convention and use matches to (a) flag pieces whose claimed end_page/start_page doesn't line up with a real "continued" marker as suspect, and (b) positively confirm genuine non-contiguous articles (the model's noncontiguous escape hatch was never used once in the spike despite being available in the prompt).
+
+- In scope, required: re-run the full pipeline (LLM extraction + coverage check + TOC-offset repair + continued-marker validation) against the exact same 8 issues sampled in the spike: PTG-2022-10, PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10. Use journalgpt/corpus/extracted/*/*.txt as input (same source the spike used) unless a change is independently justified and documented.
+
+- Stretch goal, explicitly NOT required for done: now that real PDFs exist at journalgpt/pdfs/ (78-82 of ~94 files landed via in-progress FTP transfer as of this writing, matched by PTJ-YYYY-MM.pdf / PTG-YYYY-MM.pdf naming against corpus/manifest.json's 90 issues), prototype a vision-capable model pass on 1-2 confirmed-sparse ad pages (e.g. PTJ-2020-04 page 3, the near-blank ad page from finding #3 in the spike doc — pdftotext extracts almost nothing but "PIANO SUPPLY CO." and a footer line) to see whether page-image input recovers coverage that text extraction silently drops (failure mode #3, not addressed by either required item above). This uses the real, live OpenAI API key and spends real (small) money — cost is not a hard constraint per the spike's own cost estimate (~$0.45 full-corpus text-only; a 1-2 page vision prototype is negligible), but it is real spend against a shared key, not free.
+
+- Out of scope, do not do: full articles/pieces schema design or any database migration (explicitly deferred in the findings doc's Recommendation section, pending a separate design conversation with the user); indexing the 23 missing corpus years (2019 Feb-Dec, 2025 Jan-Dec) into test/prod (separate, already-tracked open question, see the handoff and session-handoff docs); any vision-model work beyond the 1-2 page stretch-goal prototype above (i.e. do not build a full vision-based extraction pipeline or run it across the corpus); modifying journalgpt/corpus/extract_corpus.py or any production extraction/indexing code path (this is spike/validation code per the original brief's own framing — throwaway is fine, the deliverable is an answer plus a working prototype, not shipped pipeline code); touching the shared test/prod database in any way (no migration, no backfill, no admin-page changes) — this task is local/offline analysis only against journalgpt/corpus/extracted/ and journalgpt/pdfs/.
+
+
+**Definition of Done:**
+- A programmatic coverage checker exists (script, not just inline notebook code) that takes an issue's pieces list and reports gap pages and overlap pages against 1..max anchor.
+
+- The TOC-anchor-offset extraction/repair step is implemented, reuses or explicitly documents its relationship to articles.pdf_page_offset / migrations/002_pdf_page_offset.sql, and is demonstrated to correct at least the PTJ-2025-10 finding-#2 case (article start_page corrected from the TOC-reference 7-ish/printed-18 confusion to the real anchor page ~20) when re-run.
+
+- The "continued on/from p. X" text-scan validation signal is implemented and its matches (or confirmed absence) are reported per issue in the re-run output.
+
+- The full validation+repair pipeline is re-run against all 8 of the spike's original sampled issues (PTG-2022-10, PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10), and a written report (placed under docs/ per the Dewey Decimal protocol in task_coordinator/README.md, category 30-Engineering, with correct frontmatter) presents a before/after table of missing-page and overlapping-page counts per issue, directly comparable to the spike findings doc's existing table (missing/overlapping baselines: PTG-2022-10 21/13; PTJ-2019-02 11/15; PTJ-2019-08 5/3; PTJ-2020-04 12/7; PTJ-2022-06 19/4; PTJ-2024-01 23/0; PTJ-2025-03 6/4; PTJ-2025-10 11/5 — see the findings doc's own table for the authoritative source of these numbers).
+
+- The report explicitly states whether the pass closes the gaps/overlaps (quantified, not just "looks better") and gives a clear recommendation on whether this validation+repair approach is sufficient to trust piece-level page ranges for a future schema design, or whether more work (e.g. the vision-model stretch goal, or a human-review-required state per piece) is still needed.
+
+- If the stretch goal (vision-model prototype) was attempted, the report notes what was tried, on which page(s), the actual OpenAI cost incurred, and whether it recovered coverage text extraction missed. If not attempted, the report says so plainly rather than omitting it.
+
+- No changes were made to production extraction code (journalgpt/corpus/extract_corpus.py), no database migration was created or run, and no test/prod admin endpoints were touched — all work is local scripts/output under a scratch or docs location.
+
+
+*Audited against SHA:* `943f11cc3a1ab7d24c5a0992c86009db2320394d`
+
+---
+### ✅ T-PTG-046 · P1 · ANY · DONE
+**Fix broken citation links in history viewer for article_id=0**
+**Owner:** Antigravity
+
+**Scope:**
+
+**Definition of Done:**
+- i
+- n
+- d
+- e
+- x
+- .
+- p
+- h
+- p
+-  
+- a
+- n
+- d
+-  
+- f
+- e
+- a
+- t
+- u
+- r
+- e
+- d
+- .
+- p
+- h
+- p
+-  
+- a
+- r
+- e
+-  
+- u
+- p
+- d
+- a
+- t
+- e
+- d
+-  
+- t
+- o
+-  
+- c
+- h
+- e
+- c
+- k
+-  
+- i
+- f
+-  
+- $
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- I
+- d
+-  
+- >
+-  
+- 0
+-  
+- b
+- e
+- f
+- o
+- r
+- e
+-  
+- w
+- r
+- a
+- p
+- p
+- i
+- n
+- g
+-  
+- t
+- h
+- e
+-  
+- c
+- i
+- t
+- a
+- t
+- i
+- o
+- n
+-  
+- c
+- h
+- i
+- p
+-  
+- i
+- n
+-  
+- a
+- n
+-  
+- <
+- a
+-  
+- h
+- r
+- e
+- f
+- >
+-  
+- t
+- a
+- g
+- .
+-  
+- I
+- f
+-  
+- $
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- I
+- d
+-  
+- i
+- s
+-  
+- 0
+- ,
+-  
+- i
+- t
+-  
+- r
+- e
+- n
+- d
+- e
+- r
+- s
+-  
+- a
+-  
+- s
+- p
+- a
+- n
+- .
+
+*Audited against SHA:* `aec972badc76340e73dc2334d812d18d4ae7a65f`
+
+---
+### ✅ T-PTG-050 · P1 · ANY · DONE
+**CSV-driven per-article extraction pilot (5-8 issues) using human-curated Airtable ground truth instead of LLM boundary inference**
+**Owner:** Worker-CSVPilot1
+
+**Scope:**
+- Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md (LLM boundary inference from raw flattened text is unreliable -- every one of 8 sampled issues had page-range gaps and/or overlaps). docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md (T-PTG-047, DONE/merged into test -- built coverage.py and toc_offset_repair.py, found the repair pass fixes overlaps but makes measured gaps worse for a diagnosable reason, and confirmed the TOC-anchor-offset mechanism -- printed page -> real [[page:N]] anchor page via footer-derived offset diffing -- works and empirically derives offset=2 for every one of the 8 sampled issues at 100% confidence). docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md (T-PTG-048, status PEER_REVIEW as of this task's creation, NOT yet merged into test -- confirm current merge status at task start via `git merge-base --is-ancestor test-T-PTG-048 test`; if still unmerged, reference its worktree ../newmexicoptg.org-T-PTG-048 directly. T-PTG-048 ground-truthed PTJ-2020-02 against its own real table of contents and found LLM extraction drops or silently absorbs 3 of 6 short front-matter department columns -- President's Message, TT&T, The Piano Corner -- into a neighboring mis-anchored article's range, a failure invisible to page-coverage checking alone. This 15-row ground-truth table is reused directly in this task's cross-check -- do not re-derive it, it is quoted in full in that doc's "PTJ-2020-02 -- full 15-row ground-truth diff" section.)
+- The new resource that changes the approach: a human-curated CSV export (a real Airtable export, NOT scraped or LLM-generated) of the Piano Technicians Journal's article index exists at journalgpt/pdfs/CompleteList-Sortable-Grid view.csv. 4130 real article rows, columns: Number, "Link to \nIssue" (issue in "Mon-YY" format, e.g. "Jan-79", "Feb-26"), Page (printed page number, integer), Article Title, Author(s), Summary/Keywords, Core skills, Concatenation, "Link to Issue" (a document download URL). Covers Jan-79 through Apr-26 (568 distinct issue labels). This is authoritative, human-entered ground truth for title/author/printed-page -- NOT something to be doubted or re-validated the way LLM output was. Encoding is utf-8-sig (has a BOM); there is a blank separator row near the top of the file (row 2, all-empty except a "---" in the Concatenation column) -- handle both when parsing. Some trailing rows (e.g. "Apr-26") have empty Page/Title/Author fields (future/uncatalogued issues) -- skip rows with an empty Article Title.
+- Why this changes the extraction approach entirely: previously the hard, unsolved problem was inferring article BOUNDARIES from raw text with no ground truth. Now, for any issue with CSV rows, the real title, author, and printed start page of every article are already known, in order. This converts the problem from "infer boundaries" to "look up known start pages, slice text between consecutive starts." Three specific known wrinkles must be actually solved, not hand-waved past: (1) the last article in an issue has no "next" row to bound its end -- needs an explicit documented fallback (e.g. extend to the issue's final [[page:N]] anchor, accepting some back-matter/ad content may be included as a known limitation); (2) ad/classified/index pages likely are not cataloged as their own CSV rows -- this assumption must be spot-checked directly against a real issue's raw text at a boundary, not assumed; if an ad page sits between two cataloged articles' page ranges, the naive slice will incorrectly absorb it into the preceding article -- report findings honestly whether clean or contaminated; (3) the printed-page-to-anchor-page offset must be computed per issue, not hardcoded to 2, by reusing/extending T-PTG-047's toc_offset_repair.py approach (specifically its footer-derived offset computation: extract_footer_offsets() + derive_front_matter_offset() in journalgpt/spikes/T-PTG-047/toc_offset_repair.py, which depends only on common.py's page_blocks()/get_anchor_pages() -- this part does not depend on any LLM-produced pieces and is directly reusable for this task's purpose).
+- Pilot issue set (5-8 issues, NOT a full-corpus run): parse the CSV, match rows to issues in journalgpt/corpus/manifest.json by converting "Mon-YY" to "PTJ-YYYY-MM" (or "PTG-YYYY-MM" for the 2 issues using that naming convention -- PTG-2022-10 and PTG-2022-11 are the only two). The pilot set MUST include: PTJ-2020-02 (has T-PTG-048's hand-derived 15-row ground truth to cross-check against -- this is the single most important validation signal), PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 (have T-PTG-047 extraction output at journalgpt/spikes/T-PTG-047/output/<issue>.result.json to compare article counts/boundaries against). Plus 1-3 more of the worker's choice from issues that have all three of: a CSV entry, a PDF in journalgpt/pdfs/, and extracted text in journalgpt/corpus/extracted/.
+- Per-pilot-issue processing: compute the real per-issue page offset (reuse extract_footer_offsets() + derive_front_matter_offset() from journalgpt/spikes/T-PTG-047/toc_offset_repair.py, do not reimplement from scratch), convert each CSV row's printed Page to a real anchor page using that offset, order articles by anchor page within the issue, and slice text from journalgpt/corpus/extracted/<issue>/*.txt between each article's start anchor and the next article's start anchor minus one (last article: use the issue's final anchor page per wrinkle #1 above, documented as a known limitation).
+- Output format: write ONE markdown file per article, with YAML frontmatter (issue, article_title, author(s), printed_page, anchor_page_range, core_skills, summary_keywords, source_csv_row_number) followed by the full sliced body text. Save under a NEW directory journalgpt/corpus/articles_pilot/<issue>/<slugified-title>.md -- explicitly NOT under journalgpt/corpus/extracted/ or journalgpt/spikes/, since this is new, clearly-pilot output.
+- Required investigation, not optional: directly investigate wrinkle #2 (ad/index contamination) by picking at least one boundary in the pilot set and reading the actual sliced text to check whether ad/classified content bleeds into an article's extracted file. Report the finding honestly whether clean or contaminated -- do not assume either outcome going in.
+- Required cross-check, not optional: for PTJ-2020-02, compare the CSV-driven output against T-PTG-048's 15-row hand-derived ground-truth table (quoted in full in docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md's "PTJ-2020-02 -- full 15-row ground-truth diff" section). Specifically answer: does the CSV-driven approach correctly produce the 6 short department items (Editorial Perspective, President's Message, TT&T, The Piano Corner, Tight Tuning Pins Part 1, Re-Covering Hammers by Hand) as 6 separate, correctly-bounded pieces, where T-PTG-048 found LLM extraction dropped/absorbed 3 of the 6? This is the single most important validation signal for whether the new approach is actually better. For PTJ-2024-01/2025-03/2025-10, compare article counts/boundaries against T-PTG-047's output/<issue>.result.json.
+- Required written report under docs/30-Engineering/ (Dewey Decimal protocol, correct YAML frontmatter per task_coordinator/schemas/doc_frontmatter.schema.json) presenting: the offset computed per pilot issue (and whether it matched the DB default of 2), the ad-contamination investigation findings, the PTJ-2020-02 cross-check against T-PTG-048's known ground truth (does it fix the six-short-department-item failure mode -- answer explicitly yes/no/partially with evidence), sample output (2-3 full generated .md files shown inline or excerpted), and a clear, explicit recommendation on whether this CSV-driven approach should be scaled to the full ~90-issue corpus.
+- Explicitly OUT OF SCOPE for this task: no full 90-issue corpus run (pilot only, 5-8 issues). No schema/DB design or migration. No touching test/prod (this task is entirely local file reads/writes under journalgpt/corpus/articles_pilot/ and a docs/ report -- no admin endpoint, no database connection). No modifying journalgpt/corpus/extract_corpus.py. No new OpenAI/LLM API calls required -- this is CSV parsing + text slicing, not LLM extraction. If the worker finds itself wanting to make an LLM call for any reason, it must stop and flag why in the report rather than just doing it.
+
+**Definition of Done:**
+- CSV parsed correctly (utf-8-sig BOM handled, blank separator row skipped, rows with empty Article Title skipped); row counts sanity-checked (4130 total rows minus header/separator/empty-title rows).
+- Pilot set of 5-8 issues chosen, explicitly including PTJ-2020-02, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 plus 1-3 more, each with a documented reason for inclusion.
+- Per-issue page offset computed via journalgpt/spikes/T-PTG-047/toc_offset_repair.py's extract_footer_offsets()/derive_front_matter_offset() (reused, not reimplemented) and reported per issue, not hardcoded to 2 anywhere in the pilot code.
+- One markdown file per article written under journalgpt/corpus/articles_pilot/<issue>/<slugified-title>.md with YAML frontmatter (issue, article_title, author(s), printed_page, anchor_page_range, core_skills, summary_keywords, source_csv_row_number) and full sliced body text.
+- Last-article-in-issue end-of-range fallback explicitly implemented and documented (wrinkle
+- Ad/index contamination at a real pilot-set boundary directly investigated by reading actual sliced text, with findings reported honestly regardless of outcome (wrinkle
+- PTJ-2020-02 cross-checked article-by-article against T-PTG-048's 15-row ground-truth table, with an explicit yes/no/partially answer on whether all 6 short department items are now correctly produced as separate pieces.
+- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 cross-checked against T-PTG-047's output/<issue>.result.json for article count/boundary agreement.
+- Written report under docs/30-Engineering/ with correct Dewey Decimal category and YAML frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json, covering all required findings above plus 2-3 sample generated .md files and a clear scale-up recommendation.
+- No changes to journalgpt/corpus/extract_corpus.py, no database migration, no test/prod admin endpoint touched, no OpenAI/LLM API calls made (or, if the worker judged one unavoidable, an explicit flag in the report explaining why before proceeding).
+
+*Audited against SHA:* `a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87`
+
+---
+### ⏳ T-PTG-004 · P1 · ANY · HUMAN_REVIEW
+**Audit citation metadata accuracy: volume/issue-number mismatches between issue_label and title**
+**Owner:** Claude-Worker
+
+**Scope:**
+- journalgpt articles table (volume, issue_number, title columns) and journalgpt/corpus/manifest.json (volume/number fields used by the Tier-4 fallback path).
+- Found live in the reported bug example — footnote [2]: '2022-10-01 Vol. 69 No. 10 — "Piano Technicians Journal — October 2022 Issue (Vol. 65 No. 10)", p. 21'. The issue_label (built from articles.volume / articles.issue_number) says 'Vol. 69 No. 10'; the article's own title string for the same October 2022 issue says '(Vol. 65 No. 10)'. Both cannot be right for the same physical issue — this is a direct violation of the 'must give reference to the right journal number' hard requirement, independent of the footnote-numbering bug in T-PTG-001.
+- Also audit for similarly generic/low-information titles like 'Piano Technicians PTJ 2025-05 Issue Content' that read as synthesized placeholders rather than real article titles — these make citations technically present but practically useless to a member trying to verify a source.
+
+**Definition of Done:**
+- Write a one-off audit script (or SQL query) that finds every article row where a volume/issue-number embedded in title disagrees with the row's own volume/issue_number columns, and report the count and sample rows.
+- Root-cause how the two diverged (bad import script, manual edit, two different numbering schemes merged at some point, etc.) — write findings into a task_coordinator feedback file per the README's feedback protocol, not just fixed silently.
+- For confirmed-wrong rows, correct volume/issue_number (or title, whichever is actually wrong per the source PDF) via a migration or corrective script, not a one-off manual DB edit with no record.
+- Flag (but do not necessarily rewrite) titles that are generic placeholders rather than real article titles, with a recommendation for the human on how to best source the real titles.
+- Note: the local dev DB (journal_ai_test, 92 seeded articles) shows zero mismatches from cli/audit_citation_metadata.php (already written; see repo) — the affected rows may only exist in the full production corpus. Run the audit against production data (or the fullest available corpus snapshot), not just the local pilot subset, before concluding there is nothing to fix.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### 📋 T-PTG-053 · P1 · ANY · OPEN
+**Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge**
+**Owner:** None
+
+**Scope:**
+- Spec: sections 3 and 5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing radar page (extend profile.php or new coverage.php following its pattern -- T-PTG-049 established profile.php as the member-dashboard precedent): one axis per article_topic_categories row, member score per axis = weighted distinct engagement over that territory's tagged articles (read=1, discussed=2, quiz_passed=3, deduped per (article, type)), normalized against the territory's total tagged-article count so big territories don't dominate.
+- Rendering: no charting framework -- inline SVG polygon radar in the page, same no-build-step convention as admin_topic_matrix.php. Must render sanely at 0 activity (empty radar, inviting copy) and with sparse taxonomy tagging.
+- The nudge: below the radar, the member's 3 weakest axes each list up to 3 suggested articles from that territory the member has NOT engaged, ranked by cross-member popularity (reuse T-PTG-049's popular-but-unread query shape, re-targeted through article_index_topics).
+- HONEST-DATA GUARD: radar quality depends on human tagging coverage in admin_article_index_matrix.php (a separate, ongoing human effort). The page must surface tagging coverage ("N of 4,120 articles tagged so far") rather than presenting a thin-tag radar as truth.
+
+**Definition of Done:**
+- Radar page renders for a member with zero activity, partial activity, and for a territory with zero tagged articles, without errors.
+- Axis scoring proven by test - a member with one quiz_passed on a tagged article scores exactly 3 on that territory and 0 elsewhere; dedup proven (two reads of the same article count once).
+- Nudge query proven by test - suggests only untagged-by-member articles from weak territories, popularity-ordered.
+- Tagging-coverage line shows the true tagged/total counts.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+---
+### 📋 T-PTG-052 · P1 · ANY · OPEN
+**Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver**
+**Owner:** None
+
+**Scope:**
+- Spec: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md section 3. New migration (019): member_article_activity (user_id, article_index_id, activity_type ENUM(read, quiz_passed, discussed), created_at; FK to article_index; append-only, no unique constraint -- repeat engagement is real signal for recency even though the radar aggregation deduplicates per (user, article, type)).
+- THE KEY TECHNICAL RISK, solve first: existing engagement signals are keyed to the ISSUE-LEVEL articles table (journalgpt_citation_logs.article_id, quiz_questions.article_id both FK to articles), but the radar needs PER-ARTICLE article_index rows. Build a resolver lib (e.g. lib/ArticleIndexResolver.php) mapping (issue-level article_id, page) -> article_index_id by joining articles.issue_date/volume/pdf_filename to article_index.issue_label (format like "Jan-79") and picking the article_index row whose page range contains the cited page (rows sorted by page within an issue; a row spans from its page to the next row's page - 1). Resolver returns null on no-match; log unresolved hits, never guess. TDD the resolver against real fixture rows before wiring any hooks.
+- Hooks, all thin: (1) read -- source.php PDF opens that carry an article_index context, and citation renders in answers count via (3); (2) quiz_passed -- in submit_quiz_attempt.php after scoring, for each correctly-answered question resolve its article_id+page and log; (3) discussed -- where journalgpt_citation_logs rows are written, resolve and log alongside. Hooks must be fail-open: a resolver miss or insert failure must never break the member-facing request.
+
+**Definition of Done:**
+- Migration 019 applied to the local test DB via cli/migrate.php with no errors.
+- Resolver test proves correct mapping for a multi-article issue fixture (first, middle, last article by page) and returns null for an unmatchable page/issue.
+- Each of the three hooks writes a correct member_article_activity row in its existing test (extend QuizTest / CitationLoggingTest rather than new suites where natural), and a forced resolver failure does not change the endpoint''s response.
+- Golden hammer suite passes with zero regressions.
+
+---
+### 📋 T-PTG-051 · P1 · ANY · OPEN
+**Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live**
+**Owner:** None
+
+**Scope:**
+- Background, read first: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md (the Coverage Atlas spec this epic delivers; supersedes the 2026-08-16 learning-paths skill-tree spec). The code is ALREADY MERGED into test and pushed (commit a8f88e1 "feat: editable article-index x topic matrix"): migration journalgpt/migrations/018_article_index.sql, lib/ArticleIndexImporter.php, cli/import_article_index.php, data/article_index.csv (4,120 rows), admin_article_index_matrix.php, api/toggle_article_index_topic.php, tests/ArticleIndexMatrixTest.php (22 assertions, passing locally).
+- This task is ONLY the shared-database rollout: run migration 018 and cli/import_article_index.php against the deployed environment, then browser-verify admin_article_index_matrix.php on test.newmexicoptg.org (login, grid renders 4,120 articles, one checkbox toggle round-trips to article_index_topics and survives reload).
+- HARD CONSTRAINT (memory + fleet README): test.newmexicoptg.org SHARES the production database. Migration 018 is additive-only (two new tables, no ALTERs), but the DB write still requires Chip's explicit go at execution time. Do not run the migration or import without that confirmation recorded in this task's events.
+
+**Definition of Done:**
+- article_index and article_index_topics tables exist in the shared DB; SELECT COUNT(*) FROM article_index returns 4120.
+- Re-running cli/import_article_index.php a second time leaves the count at 4120 (idempotency verified in the real environment).
+- admin_article_index_matrix.php on test.newmexicoptg.org renders the grid for a logged-in member, one checkbox toggle persists across a reload, and no PHP errors appear in debug_logs.
+- Golden hammer suite still passes locally (DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php).
+
+---
+### ⏳ T-PTG-048 · P1 · ANY · PEER_REVIEW
+**Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents**
+**Owner:** Worker-ArticleQC1
+
+**Scope:**
+- Rescope note: this task previously covered vision-model classification of generic gap pages (mostly sparse advertisement pages). Per direct user feedback, that is NOT the priority -- the user does not care much about ad-page classification. What the user actually wants is article/editorial completeness QC: for every piece the extraction pipeline classifies as a real article, editorial, or column (not ad/classified/display-ad-index), confirm by actually reading the source text across that piece's claimed page range that nothing was left out. This is a full rewrite of the task's scope, not an addendum to the old one -- the vision/gap-page-classification framing below no longer applies and should not be pursued under this task ID.
+
+- Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md (original spike + Addendum) and docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md (T-PTG-047's report, now DONE -- read its Recommendation section). T-PTG-047 built a text-side page-coverage checker (coverage.py) plus TOC-anchor-offset repair and a "continued on p. X" scan, and found that a page can show zero gaps/overlaps under that checker and still be wrong: the checker only verifies every page number is claimed by exactly one piece, it cannot tell whether a piece's claimed text is actually complete, uncut, and correctly bounded. That is precisely the class of error this task targets, and it is why this task requires an agent to read real source text, not just diff page numbers.
+
+- Setup note: as of this rewrite, T-PTG-047's code and report exist on branch `test-T-PTG-047` (worktree `../newmexicoptg.org-T-PTG-047`) and have NOT yet been merged into `test` (confirmed via `git merge-base --is-ancestor test-T-PTG-047 test`, which currently fails) even though the task_coordinator's archived copy of T-PTG-047 shows status DONE. The worker on this task must re-check merge status at task start; if still unmerged, reference `journalgpt/spikes/T-PTG-047/` (extract_pieces.py, coverage.py, toc_offset_repair.py, boundary_trim.py, continued_scan.py, run_pipeline.py, common.py) from that branch/worktree directly rather than waiting, exactly as T-PTG-047 itself had to reference material from a prior unmerged branch. Reuse extract_pieces.py and coverage.py as-is (import/call, do not reimplement) so results remain methodologically comparable.
+
+- Primary required test case -- use this exactly, it is real ground truth derived directly from the issue's own table of contents, not invented: issue `PTJ-2020-02` (`journalgpt/corpus/extracted/PTJ-2020-02/PTJ-2020-02-A01.txt`, PDF at `journalgpt/pdfs/PTJ-2020-02.pdf`). Its own TOC (anchor pages 6-8, confirmed present via `grep '\[\[page:6\]\]'` through `'\[\[page:8\]\]'` on the extracted text) lists every piece by title, author, and printed page number. Ground truth (printed page -> anchor page via this issue's confirmed +2 offset):
+| Printed p. | Anchor p. | Title | Author |
+|---|---|---|---|
+| 2 | 4 | Editorial Perspective | Scott Cole, RPT |
+| 6 | 8 | President's Message | Paul Adams, RPT |
+| 7 | 9 | TT&T | Scott Cole, RPT |
+| 10 | 12 | The Piano Corner | ChiaYu Lee, RPT |
+| 14 | 16 | Tight Tuning Pins, Part 1 | Larry Lobel, RPT |
+| 21 | 23 | Re-Covering Hammers by Hand | Fred Sturm, RPT |
+| 26 | 28 | Hunting for Education (Complete Piano Voicing) | Amy Zilk, RPT |
+| 27 | 29 | Music Theory for the Piano Technician, Part 8 | Scott Cole, RPT |
+| 31 | 33 | Reweighing the Original Keyboard, Part 2 | Nick Gravagne, RPT |
+| 37 | 39 | PTG Review | (none) |
+| 38 | 40 | Coming Events | (none) |
+| 39 | 41 | Foundation Focus | (none) |
+| 40 | 42 | Classified Advertisements | (none) |
+| 43 | 45 | Display Advertising Index | (none) |
+| 44 | 46 | Tuner's Life | Kathy Smith, RPT |
+This table specifically stresses SHORT columns/editorials (Editorial Perspective, President's Message, TT&T, The Piano Corner) the original 8-issue spike sample didn't specifically target -- exactly the kind of short item likely to get silently merged into a neighboring piece or dropped, per the user's own framing of the concern ("really, any article or editorial mentioned in the columns and comments... that's what we should be concerned about").
+
+- In scope, required: run the extraction pipeline (extract_pieces.py from journalgpt/spikes/T-PTG-047/, same gpt-4o-mini/full-text/single-call approach) against PTJ-2020-02, then diff the result against all 15 ground-truth rows above: for each row, report whether the extraction found a matching piece (same or equivalent title/author) and whether its page range plausibly starts/ends where the TOC says (allow the piece's *end* page to extend until the next item's start, since the TOC only gives start pages). Report hits, misses, and merges explicitly per row, not just an aggregate count.
+
+- In scope, required, this is the actual QC deliverable: for every extraction-produced piece classified as `article`, `editorial`, or a column-type (i.e., anything except `advertisement`, `classifieds`, or a display/index type) across PTJ-2020-02, an agent must actually read the source text in journalgpt/corpus/extracted/PTJ-2020-02/PTJ-2020-02-A01.txt spanning that piece's claimed page range and confirm: (a) the text reads as a complete, coherent piece with a real ending, not cut off mid-sentence or mid-thought; (b) the byline matches; (c) nothing from the ground-truth table that should be a separate piece got silently absorbed into it. This must be an actual content read per piece, not a page-number diff -- the whole point is to catch errors coverage.py structurally cannot see (zero gaps/overlaps reported, but a piece is still truncated or two pieces are merged into one).
+
+- In scope, required, single most important pass/fail signal for this task: explicitly check the short-column failure mode by name -- does the extraction correctly produce SIX separate pieces for the six short department items (Editorial Perspective, President's Message, TT&T, The Piano Corner, Tight Tuning Pins Part 1, Re-Covering Hammers by Hand), each plausibly short (roughly 1-4 pages), or does it merge some of them into a single blob, or skip any entirely? State a direct yes/no answer to "does the six-short-department-item failure mode occur in PTJ-2020-02" in the report.
+
+- In scope, but explicitly LOW priority per the user's direct statement ("we're not really concerned about the ads"): the 5 ad/index/listing rows in the ground-truth table (PTG Review, Coming Events, Foundation Focus, Classified Advertisements, Display Advertising Index) only need the hit/miss/merge check from the diff step above -- report whether each was found, but do NOT spend deep QC-read rigor confirming their content is complete/uncut the way the 9 real article/editorial/column rows require.
+
+- In scope, required, secondary check (not the primary deliverable): extend the same QC-read approach to a small sample from the original 8 T-PTG-047 spike issues (PTG-2022-10, PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10) -- worker's judgment on how many, at least 2-3 -- to see whether the short-column merge/drop failure mode found (or not found) in PTJ-2020-02 generalizes, or is specific to this issue's TOC-heavy front-matter layout. These issues do not have the same kind of hand-derived ground-truth TOC table as PTJ-2020-02; use each issue's own `[[page:N]]`-anchored TOC section as the reference instead, the same way the PTJ-2020-02 table was derived.
+
+- In scope, required: a written report under docs/30-Engineering/ (Dewey Decimal protocol per task_coordinator/README.md), with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json, presenting: the full PTJ-2020-02 ground-truth diff table (hit/miss/merged per row, all 15 rows), the QC-read findings for each of the 9 real article/editorial/column pieces, an explicit yes/no on whether the six-short-department-item failure mode occurs, findings from the secondary 2-3-issue sample, and a clear recommendation on whether article/editorial completeness (as distinct from generic page-range coverage) can be trusted, or what further work is still needed.
+
+- Out of scope, do not do (carried forward from the original task, still applies): no articles/pieces schema design or database migration; no indexing the 23 missing corpus years (2019 Feb-Dec, 2025 Jan-Dec) into test/prod; no production code changes (journalgpt/corpus/extract_corpus.py or any other shipped pipeline code); no touching the shared test/prod database in any way (no migration, no backfill, no admin-page changes) -- this task is local/offline analysis only against journalgpt/pdfs/, journalgpt/corpus/extracted/, and journalgpt/spikes/T-PTG-047/ output, same framing as T-PTG-047. Also explicitly out of scope, carried forward from the old vision-classification framing this task is replacing: no vision-model/image-based page classification work under this task ID -- that framing has been dropped per the rescope above, not deferred to be picked back up here.
+
+
+**Definition of Done:**
+- extract_pieces.py and coverage.py from journalgpt/spikes/T-PTG-047/ are reused (imported/called, not reimplemented) to produce PTJ-2020-02's extraction output and page-coverage numbers.
+
+- A complete diff table exists in the report covering all 15 PTJ-2020-02 ground-truth rows from the scope section above, each explicitly marked hit, miss, or merged, with the matching (or non-matching) extracted piece's title/author/page-range shown alongside.
+
+- For each of the 9 ground-truth rows that are article/editorial/column type (i.e. excluding the 5 ad/index rows), the report shows evidence of an actual source-text read (not just a page-number comparison) confirming or refuting: complete/uncut ending, matching byline, and no silent absorption of a neighboring ground-truth piece.
+
+- The report gives an explicit, direct yes/no answer to whether the six-short-department-item merge/drop failure mode (Editorial Perspective, President's Message, TT&T, The Piano Corner, Tight Tuning Pins Part 1, Re-Covering Hammers by Hand) occurs in PTJ-2020-02, with the specific evidence (which items merged into what, or which were dropped, if any).
+
+- The report documents a QC-read pass (using the same read-the-source-text method, not just a coverage-checker diff) against at least 2-3 issues from the original 8 T-PTG-047 spike issues, with an explicit statement of whether the same short-column failure mode does or does not generalize beyond PTJ-2020-02.
+
+- A written report exists under docs/30-Engineering/ with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json, and gives a clear, explicit recommendation on whether article/editorial completeness (as distinct from T-PTG-047's generic page-coverage checking) can be trusted at this point, or what further work is still needed.
+
+- No changes were made to journalgpt/corpus/extract_corpus.py or any other production code path, no database migration was created or run, and no test/prod admin endpoint was touched -- all work is local scripts/output under journalgpt/spikes/ (a new T-PTG-048 subdirectory or an extension of T-PTG-047's, worker's judgment, documented either way) and the docs/ report.
+
+
+*Audited against SHA:* `a527e9d`
+
+---
+### ⏳ T-PTG-005 · P1 · ANY · PEER_REVIEW
+**Voicing-technique continuity + citation-format test matrix (all preset x tier combos)**
+**Owner:** Claude-FleetCommander
+
+**Scope:**
+- journalgpt/tests/manual_voicing_continuity_matrix.php (new) — runs a real two-turn conversation through JournalAnswerService::ask() for a given (preset, tier) combination: turn 1 asks 'Have voicing technique changed over the years? Are there different viewpoints of what should be done? Do any contradict another?'; turn 2 asks the follow-up 'Who talks about this first?' in the SAME conversation_id.
+- Exercises all 6 combinations: preset in {scholarly, quick} x tier in {quick, medium, deep} (quick=gpt-4o-mini, medium=gpt-4o, deep=o3-mini). Makes REAL OpenAI API calls against the configured key — not free, not part of the automated test suite.
+- Purpose: (a) verify turn 2 actually resolves 'this'/'first' against turn 1's context (conversation continuity, per Chip's question about whether follow-ups work at all), and (b) verify citation format correctness (page_verified, url/pdf_url shape, page-range collapsing, no leaked 【…】 markers) holds across every tier, not just the tiers already covered by the automated unit tests with a StubOpenAIClient.
+
+**Definition of Done:**
+- All 6 (preset, tier) combinations executed successfully (or their failure mode is understood and recorded — e.g. Deep tier timing out before the T-PTG-timeout fix).
+- For each combination, record: did turn 2 correctly resolve the follow-up against turn 1's topic, or did it behave as if starting fresh?
+- For each combination, record whether citations are well-formed: every citation has a real article_id + page, citation_label matches the printed_page/printed_page_end shown, url/pdf_url follow the source.php?article_id=X&page=Y shape, and the answer text carries no raw 【…】 annotation markers.
+- Findings written up (this task's own execution log / a feedback file) — not just raw JSON dumps — identifying any combination that fails continuity or citation format, with a specific hypothesis for why if one fails.
+
+*Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
+
+---
 ### 📋 T-PTG-024 · P2 · ANY · AUDITED
 **JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)**
 **Owner:** None
@@ -1438,6 +1672,55 @@ graph TD
 - The handoff records the exact member feedback this task addresses (conversation 53's three triage answers, quoted verbatim) so the human reviewer can judge whether the shipped fix actually addresses what was asked, not just a plausible-sounding interpretation of a vague request.
 
 *Audited against SHA:* `e2edf343520a3418114da8997f31ae5dc3f245ec`
+
+---
+### 📋 T-PTG-055 · P2 · ANY · OPEN
+**Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)**
+**Owner:** None
+
+**Scope:**
+- Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. CLI (cli/propose_tours.php) that drafts candidate tours/threads as status=draft rows for curator review in admin_tours.php. Inputs: article_index summary_keywords + core_skills + issue chronology (+ article_index_topics tags where present). One LLM pass per proposal via OpenAIClient (mock-mode testable, same as QuizGenerator), cost-capped: --limit N proposals per run, estimated cost logged, UsageLedger conventions respected.
+- Proposal shapes: (a) tour -- 5-8 articles sharing a theme with a one-line blurb and per-stop connective notes; (b) thread -- chronological sequence on one narrow question spanning 10+ years (the spec's "watch the craft argue with itself" shape; e.g. humidity-control advice over time). The model must only reference real article_index ids fed to it -- reject any proposal citing an id not in the candidate set (mirror QuizGenerator's grounding-enforcement discipline: discard, never repair).
+- NEVER auto-publish: CLI writes drafts only. Duplicate-guard: skip proposing a tour whose title case-insensitively matches an existing tour.
+
+**Definition of Done:**
+- With a mocked OpenAIClient response, the CLI writes a valid draft tour with ordered stops and connective notes; a response citing a fabricated article id is discarded with a logged warning and writes nothing.
+- Drafts appear in admin_tours.php for curation; nothing member-visible changes.
+- Duplicate-title guard proven by test.
+- Golden hammer suite passes with zero regressions.
+
+---
+### 📋 T-PTG-054 · P2 · ANY · OPEN
+**Coverage Atlas Phase 2a: tours/threads schema + curator admin page**
+**Owner:** None
+
+**Scope:**
+- Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. New migration (020): tours (id, title, kind ENUM(tour, thread), blurb, status ENUM(draft, published), created_by FK users, timestamps) and tour_articles (tour_id FK CASCADE, article_index_id FK, sort_order, connective_note TEXT; unique (tour_id, article_index_id)). Additive-only, mirrors 018's conventions.
+- Curator admin page (admin_tours.php, following admin_article_index_matrix.php's auth + no-framework pattern): list tours with status; create/edit a tour (title, kind, blurb); add/remove/reorder articles by searching the article_index (title/ author/issue search, same client-side approach as the matrix page); edit each stop's connective_note; draft/publish toggle. Only status=published tours are ever visible to member-facing pages (enforced in queries, not just UI).
+- Write endpoints follow the pure-handler + LIBRARY_ONLY + CSRF pattern (api/toggle_article_index_topic.php is the closest template).
+
+**Definition of Done:**
+- Migration 020 applies cleanly via cli/migrate.php on the local test DB.
+- Handler tests prove - create tour, add three articles with order, reorder, edit connective_note, publish; CSRF rejection; draft tours excluded by the member-visibility query helper.
+- Curator page browser-verified locally (create a 3-stop tour end to end).
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+---
+### 📋 T-PTG-056 · P2 · ANY · OPEN
+**Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration**
+**Owner:** None
+
+**Scope:**
+- Spec: sections 4-5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing shelf (tours.php: published tours/threads listed with blurb, stop count, estimated reading time) and tour detail page (tour.php?id=N: ordered stops with connective notes, links to each article's source PDF at its page, per-stop read tracking into member_article_activity via T-PTG-052's hooks).
+- Closing quiz: "Finish with a quiz" generates one quiz drawn from the tour's articles. Reuse the existing engine -- generate_topic_quiz.php is the closest precedent for non-conversation quiz generation; the tour variant seeds generation from the tour's article set. Grounding rules unchanged: every question keeps its NOT NULL article FK. Passing logs quiz_passed activity for the tour's articles answered correctly, so finishing a tour visibly lands on the member's radar.
+- Completion display: a tour shows per-member progress (stops engaged / total, quiz taken or not) derived from member_article_activity -- no new progress table (spec section 4 explicitly forbids one).
+
+**Definition of Done:**
+- Shelf and detail pages render for a member; draft tours are never visible.
+- Tour quiz generation proven by test (mocked model) - questions ground only to the tour''s articles; ungrounded proposals discarded.
+- Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
+- Progress derivation proven by test against member_article_activity fixtures.
+- Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

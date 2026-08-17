@@ -1,0 +1,44 @@
+id: T-PTG-051
+title: 'Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: OPEN
+created_at: '2026-08-17T10:30:00-06:00'
+dependencies: []
+scope:
+- 'Background, read first: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md
+  (the Coverage Atlas spec this epic delivers; supersedes the 2026-08-16 learning-paths
+  skill-tree spec). The code is ALREADY MERGED into test and pushed (commit a8f88e1
+  "feat: editable article-index x topic matrix"): migration journalgpt/migrations/018_article_index.sql,
+  lib/ArticleIndexImporter.php, cli/import_article_index.php, data/article_index.csv
+  (4,120 rows), admin_article_index_matrix.php, api/toggle_article_index_topic.php,
+  tests/ArticleIndexMatrixTest.php (22 assertions, passing locally).'
+- 'This task is ONLY the shared-database rollout: run migration 018 and cli/import_article_index.php
+  against the deployed environment, then browser-verify admin_article_index_matrix.php
+  on test.newmexicoptg.org (login, grid renders 4,120 articles, one checkbox toggle
+  round-trips to article_index_topics and survives reload).'
+- 'HARD CONSTRAINT (memory + fleet README): test.newmexicoptg.org SHARES the production
+  database. Migration 018 is additive-only (two new tables, no ALTERs), but the DB
+  write still requires Chip''s explicit go at execution time. Do not run the migration
+  or import without that confirmation recorded in this task''s events.'
+definition_of_done:
+- article_index and article_index_topics tables exist in the shared DB; SELECT COUNT(*)
+  FROM article_index returns 4120.
+- Re-running cli/import_article_index.php a second time leaves the count at 4120
+  (idempotency verified in the real environment).
+- admin_article_index_matrix.php on test.newmexicoptg.org renders the grid for a
+  logged-in member, one checkbox toggle persists across a reload, and no PHP errors
+  appear in debug_logs.
+- Golden hammer suite still passes locally (DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php).
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/ArticleIndexMatrixTest.php
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-17T10:30:00-06:00'
+  action: SCOUT
+  actor: Claude-Fable-Session
+  details: Filed from the Coverage Atlas design session; implementation already landed
+    on test at a8f88e1, only the shared-DB rollout and live verification remain.

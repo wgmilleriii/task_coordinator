@@ -1,0 +1,39 @@
+id: T-PTG-054
+title: 'Coverage Atlas Phase 2a: tours/threads schema + curator admin page'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-17T10:30:00-06:00'
+dependencies:
+- T-PTG-051
+scope:
+- 'Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md.
+  New migration (020): tours (id, title, kind ENUM(tour, thread), blurb, status
+  ENUM(draft, published), created_by FK users, timestamps) and tour_articles
+  (tour_id FK CASCADE, article_index_id FK, sort_order, connective_note TEXT;
+  unique (tour_id, article_index_id)). Additive-only, mirrors 018''s conventions.'
+- 'Curator admin page (admin_tours.php, following admin_article_index_matrix.php''s
+  auth + no-framework pattern): list tours with status; create/edit a tour (title,
+  kind, blurb); add/remove/reorder articles by searching the article_index (title/
+  author/issue search, same client-side approach as the matrix page); edit each
+  stop''s connective_note; draft/publish toggle. Only status=published tours are
+  ever visible to member-facing pages (enforced in queries, not just UI).'
+- 'Write endpoints follow the pure-handler + LIBRARY_ONLY + CSRF pattern
+  (api/toggle_article_index_topic.php is the closest template).'
+definition_of_done:
+- Migration 020 applies cleanly via cli/migrate.php on the local test DB.
+- Handler tests prove - create tour, add three articles with order, reorder,
+  edit connective_note, publish; CSRF rejection; draft tours excluded by the
+  member-visibility query helper.
+- Curator page browser-verified locally (create a 3-stop tour end to end).
+- Golden hammer suite passes with zero regressions; php -l clean.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-17T10:30:00-06:00'
+  action: SCOUT
+  actor: Claude-Fable-Session
+  details: Filed from the Coverage Atlas design session.

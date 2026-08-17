@@ -1,0 +1,42 @@
+id: T-INTY-027
+title: Theme Switcher & Customizer Engine
+status: DONE
+repo: intypiano
+priority: P2
+lane: ANY
+created_at: '2026-08-14T19:45:00Z'
+scope:
+- Re-introduce the legacy theme switcher interface with a live preview mode.
+- Allow users/admins to dynamically customize their own theme properties (color scheme,
+  font family, sizing/scaling).
+- Ensure theme selections persist per-tenant or per-user, storing preferences in a
+  V2-native table rather than relying on hardcoded CSS files.
+- Re-architect the frontend CSS structure to consume dynamic CSS variables mapped
+  to these database preferences.
+definition_of_done:
+- A new UI exists for admins to select, preview, and save theme configurations.
+- The UI allows overriding core variables (colors, fonts, sizes).
+- The theme dynamically applies across the application based on the active user/tenant
+  preference without requiring manual CSS recompilation.
+- No legacy V1 table patterns are introduced.
+verification_command: php -l theme-preview.php
+audited_at: '2026-08-14T19:52:13.286281Z'
+audited_by: Antigravity
+audited_repo_sha: ac85a2a6591fb74b597d9fa22b9939657eda6f08
+events:
+- timestamp: '2026-08-14T19:52:13.286836Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against ac85a2a6591fb74b597d9fa22b9939657eda6f08
+- timestamp: '2026-08-14T19:57:33.208172Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-14T19:58:35.176796Z'
+  action: SUBMIT
+  actor: Antigravity
+- timestamp: '2026-08-14T20:00:13.119443Z'
+  action: RECORD_REVIEW
+  actor: Antigravity
+  details: 'Verdict: PASS'
+owner: Antigravity
+claimed_at: '2026-08-14T19:57:33.207377Z'

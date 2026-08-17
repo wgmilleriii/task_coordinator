@@ -1,0 +1,49 @@
+id: T-PTG-044
+title: 'Phase 3: Citation Analytics & Logging'
+status: CANCELLED
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+definition_of_done: '- Table `journalgpt_citation_logs` is created.
+
+  - Backend writes rows on answer generation.
+
+  - Admin dashboard shows analytics.
+
+  - Tests pass in `php tests/security_and_eval_suite.php`.
+
+  '
+audited_at: '2026-08-13T21:52:32.688374Z'
+audited_by: Claude-PM
+audited_repo_sha: 32132e5bb4912764677e47cdd11bd39de9621698
+verification_command: cd journalgpt && php tests/security_and_eval_suite.php
+events:
+- timestamp: '2026-08-13T21:52:32.688640Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 32132e5bb4912764677e47cdd11bd39de9621698
+- timestamp: '2026-08-13T21:54:33.892028Z'
+  action: CLAIM
+  actor: Worker-Phase3
+- timestamp: '2026-08-13T21:58:30.859222Z'
+  action: SUBMIT
+  actor: Worker-Phase3
+- timestamp: '2026-08-14T21:53:51.000000Z'
+  action: CANCEL
+  actor: Willis Miller
+  details: Obsolete/duplicate. journalgpt_citation_logs already exists in test/prod, built outside
+    this fleet board, with real production citation history in it (see docs/superpowers/specs/2026-08-14-session-handoff.md).
+    Branch test-T-PTG-044 was never pushed to origin, so no merge occurred; closing without
+    action to avoid a conflicting/duplicate table definition.
+owner: Worker-Phase3
+claimed_at: '2026-08-13T21:54:33.890701Z'
+scope:
+- 'Track exactly what the AI relies on to answer questions.
+
+  - Create a `journalgpt_citation_logs` table: `id`, `user_id`, `conversation_id`, `article_id`,
+  `created_at`.
+
+  - Wire up the backend to write a row to this table every time a final answer is rendered.
+
+  - Build an Admin dashboard card showing "Most Relied Upon Articles" and "Orphaned / Unused
+  Articles" to help identify archive gaps.'

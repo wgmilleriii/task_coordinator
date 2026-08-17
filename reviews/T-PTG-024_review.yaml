@@ -1,0 +1,32 @@
+task_id: T-PTG-024
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 6a7973a61b615e22b1451e1e9ed63fbe3f12efc1
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Reviewed the full diff (ClaimValidator.php, JournalAnswerService.php
+    wiring, ClaimValidatorTest.php). Correctly reuses the existing citation resolver
+    (resolveCitationsFromChunks) per v3.md §15 rather than reimplementing citation
+    lookup -- ClaimValidator only narrows which chunks the resolver sees. The
+    blanket-withhold gate was changed from "any empty parsedCitations withholds
+    everything" to "withhold only if zero citations AND zero surviving Journal
+    claims AND zero Assistant Explanation content", matching the §14 requirement
+    not to discard a whole useful answer over one bad citation. Non-v3_beta path
+    is untouched ($claimValidation stays null).'
+- severity: INFO
+  description: 'Independently re-ran both gate commands myself after merging
+    test-T-PTG-024 into test (rather than trusting the worker''s reported output):
+    security_and_eval_suite.php reports 9/9 suites passed including
+    PythonEvalRunner 7/7; ClaimValidatorTest.php reports all assertions passed.
+    php -l clean on all three touched/new files. Verification was run via
+    `fleet verify` against the actual merged `test` branch state in the primary
+    clone, not just the isolated worktree, so this evidence reflects what will
+    actually ship to the integration branch.'
+- severity: INFO
+  description: 'Known scope deviation, disclosed by the worker and judged acceptable:
+    "unsupported Journal attribution -> remove, rewrite or regenerate" is implemented
+    as remove-only (no synchronous LLM rewrite/regenerate call exists at that point
+    in the request lifecycle). Flagged in the class docblock as a Phase 5/6
+    extension point rather than silently narrowing the spec.'
+reviewed_at: '2026-08-13T14:44:16.705850Z'

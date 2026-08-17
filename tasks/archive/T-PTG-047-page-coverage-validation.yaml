@@ -1,0 +1,148 @@
+id: T-PTG-047
+title: Build and test page-range coverage-validation + repair pass for per-article
+  extraction spike
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+created_at: '2026-08-14T22:21:24Z'
+dependencies: []
+scope:
+- 'Background: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md
+  (read in full, including the Addendum) is the entire basis for this task. An LLM
+  (gpt-4o-mini) spike broke 8 sampled issues into per-piece title/author/type/page-range
+  breakdowns. Title/author/type extraction was reliable. Page-range boundaries were
+  NOT: every one of the 8 sampled issues had missing and/or overlapping page coverage.
+  Two confirmed root causes plus one pipeline quirk are documented in the findings
+  doc''s "What didn''t" section and Addendum. This task builds the validation + repair
+  pass the findings doc''s Recommendation section calls for, and re-tests it against
+  the same 8 issues to see if it actually closes the gaps.
+
+  '
+- "In scope, required: implement a programmatic page-coverage checker that, for a\
+  \ given issue's LLM-produced pieces list, verifies every page from 1 to the issue's\
+  \ last [[page:N]] anchor belongs to exactly one piece, and reports gaps (unclaimed\
+  \ pages) and overlaps (pages claimed by 2+ pieces) per issue \u2014 same methodology\
+  \ the spike used (see the findings doc's gap table for the exact per-issue baseline\
+  \ numbers to compare against).\n"
+- "In scope, required: implement the TOC-anchor-offset repair idea from the Addendum's\
+  \ proposal #1. Extract the printed page number from page-footer text on each [[page:N]]\
+  \ anchor page (footer text is already present in this corpus, e.g. \"April 2020\
+  \ / Piano Technicians Journal 1\" per finding #3), diff it against the real anchor\
+  \ number to derive the issue's front-matter offset, and use that to detect/correct\
+  \ pieces where the model used a printed TOC page number instead of the real anchor\
+  \ number (finding #2 in the spike doc is the concrete reproduction case, PTJ-2025-10,\
+  \ off by 13 pages). This MUST reuse or explicitly extend the existing `articles.pdf_page_offset`\
+  \ mechanism (journalgpt/migrations/002_pdf_page_offset.sql, default offset 2) rather\
+  \ than inventing a second, parallel offset concept \u2014 read that migration file\
+  \ and journalgpt/lib usage of pdf_page_offset before designing this.\n"
+- "In scope, required: implement \"continued on p. X\" / \"continued from p. X\" text\
+  \ scanning (Addendum proposal #2) as an independent, non-LLM validation signal \u2014\
+  \ scan each issue's raw extracted text for this near-universal magazine convention\
+  \ and use matches to (a) flag pieces whose claimed end_page/start_page doesn't line\
+  \ up with a real \"continued\" marker as suspect, and (b) positively confirm genuine\
+  \ non-contiguous articles (the model's noncontiguous escape hatch was never used\
+  \ once in the spike despite being available in the prompt).\n"
+- 'In scope, required: re-run the full pipeline (LLM extraction + coverage check +
+  TOC-offset repair + continued-marker validation) against the exact same 8 issues
+  sampled in the spike: PTG-2022-10, PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06,
+  PTJ-2024-01, PTJ-2025-03, PTJ-2025-10. Use journalgpt/corpus/extracted/*/*.txt as
+  input (same source the spike used) unless a change is independently justified and
+  documented.
+
+  '
+- "Stretch goal, explicitly NOT required for done: now that real PDFs exist at journalgpt/pdfs/\
+  \ (78-82 of ~94 files landed via in-progress FTP transfer as of this writing, matched\
+  \ by PTJ-YYYY-MM.pdf / PTG-YYYY-MM.pdf naming against corpus/manifest.json's 90\
+  \ issues), prototype a vision-capable model pass on 1-2 confirmed-sparse ad pages\
+  \ (e.g. PTJ-2020-04 page 3, the near-blank ad page from finding #3 in the spike\
+  \ doc \u2014 pdftotext extracts almost nothing but \"PIANO SUPPLY CO.\" and a footer\
+  \ line) to see whether page-image input recovers coverage that text extraction silently\
+  \ drops (failure mode #3, not addressed by either required item above). This uses\
+  \ the real, live OpenAI API key and spends real (small) money \u2014 cost is not\
+  \ a hard constraint per the spike's own cost estimate (~$0.45 full-corpus text-only;\
+  \ a 1-2 page vision prototype is negligible), but it is real spend against a shared\
+  \ key, not free.\n"
+- "Out of scope, do not do: full articles/pieces schema design or any database migration\
+  \ (explicitly deferred in the findings doc's Recommendation section, pending a separate\
+  \ design conversation with the user); indexing the 23 missing corpus years (2019\
+  \ Feb-Dec, 2025 Jan-Dec) into test/prod (separate, already-tracked open question,\
+  \ see the handoff and session-handoff docs); any vision-model work beyond the 1-2\
+  \ page stretch-goal prototype above (i.e. do not build a full vision-based extraction\
+  \ pipeline or run it across the corpus); modifying journalgpt/corpus/extract_corpus.py\
+  \ or any production extraction/indexing code path (this is spike/validation code\
+  \ per the original brief's own framing \u2014 throwaway is fine, the deliverable\
+  \ is an answer plus a working prototype, not shipped pipeline code); touching the\
+  \ shared test/prod database in any way (no migration, no backfill, no admin-page\
+  \ changes) \u2014 this task is local/offline analysis only against journalgpt/corpus/extracted/\
+  \ and journalgpt/pdfs/.\n"
+definition_of_done:
+- 'A programmatic coverage checker exists (script, not just inline notebook code)
+  that takes an issue''s pieces list and reports gap pages and overlap pages against
+  1..max anchor.
+
+  '
+- 'The TOC-anchor-offset extraction/repair step is implemented, reuses or explicitly
+  documents its relationship to articles.pdf_page_offset / migrations/002_pdf_page_offset.sql,
+  and is demonstrated to correct at least the PTJ-2025-10 finding-#2 case (article
+  start_page corrected from the TOC-reference 7-ish/printed-18 confusion to the real
+  anchor page ~20) when re-run.
+
+  '
+- 'The "continued on/from p. X" text-scan validation signal is implemented and its
+  matches (or confirmed absence) are reported per issue in the re-run output.
+
+  '
+- "The full validation+repair pipeline is re-run against all 8 of the spike's original\
+  \ sampled issues (PTG-2022-10, PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06,\
+  \ PTJ-2024-01, PTJ-2025-03, PTJ-2025-10), and a written report (placed under docs/\
+  \ per the Dewey Decimal protocol in task_coordinator/README.md, category 30-Engineering,\
+  \ with correct frontmatter) presents a before/after table of missing-page and overlapping-page\
+  \ counts per issue, directly comparable to the spike findings doc's existing table\
+  \ (missing/overlapping baselines: PTG-2022-10 21/13; PTJ-2019-02 11/15; PTJ-2019-08\
+  \ 5/3; PTJ-2020-04 12/7; PTJ-2022-06 19/4; PTJ-2024-01 23/0; PTJ-2025-03 6/4; PTJ-2025-10\
+  \ 11/5 \u2014 see the findings doc's own table for the authoritative source of these\
+  \ numbers).\n"
+- 'The report explicitly states whether the pass closes the gaps/overlaps (quantified,
+  not just "looks better") and gives a clear recommendation on whether this validation+repair
+  approach is sufficient to trust piece-level page ranges for a future schema design,
+  or whether more work (e.g. the vision-model stretch goal, or a human-review-required
+  state per piece) is still needed.
+
+  '
+- 'If the stretch goal (vision-model prototype) was attempted, the report notes what
+  was tried, on which page(s), the actual OpenAI cost incurred, and whether it recovered
+  coverage text extraction missed. If not attempted, the report says so plainly rather
+  than omitting it.
+
+  '
+- "No changes were made to production extraction code (journalgpt/corpus/extract_corpus.py),\
+  \ no database migration was created or run, and no test/prod admin endpoints were\
+  \ touched \u2014 all work is local scripts/output under a scratch or docs location.\n"
+verification_command: find docs -path "*30-Engineering*" -newer journalgpt/migrations/002_pdf_page_offset.sql
+  -name "*.md" | grep -qi coverage
+human_review_required: true
+requires_doc_update: true
+events:
+- timestamp: '2026-08-14T22:22:50.451550Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 943f11cc3a1ab7d24c5a0992c86009db2320394d
+- timestamp: '2026-08-14T22:23:20.473929Z'
+  action: CLAIM
+  actor: Worker-ExtractionRepair1
+- timestamp: '2026-08-14T22:36:08.097444Z'
+  action: SUBMIT
+  actor: Worker-ExtractionRepair1
+- timestamp: '2026-08-14T22:50:06.601236Z'
+  action: RECORD_REVIEW
+  actor: Claude-Reviewer
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-14T23:07:40.449019Z'
+  action: CLOSE
+  actor: Willis Miller
+audited_at: '2026-08-14T22:22:50.451232Z'
+audited_by: Claude-PM
+audited_repo_sha: 943f11cc3a1ab7d24c5a0992c86009db2320394d
+owner: Worker-ExtractionRepair1
+claimed_at: '2026-08-14T22:23:20.473587Z'

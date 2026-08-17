@@ -1,0 +1,53 @@
+task_id: T-PTG-026
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 41f365fb71fac941fc8fac629b9f98371d35a9b1
+verdict: PASS
+findings:
+- severity: CRITICAL
+  description: 'The replay caught a real production-breaking bug, not a hypothetical
+    one: ConversationStateService::getState() returns null for any conversation
+    with no persisted state row (i.e. every conversation, since nothing ever calls
+    updateState() -- see the MAJOR finding below), and that null was passed
+    directly into EvidenceRanker::rankEvidence()''s non-nullable `array
+    $conversationState` parameter. This throws a TypeError, which extends
+    \Error, not \Exception -- the existing `catch (\Exception $e)` around the
+    v3_beta pipeline never caught it, so the entire request fataled instead of
+    degrading to the direct-retrieval fallback v3.md section 27 requires. This
+    means v3_beta could not complete a real multi-chunk request in production
+    before this patch. Reviewed the fix directly: `$state = ($conversationId ?
+    $stateService->getState($conversationId) : null) ?? []` normalizes null to
+    an empty array, and the catch was correctly broadened to `\Throwable`. I
+    independently confirmed the golden hammer suite still passes 9/9 after this
+    change (my own verify run, not just the worker''s reported output).'
+- severity: MINOR
+  description: 'The relevance-floor tuning (EvidenceRetriever::MIN_RELEVANCE_SCORE
+    = 0.35) is a sound, conservative fix -- reviewed the diff and the
+    before/after in replay_results.json: benchmark entries 1/6 (deliberately
+    nonsense "quantum flux capacitor" question) went from a fabricated,
+    confidently-cited answer built on an irrelevant NAMM trade-show passage to a
+    correct zero-citation decline, while legitimately-answerable entries kept
+    their citation counts. The floor only screens chunks that carry an actual
+    low score, explicitly leaving unscored/annotation-derived chunks untouched
+    -- a reasonable hedge against over-filtering.'
+- severity: MAJOR
+  description: 'Genuine unresolved gap, correctly surfaced rather than glossed
+    over: ConversationStateService.updateState() exists but is never called
+    anywhere in ask() (confirmed by grep, and independently reproduced live --
+    I ran journalgpt/v3/section34_flow.php myself and every one of the 4 turns
+    shows "Persistent Conversation State: None" reaching the planner). Continuity
+    in the section-34 flow works today only because it fits inside
+    ConversationContext''s bounded ~6-message recent-turn window, not because
+    the dedicated persistent-state layer v3.md''s architecture depends on is
+    actually populated. Correctly scoped as a follow-up rather than blocking
+    this task -- T-PTG-026''s own DoD explicitly allows a "needs more work,
+    here specifically" recommendation as a valid outcome.'
+- severity: INFO
+  description: 'Independently re-ran the golden hammer suite after merging
+    test-T-PTG-026 into test (41f365f, to be pushed to origin/test): 9/9 pass.
+    Also independently re-ran section34_flow.php myself (not just trusting the
+    worker''s report) and confirmed its stated finding about persistent state
+    being empty on every turn. php -l clean on all 4 touched/new files. The
+    worker did not flip any default-preset or rollout toggle -- confirmed by
+    reading the diff; the recommendation is informational only, as instructed.'
+reviewed_at: '2026-08-13T15:17:43.257640Z'

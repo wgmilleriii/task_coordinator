@@ -1,0 +1,90 @@
+id: T-PTG-023
+title: 'JournalGPT v3 Phase 3: AnswerSynthesizer + Journal-vs-explanation distinction'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: Antigravity-Worker
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T12:55:22.153260Z'
+audited_by: FleetCoordinator
+audited_repo_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+dependencies:
+- T-PTG-022
+scope:
+- 'CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections
+  12-13 (Answer Synthesis, Two Kinds of Knowledge) before starting. Gated on T-PTG-022
+  (EvidenceRanker).'
+- 'WHAT TO BUILD, per v3.md section 12: create `journalgpt/lib/AnswerSynthesizer.php`.
+  Receives: the member''s question, recent conversation, T-PTG-018''s persistent research
+  state, T-PTG-019''s research plan, and T-PTG-022''s ranked evidence bundle. Produces
+  the best useful answer possible.'
+- 'THE CORE NEW BEHAVIOR, per v3.md section 13 exactly: the synthesizer must explicitly
+  distinguish "Journal-supported information" (requires evidence and citation, e.g.
+  "The Journal describes friction at the bearing points as...") from "Assistant explanation"
+  (interpretation/comparison/general reasoning, e.g. "A useful way to picture this
+  mechanically is..." -- must NOT be falsely represented as something PTJ published).
+  This is v3.md''s stated mechanism for "how JournalGPT can become significantly more
+  conversational without compromising citation integrity" -- the single most important
+  behavioral change in this phase.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS
+  with zero regressions.'
+- 'EXPLICITLY OUT OF SCOPE: ClaimValidator (Phase 4 -- validating individual claims
+  is a separate, later step; this phase only produces the answer with the two kinds
+  of content clearly distinguished, it does not yet verify each Journal-attributed
+  claim against evidence). Do not weaken the existing hard requirement (v3.md section
+  2.2/2.3) that Journal-attributed claims must be cited and citations must resolve
+  -- this phase adds explanation capability, it does not loosen grounding requirements.'
+definition_of_done:
+- AnswerSynthesizer.php exists per v3.md section 12's inputs and produces answers
+  that visibly/structurally distinguish Journal-supported content from assistant explanation
+  (Worker's exact mechanism -- e.g. distinct markup, a structured field separating
+  the two -- documented in the handoff).
+- 'A new test file (journalgpt/tests/AnswerSynthesizerTest.php) proves the distinction
+  works: at least one test case where the answer correctly separates a cited Journal
+  fact from an explanatory aside, and confirms the explanatory aside is never citation-tagged
+  as if it were a Journal claim.'
+- Wired into the live path, replacing/extending wherever synthesis currently happens
+  in JournalAnswerService.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions,
+  including the existing citation-grounding test cases in JournalAnswerServiceTest.php
+  and the eval_runner.py rubric (grounding/citation/uncertainty scoring) -- this phase
+  must not regress citation accuracy while adding explanatory capability.
+- php -l passes on all new/modified PHP files.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/AnswerSynthesizerTest.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: '2026-08-13T14:03:24.987916Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Phase 3 of v3.md, gated on T-PTG-022 (EvidenceRanker). Flagged the Journal-vs-explanation
+    distinction as the single most important behavioral change in this phase per v3.md's
+    own framing, and made explicit that this must not loosen the existing hard citation-grounding
+    requirements (v3.md section 2.2/2.3) -- explanation capability is additive, not
+    a relaxation of what already exists.
+- timestamp: '2026-08-13T12:55:22.154131Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+- timestamp: '2026-08-13T14:03:24.988078Z'
+  action: CLAIM
+  actor: Antigravity-Worker
+- timestamp: '2026-08-13T14:05:32.390540Z'
+  action: SUBMIT
+  actor: Antigravity-Worker
+- timestamp: '2026-08-13T14:06:11.510371Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-13T14:06:12.114458Z'
+  action: CLOSE
+  actor: Willis Miller

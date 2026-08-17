@@ -1,0 +1,23 @@
+task_id: T-INTY-025
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 8404079c82c6b27b6500fa62ab65ebe0e94b8bc6
+verdict: PASS
+findings:
+- severity: INFO
+  description: User reviewed the merge decision directly rather than through a
+    separate peer-review pass -- explicitly chose master (production) over test
+    via AskUserQuestion, so the deploy decision itself constitutes the human's
+    sign-off called for by human_review_required. Merged a17698a0 to master, FTP
+    deploy run 31816284971 succeeded, endpoint verified live returning 401 (token
+    already installed from prior admin-endpoint work this session, not just
+    reachable-but-unconfigured).
+  file_reference: null
+- severity: MINOR
+  description: phpunit baseline comparison was made across two different repo
+    states (worktree base vs. a later master) rather than a strict before/after
+    on the identical commit, per the handoff's own disclosure. Acceptable given
+    both runs land in the same pre-existing failure range documented across
+    T-INTY-018/019/021, but not full T-INTY-018-grade rigor.
+  file_reference: handoffs/T-INTY-025_handoff.yaml
+reviewed_at: '2026-08-14T15:52:00Z'

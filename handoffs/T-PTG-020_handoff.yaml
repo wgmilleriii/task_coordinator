@@ -1,0 +1,44 @@
+task_id: T-PTG-020
+agent: Antigravity-Worker
+model: Gemini
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-020
+base_sha: 168ac566731557adccfaeb82efd234a49c2ebbfb
+head_sha: fb25d2bc2f009bb930429ef2d722366116945b3b
+evidence_output: '9/9 security and eval suite PASS.
+
+  EvidenceRetrieverTest PASS.
+
+  ConversationStateServiceTest PASS.
+
+  ResearchPlannerTest PASS.
+
+
+  Go/No-go benchmark completed and compared old pipeline vs new v3_beta pipeline.
+
+  '
+peer_review_notes: 'The Go/No-Go benchmark comparison shows that the new v3_beta pipeline
+  significantly improves retrieval quality and answer generation over the old scholarly
+  pipeline:
+
+  1. For multi-source synthesis, the new pipeline retrieved and cited multiple correct
+  sources (17 citations) vs the old pipeline (only 1 citation).
+
+  2. For speculative questions, the new pipeline properly grounded its answer and
+  refused to speculate ("I''m designed to provide information based on retrieved text"),
+  while the old pipeline happily fabricated speculative answers.
+
+  3. For sentiment aggregation across multiple years, the new pipeline pulled substantially
+  more detailed concerns (declining membership, RPT examiner pool, innovation) compared
+  to the old pipeline.
+
+  Note: The new pipeline takes longer because it executes 3-5 distinct searches from
+  the ResearchPlanner, but it produces vastly superior answers. It is currently wired
+  behind the $isV3Beta (`v3_beta` preset) feature flag in JournalAnswerService.php,
+  allowing graceful fallback if not used.
+
+  '
+human_action_required: null
+token_spend: null
+cost_usd: null

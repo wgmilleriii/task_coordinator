@@ -1,0 +1,101 @@
+id: T-PTG-028
+title: 'JournalGPT v3: add a dedicated end-to-end v3_beta regression test to the golden
+  hammer suite'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T15:30:00Z'
+audited_at: '2026-08-13T15:19:27.988340Z'
+audited_by: FleetCoordinator
+audited_repo_sha: 41f365fb71fac941fc8fac629b9f98371d35a9b1
+dependencies:
+- T-PTG-026
+scope:
+- 'BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found
+  that JournalAnswerService::ask() threw an uncaught TypeError on virtually every
+  real v3_beta request that reached EvidenceRanker (a null conversation state passed
+  into a non-nullable parameter) -- meaning the entire v3_beta pipeline could not
+  complete a real multi-chunk request in production before T-PTG-026''s fix. This
+  was NOT caught by security_and_eval_suite.php''s existing 9/9 golden hammer suite,
+  even though that suite has run green through every one of Phases 1-5''s merges.
+  It was only caught because T-PTG-026 happened to be the first task that actually
+  exercised the complete v3_beta pipeline end-to-end (planner -> retriever -> ranker
+  -> synthesizer -> claim validator) against realistic multi-chunk retrieval, rather
+  than a single-chunk/empty-retrieval/mocked-shortcut path.'
+- 'THE GAP, SPECIFICALLY: JournalAnswerServiceTest.php''s existing tests (including
+  the T-PTG-025-added TEST 4b for bulk-extraction refusal) exercise v3_beta only far
+  enough to hit the refusal shortcut (which fires before the pipeline is even reached)
+  or return early. No existing test in the golden hammer suite actually drives a v3_beta
+  request through EVERY stage -- ConversationStateService.getState() returning null,
+  ResearchPlanner.createPlan(), EvidenceRetriever.retrieve() with the new MIN_RELEVANCE_SCORE
+  floor, EvidenceRanker.rankEvidence(), AnswerSynthesizer.synthesize(), and ClaimValidator.validate()
+  -- for a realistic multi-chunk, multi-claim question, the way journalgpt/v3/replay_benchmark.php
+  (T-PTG-026''s one-off replay tool, not part of the permanent test suite) does.'
+- 'WHAT TO DO: add a new permanent test file (e.g. journalgpt/tests/V3PipelineEndToEndTest.php)
+  to the security_and_eval_suite.php runner, using the same mock/stub OpenAIClient
+  approach already established in this codebase''s test suite (see how JournalAnswerServiceTest.php
+  and T-PTG-026''s replay_benchmark.php each set up mocked responses) -- but wired
+  as a genuine permanent regression test, not a one-off script. It must: (1) drive
+  at least one v3_beta request through every pipeline stage listed above with realistic
+  multi-chunk retrieved evidence (not empty/single-chunk), asserting the request completes
+  successfully rather than throwing; (2) specifically assert that a conversation with
+  NO persisted conversation_state row (i.e. getState() returns null, the exact condition
+  that caused T-PTG-026''s bug) does not crash the pipeline -- this is the regression
+  case that must never silently reappear; (3) assert the final response shape (answer
+  text, citations, is_grounded) is well-formed.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  the new test becomes suite #10 (or is folded into an existing suite entry) in `DB_HOST=127.0.0.1
+  DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php`,
+  which must show all suites PASS with zero regressions to the existing 9.'
+- 'EXPLICITLY OUT OF SCOPE: changing pipeline behavior -- this task only adds test
+  coverage for the pipeline as it exists after T-PTG-026''s fixes. If the new test
+  reveals ANOTHER latent bug, stop and report it rather than silently patching around
+  it -- file it the way T-PTG-026''s and T-PTG-027''s findings were filed, with concrete
+  reproduction evidence.'
+definition_of_done:
+- A new permanent test (not a one-off script) exercises the complete v3_beta pipeline
+  end-to-end with realistic multi-chunk evidence and is wired into security_and_eval_suite.php's
+  runner.
+- The test specifically covers the null-conversation-state regression case that caused
+  T-PTG-026's bug (a conversation with no persisted state must not crash the pipeline).
+- security_and_eval_suite.php shows all suites PASS with zero regressions to the existing
+  9, including the new test.
+- php -l passes on all new/modified PHP files.
+- The handoff states whether the new test would have caught T-PTG-026's bug if it
+  had existed beforehand (i.e. prove the test is actually meaningful, not just present).
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T15:32:12.312362Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T15:30:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: Filed directly from T-PTG-026's handoff finding -- the golden hammer suite
+    ran 9/9 green through every v3 phase merge (T-PTG-020 through T-PTG-026) while
+    a bug that crashed virtually every real v3_beta request sat unnoticed, because
+    no existing test drove the pipeline through every stage with realistic multi-chunk
+    evidence. Filed as a process/coverage gap independent of T-PTG-027 (the state-wiring
+    fix itself) since a regression test guarding against this SPECIFIC failure mode
+    (null state -> uncaught TypeError) has value even after T-PTG-027 lands, to catch
+    a future reintroduction.
+- timestamp: '2026-08-13T15:19:27.988539Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against 41f365fb71fac941fc8fac629b9f98371d35a9b1
+- timestamp: '2026-08-13T15:32:12.312900Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:39:18.021966Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:39:37.811784Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

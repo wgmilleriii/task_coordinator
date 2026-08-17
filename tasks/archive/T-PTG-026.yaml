@@ -1,0 +1,102 @@
+id: T-PTG-026
+title: 'JournalGPT v3 Phase 6: replay benchmark and tune (final evaluation pass)'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T12:55:24.012752Z'
+audited_by: FleetCoordinator
+audited_repo_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+dependencies:
+- T-PTG-025
+- T-PTG-015
+scope:
+- 'CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md sections
+  24-26 (Evaluation Dataset, Evaluation Metrics, Observability) and section 32''s
+  Phase 6 description before starting. This is the final phase, gated on T-PTG-025
+  (IP hardening) AND T-PTG-015 (the original Phase 0 benchmark, for direct before/after
+  comparison).'
+- 'WHAT TO DO, per v3.md section 32 exactly: "Replay benchmark and tune: prompts,
+  retrieval breadth, model choice, evidence limits, tier behavior, latency, cost."
+  Run T-PTG-015''s full 30-50 example benchmark against the NOW-COMPLETE v2/v3 pipeline
+  (Phases 1-5 all merged) and score it against v3.md section 25''s metrics: conversational
+  understanding, retrieval quality, answer usefulness, citation accuracy, citation
+  relevance, continuity, uncertainty handling, IP compliance, latency, cost.'
+- 'THIS IS THE FINAL GO/NO-GO, not just a tuning pass: for every one of T-PTG-015''s
+  original disappointing examples, the handoff must state whether the new pipeline
+  actually fixes it (e.g. does the new pipeline correctly resolve the "why?" follow-up
+  now that ConversationStateService + ResearchPlanner exist?) or whether it does not
+  -- do not present an average score improvement as success if specific, previously-broken
+  cases documented in the benchmark are still broken. v3.md''s own Success Criteria
+  (section 34) is a concrete multi-turn conversation example ("What does the Journal
+  say about false beats?" -> "What causes them?" -> "Is that different in wound strings?"
+  -> "So what would you check first?") -- test this exact flow live as part of the
+  evaluation.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging any tuning changes to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and
+  confirm 9/9 PASS with zero regressions after every tuning iteration, not just once
+  at the end.'
+- 'EXPLICITLY OUT OF SCOPE: building any new pipeline component -- Phases 1-5 are
+  done by this point, this phase only tunes what exists (prompts, thresholds, retrieval
+  breadth, model/tier choice) based on the benchmark replay results. Do not add new
+  lib classes here.'
+definition_of_done:
+- T-PTG-015's full benchmark is replayed against the complete new pipeline, and results
+  are scored per v3.md section 25's metrics, with per-example before/after comparison
+  (not just aggregate scores) for every originally-disappointing example.
+- v3.md's section 34 success-criteria conversation flow (false beats -> causes ->
+  wound strings comparison -> practical synthesis) is tested live and the handoff
+  states plainly whether it now works as the PRD envisions.
+- At least one tuning iteration is made based on benchmark results (prompt, retrieval
+  breadth, evidence limit, or tier behavior adjustment) with a documented before/after
+  score change, proving the tuning loop actually works, not just that a single pass
+  was run.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions
+  after all tuning changes.
+- 'The handoff includes a clear final recommendation to Chip: is JournalGPT v3 ready
+  to be the default experience for all members, or does it need further work before
+  full rollout, with specific reasoning tied to the benchmark results.'
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T15:01:57.872356Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Final phase of v3.md, gated on both T-PTG-025 (IP hardening) and T-PTG-015
+    (the original Phase 0 benchmark, needed for direct before/after comparison --
+    this is the only task in the v3 chain with two dependencies for exactly that reason).
+    Framed as requiring per-example evidence of fixes, not just aggregate score improvement,
+    since the whole point of Phase 0's benchmark was to ground "did this actually
+    help" in specific real member pain points rather than vibes.
+- timestamp: '2026-08-13T12:55:24.012909Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+- timestamp: '2026-08-13T15:00:00.000000Z'
+  action: POLICY_CHANGE
+  actor: FleetCoordinator
+  details: Chip explicitly authorized dropping human_review_required for T-PTG-025
+    and T-PTG-026 (this push only) so the fleet task itself can reach DONE without
+    a manual close. This does NOT authorize flipping v3 into production as the default
+    member experience -- the DoD's "ready to be default experience" question stays
+    a recommendation FOR Chip to act on separately, not something this task or its
+    closure implements.
+- timestamp: '2026-08-13T15:01:57.872745Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:17:42.626526Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:18:04.045946Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

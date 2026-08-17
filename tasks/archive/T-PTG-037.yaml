@@ -1,0 +1,112 @@
+id: T-PTG-037
+title: Add a "Labs" page introducing experimental features, with a full explainer
+  section for Quizzes
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T19:30:00Z'
+audited_at: '2026-08-13T18:47:53.365750Z'
+audited_by: FleetCoordinator
+audited_repo_sha: 3a9e1f2
+dependencies:
+- T-PTG-034
+scope:
+- 'SOURCE: Chip asked directly ("the quiz feature should be marked new and added to
+  a ''labs'' new page with a description of how it works... quiz needs its own explanatory
+  section, it''s a big thing") after T-PTG-034 (quizzes) shipped. This is new UI surface,
+  not a code fix -- there is no existing "Labs" or "what''s new" concept anywhere
+  in this codebase (confirmed by grep: no `labs.php`, no "New" badge convention, no
+  changelog-style page other than `changelog.php` which is git-commit-log-driven,
+  not feature-announcement-driven -- read changelog.php before starting to confirm
+  it is NOT the right place for this and understand why a separate page is warranted).'
+- 'PRECEDENT TO FOLLOW: this codebase has an established pattern for small dedicated
+  pages linked from the sidebar -- `featured.php` and `help.php` are both linked from
+  `index.php`''s sidebar header as `.btn-new-chat`-styled buttons (see index.php lines
+  ~199-205). Add `labs.php` as a third link in that same cluster, matching the existing
+  visual/markup convention exactly (do not invent a new nav pattern).'
+- 'FIX SCOPE 1 -- the Labs page itself: a new `journalgpt/labs.php`, structured like
+  `help.php` (a single authenticated page, `Authorization::requireRole(null)`, reusing
+  the shared header/theme-switcher/CSS the way every other small dedicated page in
+  this codebase already does). Content: an intro framing this as where new/experimental
+  JournalGPT features are introduced before or alongside their main rollout, followed
+  by one section per labs-eligible feature.'
+- 'FIX SCOPE 2 -- the Quiz explainer (the actual point of this task, per Chip''s explicit
+  "it''s a big thing"): a full, real explanatory section, not a one-liner. Must cover,
+  in plain member-facing language (not implementation jargon): (1) how to generate
+  one -- the "Generate Quiz" button appears on any cited/grounded answer; (2) what
+  happens -- 5-8 multiple-choice questions generated from that specific answer''s
+  Journal sources; (3) the grounding guarantee -- every question is tied to a real
+  citation, shown when you review your results, so you can always verify a question
+  against the actual Journal text (this is the feature''s actual differentiator and
+  worth stating plainly, not buried); (4) retaking -- you can retake a quiz as many
+  times as you want, your score history is kept; (5) sharing -- quizzes can be shared
+  via a link the same way conversations can; anyone with the link can see the questions,
+  but only a logged-in PTG member can actually take it and get scored. Read T-PTG-034''s
+  actual landed implementation (`journalgpt/quiz.php`, `journalgpt/lib/QuizGenerator.php`)
+  directly before writing this -- describe what the feature ACTUALLY does, don''t
+  paraphrase the task spec from memory.'
+- 'FIX SCOPE 3 -- "New" marking: quizzes need a visible "New" badge/indicator, both
+  (a) on the Labs page itself next to the Quiz section heading, and (b) on the sidebar''s
+  Labs nav link itself (so a member notices something changed without having to already
+  know to check Labs) -- Worker''s call on exact visual treatment, but match this
+  codebase''s existing badge conventions (see `.brand-badge` "Pilot" badge in index.php''s
+  sidebar header, or the unread-dot styling from T-PTG-033) rather than inventing
+  a new visual language.'
+- 'EXPLICITLY OUT OF SCOPE: a general feature-flagging/labs-opt-in system (e.g. per-user
+  toggles to enable/disable experimental features) -- this is a single static explainer
+  page, not an experimentation framework. Do not change quiz.php''s actual behavior
+  or add functionality to the quiz feature itself -- T-PTG-034 is done and closed;
+  this task only documents/surfaces it. If the Worker judges it natural to also list
+  a member''s own recently-generated quizzes on the Labs page (a lightweight, obviously-useful
+  extension of "here''s the Quiz feature"), that''s fine to include, but it is not
+  required by this task''s DoD -- do not let it become a large undertaking.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to test, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm ALL suites
+  PASS with zero regressions.'
+definition_of_done:
+- journalgpt/labs.php exists, requires authentication, and is linked from index.php''s
+  sidebar alongside Featured Answers / Help & Documentation, matching their existing
+  visual/markup pattern.
+- The Quiz section is a genuine explainer (the five points in FIX SCOPE 2), written
+  against what T-PTG-034 actually built, not a generic restatement of the task spec.
+- A visible "New" indicator appears both on the Labs page (next to the Quiz section)
+  and on the sidebar's Labs nav link.
+- php -l passes on all new/modified PHP files.
+- The golden hammer suite (security_and_eval_suite.php) passes with zero regressions.
+- A short manual/browser verification (screenshot or browse-skill check) confirming
+  the page renders correctly and the nav link/badge are visible, included in the handoff.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T18:48:00.703218Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T19:30:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: Filed at Chip's direct request immediately after T-PTG-034 (quizzes) shipped.
+    Grounded the nav-link pattern in featured.php/help.php's existing sidebar convention
+    rather than inventing a new one, and explicitly flagged that the Quiz section
+    must describe the actual landed T-PTG-034 implementation (not a re-paraphrase
+    of that task's spec), since Chip specifically emphasized it needs real substance
+    ("it's a big thing"), not a placeholder blurb.
+- timestamp: '2026-08-13T18:47:53.367012Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against 3a9e1f2
+- timestamp: '2026-08-13T18:48:00.703762Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T18:53:45.362803Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T18:54:05.417781Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

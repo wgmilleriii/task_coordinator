@@ -1,0 +1,39 @@
+task_id: T-PTG-027
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 49ff1b4da4514d450a74fddf9f5e15f5714b77b2
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Reviewed the diff directly: updateState() is called from
+    JournalAnswerService::ask()''s v3_beta branch after the full response
+    (citations, clean answer, resolved article UIDs) is assembled, guarded by
+    `$isV3Beta && isset($stateService) && $conversationId > 0` and wrapped in a
+    try/catch(\Throwable) so a persistence failure can never take an otherwise-
+    successful answer down. No redesign of the state shape: important_entities/
+    open_questions (which nothing in the pipeline currently derives) correctly
+    carry forward the prior stored value rather than being blanked each turn;
+    topic/technical_context come from the planner''s existing structured output;
+    important_sources merges newly-resolved article UIDs into the prior list
+    rather than overwriting.'
+- severity: INFO
+  description: 'Independently re-ran the proof myself rather than trusting the
+    worker''s report: ran journalgpt/v3/state_persistence_flow.php (8-turn/16-message
+    replay, exceeding ConversationContext''s bounded ~6-message window) against
+    the merged `test` branch and confirmed turns 2 through 8 all show a
+    populated "Persistent Conversation State" reaching the planner -- including
+    turns 5-8, well past where turn 1''s raw messages would have already fallen
+    out of the bounded recent-turn window. important_sources visibly accumulates
+    (3 -> 5 -> 7 -> 9 -> 10 article UIDs across turns), proving state is read
+    back and merged forward, not just blindly overwritten. Only turn 1 correctly
+    shows None (nothing exists yet to persist).'
+- severity: INFO
+  description: 'Golden hammer suite re-run by me after merging test-T-PTG-027
+    into test (49ff1b4, to be pushed to origin/test): 9/9 pass, zero regressions.
+    php -l clean on both modified/new files. This closes the exact gap
+    T-PTG-026 identified and I independently reproduced at the time
+    (Persistent Conversation State: None on every turn of the section-34 flow)
+    -- the DoD''s explicit requirement to state plainly whether the gap is
+    closed is satisfied with concrete before/after evidence, not just an
+    assertion.'
+reviewed_at: '2026-08-13T15:31:42.030872Z'

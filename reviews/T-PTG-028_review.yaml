@@ -1,0 +1,34 @@
+task_id: T-PTG-028
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: dc1359b1238bfe15b182b26df9970134baa2a497
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Reviewed the diff: V3PipelineEndToEndTest.php drives a v3_beta
+    request through every pipeline stage (planner/retriever/ranker/synthesizer)
+    with realistic 3-chunk multi-article evidence via a stage-tracking stub
+    OpenAIClient, and correctly identifies that a plain "did ask() throw"
+    assertion would NOT have caught T-PTG-026''s bug: that fix bundled the
+    null-coalesce with broadening `catch (\Exception $e)` to `catch (\Throwable
+    $e)`, so a reverted null-coalesce today degrades silently to the legacy
+    fallback (still status=success) rather than throwing. The test correctly
+    guards on `$client->stagesHit` instead, asserting `ranker`/`synthesizer`
+    were actually reached -- the thing that goes missing under the regression.
+    Wired into security_and_eval_suite.php as suite 9/10 following the exact
+    same try/catch(Throwable) registration pattern as the other 9 suites.'
+- severity: INFO
+  description: 'The DoD''s "prove the test is meaningful" requirement was
+    satisfied with real before/after evidence, not just an assertion: the
+    worker temporarily reverted the null-coalesce, ran the new test, and it
+    failed with stagesHit={"planner":true,"retriever":true} (ranker/synthesizer
+    never reached) -- then restored the fix (confirmed via git diff showing
+    zero change to JournalAnswerService.php) and reran, getting a clean PASS.'
+- severity: INFO
+  description: 'Independently re-ran the golden hammer suite myself after
+    merging test-T-PTG-028 into test (dc1359b, to be pushed to origin/test):
+    10/10 suites pass, including V3PipelineEndToEndTest. php -l clean on both
+    modified/new files. This closes the second of the two follow-up gaps
+    T-PTG-026 identified -- the golden hammer suite no longer has a blind spot
+    for a full-pipeline crash hiding behind early-exit test paths.'
+reviewed_at: '2026-08-13T15:39:20.742581Z'

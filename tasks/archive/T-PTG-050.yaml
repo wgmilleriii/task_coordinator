@@ -1,0 +1,167 @@
+id: T-PTG-050
+title: CSV-driven per-article extraction pilot (5-8 issues) using human-curated Airtable
+  ground truth instead of LLM boundary inference
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+created_at: '2026-08-16T00:00:00Z'
+dependencies: []
+scope:
+- 'Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md
+  (LLM boundary inference from raw flattened text is unreliable -- every one of 8
+  sampled issues had page-range gaps and/or overlaps). docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md
+  (T-PTG-047, DONE/merged into test -- built coverage.py and toc_offset_repair.py,
+  found the repair pass fixes overlaps but makes measured gaps worse for a diagnosable
+  reason, and confirmed the TOC-anchor-offset mechanism -- printed page -> real [[page:N]]
+  anchor page via footer-derived offset diffing -- works and empirically derives offset=2
+  for every one of the 8 sampled issues at 100% confidence). docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md
+  (T-PTG-048, status PEER_REVIEW as of this task''s creation, NOT yet merged into
+  test -- confirm current merge status at task start via `git merge-base --is-ancestor
+  test-T-PTG-048 test`; if still unmerged, reference its worktree ../newmexicoptg.org-T-PTG-048
+  directly. T-PTG-048 ground-truthed PTJ-2020-02 against its own real table of contents
+  and found LLM extraction drops or silently absorbs 3 of 6 short front-matter department
+  columns -- President''s Message, TT&T, The Piano Corner -- into a neighboring mis-anchored
+  article''s range, a failure invisible to page-coverage checking alone. This 15-row
+  ground-truth table is reused directly in this task''s cross-check -- do not re-derive
+  it, it is quoted in full in that doc''s "PTJ-2020-02 -- full 15-row ground-truth
+  diff" section.)'
+- 'The new resource that changes the approach: a human-curated CSV export (a real
+  Airtable export, NOT scraped or LLM-generated) of the Piano Technicians Journal''s
+  article index exists at journalgpt/pdfs/CompleteList-Sortable-Grid view.csv. 4130
+  real article rows, columns: Number, "Link to \nIssue" (issue in "Mon-YY" format,
+  e.g. "Jan-79", "Feb-26"), Page (printed page number, integer), Article Title, Author(s),
+  Summary/Keywords, Core skills, Concatenation, "Link to Issue" (a document download
+  URL). Covers Jan-79 through Apr-26 (568 distinct issue labels). This is authoritative,
+  human-entered ground truth for title/author/printed-page -- NOT something to be
+  doubted or re-validated the way LLM output was. Encoding is utf-8-sig (has a BOM);
+  there is a blank separator row near the top of the file (row 2, all-empty except
+  a "---" in the Concatenation column) -- handle both when parsing. Some trailing
+  rows (e.g. "Apr-26") have empty Page/Title/Author fields (future/uncatalogued issues)
+  -- skip rows with an empty Article Title.'
+- 'Why this changes the extraction approach entirely: previously the hard, unsolved
+  problem was inferring article BOUNDARIES from raw text with no ground truth. Now,
+  for any issue with CSV rows, the real title, author, and printed start page of every
+  article are already known, in order. This converts the problem from "infer boundaries"
+  to "look up known start pages, slice text between consecutive starts." Three specific
+  known wrinkles must be actually solved, not hand-waved past: (1) the last article
+  in an issue has no "next" row to bound its end -- needs an explicit documented fallback
+  (e.g. extend to the issue''s final [[page:N]] anchor, accepting some back-matter/ad
+  content may be included as a known limitation); (2) ad/classified/index pages likely
+  are not cataloged as their own CSV rows -- this assumption must be spot-checked
+  directly against a real issue''s raw text at a boundary, not assumed; if an ad page
+  sits between two cataloged articles'' page ranges, the naive slice will incorrectly
+  absorb it into the preceding article -- report findings honestly whether clean or
+  contaminated; (3) the printed-page-to-anchor-page offset must be computed per issue,
+  not hardcoded to 2, by reusing/extending T-PTG-047''s toc_offset_repair.py approach
+  (specifically its footer-derived offset computation: extract_footer_offsets() +
+  derive_front_matter_offset() in journalgpt/spikes/T-PTG-047/toc_offset_repair.py,
+  which depends only on common.py''s page_blocks()/get_anchor_pages() -- this part
+  does not depend on any LLM-produced pieces and is directly reusable for this task''s
+  purpose).'
+- 'Pilot issue set (5-8 issues, NOT a full-corpus run): parse the CSV, match rows
+  to issues in journalgpt/corpus/manifest.json by converting "Mon-YY" to "PTJ-YYYY-MM"
+  (or "PTG-YYYY-MM" for the 2 issues using that naming convention -- PTG-2022-10 and
+  PTG-2022-11 are the only two). The pilot set MUST include: PTJ-2020-02 (has T-PTG-048''s
+  hand-derived 15-row ground truth to cross-check against -- this is the single most
+  important validation signal), PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 (have T-PTG-047
+  extraction output at journalgpt/spikes/T-PTG-047/output/<issue>.result.json to compare
+  article counts/boundaries against). Plus 1-3 more of the worker''s choice from issues
+  that have all three of: a CSV entry, a PDF in journalgpt/pdfs/, and extracted text
+  in journalgpt/corpus/extracted/.'
+- 'Per-pilot-issue processing: compute the real per-issue page offset (reuse extract_footer_offsets()
+  + derive_front_matter_offset() from journalgpt/spikes/T-PTG-047/toc_offset_repair.py,
+  do not reimplement from scratch), convert each CSV row''s printed Page to a real
+  anchor page using that offset, order articles by anchor page within the issue, and
+  slice text from journalgpt/corpus/extracted/<issue>/*.txt between each article''s
+  start anchor and the next article''s start anchor minus one (last article: use the
+  issue''s final anchor page per wrinkle #1 above, documented as a known limitation).'
+- 'Output format: write ONE markdown file per article, with YAML frontmatter (issue,
+  article_title, author(s), printed_page, anchor_page_range, core_skills, summary_keywords,
+  source_csv_row_number) followed by the full sliced body text. Save under a NEW directory
+  journalgpt/corpus/articles_pilot/<issue>/<slugified-title>.md -- explicitly NOT
+  under journalgpt/corpus/extracted/ or journalgpt/spikes/, since this is new, clearly-pilot
+  output.'
+- 'Required investigation, not optional: directly investigate wrinkle #2 (ad/index
+  contamination) by picking at least one boundary in the pilot set and reading the
+  actual sliced text to check whether ad/classified content bleeds into an article''s
+  extracted file. Report the finding honestly whether clean or contaminated -- do
+  not assume either outcome going in.'
+- 'Required cross-check, not optional: for PTJ-2020-02, compare the CSV-driven output
+  against T-PTG-048''s 15-row hand-derived ground-truth table (quoted in full in docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md''s
+  "PTJ-2020-02 -- full 15-row ground-truth diff" section). Specifically answer: does
+  the CSV-driven approach correctly produce the 6 short department items (Editorial
+  Perspective, President''s Message, TT&T, The Piano Corner, Tight Tuning Pins Part
+  1, Re-Covering Hammers by Hand) as 6 separate, correctly-bounded pieces, where T-PTG-048
+  found LLM extraction dropped/absorbed 3 of the 6? This is the single most important
+  validation signal for whether the new approach is actually better. For PTJ-2024-01/2025-03/2025-10,
+  compare article counts/boundaries against T-PTG-047''s output/<issue>.result.json.'
+- 'Required written report under docs/30-Engineering/ (Dewey Decimal protocol, correct
+  YAML frontmatter per task_coordinator/schemas/doc_frontmatter.schema.json) presenting:
+  the offset computed per pilot issue (and whether it matched the DB default of 2),
+  the ad-contamination investigation findings, the PTJ-2020-02 cross-check against
+  T-PTG-048''s known ground truth (does it fix the six-short-department-item failure
+  mode -- answer explicitly yes/no/partially with evidence), sample output (2-3 full
+  generated .md files shown inline or excerpted), and a clear, explicit recommendation
+  on whether this CSV-driven approach should be scaled to the full ~90-issue corpus.'
+- 'Explicitly OUT OF SCOPE for this task: no full 90-issue corpus run (pilot only,
+  5-8 issues). No schema/DB design or migration. No touching test/prod (this task
+  is entirely local file reads/writes under journalgpt/corpus/articles_pilot/ and
+  a docs/ report -- no admin endpoint, no database connection). No modifying journalgpt/corpus/extract_corpus.py.
+  No new OpenAI/LLM API calls required -- this is CSV parsing + text slicing, not
+  LLM extraction. If the worker finds itself wanting to make an LLM call for any reason,
+  it must stop and flag why in the report rather than just doing it.'
+definition_of_done:
+- CSV parsed correctly (utf-8-sig BOM handled, blank separator row skipped, rows with
+  empty Article Title skipped); row counts sanity-checked (4130 total rows minus header/separator/empty-title
+  rows).
+- Pilot set of 5-8 issues chosen, explicitly including PTJ-2020-02, PTJ-2024-01, PTJ-2025-03,
+  PTJ-2025-10 plus 1-3 more, each with a documented reason for inclusion.
+- Per-issue page offset computed via journalgpt/spikes/T-PTG-047/toc_offset_repair.py's
+  extract_footer_offsets()/derive_front_matter_offset() (reused, not reimplemented)
+  and reported per issue, not hardcoded to 2 anywhere in the pilot code.
+- One markdown file per article written under journalgpt/corpus/articles_pilot/<issue>/<slugified-title>.md
+  with YAML frontmatter (issue, article_title, author(s), printed_page, anchor_page_range,
+  core_skills, summary_keywords, source_csv_row_number) and full sliced body text.
+- Last-article-in-issue end-of-range fallback explicitly implemented and documented
+  (wrinkle
+- Ad/index contamination at a real pilot-set boundary directly investigated by reading
+  actual sliced text, with findings reported honestly regardless of outcome (wrinkle
+- PTJ-2020-02 cross-checked article-by-article against T-PTG-048's 15-row ground-truth
+  table, with an explicit yes/no/partially answer on whether all 6 short department
+  items are now correctly produced as separate pieces.
+- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 cross-checked against T-PTG-047's output/<issue>.result.json
+  for article count/boundary agreement.
+- Written report under docs/30-Engineering/ with correct Dewey Decimal category and
+  YAML frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json,
+  covering all required findings above plus 2-3 sample generated .md files and a clear
+  scale-up recommendation.
+- No changes to journalgpt/corpus/extract_corpus.py, no database migration, no test/prod
+  admin endpoint touched, no OpenAI/LLM API calls made (or, if the worker judged one
+  unavoidable, an explicit flag in the report explaining why before proceeding).
+verification_command: find journalgpt/corpus/articles_pilot -name "*.md" | grep -q
+  .
+human_review_required: true
+audited_at: '2026-08-16T14:57:48.540273Z'
+audited_by: Claude-PM
+audited_repo_sha: a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87
+events:
+- timestamp: '2026-08-16T14:57:48.540613Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87
+- timestamp: '2026-08-16T14:58:33.677374Z'
+  action: CLAIM
+  actor: Worker-CSVPilot1
+- timestamp: '2026-08-16T15:07:01.252894Z'
+  action: SUBMIT
+  actor: Worker-CSVPilot1
+- timestamp: '2026-08-16T15:14:46.997765Z'
+  action: RECORD_REVIEW
+  actor: Claude-Reviewer
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-16T15:19:12.096766Z'
+  action: CLOSE
+  actor: Willis Miller
+owner: Worker-CSVPilot1
+claimed_at: '2026-08-16T14:58:33.676992Z'

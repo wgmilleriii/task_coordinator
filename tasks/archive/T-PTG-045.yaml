@@ -1,0 +1,46 @@
+id: T-PTG-045
+title: 'Phase 4: Member Knowledge Profiles'
+status: CANCELLED
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+definition_of_done: '- "My Knowledge Profile" page is accessible.
+
+  - Metrics combine logs and metadata tags.
+
+  - Quiz button integrates with least-known tags.
+
+  - Tests pass in `php tests/security_and_eval_suite.php`.
+
+  '
+audited_at: '2026-08-13T21:52:33.796672Z'
+audited_by: Claude-PM
+audited_repo_sha: 32132e5bb4912764677e47cdd11bd39de9621698
+verification_command: cd journalgpt && php tests/security_and_eval_suite.php
+owner: Worker-Phase4
+events:
+- timestamp: '2026-08-13T21:52:33.797321Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 32132e5bb4912764677e47cdd11bd39de9621698
+- timestamp: '2026-08-13T22:09:02.426397Z'
+  action: SUBMIT
+  actor: Worker-Phase4
+- timestamp: '2026-08-14T21:53:51.000000Z'
+  action: CANCEL
+  actor: Willis Miller
+  details: Obsolete/duplicate. "My Knowledge Profile" (Research Topics and Holes) already shipped
+    live on profile.php outside this fleet board, built against the real article_topics taxonomy
+    (see docs/superpowers/specs/2026-08-14-session-handoff.md). Branch test-T-PTG-045 was never
+    pushed to origin, so no merge occurred; closing without action.
+scope:
+- 'Show members what they *don''t* know and encourage exploration.
+
+  - Create a "My Knowledge Profile" page.
+
+  - Join the member''s `journalgpt_citation_logs` with the `journalgpt_articles` tags.
+
+  - Display a radar chart or simple list showing their most queried topics vs. untouched topics.
+
+  - Provide a "Take a Quiz on an Unfamiliar Topic" button that feeds their least-known tags
+  into the new Quizzes feature.'

@@ -1,0 +1,119 @@
+id: T-INTY-025
+title: Single-file PHP manifest script -- SHA-256 every tracked file, local CLI +
+  token-gated prod endpoint
+repo: intypiano
+priority: P2
+lane: ANY
+status: DONE
+owner: Worker-Manifest1
+created_at: '2026-08-14T15:45:00-06:00'
+dependencies: []
+requires_doc_update: false
+scope:
+- User request (2026-08-14, same session that found hub.php stranded on a stale deploy)
+  - a single PHP script that walks the codebase, SHA-256s every file, and writes one
+  JSON manifest keyed by path, each entry holding a sha256 and size. Motivation is
+  concrete, not hypothetical - TODAY, api/v1/admin/hub.php's "Report a Bug" link (commit
+  938cd1ea) sat stranded on production for over an hour because two deploy runs that
+  carried it were cancelled mid-flight and the manual retry that succeeded was scoped
+  to exclude hub.php. A local-vs-prod SHA diff would have surfaced that in one request
+  instead of GitHub Actions log archaeology.
+- ONE script, not two. Same file, two invocation modes - `php scripts/file_manifest.php`
+  from the CLI (local, or in CI) walks the working tree directly and writes the JSON
+  to disk. Hit over HTTP (the only way to execute PHP on GoDaddy production -- no
+  SSH access exists per this repo's CLAUDE.md) it must be gated by the SAME bearer-token
+  convention already used by api/v1/admin/logRefill.php, addTicket.php, and migrate_tenant.php
+  (classes/core/api_token.php's intypiano_api_require_token() -- fail closed, no token
+  configured means refuse everything, hash_equals compare). Do not invent a second
+  auth mechanism.
+- File selection - walk `git ls-files` when running from a git checkout (local/CI);
+  when running from the deployed production tree (no .git directory reachable, or
+  git unavailable), fall back to a recursive filesystem walk from the document root.
+  Either way, EXCLUDE - `databasedumps/` (76 files of real production PII, CLAUDE.md
+  flags this explicitly, no reason to enumerate it even as hashes), `ddl/134/*.sql.deferred`
+  (CLAUDE.md - never touch), `config.php`, `config_local.php`, `config/api_token.php`
+  (secrets -- a hash doesn't leak the secret, but exclude on principle rather than
+  make a future reader verify that), `.git/`, `vendor/`, `node_modules/` if present.
+- Output shape - a single JSON object with top-level keys generated_at (ISO8601 string),
+  host (string), file_count (int), and files -- an object mapping each relative file
+  path to an object holding its sha256 hex digest and byte size. Deterministic key
+  order (sorted paths) so two manifests diff cleanly with any JSON-aware diff tool,
+  not just byte-for-byte.
+- A second, small comparison script/mode - given two manifest JSON files (e.g. a freshly-generated
+  local one and a fetched-from-prod one), report three lists - files present only
+  in local, present only in prod, and present in both with a hash mismatch. This is
+  the actual deliverable the user wants to look at.
+- Production endpoint placement - api/v1/admin/file_manifest.php, following the existing
+  api/v1/admin/ convention exactly (same require_once ordering, same JSON content-type
+  header, same token gate at the very top before any filesystem work). GET is fine
+  (read-only, no state change) but still token-gated -- this is a new production surface
+  that enumerates the entire file tree with hashes, which is exactly the kind of thing
+  that must not be reachable without the shared secret.
+- Do NOT wire this into the deploy pipeline itself as part of this task. This is a
+  diagnostic tool the user runs on demand, not a CI gate. That's a reasonable future
+  task (T-INTY-025 does not need to become "block deploy on drift"), but scope creep
+  here would turn a small script into a pipeline change with production blast radius,
+  and the user asked for the sweep tool, not automatic enforcement.
+- Merge target is `test`, not `master` -- intypiano's deploy workflow pushes both
+  branches to different targets (test = staging, master = live production, per this
+  session's own deploy history), and per task_coordinator/README.md a task reaching
+  DONE means merged to the integration branch, not authorized for a production push.
+  Deploying api/v1/admin/file_manifest.php to the LIVE production server (as opposed
+  to just merging it to test) is a separate, deliberate step requiring the user's
+  explicit go-ahead, same as any other new admin/API surface -- do not FTP-deploy
+  it to master without asking first.
+definition_of_done:
+- scripts/file_manifest.php exists, runs cleanly via `php scripts/file_manifest.php`
+  from a plain git checkout of intypiano, and produces valid JSON matching the shape
+  described above, excluding all the paths listed above (verify by grepping the output
+  for "databasedumps" and confirming zero matches).
+- api/v1/admin/file_manifest.php exists, is token-gated via the existing classes/core/api_token.php
+  convention (confirm - a request with no Authorization header returns 401/503 per
+  that library's existing behavior, not a manifest), and returns the same JSON shape
+  when authenticated.
+- A comparison mode/script exists that takes two manifest JSON files and outputs the
+  three-way diff (local-only, prod-only, hash-mismatch) described above.
+- php -l on both new PHP files passes.
+- Manually verified against a running local server (php -S localhost:2027 -t .) per
+  CLAUDE.md's "prefer running over reading" rule - actually generate a local manifest,
+  actually hit the endpoint with and without a valid token, actually run the comparison
+  against two deliberately-different manifests (e.g. touch one file) and confirm the
+  mismatch is reported. Terminal evidence attached to the handoff, not just "should
+  work."
+- ./vendor/bin/phpunit still passes at whatever the current baseline is (no new failures
+  introduced) -- check the actual baseline by running it before AND after, per T-INTY-019's
+  PM-audit note that CLAUDE.md's stated baseline has drifted before; don't assume
+  0 failures without checking.
+- NOT deployed to live production (master) as part of this task's DoD -- merged to
+  `test` only. Flag the production-deploy step back to the user as a separate explicit
+  decision once the code is ready.
+verification_command: php -S localhost:2027 -t . & sleep 1; php -l scripts/file_manifest.php
+  && php -l api/v1/admin/file_manifest.php && php scripts/file_manifest.php && ./vendor/bin/phpunit
+human_review_required: true
+events:
+- timestamp: '2026-08-14T15:45:00-06:00'
+  action: CREATE
+  actor: FleetCoordinator
+  details: Created from direct user request in the intypiano session; see scope notes
+    for the concrete motivating incident (hub.php deploy drift, same day).
+- timestamp: '2026-08-14T15:42:04.230246Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against aaeb3dfe10aba37fc0285c92828e19fd8d57e055
+- timestamp: '2026-08-14T15:42:05.013324Z'
+  action: CLAIM
+  actor: Worker-Manifest1
+- timestamp: '2026-08-14T15:46:17.753366Z'
+  action: SUBMIT
+  actor: Worker-Manifest1
+- timestamp: '2026-08-14T15:50:00.862269Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-14T15:50:01.620394Z'
+  action: CLOSE
+  actor: Chip
+audited_at: '2026-08-14T15:42:04.229696Z'
+audited_by: FleetCoordinator
+audited_repo_sha: aaeb3dfe10aba37fc0285c92828e19fd8d57e055
+claimed_at: '2026-08-14T15:42:05.012921Z'

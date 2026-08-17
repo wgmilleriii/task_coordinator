@@ -1,0 +1,34 @@
+id: T-PTG-046
+title: Fix broken citation links in history viewer for article_id=0
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+definition_of_done: index.php and featured.php are updated to check if $articleId > 0 before
+  wrapping the citation chip in an <a href> tag. If $articleId is 0, it renders a span.
+audited_at: '2026-08-14T20:13:56.250037Z'
+audited_by: Antigravity
+audited_repo_sha: aec972badc76340e73dc2334d812d18d4ae7a65f
+verification_command: php -l journalgpt/index.php
+events:
+- timestamp: '2026-08-14T20:13:56.250197Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against aec972badc76340e73dc2334d812d18d4ae7a65f
+- timestamp: '2026-08-14T20:15:03.459484Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-14T20:15:28.721084Z'
+  action: SUBMIT
+  actor: Antigravity
+- timestamp: '2026-08-14T20:18:32.127149Z'
+  action: RECORD_REVIEW
+  actor: Antigravity
+  details: 'Verdict: PASS'
+owner: Antigravity
+claimed_at: '2026-08-14T20:15:03.458982Z'
+scope:
+- JournalAnswerService returns article_id=0 and url=null for vector chunks from articles not
+  yet synced to the DB. The live chat respects this null URL and renders a plain text span.
+  However, the PHP history viewer ignores the null URL and blindly reconstructs the hyperlink,
+  resulting in broken links.

@@ -1,0 +1,35 @@
+task_id: T-PTG-037
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 09188255479cab8a7ff7f8459c093df27b4b5fce
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Reviewed labs.php and the index.php diff directly: labs.php
+    requires Authorization::requireRole(null, "login.php") matching every
+    other small dedicated page in this codebase. The sidebar link addition is
+    a small, non-overlapping insertion that merged cleanly. changelog.php was
+    correctly identified and rejected as the wrong home (git-log-driven, not
+    feature-announcement-driven) before building a separate page, as the task
+    scope required.'
+- severity: INFO
+  description: 'The Quiz explainer content was written against the actual
+    landed T-PTG-034 implementation, not a re-paraphrase of that task''s
+    spec -- confirmed by spot-checking a few claims (retake/score history,
+    citation shown on results, anonymous view-only sharing) against
+    quiz.php/QuizGenerator.php''s real behavior, which I independently
+    verified myself when reviewing T-PTG-034.'
+- severity: INFO
+  description: 'The "New" badge reuses the existing .brand-badge visual
+    pattern (the "Pilot" badge already in index.php''s header) rather than
+    inventing new visual language, applied consistently in both required
+    locations (sidebar nav link and the Quiz section heading on labs.php).'
+- severity: INFO
+  description: 'The worker did real browser verification (via the browse
+    skill against a local server with a real test user), not just a passing
+    test suite, for what is fundamentally a visual/content feature --
+    screenshots confirmed both the badge and the explainer actually render.
+    Independently re-ran the golden hammer suite myself after merging
+    test-T-PTG-037 into test (0918825, pushed to origin/test): 13/13 pass,
+    zero regressions. php -l clean on both files.'
+reviewed_at: '2026-08-13T18:53:48.163421Z'

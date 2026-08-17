@@ -1,0 +1,105 @@
+id: T-PTG-048
+title: 'Phase 3: Citation Logging + Analytics Dashboard (corrected re-implementation)'
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+owner: FleetCoordinator
+created_at: '2026-08-14T07:51:52-06:00'
+audited_at: '2026-08-13T16:45:00-06:00'
+audited_by: FleetCoordinator
+audited_repo_sha: fef36ac
+dependencies:
+- T-PTG-047
+scope:
+- 'SUPERSEDES T-PTG-044 ("Phase 3: Citation Analytics & Logging"), which was filed
+  against an original, unrelated agent session''s worktree and never actually landed
+  on `test`. T-PTG-044 is left unmodified in tasks/active/ as a historical record --
+  see journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+  Background section for the audit findings.'
+- 'REAL SCOPE ACTUALLY SHIPPED: a new migration `journalgpt/migrations/015_citation_logs.sql`
+  creates `journalgpt_citation_logs` (user_id, conversation_id, article_id, page
+  [nullable], created_at) -- numbered 015 to continue after 014_clarification_columns.sql
+  (already merged), not 014 as the original branch numbered it, which collided.
+  journalgpt/lib/Database.php''s SQLite CLI-fallback schema was updated to match.
+  A new citation-logging hook in JournalAnswerService::ask() writes a row per citation
+  from the SAME unified, verified `$citationsOutput` list T-PTG-047 produces (not
+  a separate parse), including `page` whenever the citation has one. A new
+  `journalgpt/admin_analytics.php` dashboard shows "Most Relied Upon Articles" and
+  "Orphaned/Unused Articles", gated with `requireRole(null)` -- the same
+  any-authenticated-member pattern already established by admin_migrate.php/admin_reply.php,
+  not a nonexistent ROLE_ADMIN.'
+- 'CORRECTION vs the original T-PTG-044 narrative -- two real defects the audit
+  found: (1) the original branch''s citation-analytics logging wrote against the
+  OLD (pre-Phase-2) citation format, because Phase 3 branched before Phase 2 existed
+  in that session and never incorporated it -- so its logs would have silently mismatched
+  the new [uid:page] format Phase 2 introduces (spec Background, bullet 4). This
+  corrected implementation logs from Phase 2''s actual, already-verified citation
+  list, so there is no format drift by construction. (2) the original admin dashboard
+  required `ROLE_ADMIN`, a role that does not exist in this codebase''s production
+  role system, making it unreachable as shipped (spec Goals, last bullet) -- fixed
+  via requireRole(null).'
+- 'The citation_logs migration schema itself needed a follow-up correction (commit
+  2ffe0e5, filed jointly with T-PTG-047''s fix round) after the initial implementation''s
+  first pass got a column detail wrong relative to what the logging hook actually
+  writes.'
+definition_of_done:
+- '`journalgpt_citation_logs` table exists (via migration 015) with user_id, conversation_id,
+  article_id, page (nullable), created_at, and is mirrored in Database.php''s SQLite
+  CLI-fallback schema.'
+- 'JournalAnswerService::ask() writes a citation_logs row per citation in the unified
+  $citationsOutput list, including page when present -- proven by
+  journalgpt/tests/CitationLoggingTest.php::testCitationLoggedWithPage.'
+- 'admin_analytics.php is reachable by any authenticated member (requireRole(null)),
+  not gated behind a nonexistent ROLE_ADMIN, and shows Most Relied Upon / Orphaned
+  Articles.'
+- 'CitationLoggingTest.php is registered in the golden hammer suite (suite 16/18).'
+- 'Golden hammer suite passes with zero regressions: `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` --
+  confirmed 18/18 suites PASS.'
+- 'php -l clean on all modified/new PHP files.'
+- 'NOTE -- explicitly deferred to the controller, not verified by this task: manual
+  browser confirmation that admin_analytics.php actually renders for a regular
+  authenticated member (not just passes a code-level access-gate check). See Task
+  6''s brief Step 5.'
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: '2026-08-14T07:51:52-06:00'
+last_transition: '2026-08-14T08:09:33-06:00'
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: 'Filed after independent audit found the original branch''s citation
+    logs would have mismatched Phase 2''s corrected citation format, and that
+    admin_analytics.php was unreachable in production due to a nonexistent
+    ROLE_ADMIN gate. See
+    journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+    Goals, last bullet.'
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against fef36ac (spec commit). Plan committed at fe6f839.
+- timestamp: '2026-08-14T07:51:52-06:00'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-14T07:51:52-06:00'
+  action: SUBMIT
+  actor: FleetCoordinator
+  details: 'Landed at commit beb2f29 "feat: page-aware citation logging and analytics
+    dashboard (Phase 3, corrected)" on branch test-T-META-01-metadata-analytics.
+    Migration schema correction landed jointly with T-PTG-047''s fix round at
+    2ffe0e5.'
+- timestamp: '2026-08-14T08:09:33-06:00'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS (automated). Golden hammer suite registration landed at
+    b2bc8d9; 18/18 suites PASS including CitationLoggingTest. human_review_required
+    is set true because manual browser verification of admin_analytics.php''s
+    access gate (Task 6 brief Step 5) is explicitly out of scope for this filing
+    session and left for the controller. Commit range for this phase: beb2f29
+    (plus the shared 2ffe0e5 migration-schema fix).'

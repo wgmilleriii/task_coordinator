@@ -1,0 +1,100 @@
+task_id: T-INTY-025
+agent: Worker-Manifest1
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: intypiano
+branch: test-T-INTY-025
+base_sha: aaeb3dfe10aba37fc0285c92828e19fd8d57e055
+head_sha: 8404079c82c6b27b6500fa62ab65ebe0e94b8bc6
+evidence_output: "Manually captured (same known tooling gap as T-INTY-018/021's handoffs:\n\
+  `fleet verify` re-runs verification_command in the primary repo checkout at\n/Users/willismiller/Documents/GitHub/intypiano,\
+  \ not this worker's isolated\nworktree at ../intypiano-T-INTY-025, and hit \"Address\
+  \ already in use\" on port\n2027 plus \"Could not open input file: scripts/file_manifest.php\"\
+  \ since the new\nfiles only exist on this task's branch. All evidence below was\
+  \ captured\ndirectly in ../intypiano-T-INTY-025, per CLAUDE.md's \"prefer running\
+  \ over\nreading\" rule).\n\n=== php -l ===\n$ php -l scripts/file_manifest.php\n\
+  No syntax errors detected in scripts/file_manifest.php\n$ php -l api/v1/admin/file_manifest.php\n\
+  No syntax errors detected in api/v1/admin/file_manifest.php\n$ php -l classes/core/file_manifest.php\n\
+  No syntax errors detected in classes/core/file_manifest.php\n\n=== generate ===\n\
+  $ php scripts/file_manifest.php generate /tmp/manifest_local_test.json\nWrote /tmp/manifest_local_test.json:\
+  \ 17806 files hashed.\n$ grep -c databasedumps /tmp/manifest_local_test.json\n0\n\
+  file_count key matches actual files object length: 17806 == 17806.\n\n=== compare\
+  \ (deliberate drift test) ===\nCopied the manifest, appended a comment to hub.php,\
+  \ regenerated, reverted\nhub.php via git checkout, then compared the pre- and post-edit\
+  \ manifests:\n$ php scripts/file_manifest.php compare /tmp/manifest_a_modified.json\
+  \ /tmp/manifest_b_test.json /tmp/diff_test.json\nOnly in /tmp/manifest_a_modified.json:\
+  \ 0\nOnly in /tmp/manifest_b_test.json: 0\nHash mismatches: 1\n  - hub.php\nDRIFT\
+  \ DETECTED.\n(exit code 2, as designed -- nonzero on drift)\nCorrectly identified\
+  \ hub.php as the single mismatched file, which is exactly\nthe file that motivated\
+  \ this task (today's stranded \"Report a Bug\" link).\n\n=== token gate, on a clean\
+  \ port (2033; 2029 was occupied by another agent's\nNew Mexico PTG dev server, mistakenly\
+  \ killed by an over-broad pkill -- see\nfeedback for details) ===\nNo config/api_token.php\
+  \ present:\n$ curl -s -o - -w \"HTTP %{http_code}\\n\" http://localhost:2033/api/v1/admin/file_manifest.php\n\
+  HTTP 503\n{\"ok\":false,\"error\":\"api_not_configured\",\"message\":\"This server\
+  \ has no API token installed, so write access is disabled.\"}\n\nWith config/api_token.php\
+  \ installed (test token), no Authorization header:\nHTTP 401\n{\"ok\":false,\"error\"\
+  :\"unauthorized\",\"message\":\"A valid bearer token is required.\"}\n\nWith the\
+  \ correct bearer token:\nHTTP 200\nfile_count: 17806\nhas databasedumps: False\n\
+  (test token file removed afterward -- never committed)\n\n=== phpunit baseline comparison\
+  \ ===\nWorktree (this branch, 3 new files, nothing else touched):\nTests: 330, Assertions:\
+  \ 655, Errors: 1, Failures: 74.\n\nPrimary clone, unmodified (master had advanced\
+  \ to a9d3f5b5 by the time of this\ncheck -- another agent's concurrent work, not\
+  \ this task's base):\nTests: 330, Assertions: 666, Errors: 1, Failures: 68.\n\n\
+  Both runs show the same order-of-magnitude pre-existing failure set (330\ntests,\
+  \ 1 error, ~68-74 failures) documented across T-INTY-018/019/021's\nhandoffs as\
+  \ a drifting, non-zero baseline unrelated to any single task. The\nnew files in\
+  \ this task (classes/core/file_manifest.php, scripts/file_manifest.php,\napi/v1/admin/file_manifest.php)\
+  \ are not imported or referenced by any existing\ntest, so they cannot be the source\
+  \ of the count difference -- that's baseline\nnoise/flakiness between the two runs,\
+  \ not a regression this task introduced.\nDid not attempt a byte-for-byte failure-name\
+  \ diff (unlike T-INTY-018) because\nthe two runs were against different repo states\
+  \ (worktree base vs. a later\nmaster) rather than a true before/after on the same\
+  \ commit.\n"
+peer_review_notes: "`fleet verify`'s primary-clone assumption is incompatible with\
+  \ the fleet's own\nHARD REQUIREMENT (Isolated Worktrees) -- this is the third handoff\
+  \ in this repo\n(after T-INTY-018, T-INTY-021) to hit the exact same gap. Recommend\
+  \ a real fix\nrather than a third repeated workaround: either add a --worktree/--cwd\
+  \ flag to\n`fleet verify` that defaults to `../<repo>-<TASK-ID>` when that directory\n\
+  exists, or have workers pass their worktree path explicitly.\n\nSeparate incident,\
+  \ disclosed for transparency: while hunting a free port for\nthe endpoint test,\
+  \ `lsof -i :2029` showed something already listening; a\nfollow-up `pkill -f \"\
+  php -S localhost:2029\"` killed it before realizing it\nwas serving New Mexico PTG\
+  \ content -- almost certainly another agent's\nconcurrent dev server, not a stray\
+  \ of mine. Moved to port 2033 for the actual\ntest and did not touch any other port\
+  \ after that. No file changes resulted\nfrom this, only a killed local process;\
+  \ flagging it as a reminder that a\nport being open is not proof it's yours, matching\
+  \ the README's own warning\nabout shared state in a repo used by multiple concurrent\
+  \ agents.\n\nDoD checklist:\n- scripts/file_manifest.php generate produces valid\
+  \ JSON in the documented\n  shape, zero databasedumps entries -- verified above.\n\
+  - api/v1/admin/file_manifest.php is token-gated via the existing\n  classes/core/api_token.php\
+  \ convention, same fail-closed/401/200 behavior\n  as logRefill.php/migrate_tenant.php\
+  \ -- verified above with all three cases.\n- Compare mode implemented as a second\
+  \ CLI mode of the same script (not a\n  separate file, per the user's own framing\
+  \ of \"one script\") -- verified\n  above with a deliberate drift test that correctly\
+  \ flagged hub.php, the\n  file that motivated this task.\n- php -l clean on all\
+  \ three new files.\n- phpunit: no regression attributable to this task (see baseline\
+  \ comparison\n  above); did not achieve a strict before/after name-for-name diff\
+  \ on the\n  identical commit because master moved during this session -- flagging\
+  \ this\n  as a minor gap in rigor rather than claiming full T-INTY-018-grade proof.\n\
+  - NOT deployed to production (master) -- branch is test-T-INTY-025, merge\n  target\
+  \ test only, per the task's own scope note. The production-deploy\n  step (installing\
+  \ api/v1/admin/file_manifest.php on the live GoDaddy site)\n  is explicitly left\
+  \ for the user's separate go-ahead.\n"
+human_action_required: 'Two decisions for the user, not the swarm: (1) does merging
+  test-T-INTY-025 into
+
+  `test` look right, or would you rather review the 3 files directly first;
+
+  (2) do you want api/v1/admin/file_manifest.php actually deployed to live
+
+  production (master + FTP sync), which would let you pull a real prod manifest
+
+  and diff it against local right now -- that was the whole point, but per this
+
+  task''s scope it''s a deliberate separate step requiring your explicit
+
+  authorization, not bundled into DoD.
+
+  '
+token_spend: null
+cost_usd: null

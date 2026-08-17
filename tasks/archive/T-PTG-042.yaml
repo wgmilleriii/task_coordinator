@@ -1,0 +1,46 @@
+id: T-PTG-042
+title: 'Phase 1: Metadata Index'
+status: CANCELLED
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+definition_of_done: '- Database table `journalgpt_articles` or metadata JSON is created and
+  populated.
+
+  - CLI script is working to parse and build the index.
+
+  - Tests pass in `php tests/security_and_eval_suite.php`.
+
+  '
+audited_at: '2026-08-13T21:52:30.460351Z'
+audited_by: Claude-PM
+audited_repo_sha: 32132e5bb4912764677e47cdd11bd39de9621698
+verification_command: cd journalgpt && php tests/security_and_eval_suite.php
+events:
+- timestamp: '2026-08-13T21:52:30.462210Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 32132e5bb4912764677e47cdd11bd39de9621698
+- timestamp: '2026-08-13T21:53:13.402213Z'
+  action: CLAIM
+  actor: Worker-Phase1
+- timestamp: '2026-08-13T21:56:26.447057Z'
+  action: SUBMIT
+  actor: Unknown
+- timestamp: '2026-08-14T21:53:51.000000Z'
+  action: CANCEL
+  actor: Willis Miller
+  details: Obsolete/duplicate. journalgpt_articles-equivalent metadata (the existing `articles`
+    table) and its topic classification were already built and shipped to test/prod outside
+    this fleet board (see docs/superpowers/specs/2026-08-14-session-handoff.md). Branch test-T-PTG-042
+    was never pushed to origin, so no merge occurred; closing without action to avoid conflicting
+    with the real schema.
+scope:
+- 'Establish the single source of truth for all article metadata.
+
+  - Create a new database table `journalgpt_articles` (or a `corpus_metadata.json` if we want
+  to avoid DB migrations) containing `article_id`, `title`, `author`, `publication_date`, `volume_issue`,
+  `summary`, and `tags`.
+
+  - Write a CLI script (e.g., `php journalgpt/cli/build_metadata_index.php`) to scan the existing
+  PDF/corpus folder and generate this index.'

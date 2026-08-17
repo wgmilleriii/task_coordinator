@@ -1,0 +1,105 @@
+id: T-PTG-049
+title: 'Phase 4: Knowledge Profile Rewire (corrected re-implementation)'
+status: DONE
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+owner: FleetCoordinator
+created_at: '2026-08-14T07:56:01-06:00'
+audited_at: '2026-08-13T16:45:00-06:00'
+audited_by: FleetCoordinator
+audited_repo_sha: fef36ac
+dependencies:
+- T-PTG-048
+scope:
+- 'SUPERSEDES T-PTG-045 ("Phase 4: Member Knowledge Profiles"), which was filed
+  against an original, unrelated agent session''s worktree and never actually landed
+  on `test`. T-PTG-045 is left unmodified in tasks/active/ as a historical record --
+  see journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+  Background section for the audit findings.'
+- 'REAL SCOPE ACTUALLY SHIPPED: a new `journalgpt/profile.php` page reads T-PTG-048''s
+  `journalgpt_citation_logs` DIRECTLY to build the member''s "seen" article set (a
+  simple DISTINCT article_id query keyed on the viewing member''s own user_id),
+  and a popular-but-unread recommendation query that ranks articles the member has
+  NOT cited, ordered by how many OTHER members have cited them (most popular first,
+  ties broken randomly) -- this is the one real behavioral upgrade the corrected
+  Phase 3 logs newly enable, per the spec''s explicit non-goal of NOT building a
+  full ML/embedding recommendation engine. `journalgpt/api/generate_topic_quiz.php`
+  was carried over unchanged, since it does not read citation data and was unaffected
+  by any of the Phase 2/3 corrections.'
+- 'CORRECTION vs the original T-PTG-045 narrative -- the most serious cross-phase
+  defect the audit found: the original agent''s own end-of-session feedback report
+  explicitly claimed Phase 4 "recommends topics based on citation-analytics logs
+  from Phase 3." This was false. Phase 3 and Phase 4''s original branches both forked
+  from an early common ancestor and never incorporated each other''s work -- Phase
+  4''s original code had ZERO references to journalgpt_citation_logs, which did not
+  even exist in Phase 4''s worktree (spec Background, bullet 1 and 3). The original
+  Phase 4 instead worked around this by parsing citations back out of each
+  conversation''s stored citations_json blobs, member-by-member, with no
+  cross-member popularity signal available at all -- so "popular articles you
+  haven''t read" was structurally impossible in the original branch, not just
+  unbuilt. This corrected implementation reads the real, unified citation_logs
+  table for real, making the cross-member query the original branch''s own report
+  falsely claimed already existed.'
+definition_of_done:
+- 'profile.php exists and queries journalgpt_citation_logs directly (not
+  citations_json parsing) for both the member''s own "seen" set and the
+  popular-but-unread recommendation ordering.'
+- 'The "seen" set for a member excludes articles only OTHER members have cited --
+  proven by journalgpt/tests/ProfileRecommendationTest.php::testSeenSetExcludesOnlySelfCitedArticles.'
+- 'An article popular with other members but unread by the viewing member ranks
+  above a never-cited-by-anyone article -- proven by
+  ProfileRecommendationTest.php::testPopularButUnreadOrderedAboveNeverCited.'
+- 'generate_topic_quiz.php carried over unchanged and still functions (independent
+  of the citation-log rewire).'
+- 'ProfileRecommendationTest.php is registered in the golden hammer suite (suite
+  17/18).'
+- 'Golden hammer suite passes with zero regressions: `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` --
+  confirmed 18/18 suites PASS.'
+- 'php -l clean on all new/modified PHP files.'
+- 'NOTE -- explicitly deferred to the controller, not verified by this task: manual
+  browser confirmation that profile.php actually renders both sections (seen
+  articles / recommendations) without errors for a real member. See Task 6''s
+  brief Step 5.'
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: '2026-08-14T07:56:01-06:00'
+last_transition: '2026-08-14T08:09:33-06:00'
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: 'Filed after independent audit found the original Phase 4 branch never
+    actually consumed Phase 3''s citation-analytics logs despite the original
+    session''s own feedback report explicitly claiming it did -- the single most
+    misleading claim across the four original branches. See
+    journalgpt/docs/20-Architecture/2026-08-13-metadata-analytics-epic-integration.md
+    Background, bullet 1.'
+- timestamp: '2026-08-13T16:45:00-06:00'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against fef36ac (spec commit). Plan committed at fe6f839.
+- timestamp: '2026-08-14T07:56:01-06:00'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-14T07:56:01-06:00'
+  action: SUBMIT
+  actor: FleetCoordinator
+  details: 'Landed at commit 16490ac "feat: rewire member knowledge profile onto
+    citation_logs (Phase 4, corrected)" on branch test-T-META-01-metadata-analytics.'
+- timestamp: '2026-08-14T08:09:33-06:00'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS (automated). Golden hammer suite registration landed at
+    b2bc8d9; 18/18 suites PASS including ProfileRecommendationTest. human_review_required
+    is set true because manual browser verification of profile.php''s rendering
+    (Task 6 brief Step 5) is explicitly out of scope for this filing session and
+    left for the controller. Commit range for this phase: 16490ac. (Related but
+    separate: Task 5''s real metadata backfill, commits 43a6625..5599f94, populated
+    the summary/tags fields Phase 1 left empty -- not part of this phase''s own
+    scope but landed in the same integration branch beforehand.)'

@@ -1,0 +1,120 @@
+task_id: T-PTG-047
+agent: Worker-ExtractionRepair1
+model: Claude Sonnet 5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-047
+base_sha: 943f11cc3a1ab7d24c5a0992c86009db2320394d
+head_sha: 65ab465bb5317c58c4cbd23b8ad0176e40c1e121
+evidence_output: "NOTE (known fleet defect, see feedback/FEEDBACK_WorkerLoginFix1_claude-sonnet-5_20260813.md\n\
+  item 1): `./bin/fleet verify` runs verification_command against the PRIMARY\nclone\
+  \ (../newmexicoptg.org), not this task's worktree\n(../newmexicoptg.org-T-PTG-047),\
+  \ even though the fleet README's own HARD\nREQUIREMENT mandates all work happen\
+  \ in an isolated worktree. Since this\ntask's deliverable (docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md)\n\
+  only exists on the test-T-PTG-047 branch inside the worktree and was never\nchecked\
+  \ out in the primary clone, `./bin/fleet verify T-PTG-047 --model \"Claude Sonnet\
+  \ 5\"`\ncorrectly-but-unhelpfully reported a FAIL (exit code 1, empty find output)\n\
+  against the unfixed primary clone. That auto-run is not valid evidence of\nanything\
+  \ and should not be read as a real failure of this task's work.\n\nReal evidence,\
+  \ manually re-run against the actual worktree/branch where\nthe work lives:\n\n\
+  $ cd /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-047\n$ git rev-parse\
+  \ HEAD\n65ab465bb5317c58c4cbd23b8ad0176e40c1e121\n$ git branch --show-current\n\
+  test-T-PTG-047\n$ find docs -path \"*30-Engineering*\" -newer journalgpt/migrations/002_pdf_page_offset.sql\
+  \ -name \"*.md\" | grep -qi coverage\n$ echo \"exit: $?\"\nexit: 0\n$ find docs\
+  \ -path \"*30-Engineering*\" -newer journalgpt/migrations/002_pdf_page_offset.sql\
+  \ -name \"*.md\"\ndocs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md\n\
+  \nDefinition-of-done evidence beyond the verification_command string match:\n\n\
+  1. Coverage checker: journalgpt/spikes/T-PTG-047/coverage.py, self-tested\n   (`python3\
+  \ coverage.py` -> \"self-test OK\"), used to compute every\n   gap/overlap number\
+  \ in the report and in output/*.result.json.\n2. TOC-anchor-offset repair: journalgpt/spikes/T-PTG-047/toc_offset_repair.py,\n\
+  \   reuses articles.pdf_page_offset's concept (see file docstring + spike\n   README.md),\
+  \ demonstrated against the required PTJ-2025-10 finding-#2\n   case in this run:\
+  \ claimed start_page=18 (this run's manifestation of\n   the TOC-vs-anchor confusion)\
+  \ repaired to start_page=20, end_page=22 --\n   see output/PTJ-2025-10.result.json\
+  \ toc_repair_log. All 8 sample issues'\n   footer-derived front-matter offset =\
+  \ 2 at 100% confidence, matching\n   articles.pdf_page_offset's DB default exactly.\n\
+  3. Continued-marker scan: journalgpt/spikes/T-PTG-047/continued_scan.py,\n   self-tested\
+  \ against positive control PTJ-2020-07 (2 real matches\n   correctly extracted),\
+  \ correctly reports 0 matches across all 8 sample\n   issues (report explains why:\
+  \ only 3/90 corpus issues use this phrasing).\n4. Full pipeline re-run against all\
+  \ 8 named issues: journalgpt/spikes/T-PTG-047/output/*.result.json\n   (one per\
+  \ issue) + run_all.py's printed before/after table, reproduced\n   in the report's\
+  \ Results table.\n5. Report at docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md\n\
+  \   gives a quantified before/after table, states plainly that gaps got\n   worse\
+  \ (151->164 total) while overlaps improved sharply (15->7 total)\n   and explains\
+  \ the mechanism, and gives an explicit recommendation\n   (not yet sufficient; needs\
+  \ a gap-page fallback classifier and/or a\n   review_status field before piece-level\
+  \ ranges are trustworthy).\n6. Vision stretch goal: attempted (not skipped), 1 page\n\
+  \   (PTJ-2020-04 p.3), journalgpt/spikes/T-PTG-047/vision_prototype.py +\n   output/vision/ptj-2020-04-p3.result.json.\
+  \ Actual cost reported in the\n   report (~$0.003 for the vision call; ~$0.044 total\
+  \ OpenAI spend for\n   the whole task).\n7. Scope: no changes to journalgpt/corpus/extract_corpus.py\
+  \ (git diff\n   against base_sha shows zero touches to that file), no database\n\
+  \   migration created or run, no test/prod admin endpoint touched -- git\n   log\
+  \ for this branch shows only new files under journalgpt/spikes/T-PTG-047/\n   and\
+  \ docs/30-Engineering/.\n"
+peer_review_notes: 'Please re-run the verification_command inside the WORKTREE
+
+  (../newmexicoptg.org-T-PTG-047 on branch test-T-PTG-047, commit
+
+  65ab465bb5317c58c4cbd23b8ad0176e40c1e121), not the primary clone -- see
+
+  evidence_output above for why the primary-clone run is expected to fail
+
+  and is not meaningful evidence either way. The worktree is left in place
+
+  per instructions (not removed) for inspection.
+
+
+  Numeric result honesty check for reviewers: this run''s raw (before-repair)
+
+  gap/overlap counts are NOT expected to match the original spike''s baseline
+
+  table row-for-row, because this is a fresh, non-deterministic LLM
+
+  extraction re-run with a newly-written (not literally reused) prompt, not
+
+  a replay of the original spike''s saved output (which was never committed
+
+  to this repo). The report is explicit about this and measures the repair
+
+  pass''s actual effect within-run (this-run raw vs. this-run repaired), not
+
+  by diffing against the original baseline. The headline, sobering finding
+
+  -- total gaps went from 151 to 164 after repair, i.e. got worse, not
+
+  better -- is real and explained mechanistically in the report (moving a
+
+  mis-anchored piece off pages it never should have owned reveals gaps that
+
+  were previously masked by that piece''s overlap). This is not a
+
+  bug/regression in the repair code; it''s what the coverage checker
+
+  correctly reports once the TOC-offset repair does its job. Recommend
+
+  reading the report''s "Why gaps got worse, not better, after repair"
+
+  section before evaluating pass/fail.
+
+  '
+human_action_required: 'Decide whether to invest further in a gap-page fallback classifier
+  (e.g.
+
+  a second, narrower LLM/vision pass scoped only to unclaimed pages) and/or
+
+  a per-piece review_status field before proceeding to full schema design,
+
+  per this task''s Recommendation section. Also decide whether the vision
+
+  prototype''s single positive result (recovering "Schaff Piano Supply Co."
+
+  from an image-only ad page) warrants a slightly larger follow-up
+
+  prototype (still well short of a full vision pipeline, which remains
+
+  explicitly out of scope) before committing to that direction.
+
+  '
+token_spend: null
+cost_usd: 0.044

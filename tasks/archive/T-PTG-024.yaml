@@ -1,0 +1,89 @@
+id: T-PTG-024
+title: 'JournalGPT v3 Phase 4: ClaimValidator (claim-level citation verification)'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: Antigravity-Worker
+created_at: '2026-08-13T00:00:00Z'
+audited_at: '2026-08-13T12:55:22.782215Z'
+audited_by: FleetCoordinator
+audited_repo_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+dependencies:
+- T-PTG-023
+scope:
+- 'CONTEXT FOR ANY AGENT PLATFORM PICKING THIS UP: read journalgpt/v3/v3.md section
+  14 (Claim Verification) and section 15 (Existing Citation System, which MUST be
+  preserved, not replaced) before starting. Gated on T-PTG-023 (AnswerSynthesizer).'
+- 'WHAT TO BUILD, per v3.md section 14 exactly: create `journalgpt/lib/ClaimValidator.php`.
+  Journal-derived claims (as distinguished by T-PTG-023''s AnswerSynthesizer) should
+  be validated individually, not all-or-nothing. Desired behavior per v3.md''s table:
+  supported Journal claim -> retain + cite; unsupported Journal attribution -> remove,
+  rewrite, or regenerate; assistant explanation -> retain when appropriately framed;
+  uncertain conclusion -> explicitly identify uncertainty. v3.md section 14 is explicit:
+  "Do not automatically discard an entire useful answer because one citation cannot
+  be resolved" -- this replaces today''s coarser all-or-nothing grounding behavior
+  with per-claim validation.'
+- 'MUST PRESERVE THE EXISTING CITATION RESOLVER, per v3.md section 15: continue using
+  the existing article mappings, provider file IDs, page markers, manifest data, local
+  corpus matching, page verification, printed-page info, and protected source URLs.
+  ClaimValidator feeds BETTER evidence metadata to the existing resolver -- it does
+  not replace or duplicate the resolver''s job of turning a supported claim into an
+  exact citation link.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS
+  with zero regressions.'
+- 'EXPLICITLY OUT OF SCOPE: IP hardening / public-sharing review (Phase 5), evaluation
+  tuning (Phase 6). Do not build a new citation-resolution mechanism -- reuse the
+  existing resolver exactly per v3.md section 15''s explicit instruction.'
+definition_of_done:
+- ClaimValidator.php exists per v3.md section 14's four-way behavior table (supported/unsupported/explanation/uncertain),
+  and integrates with the EXISTING citation resolver rather than reimplementing citation
+  lookup.
+- A new test file (journalgpt/tests/ClaimValidatorTest.php) covers all four behaviors
+  in the table with concrete test cases, and specifically proves the "do not discard
+  the whole answer over one bad citation" requirement -- a multi-claim answer where
+  one claim's citation fails to resolve must still return the other, valid claims
+  intact rather than a blanket refusal.
+- Wired into the live path after T-PTG-023's synthesis step, before the response is
+  returned to the member.
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions,
+  and eval_runner.py's citation-accuracy and grounding scoring specifically show no
+  regression vs. the Phase 3 baseline (record the before/after scores in the handoff).
+- php -l passes on all new/modified PHP files.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php && DB_HOST=127.0.0.1 DB_NAME=journal_ai_test
+  DB_USER=root DB_PASS=root php journalgpt/tests/ClaimValidatorTest.php
+human_review_required: true
+requires_doc_update: false
+claimed_at: '2026-08-13T14:06:30.025727Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T00:00:00Z'
+  action: SCOUT
+  actor: Claude-FleetCoordinator
+  details: Phase 4 of v3.md, gated on T-PTG-023 (AnswerSynthesizer). Emphasized reuse
+    of the existing citation resolver per v3.md section 15's explicit instruction,
+    since this is exactly the kind of task where a well-meaning agent might be tempted
+    to rebuild citation-matching logic from scratch instead of feeding better evidence
+    into what already works correctly.
+- timestamp: '2026-08-13T12:55:22.782505Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
+- timestamp: '2026-08-13T14:06:30.025884Z'
+  action: CLAIM
+  actor: Antigravity-Worker
+- timestamp: '2026-08-13T14:44:11.757222Z'
+  action: SUBMIT
+  actor: Antigravity-Worker
+- timestamp: '2026-08-13T14:44:33.991322Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-13T14:50:32.995565Z'
+  action: CLOSE
+  actor: Chip (autonomous authorization to FleetCoordinator, 2026-08-13)

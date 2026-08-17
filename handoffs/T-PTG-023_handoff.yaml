@@ -1,0 +1,26 @@
+task_id: T-PTG-023
+agent: Antigravity-Worker
+model: Gemini
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-023
+base_sha: c616787
+head_sha: ab9aa42fd5948a1aa662b047d9ba6d0a631b3baf
+evidence_output: '9/9 security and eval suite PASS.
+
+  AnswerSynthesizerTest PASS.
+
+  '
+peer_review_notes: "Implemented AnswerSynthesizer per v3.md section 12/13.\nThe synthesizer\
+  \ explicitly instructs the LLM to separate its response into two sections using\
+  \ markdown headers: \"## Journal Evidence\" and \"## Assistant Explanation\".\n\
+  The system prompt strictly forbids the use of any outside knowledge in the Evidence\
+  \ section, and forbids the use of any citation markers (\u3010\u2026\u3011) in the\
+  \ Explanation section.\nWired the Synthesizer into the v3_beta flow in JournalAnswerService.\n\
+  Added AnswerSynthesizerTest to assert this exact output structure (headers present,\
+  \ and citations only in the evidence section) when using a mock response mimicking\
+  \ the model's output.\nTest suite confirms zero regressions on Golden Hammer Gate\
+  \ metrics.\n"
+human_action_required: null
+token_spend: null
+cost_usd: null

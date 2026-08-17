@@ -1,0 +1,248 @@
+id: T-PTG-048
+title: Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed
+  against PTJ-2020-02's own table of contents
+status: PEER_REVIEW
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+created_at: '2026-08-14T23:07:12Z'
+dependencies:
+- T-PTG-047
+scope:
+- 'Rescope note: this task previously covered vision-model classification of generic
+  gap pages (mostly sparse advertisement pages). Per direct user feedback, that is
+  NOT the priority -- the user does not care much about ad-page classification. What
+  the user actually wants is article/editorial completeness QC: for every piece the
+  extraction pipeline classifies as a real article, editorial, or column (not ad/classified/display-ad-index),
+  confirm by actually reading the source text across that piece''s claimed page range
+  that nothing was left out. This is a full rewrite of the task''s scope, not an addendum
+  to the old one -- the vision/gap-page-classification framing below no longer applies
+  and should not be pursued under this task ID.
+
+  '
+- 'Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md
+  (original spike + Addendum) and docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md
+  (T-PTG-047''s report, now DONE -- read its Recommendation section). T-PTG-047 built
+  a text-side page-coverage checker (coverage.py) plus TOC-anchor-offset repair and
+  a "continued on p. X" scan, and found that a page can show zero gaps/overlaps under
+  that checker and still be wrong: the checker only verifies every page number is
+  claimed by exactly one piece, it cannot tell whether a piece''s claimed text is
+  actually complete, uncut, and correctly bounded. That is precisely the class of
+  error this task targets, and it is why this task requires an agent to read real
+  source text, not just diff page numbers.
+
+  '
+- 'Setup note: as of this rewrite, T-PTG-047''s code and report exist on branch `test-T-PTG-047`
+  (worktree `../newmexicoptg.org-T-PTG-047`) and have NOT yet been merged into `test`
+  (confirmed via `git merge-base --is-ancestor test-T-PTG-047 test`, which currently
+  fails) even though the task_coordinator''s archived copy of T-PTG-047 shows status
+  DONE. The worker on this task must re-check merge status at task start; if still
+  unmerged, reference `journalgpt/spikes/T-PTG-047/` (extract_pieces.py, coverage.py,
+  toc_offset_repair.py, boundary_trim.py, continued_scan.py, run_pipeline.py, common.py)
+  from that branch/worktree directly rather than waiting, exactly as T-PTG-047 itself
+  had to reference material from a prior unmerged branch. Reuse extract_pieces.py
+  and coverage.py as-is (import/call, do not reimplement) so results remain methodologically
+  comparable.
+
+  '
+- 'Primary required test case -- use this exactly, it is real ground truth derived
+  directly from the issue''s own table of contents, not invented: issue `PTJ-2020-02`
+  (`journalgpt/corpus/extracted/PTJ-2020-02/PTJ-2020-02-A01.txt`, PDF at `journalgpt/pdfs/PTJ-2020-02.pdf`).
+  Its own TOC (anchor pages 6-8, confirmed present via `grep ''\[\[page:6\]\]''` through
+  `''\[\[page:8\]\]''` on the extracted text) lists every piece by title, author,
+  and printed page number. Ground truth (printed page -> anchor page via this issue''s
+  confirmed +2 offset):
+
+  | Printed p. | Anchor p. | Title | Author |
+
+  |---|---|---|---|
+
+  | 2 | 4 | Editorial Perspective | Scott Cole, RPT |
+
+  | 6 | 8 | President''s Message | Paul Adams, RPT |
+
+  | 7 | 9 | TT&T | Scott Cole, RPT |
+
+  | 10 | 12 | The Piano Corner | ChiaYu Lee, RPT |
+
+  | 14 | 16 | Tight Tuning Pins, Part 1 | Larry Lobel, RPT |
+
+  | 21 | 23 | Re-Covering Hammers by Hand | Fred Sturm, RPT |
+
+  | 26 | 28 | Hunting for Education (Complete Piano Voicing) | Amy Zilk, RPT |
+
+  | 27 | 29 | Music Theory for the Piano Technician, Part 8 | Scott Cole, RPT |
+
+  | 31 | 33 | Reweighing the Original Keyboard, Part 2 | Nick Gravagne, RPT |
+
+  | 37 | 39 | PTG Review | (none) |
+
+  | 38 | 40 | Coming Events | (none) |
+
+  | 39 | 41 | Foundation Focus | (none) |
+
+  | 40 | 42 | Classified Advertisements | (none) |
+
+  | 43 | 45 | Display Advertising Index | (none) |
+
+  | 44 | 46 | Tuner''s Life | Kathy Smith, RPT |
+
+  This table specifically stresses SHORT columns/editorials (Editorial Perspective,
+  President''s Message, TT&T, The Piano Corner) the original 8-issue spike sample
+  didn''t specifically target -- exactly the kind of short item likely to get silently
+  merged into a neighboring piece or dropped, per the user''s own framing of the concern
+  ("really, any article or editorial mentioned in the columns and comments... that''s
+  what we should be concerned about").
+
+  '
+- 'In scope, required: run the extraction pipeline (extract_pieces.py from journalgpt/spikes/T-PTG-047/,
+  same gpt-4o-mini/full-text/single-call approach) against PTJ-2020-02, then diff
+  the result against all 15 ground-truth rows above: for each row, report whether
+  the extraction found a matching piece (same or equivalent title/author) and whether
+  its page range plausibly starts/ends where the TOC says (allow the piece''s *end*
+  page to extend until the next item''s start, since the TOC only gives start pages).
+  Report hits, misses, and merges explicitly per row, not just an aggregate count.
+
+  '
+- 'In scope, required, this is the actual QC deliverable: for every extraction-produced
+  piece classified as `article`, `editorial`, or a column-type (i.e., anything except
+  `advertisement`, `classifieds`, or a display/index type) across PTJ-2020-02, an
+  agent must actually read the source text in journalgpt/corpus/extracted/PTJ-2020-02/PTJ-2020-02-A01.txt
+  spanning that piece''s claimed page range and confirm: (a) the text reads as a complete,
+  coherent piece with a real ending, not cut off mid-sentence or mid-thought; (b)
+  the byline matches; (c) nothing from the ground-truth table that should be a separate
+  piece got silently absorbed into it. This must be an actual content read per piece,
+  not a page-number diff -- the whole point is to catch errors coverage.py structurally
+  cannot see (zero gaps/overlaps reported, but a piece is still truncated or two pieces
+  are merged into one).
+
+  '
+- 'In scope, required, single most important pass/fail signal for this task: explicitly
+  check the short-column failure mode by name -- does the extraction correctly produce
+  SIX separate pieces for the six short department items (Editorial Perspective, President''s
+  Message, TT&T, The Piano Corner, Tight Tuning Pins Part 1, Re-Covering Hammers by
+  Hand), each plausibly short (roughly 1-4 pages), or does it merge some of them into
+  a single blob, or skip any entirely? State a direct yes/no answer to "does the six-short-department-item
+  failure mode occur in PTJ-2020-02" in the report.
+
+  '
+- 'In scope, but explicitly LOW priority per the user''s direct statement ("we''re
+  not really concerned about the ads"): the 5 ad/index/listing rows in the ground-truth
+  table (PTG Review, Coming Events, Foundation Focus, Classified Advertisements, Display
+  Advertising Index) only need the hit/miss/merge check from the diff step above --
+  report whether each was found, but do NOT spend deep QC-read rigor confirming their
+  content is complete/uncut the way the 9 real article/editorial/column rows require.
+
+  '
+- 'In scope, required, secondary check (not the primary deliverable): extend the same
+  QC-read approach to a small sample from the original 8 T-PTG-047 spike issues (PTG-2022-10,
+  PTJ-2019-02, PTJ-2019-08, PTJ-2020-04, PTJ-2022-06, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10)
+  -- worker''s judgment on how many, at least 2-3 -- to see whether the short-column
+  merge/drop failure mode found (or not found) in PTJ-2020-02 generalizes, or is specific
+  to this issue''s TOC-heavy front-matter layout. These issues do not have the same
+  kind of hand-derived ground-truth TOC table as PTJ-2020-02; use each issue''s own
+  `[[page:N]]`-anchored TOC section as the reference instead, the same way the PTJ-2020-02
+  table was derived.
+
+  '
+- 'In scope, required: a written report under docs/30-Engineering/ (Dewey Decimal
+  protocol per task_coordinator/README.md), with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json,
+  presenting: the full PTJ-2020-02 ground-truth diff table (hit/miss/merged per row,
+  all 15 rows), the QC-read findings for each of the 9 real article/editorial/column
+  pieces, an explicit yes/no on whether the six-short-department-item failure mode
+  occurs, findings from the secondary 2-3-issue sample, and a clear recommendation
+  on whether article/editorial completeness (as distinct from generic page-range coverage)
+  can be trusted, or what further work is still needed.
+
+  '
+- 'Out of scope, do not do (carried forward from the original task, still applies):
+  no articles/pieces schema design or database migration; no indexing the 23 missing
+  corpus years (2019 Feb-Dec, 2025 Jan-Dec) into test/prod; no production code changes
+  (journalgpt/corpus/extract_corpus.py or any other shipped pipeline code); no touching
+  the shared test/prod database in any way (no migration, no backfill, no admin-page
+  changes) -- this task is local/offline analysis only against journalgpt/pdfs/, journalgpt/corpus/extracted/,
+  and journalgpt/spikes/T-PTG-047/ output, same framing as T-PTG-047. Also explicitly
+  out of scope, carried forward from the old vision-classification framing this task
+  is replacing: no vision-model/image-based page classification work under this task
+  ID -- that framing has been dropped per the rescope above, not deferred to be picked
+  back up here.
+
+  '
+definition_of_done:
+- 'extract_pieces.py and coverage.py from journalgpt/spikes/T-PTG-047/ are reused
+  (imported/called, not reimplemented) to produce PTJ-2020-02''s extraction output
+  and page-coverage numbers.
+
+  '
+- 'A complete diff table exists in the report covering all 15 PTJ-2020-02 ground-truth
+  rows from the scope section above, each explicitly marked hit, miss, or merged,
+  with the matching (or non-matching) extracted piece''s title/author/page-range shown
+  alongside.
+
+  '
+- 'For each of the 9 ground-truth rows that are article/editorial/column type (i.e.
+  excluding the 5 ad/index rows), the report shows evidence of an actual source-text
+  read (not just a page-number comparison) confirming or refuting: complete/uncut
+  ending, matching byline, and no silent absorption of a neighboring ground-truth
+  piece.
+
+  '
+- 'The report gives an explicit, direct yes/no answer to whether the six-short-department-item
+  merge/drop failure mode (Editorial Perspective, President''s Message, TT&T, The
+  Piano Corner, Tight Tuning Pins Part 1, Re-Covering Hammers by Hand) occurs in PTJ-2020-02,
+  with the specific evidence (which items merged into what, or which were dropped,
+  if any).
+
+  '
+- 'The report documents a QC-read pass (using the same read-the-source-text method,
+  not just a coverage-checker diff) against at least 2-3 issues from the original
+  8 T-PTG-047 spike issues, with an explicit statement of whether the same short-column
+  failure mode does or does not generalize beyond PTJ-2020-02.
+
+  '
+- 'A written report exists under docs/30-Engineering/ with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json,
+  and gives a clear, explicit recommendation on whether article/editorial completeness
+  (as distinct from T-PTG-047''s generic page-coverage checking) can be trusted at
+  this point, or what further work is still needed.
+
+  '
+- 'No changes were made to journalgpt/corpus/extract_corpus.py or any other production
+  code path, no database migration was created or run, and no test/prod admin endpoint
+  was touched -- all work is local scripts/output under journalgpt/spikes/ (a new
+  T-PTG-048 subdirectory or an extension of T-PTG-047''s, worker''s judgment, documented
+  either way) and the docs/ report.
+
+  '
+verification_command: find docs -path "*30-Engineering*" -name "*.md" | xargs grep
+  -qli "PTJ-2020-02"
+human_review_required: true
+requires_doc_update: true
+audited_at: '2026-08-14T23:09:39.746159Z'
+audited_by: Claude-PM
+audited_repo_sha: a527e9d
+events:
+- timestamp: '2026-08-14T22:47:49.787904Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 943f11cc3a1ab7d24c5a0992c86009db2320394d (scope has since
+    been fully rewritten, see RESCOPE event below -- this audit no longer applies)
+- timestamp: '2026-08-14T23:07:12Z'
+  action: RESCOPE
+  actor: Claude-Scout
+  details: Full rewrite of scope/definition_of_done from vision-model gap-page classification
+    to article/editorial completeness QC ground-truthed against PTJ-2020-02's own
+    TOC, per direct user feedback that ad-page classification is not the priority.
+    Status reset AUDITED -> OPEN and audit fields cleared pending PM re-audit against
+    the new scope.
+- timestamp: '2026-08-14T23:09:39.746566Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against a527e9d
+- timestamp: '2026-08-14T23:10:18.600750Z'
+  action: CLAIM
+  actor: Worker-ArticleQC1
+- timestamp: '2026-08-14T23:25:29.117434Z'
+  action: SUBMIT
+  actor: Worker-ArticleQC1
+owner: Worker-ArticleQC1
+claimed_at: '2026-08-14T23:10:18.599883Z'

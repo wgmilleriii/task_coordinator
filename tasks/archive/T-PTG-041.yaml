@@ -1,0 +1,130 @@
+id: T-PTG-041
+title: Fix missing Generate/View Quiz button on reload, add an All Quizzes list, update
+  Help docs (incl. /featurerequest)
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T19:40:00Z'
+audited_at: '2026-08-13T19:19:53.138367Z'
+audited_by: FleetCoordinator
+audited_repo_sha: b1007c2
+dependencies:
+- T-PTG-037
+scope:
+- 'SOURCE: Chip reported, live in conversation, that reopening an existing conversation
+  (https://newmexicoptg.org/journalgpt/index.php?c=59) that already had a quiz generated
+  from it shows no quiz-related button at all -- not even "Generate Quiz". He asked
+  for a "View the quiz" state, an "All Quizzes" list linked from Labs AND the sidebar,
+  and a Help & Documentation refresh including how to use /featurerequest.'
+- 'FIX SCOPE 1 -- REAL BUG, not just a missing feature (confirmed by reading the code
+  directly): the "Generate Quiz" button only exists in journal-chat.js''s appendAssistantMessage()
+  (used for messages received live during the current page session via the ask.php
+  fetch response). index.php''s server-rendered message loop (the one that runs when
+  you load/reload an existing conversation -- the exact `?c=59` case Chip hit) renders
+  the upvote button but has NEVER rendered a quiz button at all, for ANY message,
+  quiz or no quiz -- T-PTG-034 only wired the JS-side path. Add the button to the
+  PHP loop too, using the identical citations-present condition and the same citation-chip/upvote-button
+  visual pattern journal-chat.js already established, so both render paths agree.'
+- 'FIX SCOPE 1b -- the "View Quiz" state Chip asked for: for a message that ALREADY
+  has a quiz generated from it (a row in `quizzes` where `source_message_id` = this
+  message''s id -- LEFT JOIN or a lookup query in the PHP loop, Worker''s call on
+  exact query shape but reuse the existing `quizzes` table, do not add a new column/flag),
+  render "View Quiz" linking directly to `quiz.php?id=<that quiz''s id>` INSTEAD of
+  "Generate Quiz" for that message. A message with citations but no quiz yet still
+  shows "Generate Quiz" as today. This state only needs to exist in the server-rendered
+  path -- the live JS path (brand-new message just answered) can never already have
+  a quiz, so no equivalent change is needed there.'
+- 'FIX SCOPE 2 -- All Quizzes list: a new list view showing generated quizzes (Worker''s
+  call whether this mirrors `featured.php`''s "All Conversations" tab pattern -- i.e.
+  every member''s quizzes, consistent with T-PTG-025''s established any-authenticated-member-can-view-read-only
+  precedent -- or is scoped to just the current member''s own quizzes; read featured.php''s
+  existing "All Conversations" tab first and prefer consistency with it unless there''s
+  a clear reason not to, and state your reasoning in the handoff either way). Each
+  entry should show enough to identify the quiz (source question/conversation, question
+  count, created date) and link to `quiz.php?id=...`.'
+- "FIX SCOPE 3 -- linking the list: (a) a link/section on `labs.php`'s existing Quiz\
+  \ Mode explainer (T-PTG-037) pointing to the new All Quizzes list; (b) a SEPARATE,\
+  \ distinct link in the sidebar next to the existing \"\U0001F9EA Labs\" link (not\
+  \ nested inside/only reachable through Labs) -- match the existing `.btn-new-chat`\
+  \ sidebar-link visual pattern used by Featured Answers / Help / Labs."
+- 'FIX SCOPE 4 -- Help & Documentation update: `journalgpt/help.php` currently has
+  zero mention of `/featurerequest` (confirmed by grep) and predates v3/Quiz Mode/sidebar-unread-rename
+  entirely -- its "Thinking Tiers" section is now materially incomplete/outdated.
+  Required: (a) a new section documenting the `/featurerequest` triage lane -- exact
+  trigger syntax (`/feature request`, `/featurerequest`, or `/feature-request`, case-insensitive,
+  must be the FIRST token of the message -- see `journalgpt/lib/FeatureRequestService.php`''s
+  `isTagged()` for the authoritative pattern, read it directly rather than guessing),
+  what happens after tagging (a short multi-turn conversation asking who''s affected,
+  how often, and what it would look like), and that submitted ideas are reviewed by
+  the team; (b) update/extend the existing feature sections to reflect that v3 (multi-query
+  research, per-claim citation validation) is now the default engine, not just "Thinking
+  Tiers"; (c) a section on Quiz Mode that briefly describes it and links to `labs.php`
+  for the full explainer (T-PTG-037''s existing content) rather than duplicating it;
+  (d) a brief mention of conversation rename/unread indicators from T-PTG-033 if it
+  fits naturally -- do not force it if the existing page structure doesn''t have a
+  good place for it.'
+- 'EXPLICITLY OUT OF SCOPE: changing quiz generation/grounding/sharing behavior itself
+  (T-PTG-034 is done) -- this task only fixes the missing-button regression and adds
+  discovery/documentation surface. Do not build quiz deletion or editing. Do not redesign
+  help.php''s overall structure/style -- extend it, matching its existing section
+  format.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to test, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm ALL suites
+  PASS with zero regressions.'
+definition_of_done:
+- Reopening an existing conversation with a cited answer that has NOT had a quiz generated
+  shows a "Generate Quiz" button (parity with the live-session JS path) -- proven
+  by a test or a documented browser check against a conversation loaded via `?c=`,
+  not just the live-append path ConversationSidebarTest/QuizTest already cover.
+- Reopening an existing conversation with a cited answer that HAS had a quiz generated
+  shows "View Quiz" linking to the correct quiz.php?id=, not "Generate Quiz" again.
+- An All Quizzes list exists, is reachable from a sidebar link next to Labs AND from
+  labs.php, and each entry links to the correct quiz.
+- help.php documents /featurerequest's exact trigger syntax and flow, and no longer
+  describes the pre-v3 engine as if it were still the only/default pipeline.
+- The golden hammer suite (security_and_eval_suite.php) passes with zero regressions,
+  including any new/extended tests this task adds.
+- php -l passes on all new/modified PHP files; node --check passes on all new/modified
+  JS files.
+- A short manual/browser verification (screenshot or browse-skill check) confirming
+  the View Quiz state and the All Quizzes list actually render, included in the handoff
+  -- this is a visual/UX fix and a passing test suite alone doesn't prove it looks
+  right (see T-PTG-038's regression, caught only by an actual browser check).
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T19:19:56.251107Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T19:40:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: 'Filed directly from Chip''s live bug report. Traced the root cause precisely
+    before filing (not assumed): the server-rendered message loop in index.php never
+    had a quiz button added to it at all in T-PTG-034, only journal-chat.js''s live-append
+    path did -- so this reproduces on every conversation reload, quiz-existing or
+    not, which is worse than what Chip described (he saw the "no button" case; a message
+    with citations and no quiz yet has the identical bug, just less noticeable since
+    "Generate Quiz" being absent looks like "nothing to do here" rather than a clear
+    gap). Confirmed help.php''s /featurerequest gap and staleness by direct grep before
+    filing rather than assuming from the task description alone.'
+- timestamp: '2026-08-13T19:19:53.139992Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against b1007c2
+- timestamp: '2026-08-13T19:19:56.253332Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T19:33:11.374819Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T19:33:34.933401Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

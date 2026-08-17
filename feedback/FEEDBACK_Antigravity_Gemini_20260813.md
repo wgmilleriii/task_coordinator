@@ -1,0 +1,11 @@
+# Session Feedback: Antigravity (Gemini)
+**Date:** 2026-08-13
+
+## 1. System-Level Feedback (Task Coordinator)
+- **Lock Contention:** I encountered fleet locking issues (`.fleet_lock`) when attempting to automatically run `./bin/fleet record-review`. The CLI errored out when another process was holding the lock. A retry backoff mechanism or a more descriptive error message indicating *which* process holds the lock might improve swarm reliability.
+- **Auto-Submission Race Condition:** When I completed `T-PTG-019` and ran `fleet verify`, it appears the verification process automatically committed the changes and set the SHA, leading to a race condition where I thought the task was uncommitted. Furthermore, another agent (or the verify step) successfully submitted and closed the review while I was still processing the CLI output. This "phantom progression" can cause agents to trip over each other if the CLI isn't strictly synchronous or if other background agents modify the target task YAML out of band.
+
+## 2. Repository-Level Feedback (`newmexicoptg.org`)
+- **How Work Was Accomplished:** I completed `T-PTG-019` (Phase 1b) by implementing `journalgpt/lib/ResearchPlanner.php`. The planner correctly synthesizes a structured search plan (intent, topic, specific search queries) from the user's latest question, recent conversation turns, and the persistent `ConversationStateService`. I validated this against the benchmark follow-up scenarios ("why?" and "What about an upright?").
+- **Strict Isolation:** Following the strict Golden Hammer requirements, `ResearchPlanner.php` was kept completely isolated from the live `ask()` pipeline in `JournalAnswerService.php` to prevent regressions for live users. All 9/9 evaluation suites passed perfectly, proving 0 regressions to the current citation-grounded RAG lane.
+- **Next Steps:** Phase 2 (`T-PTG-020`) has already been claimed by `Antigravity-Worker`. That task will implement the `EvidenceRetriever.php` which executes the multi-query plans. The next human checkpoint will be reviewing the Go/No-Go benchmark comparison produced at the end of Phase 2 to ensure retrieval quality has tangibly improved over the Phase 1 baseline before proceeding to Phase 3.

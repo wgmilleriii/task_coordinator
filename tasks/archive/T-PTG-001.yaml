@@ -1,0 +1,75 @@
+id: T-PTG-001
+title: Fix footnote list numbering to match inline citation markers
+repo: newmexicoptg.org
+priority: P0
+lane: ANY
+status: DONE
+owner: Claude-Worker
+created_at: '2026-08-12T04:03:50Z'
+audited_at: '2026-08-12T04:03:50Z'
+audited_by: Claude-PM
+audited_repo_sha: 9e74d39c82a5980f488695fb4e4e5e1dd46bdb54
+dependencies: []
+scope:
+- "journalgpt/lib/JournalAnswerService.php \u2014 the ask() method, specifically the\
+  \ block converting raw OpenAI annotations (the file-citation tag OpenAI wraps in\
+  \ special bracket characters) into inline [1], [2], ... markers (the $uniqueTags\
+  \ map), and the separate block below it that appends a Footnotes list by enumerating\
+  \ $citationsOutput 1..N."
+- "Root cause confirmed live in production: a 'Golden Hammer Award recipients' answer\
+  \ had only 4 unique inline markers ([1]-[4]) in the model's prose, but the appended\
+  \ footnote block listed 24 numbered entries \u2014 footnote numbers 1-24 do not\
+  \ correspond to inline markers 1-4 at all. The two numbering systems are built independently:\
+  \ inline numbers come from the order unique annotation tags first appear in the\
+  \ raw answer text; footnote numbers come from the order $parsedCitations were resolved\
+  \ (chunk-derived citations from every retrieved chunk, in retrieval order, plus\
+  \ Tier-4 corpus-scan fallback results appended after). Nothing ties a footnote's\
+  \ number or content to which inline marker it is supposed to back."
+- "Fix must make the footnote list contain exactly the citations that correspond to\
+  \ inline markers, numbered identically to those markers, in the same first-appearance\
+  \ order \u2014 not a dump of every retrieved-but-possibly-uncited chunk."
+definition_of_done:
+- Footnote count in the rendered answer equals the count of distinct inline [n] markers
+  actually present in the cleaned answer text (never more, never fewer).
+- Footnote [n] links to the same source the model's inline [n] marker was standing
+  in for (i.e. the annotation-to-citation mapping is preserved through the pipeline,
+  not re-derived independently for the footnote block).
+- A citation that was retrieved (present in retrieved_chunks or found by the Tier-4
+  corpus scan) but never actually referenced by an inline marker in the model's prose
+  does not appear as a numbered footnote.
+- 'New regression test added to journalgpt/tests/JournalAnswerServiceTest.php reproducing
+  this shape: a StubOpenAIClient answer with only 4 unique annotations in the text
+  but retrieved_chunks/corpus-scan data that would independently resolve to 15+ citations.
+  Assert count(inline markers) === count(footnotes).'
+- Existing test suite (tests/JournalAnswerServiceTest.php) still passes in full, including
+  the existing hedged-answer/citation-always-works regression tests.
+verification_command: cd journalgpt && php tests/JournalAnswerServiceTest.php
+human_review_required: true
+claimed_at: '2026-08-12T04:07:28.649182Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+requires_doc_update: true
+events:
+- timestamp: '2026-08-12T04:03:50Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: "Reported by user with a live production example (Golden Hammer Award question):\
+    \ 4 inline citation markers, 24 mismatched footnotes. Confirmed the root cause\
+    \ by reading JournalAnswerService::ask() \u2014 inline numbering and footnote\
+    \ numbering are two independently-built sequences with no shared key. P0 because\
+    \ this is the exact 'citations always work / point to the right journal number\
+    \ and page' hard requirement the user has flagged repeatedly."
+- timestamp: '2026-08-12T04:07:28.649489Z'
+  action: CLAIM
+  actor: Claude-Worker
+- timestamp: '2026-08-12T04:17:51.708941Z'
+  action: SUBMIT
+  actor: Claude-Worker
+- timestamp: '2026-08-12T04:18:45.888353Z'
+  action: RECORD_REVIEW
+  actor: Claude-Reviewer
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-13T14:11:10.090679Z'
+  action: CLOSE
+  actor: Chip

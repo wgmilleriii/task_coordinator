@@ -1,0 +1,196 @@
+id: T-PTG-034
+title: 'New feature: shareable multiple-choice quizzes generated from grounded Journal
+  answers'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T18:10:00Z'
+audited_at: '2026-08-13T17:53:16.252684Z'
+audited_by: FleetCoordinator
+audited_repo_sha: b602830e
+dependencies:
+- T-PTG-033
+scope:
+- 'SOURCE: a real member (user_id 1, conversation_id 58) completed the `/featurerequest`
+  triage lane on 2026-08-13 10:39-10:40 -- confirmed via `debug_logs.php?conversation_id=58`
+  (log ids 35-39). Verbatim from the member (typos preserved, not cleaned up, so the
+  Worker sees exactly what was said): idea = "an educational component with quizzes
+  that persist to an account - e.g., ask a question, get an answer with a list of
+  articles to read - prompt the user ''Would you like me to make a quiz for this material?''
+  if yes, then it figure out question and answers (multiple choice) , stores the quiz,
+  allows the user to take (or retake) the quiz, and quizzes can be shared with other
+  people"; who = "anybody"; how_often = "once a week"; what_it_would_look_like = "ther
+  number of questions is flexible - it shouold be enough to rfeflect knowledge of
+  the material at hand". A follow-up AFTER triage closed (log id 39, status `fr_already_closed`,
+  so it was correctly not re-triaged but is still real signal) added: "like sharing
+  a conversation, you can share a quiz" -- explicitly pointing at the EXISTING conversation-sharing
+  feature (`share_slug`/`is_public` on `conversations`, reviewed and hardened in T-PTG-025)
+  as the pattern to reuse for quiz sharing, not something new to invent.'
+- 'DEPENDENCY ON T-PTG-033: quizzes will be generated from and linked to specific
+  conversations/messages, and the sidebar work in T-PTG-033 (move-to-top on new activity,
+  unread indicator) is the most recent precedent for how this codebase extends `journal-chat.js`''s
+  DOM and the sidebar -- read T-PTG-033''s actual landed diff before starting so quiz
+  UI additions follow the same conventions rather than inventing new ones.'
+- 'TRIGGER UX -- DECIDED by Chip (2026-08-13, live in conversation with the Fleet
+  Coordinator): a "Generate Quiz" button/affordance attached to grounded, cited assistant
+  answers (reusing the citation-chip / upvote-button visual and interaction pattern
+  already in `journal-chat.js`), NOT a conversational multi-turn "would you like a
+  quiz?" prompt. This is now a fixed requirement, not open to Worker discretion.'
+- 'ANONYMOUS/SHARED-QUIZ ACCESS -- DECIDED by Chip: non-members (an unauthenticated
+  visitor following a shared quiz link) can VIEW a shared quiz''s questions/choices
+  (matching the read-only precedent T-PTG-025 established for shared conversations)
+  but CANNOT take it -- no answer submission, no scoring, no attempt row created for
+  an unauthenticated visitor. The submit/take flow must require `Authorization::requireRole(null)`
+  (an authenticated pilot account) the same way every other member-facing write endpoint
+  in this codebase already does; only the read-only question-viewing page is reachable
+  without a session, via the existing `share_slug`/`is_public` pattern.'
+- 'GENERATION CAP -- DECIDED by Chip: no per-user or per-quiz generation cap for this
+  pass. Rely on the existing $100/month org-wide UsagePolicy budget hard cap as the
+  only backstop, same as every other OpenAI-calling feature in this app -- do not
+  build new quota/rate-limiting machinery for quizzes specifically.'
+- 'ROUTING -- DECIDED by Chip: the take/retake UI is a SEPARATE dedicated page (matching
+  this codebase''s existing pattern of small dedicated pages for distinct actions,
+  e.g. `admin_reply.php`, `featured.php`, `help.php` -- not inline within the chat
+  view under the answer.'
+- 'QUESTION COUNT -- DECIDED by Chip: 5-8 questions per generated quiz is confirmed
+  as the target range, not just a placeholder default.'
+- 'FIX SCOPE 1 -- schema: new tables for quizzes, their questions, and attempts (exact
+  column design is the Worker''s call, but must support): a quiz belongs to a `conversation_id`/`user_id`
+  (the member who generated it) and records which source `messages`/citations it was
+  generated from (so a shared/retaken quiz can still be traced back to its Journal
+  source for citation-integrity purposes -- see FIX SCOPE 4). Each question has multiple-choice
+  options with exactly one correct answer, plus a reference back to the source citation/article
+  it was drawn from (do not generate a question with no traceable Journal source --
+  see FIX SCOPE 4''s grounding requirement). An attempt records a `user_id`, the submitted
+  answers, a computed score, and a timestamp, and multiple attempts per (quiz, user)
+  are allowed (retake, per the member''s explicit ask) -- do not design a schema that
+  only allows one attempt per user. Follow this codebase''s existing migration numbering
+  convention (see `journalgpt/migrations/`, next sequential number after `012_conversation_unread.sql`).'
+- 'FIX SCOPE 2 -- generation: a new service (e.g. `journalgpt/lib/QuizGenerator.php`,
+  matching the naming/structure convention of `AnswerSynthesizer.php`/`EvidenceRanker.php`)
+  that takes a grounded answer''s underlying evidence (the same retrieved/cited chunks
+  already resolved for that answer -- do not re-retrieve from scratch, reuse what
+  citation resolution already produced) and generates a flexible-but-bounded number
+  of multiple-choice questions, targeting 5-8 questions per quiz (confirmed range,
+  not a placeholder -- see QUESTION COUNT above) via an LLM call following this codebase''s
+  established JSON-structured-output pattern (see `EvidenceRanker.php`/`ResearchPlanner.php`
+  for how they prompt for and parse strict JSON from the model). Track and persist
+  the `estimated_cost` of this generation call the same way T-PTG-030 wired cost tracking
+  through the v3_beta pipeline -- do not let quiz generation become another silently-uncounted
+  cost like the bug T-PTG-030 fixed.'
+- 'FIX SCOPE 3 -- take/retake UI: a SEPARATE dedicated page (see ROUTING above --
+  matching `admin_reply.php`/`featured.php`/`help.php`''s pattern, not inline within
+  the chat view) presenting a generated quiz''s questions one at a time or as a single
+  form, letting the member submit answers, showing a score, and allowing them to retake
+  it (a new attempt row, not overwriting the prior one -- see FIX SCOPE 1). Previously-completed
+  attempts should be viewable (at minimum a score history), not just the most recent.'
+- 'FIX SCOPE 4 -- grounding integrity (do not skip this): this codebase has an established,
+  repeatedly-enforced hard rule that Journal-attributed content must be traceable
+  to real source material (v3.md sections 2.2/2.3, ClaimValidator from T-PTG-024,
+  the PTJ-013 "do not assert what cannot be evidenced" principle referenced in JournalAnswerService.php).
+  A generated quiz question is, in effect, a Journal-attributed claim (its correct
+  answer is presented as fact from the Journal). Every generated question MUST retain
+  a citation/source reference back to the specific article/page it was drawn from
+  (reuse the EXISTING citation resolver/data shape -- article_id, page, citation_label
+  -- already used elsewhere in this codebase, do not invent a new citation format),
+  and that source reference must be shown to the member when reviewing quiz results
+  (so a member can verify a question against the actual Journal text, same principle
+  as every other grounded answer in this app). Do not ship a quiz feature that generates
+  plausible-sounding questions with no traceable source -- that would be a real regression
+  against this codebase''s core grounding guarantee.'
+- 'FIX SCOPE 5 -- sharing: reuse the EXISTING conversation-sharing pattern (`share_slug`/`is_public`
+  columns and the corresponding unauthenticated-view code path -- find and read it,
+  likely referenced by `SharedConversationsTest.php` and T-PTG-025''s handoff) rather
+  than building a new sharing mechanism from scratch, per the member''s own explicit
+  comparison ("like sharing a conversation"). CRITICAL -- carries forward T-PTG-025''s
+  IP-protection finding directly: an unauthenticated visitor viewing a shared quiz
+  via its public slug must see ONLY the quiz questions/choices (and, if you choose
+  to show it, whether they got a question right after attempting it) -- they must
+  NOT gain access to protected PDF/source links or full article text through the shared
+  quiz, exactly the same boundary T-PTG-025 verified for shared conversations. Do
+  not let quiz sharing become a new, unaudited path around that boundary.'
+- 'EXPLICITLY OUT OF SCOPE: a conversational (chat-turn-based) "would you like a quiz?"
+  trigger flow -- decided against, see TRIGGER UX above; build the button/affordance
+  version only. Quiz editing (member manually correcting/rewriting a generated question)
+  -- generate-and-use only for this pass. Leaderboards, gamification, or any social/competitive
+  framing beyond plain sharing. Any change to the v3_beta pipeline itself (T-PTG-018
+  through T-PTG-031) -- quiz generation reads from an already-produced grounded answer''s
+  evidence, it does not participate in answer synthesis.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to test, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm ALL suites
+  PASS with zero regressions.'
+definition_of_done:
+- New migration(s) add quiz/question/attempt schema supporting multiple attempts per
+  (quiz, user), with reasoning documented in the handoff (including why the exact
+  column design was chosen).
+- QuizGenerator.php (or equivalent) generates multiple-choice questions from an existing
+  grounded answer's already-resolved evidence, with EVERY question carrying a traceable
+  citation/source reference back to a real article/page -- proven with a test that
+  asserts no question can be persisted without one.
+- estimated_cost for quiz generation is tracked and persisted, following T-PTG-030's
+  established pattern.
+- A member can take a generated quiz, submit answers, see a score, and retake it (a
+  new attempt, not an overwrite) -- proven with an automated test covering at least
+  two attempts on the same quiz by the same user.
+- Quiz results shown to the member include the source citation for each question,
+  matching this codebase's existing citation display conventions.
+- Quiz sharing reuses the existing conversation-sharing pattern and is proven, via
+  a new test extending or matching SharedConversationsTest.php's structure, to NOT
+  expose protected PDF/source access or full article text to an unauthenticated viewer
+  of a shared quiz.
+- The golden hammer suite (security_and_eval_suite.php) passes with zero regressions,
+  including all new tests folded into its runner per the T-PTG-028/T-PTG-033 registration
+  pattern.
+- php -l passes on all new/modified PHP files; node --check passes on all new/modified
+  JS files.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T18:08:17.626362Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T18:10:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: Filed at Chip's explicit direction ("file full-scope task now") after presenting
+    the request's real scope (new schema, LLM generation, take/retake, sharing) and
+    confirming he wanted the full build rather than a smaller MVP. Grounded entirely
+    in conversation 58's actual verbatim triage answers (via debug_logs.php), not
+    assumed. Flagged one real product judgment call (conversational trigger vs. a
+    button affordance) explicitly for PM audit rather than silently deciding it, since
+    it changes user-facing behavior the member specifically described. Explicitly
+    tied the grounding/citation requirement (FIX SCOPE 4) to this codebase's pre-existing,
+    repeatedly-enforced citation-integrity rule (v3.md, ClaimValidator, PTJ-013) so
+    a generated quiz doesn't quietly become the first place in the app where Journal-attributed
+    content ships without a traceable source. Explicitly tied sharing (FIX SCOPE 5)
+    to T-PTG-025's IP-protection finding so the new share surface doesn't reopen a
+    boundary that task just hardened.
+- timestamp: '2026-08-13T17:53:16.253794Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against b602830e
+- timestamp: '2026-08-13T18:30:00.000000Z'
+  action: POLICY_CHANGE
+  actor: FleetCoordinator
+  details: 'Chip confirmed all open design questions live in conversation: button
+    trigger (not conversational) confirmed correct; non-members can view but not take
+    a shared quiz; no per-user generation cap (org-wide budget cap is the only backstop);
+    take/retake UI is a separate dedicated page; 5-8 questions confirmed as the real
+    target range. Scope updated in place to encode these as fixed requirements rather
+    than open flags.'
+- timestamp: '2026-08-13T18:08:17.626964Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T18:38:13.649247Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T18:38:38.264025Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

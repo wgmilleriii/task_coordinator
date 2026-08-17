@@ -1,0 +1,54 @@
+task_id: T-PTG-034
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: ad3c721d0e914dbf3ff9a24c69f63e6d2f464dd2
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Grounding-integrity enforcement (FIX SCOPE 4) reviewed directly,
+    not just trusted: QuizGenerator::generateQuestions() filters incoming
+    citations to article_id > 0 before ever prompting the model, and
+    validateAndMapQuestion() discards any model-proposed question missing or
+    misreferencing an evidence_index. This is backed by a DB-level structural
+    guarantee, not just an app-level convention: quiz_questions.article_id is
+    NOT NULL with a real FK to articles, so an ungrounded question cannot be
+    persisted even if the app-level check regressed. Two independent layers,
+    correctly designed.'
+- severity: INFO
+  description: 'Anonymous-access boundary (the DECIDED requirement I was most
+    concerned about) verified by reading the actual SQL, not the docstring:
+    quiz.php''s slug-based branch SELECTs only id/sort_order/question_text/
+    options_json -- confirmed no correct_option_index, article_id, page, or
+    citation_label in that query. api/submit_quiz_attempt.php calls
+    Authorization::requireRole(null) unconditionally with no slug-based code
+    path at all. A non-member following a shared link can see questions but
+    has no way to reach the submission endpoint without a real session.'
+- severity: INFO
+  description: 'Generation cap requirement verified: generate_quiz.php checks
+    only UsagePolicy''s org-wide monthly budget (getMonthlyOrgSpend), and
+    explicitly does NOT call checkAllowance() (the per-user quota gate other
+    endpoints use) -- matches "no per-user or per-quiz cap, org budget is the
+    only backstop" exactly.'
+- severity: INFO
+  description: 'Retake support verified in the schema: quiz_attempts has no
+    unique constraint on (quiz_id, user_id) and user_id is NOT NULL (no
+    anonymous-attempt case to model, consistent with the auth requirement
+    above). A retake is structurally a new row, never an overwrite.'
+- severity: INFO
+  description: 'The merge of test-T-PTG-034 into test auto-merged a real
+    conflict in journal-chat.js (T-PTG-035''s v3.1 default-preset change and
+    this task''s Generate Quiz button both touched that file) -- confirmed
+    clean, no leftover conflict markers, node --check clean, and I re-ran the
+    full golden hammer suite myself AFTER the merge (not just before): 13/13
+    pass. Also independently re-ran php -l and node --check on every new/
+    modified file myself rather than trusting the worker''s report alone.'
+- severity: INFO
+  description: 'Process note, not a code finding: this task was interrupted
+    twice by the host machine sleeping mid-run and had to be resumed twice.
+    Both resumes correctly picked up from committed/uncommitted partial state
+    without duplicating or losing work, and the final implementation shows no
+    signs of the interruptions (no half-finished code paths, no orphaned
+    stubs). Worth noting for future large tasks: instructing incremental
+    commits during a resume (as was done here) meaningfully reduced the risk
+    from a third interruption.'
+reviewed_at: '2026-08-13T18:38:16.407066Z'

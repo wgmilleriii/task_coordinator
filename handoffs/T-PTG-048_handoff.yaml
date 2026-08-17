@@ -1,0 +1,94 @@
+task_id: T-PTG-048
+agent: Worker-ArticleQC1
+model: Claude Sonnet 5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-048
+base_sha: a527e9d
+head_sha: b23accf8642fcb85afe7525aaa65f0857271c3b3
+evidence_output: "NOTE (known fleet defect, see feedback/FEEDBACK_Worker-ExtractionRepair1_*.md\n\
+  item 1, previously also FEEDBACK_WorkerLoginFix1_*.md item 1): `./bin/fleet verify`\n\
+  runs verification_command against the PRIMARY clone (../newmexicoptg.org), not\n\
+  this task's worktree (../newmexicoptg.org-T-PTG-048), even though the fleet\nREADME's\
+  \ own HARD REQUIREMENT mandates all work happen in an isolated worktree.\nSince\
+  \ this task's deliverable\n(docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md)\
+  \ only\nexists on the test-T-PTG-048 branch inside the worktree and was never checked\n\
+  out in the primary clone, `./bin/fleet verify T-PTG-048 --model claude-sonnet-5`\n\
+  correctly-but-unhelpfully reported a FAIL (exit code 1, empty find output)\nagainst\
+  \ the unfixed primary clone. That auto-run is not valid evidence of\nanything and\
+  \ should not be read as a real failure of this task's work.\n\nReal evidence, manually\
+  \ re-run against the actual worktree/branch where the\nwork lives:\n\n$ cd /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-048\n\
+  $ git rev-parse HEAD\nb23accf8642fcb85afe7525aaa65f0857271c3b3\n$ git branch --show-current\n\
+  test-T-PTG-048\n$ find docs -path \"*30-Engineering*\" -name \"*.md\" | xargs grep\
+  \ -qli \"PTJ-2020-02\"\n$ echo \"exit: $?\"\nexit: 0\n\nDefinition-of-done evidence\
+  \ beyond the verification_command string match:\n\n1. extract_pieces.py and coverage.py\
+  \ from journalgpt/spikes/T-PTG-047/ were\n   reused as-is (imported/called via run_pipeline.py,\
+  \ not reimplemented) to\n   produce PTJ-2020-02's extraction (output/PTJ-2020-02.raw.json,\
+  \ committed)\n   and coverage numbers (output/PTJ-2020-02.result.json, committed).\n\
+  2. Full 15-row ground-truth diff table in the report, each row explicitly\n   marked\
+  \ HIT / HIT-with-anchor-error / MERGED, with the matching (or\n   absorbing) extracted\
+  \ piece's title/author/implied-range shown alongside.\n3. All 10 non-ad/index rows\
+  \ (task text says 9, the ground-truth table actually\n   contains 10 -- documented\
+  \ explicitly in the report) were QC-read directly\n   from journalgpt/corpus/extracted/PTJ-2020-02/PTJ-2020-02-A01.txt\
+  \ via\n   common.page_blocks(), not just page-number diffed. Report's QC-read table\n\
+  \   shows complete/uncut-ending, byline-match, and absorption findings per row.\n\
+  4. Explicit yes/no on the six-short-department-item failure mode: YES, occurs.\n\
+  \   3 of 6 items (President's Message, TT&T, The Piano Corner) dropped/absorbed\n\
+  \   into Tight Tuning Pins Part 1's mis-anchored claimed range (claimed\n   start_page=6,\
+  \ real start is anchor 16 -- confirmed by direct text read).\n5. Secondary generalization\
+  \ check against 3 (task asked for 2-3) of the\n   original 8 T-PTG-047 spike issues\
+  \ -- PTJ-2019-08, PTJ-2022-06, PTJ-2025-10\n   -- reusing their already-cached output/*.raw.json\
+  \ (no new API spend for\n   these), each issue's own [[page:N]]-anchored TOC used\
+  \ as ground truth, real\n   text reads performed. Same failure mode confirmed in\
+  \ all 3 (either as an\n   unclaimed coverage.py gap page, or as silent absorption\
+  \ into a\n   mis-anchored neighbor -- both variants observed).\n6. Report at\n \
+  \  docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md\n  \
+  \ gives an explicit recommendation: completeness cannot yet be trusted from\n  \
+  \ raw pipeline output even with zero coverage.py gaps/overlaps; two\n   independent\
+  \ generalizing failure modes found (short-column\n   drop/absorption, and independent\
+  \ article truncation on Reweighing the\n   Original Keyboard Part 2); concrete next\
+  \ steps proposed (short-range/wide-\n   neighbor structural heuristic, TOC-title\
+  \ cross-reference pass).\n7. Scope: no changes to journalgpt/corpus/extract_corpus.py\
+  \ (git diff against\n   base_sha a527e9d shows zero touches to that file), no database\
+  \ migration\n   created or run, no test/prod admin endpoint touched -- git log for\
+  \ this\n   branch shows only 3 new files: the report doc and two cached\n   output/PTJ-2020-02.*.json\
+  \ evidence files under journalgpt/spikes/T-PTG-047/.\n"
+peer_review_notes: "Please re-run the verification_command inside the WORKTREE\n(../newmexicoptg.org-T-PTG-048\
+  \ on branch test-T-PTG-048, commit b23accf), not\nthe primary clone -- see evidence_output\
+  \ above for why the primary-clone run\nis expected to fail and is not meaningful\
+  \ evidence either way. The worktree\nis left in place per instructions (not removed)\
+  \ for inspection.\n\nThis task's scope explicitly calls out a discrepancy worth\
+  \ flagging to\nreviewers: the task text says \"9 real article/editorial/column rows\"\
+  \ but the\n15-row ground-truth table given in the task YAML actually contains 10\n\
+  non-ad/index rows (the 5 ad/index rows are clearly enumerated separately and\nmatch\
+  \ exactly). All 10 were QC-read rather than stopping at 9, since the\ntable itself\
+  \ is the authoritative ground truth per the task's own framing\n(\"real ground truth\
+  \ derived directly from the issue's own table of\ncontents, not invented\").\n\n\
+  Headline finding for reviewers to weigh: the six-short-department-item\nfailure\
+  \ mode is confirmed YES, and \u2014 more importantly for anyone deciding\nwhether\
+  \ to trust this pipeline's output \u2014 it generalizes to 3/3 secondary\nissues\
+  \ checked, always via the same two mechanisms (unclaimed gap page, or\nsilent absorption\
+  \ into a neighboring piece whose own start_page anchor is\nwrong by several pages).\
+  \ The absorption variant is invisible to\ncoverage.py's page-diff method, which\
+  \ is exactly the class of error this\ntask was scoped to catch. Recommend reading\
+  \ the report's \"Recommendation\"\nsection before evaluating pass/fail on whether\
+  \ piece-level completeness is\nready to build on.\n"
+human_action_required: 'Decide whether to invest in the two concrete next steps
+
+  proposed in the report''s Recommendation section (a cheap structural
+
+  heuristic flagging suspiciously short pieces adjacent to suspiciously wide
+
+  neighbors, and a TOC-title cross-reference pass) before any piece-level
+
+  schema/database work proceeds, given that both failure modes found here
+
+  (short-column drop/absorption, and independent article truncation) are
+
+  invisible to T-PTG-047''s coverage.py checker and were only caught by a real
+
+  text read.
+
+  '
+token_spend: null
+cost_usd: 0.006

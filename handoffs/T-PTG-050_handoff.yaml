@@ -1,0 +1,92 @@
+task_id: T-PTG-050
+agent: Worker-CSVPilot1
+model: Claude Sonnet 5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-050
+base_sha: a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87
+head_sha: 4653949f84b34a0aa07592d0a14adf3552bf7923
+evidence_output: "NOTE (same known fleet defect documented in feedback/FEEDBACK_Worker-ExtractionRepair1_claude-sonnet-5_20260814.md\n\
+  and feedback/FEEDBACK_WorkerLoginFix1_claude-sonnet-5_20260813.md): `./bin/fleet\
+  \ verify`\nruns verification_command against the PRIMARY clone (../newmexicoptg.org),\
+  \ not\nthis task's isolated worktree (../newmexicoptg.org-T-PTG-050), even though\
+  \ the\nfleet README's own HARD REQUIREMENT mandates all work happen in an isolated\n\
+  worktree. This task's entire deliverable (journalgpt/corpus/articles_pilot/,\nthe\
+  \ pilot script, and the docs/30-Engineering report) only exists on the\ntest-T-PTG-050\
+  \ branch inside the worktree and was never checked out in the\nprimary clone, so\
+  \ `./bin/fleet verify T-PTG-050 --model \"Claude Sonnet 5\"`\ncorrectly-but-unhelpfully\
+  \ failed (exit 1, 'No such file or directory') against\nthe primary clone. That\
+  \ auto-run is not valid evidence of a real failure.\n\nReal evidence, manually re-run\
+  \ against the actual worktree/branch where the\nwork lives:\n\n$ cd /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-050\n\
+  $ git rev-parse HEAD\n4653949f84b34a0aa07592d0a14adf3552bf7923\n$ git branch --show-current\n\
+  test-T-PTG-050\n$ find journalgpt/corpus/articles_pilot -name \"*.md\" | grep -q\
+  \ .\n$ echo \"exit: $?\"\nexit: 0\n$ find journalgpt/corpus/articles_pilot -name\
+  \ \"*.md\" | wc -l\n44\n\nDefinition-of-done evidence beyond the verification_command\
+  \ string match:\n\n1. CSV parsing: journalgpt/spikes/T-PTG-050/pilot_extract.py's\
+  \ load_csv_rows(),\n   confirmed 4130 total raw rows, 1 blank separator row skipped\
+  \ (utf-8-sig\n   BOM handled via encoding='utf-8-sig'), 9 empty-Article-Title rows\
+  \ skipped,\n   4120 rows kept -- see pilot_extract.py stdout output and\n   journalgpt/spikes/T-PTG-050/pilot_results.json's\
+  \ csv_stats block.\n2. Pilot set: 6 issues -- PTJ-2020-02, PTJ-2024-01, PTJ-2025-03,\
+  \ PTJ-2025-10\n   (all 4 mandatory) plus PTJ-2019-08 and PTG-2022-10 (worker's choice,\
+  \ each\n   with a documented inclusion reason in the report), each confirmed to\
+  \ have\n   a CSV entry + PDF (via the journalgpt/pdfs symlink into the primary\n\
+  \   clone's gitignored pdfs/ dir, matching the documented worktree pattern for\n\
+  \   gitignored assets) + extracted text present before processing.\n3. Per-issue\
+  \ offset: computed via journalgpt/spikes/T-PTG-047/toc_offset_repair.py's\n   extract_footer_offsets()/derive_front_matter_offset(),\
+  \ imported and reused\n   (not reimplemented) in pilot_extract.py. All 6 pilot issues\
+  \ derived\n   offset=2 at 100% confidence, matching the DB default -- reported per-issue\n\
+  \   in the report's offset table, never hardcoded to 2 in the slicing logic\n  \
+  \ itself (effective_offset_used is always the reused function's output,\n   falling\
+  \ back to a named constant only if derivation fails, which it never\n   did across\
+  \ the 6 pilot issues).\n4. 44 per-article .md files written under journalgpt/corpus/articles_pilot/<issue>/<slug>.md,\n\
+  \   each with required frontmatter (issue, article_title, author, printed_page,\n\
+  \   anchor_page_range, core_skills, summary_keywords, source_csv_row_number,\n \
+  \  plus last_article_in_issue_fallback for wrinkle #1 traceability) followed\n \
+  \  by full sliced body text.\n5. Last-article fallback (wrinkle #1): explicitly\
+  \ implemented (extends to the\n   issue's final [[page:N]] anchor via get_anchor_pages()'s\
+  \ max_page) and\n   flagged per-file via last_article_in_issue_fallback in frontmatter.\n\
+  6. Ad/index contamination (wrinkle #2): directly investigated by reading real\n\
+  \   sliced text at two boundaries. Confirmed contamination at the\n   PTJ-2020-02\
+  \ last-article-fallback boundary (Reweighing the Original\n   Keyboard - Part 2's\
+  \ anchor range 33-48 genuinely absorbs ~10 pages of\n   PTG Review/Foundation Focus/back-matter\
+  \ after the real article ends\n   mid-page-38) -- reported honestly in the report,\
+  \ not assumed.\n7. PTJ-2020-02 cross-check against T-PTG-048's 15-row ground truth\
+  \ (read\n   directly from ../newmexicoptg.org-T-PTG-048's unmerged worktree, since\n\
+  \   `git merge-base --is-ancestor test-T-PTG-048 test` confirmed it is still\n \
+  \  NOT merged at task start): explicit answer PARTIALLY -- 4 of the 6 short\n  \
+  \ department items (TT&T, The Piano Corner, Tight Tuning Pins Part 1,\n   Re-Covering\
+  \ Hammers by Hand) are now correctly produced as separate,\n   correctly-bounded\
+  \ pieces (fixing the absorption failure mode and a\n   10-page anchor error), but\
+  \ 2 (Editorial Perspective, President's Message)\n   are still missing because the\
+  \ CSV itself does not catalog them as rows --\n   confirmed by direct search of\
+  \ the raw CSV's Feb-20 and neighboring\n   Jan-20/Mar-20 blocks.\n8. PTJ-2024-01/2025-03/2025-10\
+  \ cross-checked against T-PTG-047's\n   output/<issue>.result.json piece lists;\
+  \ multiple boundaries compared\n   directly, including one (Upgrading Your Business\
+  \ Tech in 2024) where the\n   CSV-driven boundary was independently confirmed correct\
+  \ by reading raw\n   text, versus the LLM's claimed start_page being off by 2 pages.\n\
+  9. Report at docs/30-Engineering/2026-08-16-csv-driven-article-extraction-pilot.md,\n\
+  \   frontmatter validated against task_coordinator/schemas/doc_frontmatter.schema.json\n\
+  \   (jsonschema.validate() passed), covering offset table, contamination\n   findings,\
+  \ PTJ-2020-02 cross-check with explicit yes/no/partially answer,\n   T-PTG-047 cross-checks,\
+  \ 3 sample .md excerpts, and an explicit scale-up\n   recommendation.\n10. Scope:\
+  \ no changes to journalgpt/corpus/extract_corpus.py (git diff against\n   base_sha\
+  \ a527e9d shows zero touches to that file), no database migration,\n   no test/prod\
+  \ admin endpoint touched, no OpenAI/LLM API calls made -- git\n   log for this branch\
+  \ shows only new files under journalgpt/spikes/T-PTG-050/,\n   journalgpt/corpus/articles_pilot/,\
+  \ and docs/30-Engineering/.\n"
+peer_review_notes: 'Please re-run the verification_command inside the WORKTREE (../newmexicoptg.org-T-PTG-050
+  on branch test-T-PTG-050, commit 4653949f84b34a0aa07592d0a14adf3552bf7923), not
+  the primary clone -- see evidence_output above for why the primary clone will always
+  false-FAIL for this task. The single most important thing to check independently:
+  the PTJ-2020-02 cross-check against T-PTG-048''s 15-row ground truth (partially
+  fixed -- 4/6 short department items now correct, 2/6 still missing for a NEW reason:
+  the CSV ground truth itself doesn''t catalog them). Also worth an independent look:
+  the confirmed ad-contamination example at journalgpt/corpus/articles_pilot/PTJ-2020-02/reweighing-the-original-keyboard-part-2.md.'
+human_action_required: 'T-PTG-048 (referenced ground truth source) is still unmerged
+  into test as of this submission -- recommend merging or otherwise resolving both
+  PEER_REVIEW tasks together. Also: the report''s scale-up recommendation calls out
+  two unresolved gaps (uncatalogued short department columns, last-article-fallback
+  ad/index contamination) that should be explicitly accepted or mitigated before a
+  full 90-issue run is authorized.'
+token_spend: null
+cost_usd: null

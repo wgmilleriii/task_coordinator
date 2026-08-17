@@ -1,0 +1,90 @@
+task_id: T-PTG-047
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 65ab465bb5317c58c4cbd23b8ad0176e40c1e121
+verdict: PASS
+findings:
+- severity: INFO
+  description: >-
+    Scope confirmed via `git diff 943f11cc..65ab465b --stat` in the worktree:
+    all 29 changed files are under journalgpt/spikes/T-PTG-047/ (code + output
+    JSON) or docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md.
+    No changes to journalgpt/corpus/extract_corpus.py, no migration files, no
+    test/prod admin endpoints touched. Out-of-scope requirement satisfied.
+- severity: INFO
+  description: >-
+    Read coverage.py, toc_offset_repair.py, continued_scan.py, boundary_trim.py,
+    vision_prototype.py in full. Each does what it claims: coverage.py implements
+    the 1..max_anchor exactly-one-owner check with gap/overlap detection;
+    toc_offset_repair.py derives a front-matter offset from footer text (mode of
+    physical-printed deltas) and repairs TOC-vs-anchor confused start_pages,
+    explicitly reusing the pdf_page_offset concept from migrations/002 (default 2)
+    rather than inventing a parallel one; continued_scan.py is an independent regex
+    scan for "continued on/from page N" with no LLM dependency; boundary_trim.py is
+    an ordering-based end_page trim, correctly documented as an addition beyond the
+    two required Addendum mechanisms.
+- severity: INFO
+  description: >-
+    Independently re-ran the full pipeline myself: `python3 run_all.py` inside
+    journalgpt/spikes/T-PTG-047 (using cached raw.json extractions, no new API
+    spend) reproduced the report's before/after table exactly, row for row,
+    including totals (baseline 108/51, this-run raw 151/15, this-run repaired
+    164/7). Also ran each module's own self-test (coverage.py, boundary_trim.py,
+    toc_offset_repair.py, continued_scan.py) — all passed.
+- severity: INFO
+  description: >-
+    Verified the required PTJ-2025-10 finding-#2 correction case directly against
+    output/PTJ-2025-10.result.json's toc_repair_log: piece "Alexander Lamb and the
+    Henry F. Miller Organ Pedal Piano" repaired from claimed_start_page=18 to
+    repaired_start_page=20, end_page 22, matching the report's claim and the DoD's
+    "corrected to the real anchor page ~20" requirement exactly. Also confirmed
+    coverage_before/coverage_after gap_count (31->35) and overlap_count (1->2) in
+    the same file match the report table's PTJ-2025-10 row exactly.
+- severity: INFO
+  description: >-
+    Verified the "gaps got worse" finding (151->164) is not a bug: the report's
+    mechanistic explanation (repairing a mis-anchored piece's start_page removes a
+    spurious overlapping claim from its old location; if nothing else covered those
+    old pages they become newly-counted gaps rather than staying masked by overlap)
+    is consistent with the actual per-issue JSON data I inspected (PTJ-2025-10 raw
+    gaps=31/overlap=1 -> repaired gaps=35/overlap=2, i.e. moving the piece exposed 4
+    more unclaimed pages while only adding 1 new overlap elsewhere). This reads as a
+    correct, if sobering, measurement rather than a methodology error.
+- severity: INFO
+  description: >-
+    Vision-model stretch goal genuinely attempted, not just claimed: real gpt-4o API
+    call against a rendered page-3 PNG of the real PTJ-2020-04 PDF, with actual usage
+    data (919 prompt / 42 completion tokens) persisted in
+    output/vision/ptj-2020-04-p3.result.json. Token totals for the full task
+    (243,971 prompt / 8,140 completion across the 8 raw.json extraction files) were
+    independently recomputed by me from the raw.json usage fields and match the
+    report's reported totals exactly, corroborating the claimed ~$0.044 total spend
+    as real, not fabricated.
+- severity: INFO
+  description: >-
+    docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md
+    frontmatter (title, created_at, last_modified, author, status, category) matches
+    task_coordinator/schemas/doc_frontmatter.schema.json exactly (status=active,
+    category=30-Engineering are both valid enum values, all required fields
+    present). The report covers all 8 required sample issues in its results table
+    with per-issue gap/overlap counts before and after repair, and gives an explicit,
+    non-hedging recommendation (not yet sufficient; needs a gap-page fallback
+    classifier and/or a review_status field) as required by the DoD.
+- severity: MINOR
+  description: >-
+    Minor documentation inaccuracy: the report's Scope Confirmation section says
+    real PDFs live at "journalgpt/pdfs/ (present locally but gitignored)", but the
+    actual path used by vision_prototype.py and present in the worktree is
+    journalgpt/pdfs_real/ (an untracked symlink, not the gitignored journalgpt/pdfs/
+    path). Does not affect scope compliance (pdfs_real/ is untracked either way, no
+    PDFs were committed) or any DoD item, but is a factual slip in the report worth
+    a follow-up correction.
+- severity: INFO
+  description: >-
+    The handoff's evidence_output correctly diagnoses a known fleet defect (`fleet
+    verify` runs the verification_command against the primary clone, not the
+    worktree). I independently confirmed the verification_command
+    (`find docs -path "*30-Engineering*" -newer journalgpt/migrations/002_pdf_page_offset.sql
+    -name "*.md" | grep -qi coverage`) exits 0 when run inside the worktree at
+    commit 65ab465b, matching the worker's manual re-run.
+reviewed_at: '2026-08-14T22:49:34.184834Z'

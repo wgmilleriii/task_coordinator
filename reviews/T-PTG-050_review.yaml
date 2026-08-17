@@ -1,0 +1,112 @@
+task_id: T-PTG-050
+reviewer_agent: Claude-Reviewer
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 4653949f84b34a0aa07592d0a14adf3552bf7923
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Scope confinement verified by direct diff (base a527e9d..4653949).
+    git diff --stat shows only 47 files touched, all under
+    journalgpt/corpus/articles_pilot/, journalgpt/spikes/T-PTG-050/, and
+    docs/30-Engineering/. No touch to journalgpt/corpus/extract_corpus.py, no
+    migrations, no admin endpoints. Single commit on the branch.'
+- severity: INFO
+  description: 'Code reuse verified by reading pilot_extract.py directly (lines
+    32-35): it imports extract_footer_offsets and derive_front_matter_offset
+    from journalgpt/spikes/T-PTG-047/toc_offset_repair.py and calls them
+    directly in process_issue() rather than reimplementing offset logic. Not
+    faked.'
+- severity: INFO
+  description: 'CSV parsing stats independently reproduced by re-running
+    load_csv_rows()-equivalent logic against the raw CSV in the worktree:
+    4130 total raw rows, 1 blank separator skipped, 9 empty-title rows
+    skipped, 4120 kept -- exact match to the report and handoff claims.'
+- severity: INFO
+  description: 'Offset claim verified directly from journalgpt/spikes/T-PTG-050/pilot_results.json:
+    all 6 pilot issues (PTJ-2020-02, PTJ-2024-01, PTJ-2025-03, PTJ-2025-10,
+    PTJ-2019-08, PTG-2022-10) show derived_front_matter_offset=2,
+    effective_offset_used=2, confidence=1.0 -- matches the report''s offset
+    table exactly, computed via the reused function (not hardcoded; the code
+    path confirms effective_offset falls back to a literal 2 only if
+    derivation fails, which it never did).'
+- severity: INFO
+  description: 'PTJ-2020-02 six-short-department-item cross-check independently
+    verified by reading all 7 generated .md files in
+    journalgpt/corpus/articles_pilot/PTJ-2020-02/ in full. TT&T, The Piano
+    Corner, Tight Tuning Pins Part 1, and Re-Covering Hammers by Hand are
+    all present as separate files with correct titles, correct authors
+    (Scott Cole, ChiaYu Lee/Hannah Beckett byline, Larry Lobel, Fred Sturm
+    respectively matching T-PTG-048''s ground truth), and substantial body
+    content. Editorial Perspective and President''s Message are absent from
+    the pilot output. Independently grepped the raw CSV
+    (journalgpt/pdfs/CompleteList-Sortable-Grid view.csv) for Feb-20 rows:
+    confirmed exactly 7 rows (3615-3621), none titled Editorial Perspective
+    or President''s Message, while a full-file grep for those two titles
+    shows the CSV DOES catalog them for many other issues (e.g. Jan-16,
+    Feb-16, Jan-18 etc.) -- confirming the CSV genuinely omits them for this
+    specific issue rather than the worker''s matching logic missing them.
+    The "4 of 6 fixed, 2 of 6 genuinely absent from ground truth" claim is
+    accurate and not overstated.'
+- severity: INFO
+  description: 'Contamination finding (wrinkle #2) independently verified.
+    Read reweighing-the-original-keyboard-part-2.md in full: anchor range
+    33-48 (16 pages), last_article_in_issue_fallback: true. Confirmed via
+    grep that pages 39+ contain "Foundation Focus" and "Classifieds"
+    section headers, consistent with T-PTG-048''s finding that the real
+    article ends mid-page-38. This is genuine back-matter contamination
+    (~10 of 16 pages), honestly reported as a real limitation rather than
+    hidden.'
+- severity: INFO
+  description: 'T-PTG-047 cross-check spot-checked independently for
+    "Upgrading Your Business Tech in 2024": read raw extracted text at
+    printed/anchor pages 23-26 directly via common.py''s page_blocks(). Page
+    23 is unrelated content (a soundboard-press clamp-fitting article,
+    continuing from page 22); the real "Upgrading Your Business Tech in
+    2024" byline and opening paragraph genuinely begin on anchor page 25.
+    This confirms the report''s claim that the CSV-driven anchor (25) is
+    correct and the LLM''s claimed start_page=23 was off by 2 pages -- not
+    a cherry-picked or fabricated example. Also independently confirmed the
+    7-vs-13 article count discrepancy for PTJ-2024-01 (CSV: 7 articles per
+    pilot_results.json; LLM: 13 pieces per T-PTG-047''s
+    PTJ-2024-01.result.json pieces_after array) matches the report exactly.'
+- severity: INFO
+  description: 'Report doc verified to exist at
+    docs/30-Engineering/2026-08-16-csv-driven-article-extraction-pilot.md
+    with correct Dewey Decimal category (30-Engineering) and frontmatter
+    matching task_coordinator/schemas/doc_frontmatter.schema.json exactly:
+    all required fields present (title, created_at, last_modified, author,
+    status=active, category=30-Engineering), no additional/disallowed
+    properties, status and category values are valid enum members. Report
+    body contains the offset table, both contamination findings, the full
+    PTJ-2020-02 cross-check with explicit PARTIALLY answer and reasoning,
+    the T-PTG-047 cross-checks for all three required issues (including one
+    discrepancy honestly flagged as "not independently re-verified" rather
+    than asserted either way -- a good sign of calibrated reporting), 3
+    sample .md excerpts, and an explicit scale-up recommendation with two
+    named caveats.'
+- severity: INFO
+  description: 'No OpenAI/LLM API usage found: grepped pilot_extract.py for
+    openai/api_key/requests.post/urllib -- zero matches. Single commit on
+    the branch (4653949), report explicitly states no LLM calls were made
+    or needed. Scope is pure local CSV parsing + reused offset derivation +
+    text slicing, consistent with the task''s explicit no-LLM-call
+    requirement.'
+- severity: MINOR
+  description: 'One T-PTG-047 cross-check item (PTJ-2025-10, "A Case for
+    Unequal Temperament... Part 2", LLM 14-16 vs CSV-driven 16-19) is
+    reported as a discrepancy but explicitly NOT independently re-verified
+    against raw text in the worker''s own pass -- correctly flagged as such
+    in the report rather than asserted. Not independently re-verified by
+    this review either; noted here only so a future full-corpus pass knows
+    this specific boundary is still an open question, not a confirmed
+    win for either approach.'
+- severity: MINOR
+  description: 'The fleet verify auto-run against the primary clone
+    (../newmexicoptg.org) necessarily fails for this task since all
+    deliverables only exist on the test-T-PTG-050 branch in the isolated
+    worktree -- this is the same known fleet-tooling defect documented in
+    two prior FEEDBACK files (Worker-ExtractionRepair1, WorkerLoginFix1),
+    not a defect in this task''s work. Manually reran the
+    verification_command directly in the worktree and confirmed it passes
+    (44 .md files found). Not a review blocker.'
+reviewed_at: '2026-08-16T15:14:13.992784Z'

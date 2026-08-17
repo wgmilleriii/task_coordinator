@@ -1,0 +1,154 @@
+id: T-PTG-049
+title: Transcribe Airtable ground-truth screenshots (27 issues, Nov-2023 to Jan-2026)
+  and cross-check against T-PTG-047 extraction output
+status: CANCELLED
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+created_at: '2026-08-15T00:27:55Z'
+dependencies:
+- T-PTG-047
+scope:
+- 'Background, read first, in full: docs/superpowers/specs/2026-08-14-per-article-extraction-spike-findings.md,
+  docs/30-Engineering/2026-08-14-page-coverage-validation-repair-pass.md (T-PTG-047,
+  DONE, merged into test), and docs/30-Engineering/2026-08-14-article-editorial-completeness-qc-pass.md
+  (T-PTG-048, currently in PEER_REVIEW on branch test-T-PTG-048 / worktree ../newmexicoptg.org-T-PTG-048
+  -- confirmed NOT yet merged into test as of this task''s creation via `git merge-base
+  --is-ancestor test-T-PTG-048 test`, which fails; re-check merge status at task start
+  since it may land before this task is claimed). T-PTG-048 found that article/editorial
+  completeness cannot be trusted from raw extraction output even with zero page-coverage
+  gaps/overlaps -- short department columns get silently dropped or absorbed into
+  neighboring pieces, and one article was found truncated to 1 of its 6 real pages
+  despite a correct title/author/start_page. That finding was derived by hand from
+  a single issue''s own table of contents (PTJ-2020-02). This task''s job is to widen
+  that kind of ground-truth check using a new, independently-sourced dataset instead
+  of hand-deriving TOCs one issue at a time.'
+- 'New resource: the user maintains a human-curated Airtable base (public share view,
+  not part of this repo) cataloguing the Piano Technicians Journal back to 1979, one
+  record per article, with fields Page (printed page number), Article Title, Author(s),
+  Summary/Keywords, Core skills tags, and a link to the parent Issue (Month-Year format,
+  e.g. "Jan-26"). The user took 10 screenshots of this Airtable grid view and saved
+  them directly into journalgpt/pdfs/ (they are a screenshot dump sitting alongside
+  the PDFs, not corpus data): journalgpt/pdfs/Screenshot 2026-08-14 at 6.19.33 PM.png,
+  ...6.19.45 PM.png, ...6.19.54 PM.png, ...6.20.06 PM.png, ...6.20.19 PM.png, ...6.20.32
+  PM.png, ...6.20.42 PM.png, ...6.20.50 PM.png, ...6.20.59 PM.png, ...6.21.07 PM.png.
+  These 10 screenshots are consecutive scroll captures covering Airtable record numbers
+  approximately 3918 through 4126 (some overlap expected at the boundary of each screenshot),
+  spanning issues Nov-2023 through Jan-2026 -- confirmed this range covers 27 issues
+  (PTJ-2023-11 through PTJ-2026-01), all of which are present in journalgpt/corpus/manifest.json
+  and all of which already have a PDF in journalgpt/pdfs/. This span includes 3 of
+  the original 8 T-PTG-047 spike-sample issues -- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10
+  -- which already have extraction output at journalgpt/spikes/T-PTG-047/output/PTJ-2024-01.result.json,
+  PTJ-2025-03.result.json, and PTJ-2025-10.result.json (confirmed present on branch
+  test, already merged). Page numbers in this Airtable data have already been visually
+  spot-checked by the requester against recurring department page conventions independently
+  found in PTJ-2020-02''s own TOC (TT&T ~p.7-8, Q&A Roundtable ~p.10-12, Tuner''s
+  Life ~p.36, Foundation Focus ~p.30-31) -- a strong signal this data is reliable,
+  though not yet proven at scale.'
+- 'Known limitation to respect: long article titles are visually truncated with an
+  ellipsis in the Airtable grid view screenshots (fixed column width), so some transcribed
+  titles will be partial. Short titles (TT&T, Tuner''s Life: X, Q&A Roundtable: X,
+  Foundation Focus: X) are mostly complete. Page numbers, issue month, and author
+  are reliably legible throughout the screenshots.'
+- 'In scope, required, step 1 (transcription): read all 10 screenshot PNGs directly
+  with the Read tool (it supports images) -- do not guess, infer, or hallucinate any
+  field. Transcribe every row visible into a structured ground-truth JSON file, one
+  record per row, with fields: airtable_number, issue (convert the screenshot''s "Mon-YY"
+  issue format to this repo''s PTJ-YYYY-MM convention, e.g. "Jan-26" -> "PTJ-2026-01"),
+  page, title, title_truncated (boolean -- true if the screenshot itself shows the
+  title cut off with an ellipsis; never guess the missing portion, just flag it),
+  author(s), and core_skills. De-duplicate rows that appear in more than one screenshot
+  (adjacent screenshots overlap at their scroll boundary) by airtable_number. Save
+  this file under a new directory journalgpt/spikes/T-PTG-049/ (NOT under journalgpt/corpus/
+  -- this is external reference data, not corpus content) as ground_truth_2023-11_2026-01.json
+  or an equivalently clear name.'
+- 'In scope, required, step 2 (coverage check): using the transcribed ground truth,
+  report which of the 27 issues in range (PTJ-2023-11 through PTJ-2026-01) received
+  at least one ground-truth row, and explicitly flag any issue in that range with
+  zero rows as a possible screenshot gap or scroll-boundary miss -- do not silently
+  assume full coverage just because the record-number range nominally spans it.'
+- 'In scope, required, step 3 (cross-check against existing extraction): for the 3
+  issues where both this task''s ground truth and T-PTG-047''s extraction output already
+  exist -- PTJ-2024-01, PTJ-2025-03, PTJ-2025-10 -- diff the Airtable ground-truth
+  rows for each issue against journalgpt/spikes/T-PTG-047/output/<issue>.result.json.
+  If T-PTG-048 is merged/available by the time this task is worked, its PTJ-2020-02-specific
+  diff methodology under journalgpt/spikes/T-PTG-048/ should be reused or extended
+  for this comparison rather than reimplemented from scratch; if T-PTG-048 is still
+  unmerged, reference its worktree (../newmexicoptg.org-T-PTG-048) directly the same
+  way T-PTG-048 itself had to reference T-PTG-047''s still-unmerged branch. Report
+  hit / miss / merged per ground-truth row, in the same explicit per-row table style
+  T-PTG-048 used for its PTJ-2020-02 diff (not just an aggregate count).'
+- 'Explicitly NOT required: a full QC content-read pass across all 27 issues -- T-PTG-048
+  already established that raw page-coverage checking is insufficient and that finding
+  does not need to be re-proven here. This task is about breadth (27 issues via a
+  new, independently-sourced ground truth) not depth (re-reading every article''s
+  full text). If the worker has time or interest to spot-check 1-2 completeness reads
+  against this new ground truth (similar in spirit to T-PTG-048''s source-text read,
+  but not the primary deliverable), that is a bonus, not a requirement.'
+- 'In scope, required, step 4 (report): a written report under docs/30-Engineering/
+  (Dewey Decimal protocol per task_coordinator/README.md), with frontmatter matching
+  task_coordinator/schemas/doc_frontmatter.schema.json, presenting: the coverage check
+  from step 2 (27-issue table, flagging any zero-row issues), the 3-issue cross-check
+  diff tables from step 3 (hit/miss/merged per row), and a clear recommendation on
+  whether this Airtable data should become the primary ground-truth source for a future
+  piece-level schema, versus continuing to rely on LLM extraction plus repair heuristics
+  (T-PTG-047''s coverage.py / toc_offset_repair.py / boundary_trim.py / continued_scan.py
+  approach).'
+- 'Out of scope, do not do: no articles/pieces schema design or database migration;
+  no touching test/prod in any way (no migration, no backfill, no admin-page changes
+  -- test.newmexicoptg.org shares prod''s database, confirm before any migration/backfill/data-write
+  on test, not just prod); no production code changes (journalgpt/corpus/extract_corpus.py
+  or any other shipped pipeline code); no full-corpus pass -- only the 27 issues covered
+  by the 10 screenshots, plus the 3-issue cross-check; no scraping or live-browsing
+  the actual Airtable site -- the 10 screenshots already saved in journalgpt/pdfs/
+  are the only data source for this task (the user may provide better/direct Airtable
+  access later, which would be a separate future task, not this one).'
+definition_of_done:
+- All 10 screenshot PNGs in journalgpt/pdfs/ (Screenshot 2026-08-14 at 6.19.33 PM.png
+  through ...6.21.07 PM.png) were read directly with the Read tool and transcribed
+  -- not inferred or hallucinated -- into a single structured ground-truth JSON file
+  under a new journalgpt/spikes/T-PTG-049/ directory, with fields airtable_number,
+  issue (in PTJ-YYYY-MM form), page, title, title_truncated, author(s), and core_skills
+  per row, de-duplicated across overlapping screenshots by airtable_number.
+- The report explicitly states, for every one of the 27 issues PTJ-2023-11 through
+  PTJ-2026-01, whether it received at least one ground-truth row, and calls out by
+  name any issue with zero rows as a possible screenshot gap rather than silently
+  omitting it.
+- For each of PTJ-2024-01, PTJ-2025-03, and PTJ-2025-10, the report contains a per-row
+  diff table (ground-truth row vs. T-PTG-047 extraction output) explicitly marking
+  each row hit, miss, or merged, in the same style as T-PTG-048's PTJ-2020-02 diff
+  table -- not just an aggregate hit-rate number.
+- A written report exists under docs/30-Engineering/ with frontmatter matching task_coordinator/schemas/doc_frontmatter.schema.json,
+  and ends with a clear, explicit recommendation on whether the Airtable data should
+  become the primary ground-truth source for a future piece-level schema versus continuing
+  to rely on LLM extraction plus repair heuristics.
+- No changes were made to journalgpt/corpus/extract_corpus.py or any other production
+  code path, no database migration was created or run, and no test/prod endpoint was
+  touched -- all work is local files under journalgpt/spikes/T-PTG-049/ and the docs/
+  report.
+verification_command: test -f journalgpt/spikes/T-PTG-049/ground_truth_2023-11_2026-01.json
+  || find journalgpt/spikes/T-PTG-049 -name "*.json" | grep -q .
+human_review_required: true
+requires_doc_update: true
+audited_at: '2026-08-15T00:29:20.067852Z'
+audited_by: Claude-PM
+audited_repo_sha: a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87
+events:
+- timestamp: '2026-08-15T00:29:20.068264Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against a527e9dc2cd6adf70f2df2cb756ba4b7cc705c87
+- timestamp: '2026-08-15T00:29:49.711526Z'
+  action: CLAIM
+  actor: Worker-AirtableGroundTruth1
+- timestamp: '2026-08-16T00:00:00.000000Z'
+  action: CANCEL
+  actor: Willis Miller
+  details: Worker crashed mid-transcription (host machine went to sleep, no commits/uncommitted
+    work lost, worktree removed cleanly). Superseded before resumption was needed -
+    the user obtained a real, full CSV export of the Airtable base directly
+    (journalgpt/pdfs/CompleteList-Sortable-Grid view.csv, 4130 rows, Jan-79 through
+    Apr-26), making screenshot transcription of a 27-issue slice obsolete. See
+    follow-on task for full-CSV ground truth import.
+owner: Worker-AirtableGroundTruth1
+claimed_at: '2026-08-15T00:29:49.711110Z'

@@ -1,0 +1,47 @@
+task_id: T-PTG-041
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: a854bcdb3529b3c676f6015650997f362db7c148
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Root-cause fix reviewed directly: the server-rendered message
+    loop in index.php never had a quiz button of any kind (T-PTG-034 only
+    wired journal-chat.js''s live-append path). New button uses the identical
+    citations-present gate and matching markup. Confirmed the JS click
+    handler''s event delegation is bound to #messagesContainer (not
+    per-button), so it correctly picks up the new server-rendered buttons
+    with no JS changes needed -- verified by reading journal-chat.js directly,
+    not assumed.'
+- severity: INFO
+  description: 'The "View Quiz" state uses a correlated subquery (not a LEFT
+    JOIN) against quizzes.source_message_id, deliberately avoiding row
+    fan-out if a message ever had multiple quizzes -- sound choice. The
+    worker also found and fixed a real latent bug while doing this: $citations
+    wasn''t reset per foreach iteration, so citations could leak into a later
+    uncited message''s button check. Independently verified both states
+    myself with a live browser check (not just the worker''s report): seeded
+    a no-quiz and an already-quizzed conversation locally, confirmed
+    "Generate Quiz" and "View Quiz" render correctly and View Quiz links to
+    the right quiz.'
+- severity: INFO
+  description: 'All Quizzes scope decision (community-wide vs. per-member)
+    reviewed and endorsed: grounded correctly in 013_quizzes.sql''s own
+    documented ownership-not-access-boundary design and quiz.php''s existing
+    open-by-id access model -- a member-scoped list would have been security
+    theater given quiz.php?id= is already fully open to any authenticated
+    member. Verified myself: the All Quizzes list correctly showed quizzes
+    from multiple different users in one live check.'
+- severity: INFO
+  description: 'help.php content spot-checked against the real code rather
+    than trusted at face value: verified the claimed /featurerequest
+    early-close phrases (e.g. "that''s everything") and the "triage turns
+    don''t count against monthly credits" claim both against
+    FeatureRequestService.php directly -- both accurate.'
+- severity: INFO
+  description: 'Independently re-ran the golden hammer suite after merging
+    test-T-PTG-041 into test (a854bcd, pushed to origin/test): 13/13 pass,
+    zero regressions, including the two new reload-path regression tests
+    (TEST 4/5 in JournalChatRenderTest.php) visible directly in the suite''s
+    own captured output. php -l clean on all 5 touched/new files.'
+reviewed_at: '2026-08-13T19:33:14.227892Z'

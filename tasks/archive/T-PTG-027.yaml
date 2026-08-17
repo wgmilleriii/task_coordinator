@@ -1,0 +1,98 @@
+id: T-PTG-027
+title: 'JournalGPT v3: wire ConversationStateService.updateState() into ask() (persistent
+  state is currently inert)'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T15:30:00Z'
+audited_at: '2026-08-13T15:19:27.244655Z'
+audited_by: FleetCoordinator
+audited_repo_sha: 41f365fb71fac941fc8fac629b9f98371d35a9b1
+dependencies:
+- T-PTG-026
+scope:
+- 'BACKGROUND: T-PTG-026 (Phase 6 replay/tuning, merged to test at 41f365f) found
+  and directly reproduced a real architectural gap while testing v3.md section 34''s
+  live 4-turn conversation flow. journalgpt/lib/ConversationStateService.php has a
+  fully-implemented updateState() method, but grep confirms NOTHING in JournalAnswerService::ask()
+  (or anywhere else in the v3_beta pipeline) ever calls it. Running journalgpt/v3/section34_flow.php
+  live (the exact false-beats -> causes -> wound-strings -> practical-check flow from
+  v3.md section 34) proves this directly: every one of the 4 turns shows "Persistent
+  Conversation State: None" reaching ResearchPlanner, on every single turn.'
+- 'WHY THIS ISN''T A BLOCKING BUG TODAY, BUT IS A REAL GAP: the section-34 flow still
+  "worked" in T-PTG-026''s replay because it fit inside ConversationContext''s bounded
+  ~6-message recent-turn window, which independently carries enough of the last few
+  turns'' text for ResearchPlanner to derive a reasonable follow-up query. But this
+  is a fallback the architecture was never meant to rely on alone -- v3.md''s ConversationStateService
+  is specifically meant to carry persistent topic/entity/research state ACROSS a conversation,
+  not just the last few raw messages. Any conversation longer than that bounded window
+  (a member asking many follow-ups over one extended session) will silently lose whatever
+  the persistent-state layer was supposed to be tracking, with no error or degraded-mode
+  signal to the user or to logs -- it just quietly never engages.'
+- 'WHAT TO DO: wire ConversationStateService::updateState() into JournalAnswerService::ask()''s
+  v3_beta branch so that persistent state is actually written after each turn (read
+  ConversationStateService.php''s existing updateState() signature and ResearchPlanner.php''s
+  consumption of getState() output to determine what state shape is expected -- do
+  not redesign the state shape, just wire the existing write path that was never connected).
+  Confirm via a live multi-turn test (extend or reuse journalgpt/v3/section34_flow.php,
+  or a longer synthetic conversation exceeding ConversationContext''s bounded window)
+  that "Persistent Conversation State: None" no longer appears on turns after the
+  first, and that a conversation LONGER than the bounded recent-turn window still
+  correctly carries topic/entity context via the now-populated persistent state layer
+  (this is the actual regression test the bounded-window fallback was masking -- a
+  short flow like section 34''s 4 turns won''t prove this by itself).'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to main, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm 9/9 PASS
+  with zero regressions.'
+- 'EXPLICITLY OUT OF SCOPE: redesigning ConversationStateService''s state shape or
+  ResearchPlanner''s consumption of it -- both already exist and are presumed correct;
+  this task only connects the missing write path. Do not flip any default-preset or
+  rollout toggle -- v3_beta remains opt-in pending Chip''s separate go/no-go decision
+  referenced in T-PTG-026''s handoff.'
+definition_of_done:
+- ConversationStateService::updateState() is called from JournalAnswerService::ask()''s
+  v3_beta branch after each turn, using the existing state shape (no redesign).
+- 'A live multi-turn test proves persistent state survives PAST ConversationContext''''s
+  bounded recent-turn window (not just within it, which the section-34 flow alone
+  cannot prove) -- either a new automated test or an extended manual replay script,
+  with before/after output showing "Persistent Conversation State: None" no longer
+  appearing on later turns.'
+- The golden hammer suite (security_and_eval_suite.php) passes 9/9 with zero regressions.
+- php -l passes on all modified PHP files.
+- The handoff states plainly whether this closes the gap T-PTG-026 identified, or
+  whether it surfaces a further issue.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T15:22:23.393547Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T15:30:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: Filed directly from T-PTG-026's (Phase 6, final v3 phase) handoff finding,
+    independently reproduced live via journalgpt/v3/section34_flow.php before filing
+    this task -- not a hypothetical. Flagged P1 (not P0) since the bounded recent-turn
+    window currently masks the gap for short conversations; real member impact is
+    confined to longer sessions, which is exactly the kind of failure that's easy
+    to miss in normal QA and easy for a member to hit in production.
+- timestamp: '2026-08-13T15:19:27.244962Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against 41f365fb71fac941fc8fac629b9f98371d35a9b1
+- timestamp: '2026-08-13T15:22:23.393867Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:31:39.261822Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T15:31:59.143581Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

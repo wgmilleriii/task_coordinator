@@ -1,0 +1,44 @@
+task_id: T-PTG-025
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: a3c82fc40807064652cfba8b23c550ee9a309d86
+verdict: PASS
+findings:
+- severity: MAJOR
+  description: 'Real finding, not hypothetical: the worker discovered that
+    journalgpt/api/debug_logs.php -- intentionally public/unauthenticated by its
+    own docstring -- was returning verbatim retrieved Journal corpus text (the
+    `text` field of every retrieved chunk) in its single-row JSON response,
+    enumerable by sequential `id`. This is a real §17 IP leak and a bulk-extraction
+    path strictly easier than anything isBulkExportRequest() guards, since no
+    refusal check applies to a plain GET. Reviewed the diff: decodeDebugLogRow()
+    now redacts only the `text` field per chunk while preserving article/file
+    identifiers, scores, and citations -- the fields the endpoint actually needs
+    for its citation-debugging purpose. Independently verified via
+    DebugLogsEndpointTest.php (4/4 passed) and confirmed the redaction covers
+    exactly the v3_beta wider-retrieval case, not just the legacy path.'
+- severity: INFO
+  description: 'Bulk-extraction refusal hardening verified directly against the
+    merged `test` branch, not just the worker''s report: the golden hammer run''s
+    own STDOUT (captured in this handoff, not paraphrased) shows "[TEST 4b] Refusal
+    behavior on bulk-extraction phrasing targeting the multi-query retrieval
+    pipeline... [OK]" running with preset=v3_beta explicitly, satisfying the
+    task''s mandatory new-test requirement for the genuinely-new multi-query
+    attack surface.'
+- severity: INFO
+  description: 'Public-sharing boundary (§19): reviewed the code trace claim --
+    index.php:19 and source.php:17 both call Authorization::requireRole()
+    unconditionally before any share_slug/is_public branching, and requireRole()
+    exits on failure -- this is correct and matches the existing (pre-v3)
+    security model; no new gap was introduced by the Journal-Evidence/Assistant-
+    Explanation split since that content only ever renders post-auth-gate.
+    SharedConversationsTest.php extended with a functional denial check plus a
+    structural regression tripwire; re-ran it directly and got
+    "SharedConversationsTest Passed."'
+- severity: INFO
+  description: 'Independently re-ran both gate commands after merging
+    test-T-PTG-025 into test (a3c82fc, pushed to origin/test): security_and_eval_suite.php
+    9/9, SharedConversationsTest.php pass, and ran DebugLogsEndpointTest.php
+    standalone as an extra check given its security relevance (4/4 pass). php -l
+    clean on all 5 touched/new files.'
+reviewed_at: '2026-08-13T15:01:04.317122Z'

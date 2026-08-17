@@ -1,0 +1,35 @@
+task_id: T-PTG-022
+agent: Antigravity-Worker
+model: Gemini
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-022
+base_sha: 4ea0478
+head_sha: c616787bf4e60342de7e60855edd462367d4654e
+evidence_output: '9/9 security and eval suite PASS.
+
+  EvidenceRetrieverTest PASS.
+
+  EvidenceRankerTest PASS.
+
+  ResearchPlannerTest PASS.
+
+  ConversationStateServiceTest PASS.
+
+  '
+peer_review_notes: 'Implemented EvidenceRanker per v3.md section 11 to rank and filter
+  retrieved passages based on relevance, quality, and redundancy before synthesis.
+
+  Wired it into JournalAnswerService directly after EvidenceRetriever within the v3_beta
+  flow.
+
+  Added EvidenceRankerTest.php to cover highly relevant vs tangentially related sorting
+  and duplicate/redundancy handling.
+
+  Also fixed a bug in OpenAIClient.php where generateMockAnswer was being invoked
+  but was not defined in the class (missing mockQueue handling for queryVectorStoreAndAnswer).
+
+  '
+human_action_required: null
+token_spend: null
+cost_usd: null

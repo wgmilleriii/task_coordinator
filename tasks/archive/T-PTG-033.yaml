@@ -1,0 +1,156 @@
+id: T-PTG-033
+title: 'Conversation sidebar UX: move-to-top + unread indicator, live-add new conversations,
+  rename conversations'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+owner: FleetCoordinator
+created_at: '2026-08-13T17:15:00Z'
+audited_at: '2026-08-13T17:22:01.682481Z'
+audited_by: FleetCoordinator
+audited_repo_sha: 283d4223
+dependencies: []
+scope:
+- 'BACKGROUND: Chip asked for three related sidebar UX improvements after noticing
+  that posting a manual reply into a conversation (T-PTG-017''s notification, via
+  admin_reply.php) did not move that conversation to the top of the left sidebar list
+  or mark it unread. All three items below share the same UI surface (journalgpt/index.php''s
+  `#conversationList` sidebar) and are being delivered together for that reason, not
+  because they''re trivial individually -- read each FIX SCOPE section fully before
+  starting.'
+- 'ROOT CAUSE, confirmed by reading the code directly (not assumed): index.php''s
+  sidebar query is `SELECT id, title, updated_at FROM conversations WHERE user_id
+  = :user_id AND is_archived = 0 ORDER BY updated_at DESC LIMIT 50` -- it DOES sort
+  by recency already. The bug is that nothing ever actually updates `conversations.updated_at`
+  when a new message arrives. `conversations.updated_at` has `ON UPDATE CURRENT_TIMESTAMP`
+  in its schema (migrations/001_journal_ai.sql), which only fires on an explicit UPDATE
+  to that row -- inserting a CHILD row into `messages` does not cascade to it. Confirmed
+  via grep: neither JournalAnswerService::storeMessage() nor admin_reply.php''s raw
+  `INSERT INTO messages` ever runs a corresponding `UPDATE conversations SET updated_at
+  = NOW() WHERE id = ?`. So every conversation''s sort position has been frozen at
+  its CREATION time this entire pilot, not its last-message time -- this is a real,
+  previously-unnoticed bug independent of the new unread-indicator feature.'
+- 'FIX SCOPE 1 -- move to top: every code path that inserts an assistant message must
+  also bump `conversations.updated_at`. That means JournalAnswerService::storeMessage()
+  (used by both the success path in ask() and formatRefusalResponse()) AND admin_reply.php''s
+  raw INSERT. Prefer a single shared mechanism over duplicating the UPDATE statement
+  in both places -- e.g. storeMessage() itself could run it whenever role=assistant,
+  and admin_reply.php could call the same helper or run an equivalent UPDATE -- Worker''s
+  call, document the choice in the handoff.'
+- 'FIX SCOPE 2 -- unread indicator: add unread tracking. No existing column or concept
+  for this (confirmed: no `is_read`/`read_at`/`last_read_message_id` anywhere in migrations/
+  or lib/). Add whatever schema you judge simplest and correct (e.g. a `last_read_message_id`
+  on `conversations`, or a `has_unread`/`unread_count` column -- Worker''s design
+  call, document reasoning) via a new numbered migration file in journalgpt/migrations/
+  following the existing convention (see 011_conversation_state.sql for the most recent
+  example of style/structure). An assistant message landing in a conversation the
+  member is not actively viewing when it lands (this includes admin_reply.php posting
+  into someone else''s conversation while they''re elsewhere in the app, or offline
+  entirely -- the T-PTG-017 notification is the exact real scenario that prompted
+  this) must mark that conversation unread; opening/viewing a conversation (index.php''s
+  active-conversation load path is the natural place) must clear its unread state.
+  The sidebar renders a small visual indicator (dot/badge -- match this codebase''s
+  existing visual language, e.g. the citation-chip / upvote-badge styling already
+  in journal-chat.css) on list items with unread messages.'
+- 'FIX SCOPE 2 (explicit scope boundary): this is next-page-load/next-sidebar-render
+  correctness, NOT real-time push. A member with the page open when an admin_reply
+  lands elsewhere does not need to see it appear live without a reload/re-render --
+  that would require WebSockets/polling and is explicitly out of scope (see below).'
+- 'FIX SCOPE 3 -- new conversation appears live: journal-chat.js''s fetch to api/ask.php
+  already returns `conversation_id` in its JSON response and the frontend already
+  updates `activeConvIdInput.value` with it (see the existing `if (data.conversation_id
+  && activeConvIdInput)` block), but nothing touches `#conversationList`''s DOM --
+  the new conversation only appears in the sidebar after a full page reload/navigation
+  today. After a successful send where the conversation was newly created (i.e. `activeConvIdInput.value`
+  was empty/falsy immediately before this send), prepend a new `<li class="conversation-item">`
+  to the TOP of `#conversationList` in JS, matching the exact markup shape index.php''s
+  PHP loop already renders (`<a class="conversation-link">` with the icon SVG and
+  `.conversation-title-text` span -- read that loop in index.php before writing the
+  JS version so the two don''t drift), mark it `active`, and remove the "No previous
+  conversations." empty-state `<li>` if this was the very first conversation. Use
+  the question text truncated the same way `createConversation()` already truncates
+  it server-side (`substr($question, 0, 50)`) as the initial displayed title, since
+  that''s what the server actually stored as the title.'
+- 'FIX SCOPE 4 -- rename conversations: add a small rename affordance to each sidebar
+  conversation-list item (e.g. a pencil/edit icon revealed on hover, matching this
+  codebase''s existing icon-based interaction patterns like the upvote button in journal-chat.js).
+  New endpoint journalgpt/api/rename_conversation.php: POST, CSRF-protected (reuse
+  the `Csrf::field()`/`Csrf::enforce()` pattern used by admin_reply.php and others),
+  authenticated via `Authorization::requireRole(null)` (matching this codebase''s
+  established pattern for member-facing write endpoints), and MUST verify the caller
+  owns the conversation (`WHERE id = ? AND user_id = ?`) before allowing the rename
+  -- T-PTG-025 established that READ-ONLY cross-member viewing of conversations is
+  an intentional pilot tradeoff, but a rename is a WRITE and must stay strictly owner-only;
+  do not extend the read-only tradeoff to writes. Enforce a reasonable max length
+  matching the existing `title VARCHAR(255)` column. Frontend updates the sidebar
+  item''s displayed title immediately on a successful rename response, no page reload
+  required.'
+- 'EXPLICITLY OUT OF SCOPE: real-time/push notifications (WebSockets, polling) for
+  the unread/move-to-top behavior -- next-render correctness is sufficient for pilot
+  scope. Conversation deletion, archiving UI, folders, or tagging -- rename only,
+  nothing else. Changing how `messages`/citations are stored or resolved. Do not touch
+  the v3_beta pipeline (T-PTG-018 through T-PTG-031''s work) -- this task is scoped
+  entirely to the sidebar/conversation-list UI and its supporting endpoints.'
+- 'GOLDEN HAMMER GATE (hard requirement, per Chip''s explicit direction this session):
+  before merging to test, run `DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php` and confirm ALL suites
+  PASS with zero regressions.'
+definition_of_done:
+- A new migration (journalgpt/migrations/, next sequential number) adds whatever unread-tracking
+  schema the Worker designs, with reasoning documented in the handoff.
+- A new/extended automated test proves conversations.updated_at actually advances
+  when an assistant message is stored, covering BOTH JournalAnswerService::storeMessage()
+  and admin_reply.php's insert path -- this is the root-cause fix and must be directly
+  tested, not just implied by the unread feature working.
+- A new/extended automated test proves a conversation with an unread assistant message
+  sorts first in a fresh sidebar query result, and that viewing it clears the unread
+  state (query-level test against the conversations/messages tables is sufficient;
+  full browser-level proof is covered by the frontend items below).
+- The new-conversation-appears-live behavior (FIX SCOPE 3) and the unread visual indicator
+  (FIX SCOPE 2) are verified with a real browser check (use the browse skill, or document
+  exact manual steps and screenshots in the handoff if browse is unavailable) against
+  a local/test deployment, since DOM-insertion behavior cannot be asserted by the
+  existing PHP test suite alone.
+- POST journalgpt/api/rename_conversation.php renames a conversation the caller owns,
+  is CSRF-protected, and rejects renaming a conversation the caller does not own --
+  covered by a new test file (e.g. RenameConversationTest.php) folded into security_and_eval_suite.php's
+  runner, following T-PTG-028's pattern of adding a new suite entry.
+- The golden hammer suite (security_and_eval_suite.php) passes with zero regressions,
+  including the new test(s).
+- php -l passes on all new/modified PHP files.
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+claimed_at: '2026-08-13T17:22:07.916230Z'
+last_transition: null
+blocked_reason: null
+previous_status: null
+events:
+- timestamp: '2026-08-13T17:15:00Z'
+  action: SCOUT
+  actor: FleetCoordinator
+  details: Filed directly from Chip's live request in conversation, grounded in direct
+    code reading before filing (not assumed) -- traced the sidebar's ORDER BY updated_at
+    DESC query, confirmed no code path currently bumps conversations.updated_at on
+    new messages (a real pre-existing bug, not just a missing feature), confirmed
+    zero existing unread/rename infrastructure via grep, and read journal-chat.js's
+    existing conversation_id-handling code to scope the live-add-to-sidebar fix precisely
+    against what already exists there. human_review_required left false to match this
+    session's established pattern (Chip authorized dropping the manual-close gate
+    for this push earlier; peer review by the Fleet Coordinator remains mandatory).
+- timestamp: '2026-08-13T17:22:01.682678Z'
+  action: AUDIT
+  actor: FleetCoordinator
+  details: Audited against 283d4223
+- timestamp: '2026-08-13T17:22:07.916369Z'
+  action: CLAIM
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T17:50:42.190272Z'
+  action: SUBMIT
+  actor: FleetCoordinator
+- timestamp: '2026-08-13T17:51:04.935537Z'
+  action: RECORD_REVIEW
+  actor: FleetCoordinator
+  details: 'Verdict: PASS'

@@ -1,0 +1,50 @@
+id: T-PTG-043
+title: 'Phase 2: RAG Pipeline Optimization'
+status: CANCELLED
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+definition_of_done: '- `JournalAnswerService` queries the index first.
+
+  - Prompt structure is simplified for chunks.
+
+  - Citation badges are generated natively by PHP backend using lookup.
+
+  - Tests pass in `php tests/security_and_eval_suite.php`.
+
+  '
+audited_at: '2026-08-13T21:52:31.653360Z'
+audited_by: Claude-PM
+audited_repo_sha: 32132e5bb4912764677e47cdd11bd39de9621698
+verification_command: cd journalgpt && php tests/security_and_eval_suite.php
+events:
+- timestamp: '2026-08-13T21:52:31.653846Z'
+  action: AUDIT
+  actor: Claude-PM
+  details: Audited against 32132e5bb4912764677e47cdd11bd39de9621698
+- timestamp: '2026-08-13T21:59:57.911753Z'
+  action: CLAIM
+  actor: Worker-Phase2
+- timestamp: '2026-08-13T22:10:25.055861Z'
+  action: SUBMIT
+  actor: Worker-Phase2
+- timestamp: '2026-08-14T21:53:51.000000Z'
+  action: CANCEL
+  actor: Willis Miller
+  details: Obsolete/duplicate. Depends on the Phase 1 metadata index (T-PTG-042, cancelled)
+    which never merged; the real citation-badge pipeline was built and shipped to test/prod
+    outside this fleet board. Branch test-T-PTG-043 was never pushed to origin, so no merge
+    occurred; closing without action.
+owner: Worker-Phase2
+claimed_at: '2026-08-13T21:59:57.909877Z'
+scope:
+- 'Make the AI smarter, cheaper, and faster using the index.
+
+  - Update the `JournalAnswerService` to query the metadata index *before* performing vector
+  searches.
+
+  - Simplify the prompt. We will pass text chunks to the LLM with a simple `<chunk id="145:23">`
+  wrapper.
+
+  - When the LLM outputs `[145:23]`, the PHP backend will look up ID `145` in the index and
+  instantly generate the rich UI citation badge.'

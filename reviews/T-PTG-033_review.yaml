@@ -1,0 +1,49 @@
+task_id: T-PTG-033
+reviewer_agent: FleetCoordinator
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: b602830e96fa97a8450b6f5088c549c760ac2fb1
+verdict: PASS
+findings:
+- severity: INFO
+  description: 'Root-cause fix (move-to-top) reviewed directly: a single shared
+    static helper JournalAnswerService::touchConversationOnAssistantMessage()
+    bumps updated_at and sets has_unread=1, called from storeMessage() only for
+    role=assistant (a user''s own question correctly does not reorder the list)
+    and independently from admin_reply.php''s raw INSERT (which has no shared
+    code path with the service) -- exactly the "prefer a single shared
+    mechanism" guidance in the task scope, and covers the precise real-world
+    case (admin_reply posting into a conversation while the member is elsewhere)
+    that prompted this task.'
+- severity: INFO
+  description: 'Unread schema reviewed: a plain has_unread boolean (migration
+    012_conversation_unread.sql), not a last_read_message_id/count design --
+    the migration''s own comment justifies this against the task''s actual
+    scope (a single dot/badge, not a read receipt or count) and notes it rides
+    the same UPDATE that already bumps updated_at with no extra read. NOT NULL
+    DEFAULT 0 correctly avoids retroactive false-positive badges on
+    pre-existing conversations. Cleared only via index.php''s owner-verified
+    active-conversation branch, not the T-PTG-025 read-only cross-member
+    fallback -- correct, matches the same owner/reader distinction T-PTG-025
+    established.'
+- severity: INFO
+  description: 'rename_conversation.php reviewed: structured as a pure
+    handleRenameConversationRequest() function (mirrors api/operations.php''s
+    library-only pattern for testability), strict `WHERE id = ? AND user_id =
+    ?` ownership with NO cross-member fallback -- correctly does not extend
+    T-PTG-025''s read-only viewing tradeoff to a write. CSRF-enforced,
+    255-char bound matches the title column. RenameConversationTest.php
+    exercises non-owner rejection.'
+- severity: INFO
+  description: 'The two DOM-only items (live sidebar insertion, unread badge
+    render/clear) were verified with an actual driven browser check via the
+    browse skill against a running php -S + journal_ai_test DB, not just
+    documented as manual steps -- screenshot evidence at /tmp/ptg033_sidebar.png
+    per the handoff. This matters because neither behavior can be asserted by
+    the PHP test suite alone.'
+- severity: INFO
+  description: 'Independently re-ran the golden hammer suite myself after
+    merging test-T-PTG-033 into test (b602830, to be pushed to origin/test):
+    12/12 pass (10 prior + ConversationSidebarTest + RenameConversationTest),
+    zero regressions. php -l clean on all 7 new/modified PHP files, node
+    --check clean on journal-chat.js.'
+reviewed_at: '2026-08-13T17:50:44.911126Z'

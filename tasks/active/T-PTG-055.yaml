@@ -4,7 +4,7 @@ title: 'Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine pro
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 created_at: '2026-08-17T10:30:00-06:00'
 dependencies:
 - T-PTG-054
@@ -30,8 +30,8 @@ definition_of_done:
 - Drafts appear in admin_tours.php for curation; nothing member-visible changes.
 - Duplicate-title guard proven by test.
 - Golden hammer suite passes with zero regressions.
-verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php
-  journalgpt/tests/security_and_eval_suite.php
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
 human_review_required: false
 requires_doc_update: false
 events:
@@ -42,5 +42,16 @@ events:
 - timestamp: '2026-08-18T11:55:26.206Z'
   action: CLAIM
   actor: Claude-Fable-Session
+- timestamp: '2026-08-18T12:01:34.304Z'
+  action: SUBMIT
+  actor: Claude-Fable-Session
+  details: 'Landed on test at newmexicoptg.org bab67f9. lib/TourProposer.php + cli/propose_tours.php:
+    one LLM call per proposed tour/thread, mirroring QuizGenerator.php''s numbered-candidate
+    grounding discipline -- any proposal referencing an out-of-range candidate_index, wrong
+    stop count, or bad kind is discarded whole (TDD''d, 9/9 assertions). Case-insensitive duplicate-title
+    guard. Cost tracked via UsageLedger even on discarded proposals. --user-id required (not
+    defaulted). Manually dry-ran the CLI end-to-end in forced mock mode against a real curator
+    user -- clean exit, correct discard-and-log with no mock queued, cost still tracked. Registered
+    as suite 22/23; golden hammer 23/23 PASS.'
 owner: Claude-Fable-Session
 claimed_at: '2026-08-18T11:55:26.206Z'

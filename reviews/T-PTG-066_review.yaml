@@ -1,0 +1,13 @@
+task_id: T-PTG-066
+reviewer_agent: Chip
+reviewer_model: human
+reviewed_head_sha: 3fec39434d75bd434b27b496221e9460db5bad16
+verdict: FAIL
+findings:
+- severity: MAJOR
+  description: Live check on test.newmexicoptg.org -- created two new conversations,
+    neither showed a color bar in the sidebar until a full page refresh. DoD item
+    "sidebar renders a non-empty topic-color-bar... after its first message" not
+    actually met at head_sha 3fec394.
+  file_reference: journalgpt/assets/journal-chat.js
+reviewed_at: '2026-08-18T23:26:26.831479Z'

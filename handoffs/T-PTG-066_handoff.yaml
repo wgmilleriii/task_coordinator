@@ -3,16 +3,16 @@ agent: Claude-Sonnet-Session
 model: claude-sonnet-5
 status: PEER_REVIEW
 target_repo: newmexicoptg.org
-branch: test-T-PTG-066
-base_sha: 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
-head_sha: 3fec39434d75bd434b27b496221e9460db5bad16
+branch: test-T-PTG-066-fix
+base_sha: 30d1985719a9b9935dbb77fdde540a87102a23b5
+head_sha: a848f030173ee11404c2ab381ccf8c2bf3d8414c
 evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_API_LIBRARY_ONLY\
-  \ already defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/TourAdminHandlerTest.php\
+  \ already defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066-fix/journalgpt/tests/TourAdminHandlerTest.php\
   \ on line 19\n\nWarning: Constant JOURNALGPT_TOUR_ADMIN_API_LIBRARY_ONLY already\
-  \ defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/TourAdminHandlerTest.php\
+  \ defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066-fix/journalgpt/tests/TourAdminHandlerTest.php\
   \ on line 19\n=======================================================\n Journal\
   \ AI Security & Evaluation Suite (PTJ-010)\n=======================================================\n\
-  \n>>> Executing [1/24] AuthAccessTest.php ...\n=== Running Journal AI Auth & Authorization\
+  \n>>> Executing [1/25] AuthAccessTest.php ...\n=== Running Journal AI Auth & Authorization\
   \ Tests ===\n[OK] Test database populated with seeded users and source article.\n\
   [TEST 1] Testing password hashing, verify, and user authentication...\n[OK] Password\
   \ hashing and credential verification functioning properly.\n[TEST 2] Testing session\
@@ -22,7 +22,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ role-based permission checks...\n[OK] Role enforcement and permissions verified.\n\
   [TEST 5] Testing protected source route access controls...\n[OK] Protected source\
   \ route access controls verified.\n=== ALL AUTH & AUTHORIZATION TESTS PASSED SUCCESSFULLY\
-  \ ===\n\n>>> Executing [2/24] CorpusIndexerTest.php ...\nCorpusIndexer: failed to\
+  \ ===\n\n>>> Executing [2/25] CorpusIndexerTest.php ...\nCorpusIndexer: failed to\
   \ check existing topics for article ART-APPROVED-01: SQLSTATE[HY000]: General error:\
   \ 1 no such table: article_topics\nCorpusIndexer: failed to check existing topics\
   \ for article ART-SAVE-DB-01: SQLSTATE[HY000]: General error: 1 no such table: article_topics\n\
@@ -33,7 +33,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ existing topics for article ART-RETIRE-01: SQLSTATE[HY000]: General error: 1 no\
   \ such table: article_topics\nCorpusIndexer: failed to check existing topics for\
   \ article ART-ZERO-PAID-01: SQLSTATE[HY000]: General error: 1 no such table: article_topics\n\
-  === ALL CORPUS INDEXER TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [3/24] JournalAnswerServiceTest.php\
+  === ALL CORPUS INDEXER TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [3/25] JournalAnswerServiceTest.php\
   \ ...\n=== Running JournalAnswerService Unit Tests ===\n[OK] Test database populated\
   \ for service tests.\n[TEST 9] Physical PDF page -> printed page mapping via per-issue\
   \ front-matter offset...\n[OK] Physical->printed page mapping verified.\n[TEST 11]\
@@ -61,12 +61,16 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ Chunk with a page marker but an unknown file_id still cites...\n[OK] Unknown file_id\
   \ degrades to corpus-text identification.\n[TEST 18] ask() returns and persists\
   \ citations end-to-end...\n[OK] ask() returned 1 citation(s), persisted to citations_json.\n\
+  [TEST] ask() response surfaces the freshly-computed topic_weights (T-PTG-066 sidebar-refresh\
+  \ bug)...\nJournalAnswerService: withheld unattributable answer (user=1233, chunks=0,\
+  \ answer_len=35) \u2014 retrieval returned content but no citation could be resolved.\n\
+  [OK] ask() response topic_weights matches the DB's combined_weights_json exactly.\n\
   [TEST 18b] Hedged answer carrying real annotations still resolves citations...\n\
   [OK] Hedged answer still resolved 1 citation(s).\n[TEST 18c] Over-retrieval doesn't\
   \ leak into citations; adjacent pages collapse...\n[OK] Over-retrieved-but-uncited\
   \ chunks excluded; adjacent pages collapsed to 19-20.\n[TEST 19] Unattributable\
   \ answer is withheld, never shipped uncited...\nJournalAnswerService: withheld unattributable\
-  \ answer (user=986, chunks=1, answer_len=158) \u2014 retrieval returned content\
+  \ answer (user=1233, chunks=1, answer_len=158) \u2014 retrieval returned content\
   \ but no citation could be resolved.\n[OK] Unattributable answer withheld behind\
   \ the PTJ-012 phrase.\n[TEST 16] Corpus boilerplate must not be attributed to an\
   \ arbitrary issue...\n[OK] Non-distinctive boilerplate yields no citation.\n[TEST\
@@ -78,7 +82,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ context loading...\n[OK] Bounded conversation context verified.\n[TEST 20] debug_logs\
   \ records clarification_mode even when not triggered...\n[OK] debug_logs records\
   \ clarification_mode='auto', clarification_triggered=0.\n=== ALL JOURNAL ANSWER\
-  \ SERVICE TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [4/24] AskEndpointTest.php\
+  \ SERVICE TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [4/25] AskEndpointTest.php\
   \ ...\n=== Running api/ask.php Endpoint Tests ===\n[TEST 1] Testing anonymous access\
   \ denial (401/403)...\n[OK] Anonymous access denial check passed.\n[TEST 2] Testing\
   \ CSRF validation and missing token rejection...\n[OK] CSRF token validation & rejection\
@@ -86,7 +90,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   [OK] JSON response structure & secret leakage protection verified.\n[TEST 4] Testing\
   \ clarification_mode validation and fallback...\n[OK] Clarification mode validation\
   \ and fallback verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\n\
-  >>> Executing [5/24] UsagePolicyTest.php ...\n=== Running UsagePolicy & Quota Tests\
+  >>> Executing [5/25] UsagePolicyTest.php ...\n=== Running UsagePolicy & Quota Tests\
   \ ===\n[TEST 1] Testing pre-invocation quota enforcement...\n[OK] Pre-invocation\
   \ quota enforcement verified (3 allowed, 4th denied).\n[TEST 2] Testing administrator\
   \ exemption from per-user question cap...\n[OK] Administrator quota exemption verified.\n\
@@ -95,9 +99,9 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ transaction allowance check...\n[OK] Atomic transaction allowance check verified.\n\
   [TEST 5] Testing detailed usage ledger recording & stats...\n[OK] Detailed usage\
   \ ledger recording & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED\
-  \ SUCCESSFULLY ===\n\n>>> Executing [6/24] MigrationTest.php ...\n=== Running Journal\
+  \ SUCCESSFULLY ===\n\n>>> Executing [6/25] MigrationTest.php ...\n=== Running Journal\
   \ AI Migration Tests ===\n[SKIP] Set JOURNALGPT_ALLOW_DESTRUCTIVE_TESTS=1 to permit\
-  \ destructive migration tests.\n\n>>> Executing [7/24] JournalChatRenderTest.php\
+  \ destructive migration tests.\n\n>>> Executing [7/25] JournalChatRenderTest.php\
   \ ...\n=== Running JournalChatRenderTest ===\n[TEST 1] Testing PHP syntax with php\
   \ -l...\n[OK] All PHP files passed php -l syntax check.\n[TEST 2] Testing unauthenticated\
   \ access redirection...\n[OK] Unauthenticated state verified. Redirect target: login.php\n\
@@ -108,15 +112,15 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ not-yet-quizzed message...\n[OK] 'Generate Quiz' button renders on reload, wired\
   \ to the correct message id.\n[TEST 5] 'View Quiz' button renders (linking to the\
   \ correct quiz) for an already-quizzed message on reload...\n[OK] 'View Quiz' renders\
-  \ and links to quiz.php?id=70.\n=== ALL JOURNAL CHAT RENDER TESTS PASSED SUCCESSFULLY\
-  \ ===\n\n>>> Executing [8/24] OperationsJobTest.php ...\n[PASS] testAuthenticatorFailsClosedForUnsetOrBadToken\n\
+  \ and links to quiz.php?id=85.\n=== ALL JOURNAL CHAT RENDER TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [8/25] OperationsJobTest.php ...\n[PASS] testAuthenticatorFailsClosedForUnsetOrBadToken\n\
   [PASS] testCreateRejectsUnapprovedTypeAndInvalidArguments\n[PASS] testCreatedAuditEventFailureRollsBackPendingJob\n\
   [PASS] testJobDoesNotDispatchUntilOneTimeConfirmation\n[PASS] testExpiredJobCannotBeConfirmed\n\
   [PASS] testRegisteredCallableIsRequiredForDispatch\n[PASS] testConfirmationCompareAndSetPreventsSecondServiceDispatch\n\
   [PASS] testSanitizesSecretLikeValuesAndExceptionMessagesInResultsAndEvents\n[PASS]\
   \ testOperationsApiRejectsBadBearerTokenWithoutLeakingDetails\n[PASS] testOperationsApiCreatesAndConfirmsNamedJob\n\
   [PASS] testLegacyIndexSpikeContainsOnlyTheFixedNotFoundResponse\n\n>>> Executing\
-  \ [9/24] V3PipelineEndToEndTest.php ...\n=== Running V3 Pipeline End-to-End Tests\
+  \ [9/25] V3PipelineEndToEndTest.php ...\n=== Running V3 Pipeline End-to-End Tests\
   \ ===\n[OK] Test database populated for v3 pipeline end-to-end tests.\n[TEST 1]\
   \ v3_beta pipeline completes every stage when getState() returns null (T-PTG-026\
   \ regression guard)...\n[OK] Null conversation state did not crash or silently truncate\
@@ -124,10 +128,10 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ pipeline completes every stage on a follow-up turn with persisted state...\n[OK]\
   \ Follow-up turn with real persisted conversation state completed every pipeline\
   \ stage.\n=== ALL V3 PIPELINE END-TO-END TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
-  \ [10/24] ConversationSidebarTest.php ...\n=== Running Conversation Sidebar Tests\
+  \ [10/25] ConversationSidebarTest.php ...\n=== Running Conversation Sidebar Tests\
   \ (T-PTG-033) ===\n[TEST 1] JournalAnswerService::ask() (storeMessage path) bumps\
   \ updated_at and sets has_unread on assistant message...\n[OK] updated_at advanced\
-  \ (2026-08-15 22:52:23 -> 2026-08-18 16:52:24) and has_unread=1.\n[TEST 2] A user-only\
+  \ (2026-08-15 23:27:00 -> 2026-08-18 17:27:01) and has_unread=1.\n[TEST 2] A user-only\
   \ message (no assistant reply yet) must not itself flip has_unread for the asking\
   \ member...\n[OK] has_unread stays 0 until an assistant message actually lands.\n\
   [TEST 3] admin_reply.php's raw INSERT path (via the shared touchConversationOnAssistantMessage()\
@@ -137,7 +141,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ sorted first.\n[TEST 5] Viewing a conversation (index.php's active-conversation\
   \ load path) clears has_unread...\n[OK] has_unread cleared after the owner viewed\
   \ the conversation.\n=== ALL CONVERSATION SIDEBAR TESTS PASSED SUCCESSFULLY ===\n\
-  \n>>> Executing [11/24] RenameConversationTest.php ...\n=== Running api/rename_conversation.php\
+  \n>>> Executing [11/25] RenameConversationTest.php ...\n=== Running api/rename_conversation.php\
   \ Endpoint Tests ===\n[TEST 1] Successful rename by the owning member...\n[OK] Owner\
   \ successfully renamed their own conversation.\n[TEST 2] Rename attempt by a non-owner\
   \ is rejected (403) and title is unchanged...\n[OK] Non-owner rename attempt rejected;\
@@ -145,7 +149,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ the true owner...\n[OK] Missing and invalid CSRF tokens both rejected with no\
   \ write performed.\n[TEST 4] Empty title and title over 255 chars are both rejected...\n\
   [OK] Empty and oversize titles both rejected with no write performed.\n=== ALL RENAME\
-  \ CONVERSATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [12/24] QuizTest.php\
+  \ CONVERSATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [12/25] QuizTest.php\
   \ ...\n=== Running T-PTG-034 Quiz Tests ===\n[TEST 1] QuizGenerator discards model\
   \ questions with no traceable evidence_index...\n[OK] Ungrounded/out-of-range/missing-evidence\
   \ questions discarded; only the traceable question survives.\n[TEST 2] No citations\
@@ -162,50 +166,50 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ (?slug=) branch never selects protected/answer-key columns...\n[OK] Public quiz\
   \ view structurally cannot leak correct answers, article_id, citation text, or the\
   \ source.php PDF proxy.\n=== ALL QUIZ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
-  \ [13/24] ClarifyingQuestionsTest.php ...\n[OK] testOffModeNeverClarifiesEvenWhenPlannerSaysTo\n\
+  \ [13/25] ClarifyingQuestionsTest.php ...\n[OK] testOffModeNeverClarifiesEvenWhenPlannerSaysTo\n\
   [OK] testOnModeClarifiesFirstRoundEvenWhenPlannerSaysNotNeeded\n[OK] testAutoModeMatchesPlannerVerdict\n\
   [OK] testSafetyBackstopForcesResearchAfterFiveRounds\n[OK] testClosingPhraseForcesResearchImmediately\n\
   [OK] testClarificationTurnExcludedFromMonthlyQuestionQuota\n[OK] testDebugLogRecordsClarificationTriggeredTrue\n\
   [OK] testOnModeFallsBackToPlannerJudgmentAfterFirstRound\n[OK] testOffModeDoesNotClarifyWhenNotNeeded\n\
   [OK] testRoundIncrementsAcrossRealTurns\n=== ALL CLARIFYING QUESTIONS TESTS PASSED\
-  \ SUCCESSFULLY ===\n\n>>> Executing [14/24] MetadataIndexTest.php ...\nMetadata\
-  \ index built successfully. Generated 1 records in test_metadata_6a84e22a4f126.json.\n\
+  \ SUCCESSFULLY ===\n\n>>> Executing [14/25] MetadataIndexTest.php ...\nMetadata\
+  \ index built successfully. Generated 1 records in test_metadata_6a84ea47b56bb.json.\n\
   [OK] testBuildsIndexEntryPerManifestItem\n=== ALL METADATA INDEX TESTS PASSED SUCCESSFULLY\
-  \ ===\n\n>>> Executing [15/24] CitationVerificationTest.php ...\n[OK] testVerifiedCitationMarkedPageVerifiedTrue\n\
+  \ ===\n\n>>> Executing [15/25] CitationVerificationTest.php ...\n[OK] testVerifiedCitationMarkedPageVerifiedTrue\n\
   [OK] testInventedPageNotTrustedFromNewPath\n[OK] testClaimStrippedByClaimValidatorNotPageVerified\n\
-  === ALL CITATION VERIFICATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [16/24]\
+  === ALL CITATION VERIFICATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [16/25]\
   \ CitationLoggingTest.php ...\n[OK] testCitationLoggedWithPage\n[OK] testCitationLoggedWithNullPageWhenPageUnresolved\n\
   [OK] testAdminAnalyticsGateAllowsRegularAuthenticatedMember\n=== ALL CITATION LOGGING\
-  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [17/24] ProfileRecommendationTest.php\
+  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [17/25] ProfileRecommendationTest.php\
   \ ...\n[OK] testSeenSetExcludesOnlySelfCitedArticles\n[OK] testPopularButUnreadOrderedAboveNeverCited\n\
-  === ALL PROFILE RECOMMENDATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [18/24]\
-  \ BackfillArticleMetadataTest.php ...\n[OK] testSecondRunMakesNoApiCallsOnceBackfilled\n\
-  === ALL BACKFILL ARTICLE METADATA TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
-  \ [19/24] CoverageRadarServiceTest.php ...\n=== Running CoverageRadarService Tests\
-  \ ===\n[PASS] axis score: 0.0 with zero activity\n[PASS] axis score: exactly 3.0\
-  \ for one quiz_passed on a 1-article territory\n[PASS] axis score: 0.0 on an unrelated\
-  \ territory\n[PASS] axis score: two reads of the same article count once (weight\
-  \ 1, not 2)\n[PASS] tagging coverage: tagged_with_content never exceeds total_with_content\n\
-  [PASS] nudges: already-engaged article excluded from suggestions\n[PASS] nudges:\
-  \ has_content=0 article excluded from suggestions\n=== ALL COVERAGE RADAR SERVICE\
-  \ TESTS PASSED ===\n\n>>> Executing [20/24] TourServiceTest.php ...\n=== Running\
-  \ TourService Tests ===\n[PASS] create: new tour defaults to draft status\n[PASS]\
-  \ addArticle: three stops added in the given order\n[PASS] reorderArticles: new\
-  \ order persisted and reflected on read\n[PASS] updateConnectiveNote: note persisted\n\
+  [OK] testCitedArticlesGroupedByCategory\n=== ALL PROFILE RECOMMENDATION TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n>>> Executing [18/25] BackfillArticleMetadataTest.php ...\n\
+  [OK] testSecondRunMakesNoApiCallsOnceBackfilled\n=== ALL BACKFILL ARTICLE METADATA\
+  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [19/25] CoverageRadarServiceTest.php\
+  \ ...\n=== Running CoverageRadarService Tests ===\n[PASS] axis score: 0.0 with zero\
+  \ activity\n[PASS] axis score: exactly 3.0 for one quiz_passed on a 1-article territory\n\
+  [PASS] axis score: 0.0 on an unrelated territory\n[PASS] axis score: two reads of\
+  \ the same article count once (weight 1, not 2)\n[PASS] tagging coverage: tagged_with_content\
+  \ never exceeds total_with_content\n[PASS] nudges: already-engaged article excluded\
+  \ from suggestions\n[PASS] nudges: has_content=0 article excluded from suggestions\n\
+  === ALL COVERAGE RADAR SERVICE TESTS PASSED ===\n\n>>> Executing [20/25] TourServiceTest.php\
+  \ ...\n=== Running TourService Tests ===\n[PASS] create: new tour defaults to draft\
+  \ status\n[PASS] addArticle: three stops added in the given order\n[PASS] reorderArticles:\
+  \ new order persisted and reflected on read\n[PASS] updateConnectiveNote: note persisted\n\
   [PASS] setStatus/publish: published tour appears in member-visible list\n[PASS]\
   \ getPublishedTour: published tour is fetchable by id\n[PASS] listPublishedTours:\
   \ draft tour excluded\n[PASS] getPublishedTour: draft tour returns null even when\
   \ its exact id is requested (structurally unreachable)\n[PASS] removeArticle: removed\
   \ stop no longer present, remaining stop intact\n[PASS] addArticle: duplicate article\
   \ in the same tour rejected by the unique constraint\n=== ALL TOUR SERVICE TESTS\
-  \ PASSED ===\n\n>>> Executing [21/24] TourAdminHandlerTest.php ...\n=== Running\
+  \ PASSED ===\n\n>>> Executing [21/25] TourAdminHandlerTest.php ...\n=== Running\
   \ TourAdminHandler Tests ===\n[PASS] handler: invalid CSRF rejected with 403\n[PASS]\
   \ handler: create action returns 200\n[PASS] handler: create action produces a draft\
   \ tour\n[PASS] handler: add_article action returns 200\n[PASS] handler: add_article\
   \ action adds exactly one stop\n[PASS] handler: set_status action returns 200\n\
   [PASS] handler: set_status action persists new status\n[PASS] handler: unknown action\
   \ rejected with 400\n=== ALL TOUR ADMIN HANDLER TESTS PASSED ===\n\n>>> Executing\
-  \ [22/24] TourProposerTest.php ...\n=== Running TourProposer Tests ===\n[PASS] proposeOne:\
+  \ [22/25] TourProposerTest.php ...\n=== Running TourProposer Tests ===\n[PASS] proposeOne:\
   \ persisted tour defaults to draft (never auto-published)\n[PASS] proposeOne: candidate_index\
   \ correctly mapped to real article_index ids, order preserved\n[PASS] proposeOne:\
   \ proposal citing an out-of-range candidate_index is discarded whole\n[PASS] proposeOne:\
@@ -216,7 +220,7 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ no usable proposal\n[PASS] titleAlreadyExists: case-insensitive match against\
   \ an existing tour title\n[PASS] titleAlreadyExists: a genuinely new title is not\
   \ flagged as duplicate\n=== ALL TOUR PROPOSER TESTS PASSED ===\n\n>>> Executing\
-  \ [23/24] ConversationTopicWeightRunnerTest.php ...\n=== Running ConversationTopicWeightRunner\
+  \ [23/25] ConversationTopicWeightRunnerTest.php ...\n=== Running ConversationTopicWeightRunner\
   \ Tests ===\n[PASS] run: a conversation that already has weights is never reprocessed\n\
   [PASS] run: exactly one usage_events row logged for the one LLM call made\n[PASS]\
   \ run: limit=2 processes exactly 2 of the 3 eligible conversations\n[PASS] run:\
@@ -225,12 +229,12 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \ topicless: topic_weights_attempted_at set after the first run despite no topics\
   \ found\n[PASS] topicless: second run logs no new usage_events row for this conversation\
   \ -- not reprocessed (would otherwise loop forever, re-billing Engine B every time)\n\
-  ConversationTopicWeightRunner: LLM call failed for conversation 1182: OpenAI API\
+  ConversationTopicWeightRunner: LLM call failed for conversation 1466: OpenAI API\
   \ error [500] calling /chat/completions: simulated failure\n[PASS] failing LLM call:\
   \ attempt_count is 1 after failure #1\nConversationTopicWeightRunner: LLM call failed\
-  \ for conversation 1182: OpenAI API error [500] calling /chat/completions: simulated\
+  \ for conversation 1466: OpenAI API error [500] calling /chat/completions: simulated\
   \ failure\n[PASS] failing LLM call: attempt_count is 2 after failure #2\nConversationTopicWeightRunner:\
-  \ LLM call failed for conversation 1182: OpenAI API error [500] calling /chat/completions:\
+  \ LLM call failed for conversation 1466: OpenAI API error [500] calling /chat/completions:\
   \ simulated failure\n[PASS] failing LLM call: gives up and marks done once MAX_LLM_ATTEMPTS=3\
   \ is reached\n[PASS] recomputeLiveEngineA: no OpenAI call made (request log empty)\n\
   [PASS] recomputeLiveEngineA: never writes engine_b_weights_json\n[PASS] recomputeLiveEngineA:\
@@ -238,9 +242,15 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   [PASS] recomputeLiveEngineA: combines fresh Engine A with the existing Engine B\
   \ result\n[PASS] recomputeLiveEngineA: conversation remains eligible for the batch\
   \ job's real Engine B pass\n=== ALL CONVERSATION TOPIC WEIGHT RUNNER TESTS PASSED\
-  \ ===\n\n>>> Executing [24/24] Python Evaluation Runner (eval_runner.py) ...\n\n\
-  =======================================================\n Journal AI Retrieval Evaluation\
-  \ Runner\n Dataset: /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/eval_dataset.sample.json\n\
+  \ ===\n\n>>> Executing [24/25] ArticleCitationLinkerTest.php ...\n=== Running ArticleCitationLinker\
+  \ Tests ===\n[PASS] resolveLink: returns the HigherLogic issue_url when the resolver\
+  \ finds a match\n[PASS] resolveLink: falls back to source.php when the resolver\
+  \ finds no article_index match\n[PASS] resolveLink: falls back to source.php when\
+  \ the matched article_index row has a null issue_url\n[PASS] resolveLink: falls\
+  \ back to source.php with no page param when the citation has no page at all\n===\
+  \ ALL ARTICLE CITATION LINKER TESTS PASSED ===\n\n>>> Executing [25/25] Python Evaluation\
+  \ Runner (eval_runner.py) ...\n\n=======================================================\n\
+  \ Journal AI Retrieval Evaluation Runner\n Dataset: /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066-fix/journalgpt/tests/eval_dataset.sample.json\n\
   \ Test Cases: 7\n=======================================================\n\n[\u2713\
   ] TC-FACT-001 (factual_single_article): PASS - Score: 100.0/100\n    - Citation\
   \ score: 35.0/35.0 (All 1/1 citations exact).\n    - Grounding score: 45.0/45.0\
@@ -279,21 +289,22 @@ evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_A
   \  ProfileRecommendationTest      : PASS\n  BackfillArticleMetadataTest    : PASS\n\
   \  CoverageRadarServiceTest       : PASS\n  TourServiceTest                : PASS\n\
   \  TourAdminHandlerTest           : PASS\n  TourProposerTest               : PASS\n\
-  \  ConversationTopicWeightRunnerTest : PASS\n  PythonEvalRunner               :\
-  \ PASS\n-------------------------------------------------------\n Total Suites:\
-  \ 24 | Passed: 24 | Failed: 0\n=======================================================\n"
-peer_review_notes: 'Ran manually in the isolated worktree (../newmexicoptg.org-T-PTG-066)
-  rather than via fleet verify, because fleet verify assumes the primary clone reflects
-  the task branch, which the HARD REQUIREMENT (isolated worktrees, never checkout
-  in the primary clone) forbids. Evidence above is a real, unedited run of the exact
-  verification_command against the actual committed code. Pushed to origin/test @
-  3fec394 and confirmed live via a successful GitHub Actions deploy run (32194573754).
-  Full live UI click-through on the local preview server was not done: it required
-  querying the local production-snapshot DB for a test login, which was correctly
-  blocked for member-privacy reasons (same policy that blocked it earlier this session).
-  Recommend a quick manual check on test.newmexicoptg.org (new conversation should
-  show a color bar immediately) before HUMAN_REVIEW close-out.'
-human_action_required: Please create a new conversation on test.newmexicoptg.org and
-  confirm its sidebar entry shows a color bar immediately (no manual batch run needed).
+  \  ConversationTopicWeightRunnerTest : PASS\n  ArticleCitationLinkerTest      :\
+  \ PASS\n  PythonEvalRunner               : PASS\n-------------------------------------------------------\n\
+  \ Total Suites: 25 | Passed: 25 | Failed: 0\n=======================================================\n"
+peer_review_notes: 'Fixes the MAJOR finding from the FAIL peer review (reviews/T-PTG-066_review.yaml):
+  ask() now surfaces the freshly-computed combined_weights_json as topic_weights in
+  its response, and journal-chat.js uses it to insert/update the sidebar color bar
+  immediately (works for new and continuing conversations), instead of only being
+  visible after a full page reload. New test JournalAnswerServiceTest::testAskResponseSurfacesFreshTopicWeights
+  proves the response payload matches the DB. Also bundled two small sidebar cleanups
+  Chip asked for alongside this (remove per-item chat icon, bold text instead of a
+  blue dot for unread). Pushed to origin/test @ a848f03, deploy confirmed via GitHub
+  Actions run 32197163040. Still recommend a live click-through: start a conversation
+  on test.newmexicoptg.org and confirm the color bar appears without a refresh this
+  time.'
+human_action_required: 'Please confirm on test.newmexicoptg.org: start a new conversation,
+  and the sidebar should show a color bar as soon as the reply lands -- no refresh
+  needed this time.'
 token_spend: null
 cost_usd: null

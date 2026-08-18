@@ -18,7 +18,7 @@ graph TD
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]:::review
     T-PTG-052 --> T-PTG-053
-    T-PTG-069["T-PTG-069<br/>Profile page: link 'My Research' article citations to their source PDFs (HigherLogic issue_url)"]
+    T-PTG-069["T-PTG-069<br/>Profile page: link 'My Research' article citations to their source PDFs (HigherLogic issue_url)"]:::review
     T-PTG-065["T-PTG-065<br/>Webhook Sync for Localhost Conversations"]:::review
     T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
@@ -346,24 +346,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### 📋 T-PTG-069 · P2 · ANY · AUDITED
-**Profile page: link "My Research" article citations to their source PDFs (HigherLogic issue_url)**
-**Owner:** None
-
-**Scope:**
-- Chip's ask: profile.php's "My Research" section (e.g. "Business & Shop Practices -- 10 / 67 articles cited -- click to expand and view links to articles") currently shows counts with no actual links to the articles. Chip asked whether we should use AWS-hosted PDF links from the recently-ingested index -- checked and corrected: `article_index.issue_url` (journalgpt/migrations/018_article_index.sql, populated from journalgpt/data/article_index.csv) is NOT AWS-hosted -- it's a `my.ptg.org` HigherLogic document-library download link (`DownloadDocumentFile.ashx?DocumentFileKey=...`). Chip confirmed 2026-08-18: use these HigherLogic links.
-- Wire "click to expand" in profile.php's My Research section to list the actual cited articles per category (find the citation source -- likely journalgpt_citation_logs per journalgpt/migrations/016_journalgpt_citation_logs.sql, or wherever "N / 67 articles cited" is currently counted from) with each article title linking out to its `article_index.issue_url`.
-- These are `my.ptg.org` member-portal links -- they will require the member to already be logged into my.ptg.org in their browser (separate session from this app); do not attempt to proxy or embed the PDF, just link out target="_blank" and say so in adjacent copy if it reads as unclear.
-- Not every article_index row has a non-null issue_url or a resolvable link to the citation-log's article identity -- some citations may trace to `articles`/`article_topics` (issue-level) rather than `article_index` (per-article) rows entirely, since these are deliberately separate tables (see 018_article_index.sql's docblock). Figure out which table actually backs "N / 67 articles cited" today before wiring links -- do not assume it's article_index without checking.
-
-**Definition of Done:**
-- Test proves: expanding a "My Research" category renders one link per cited article, pointed at the correct issue_url when present, and degrades gracefully (no dead link, no fatal) when an article's issue_url is null.
-- Manual verification via the browse skill that clicking a category expands to real article links.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
-
----
 ### 📋 T-PTG-068 · P2 · ANY · AUDITED
 **Profile page: link to conversations, grouped by dominant topic**
 **Owner:** None
@@ -452,6 +434,24 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW
+**Profile page: link "My Research" article citations to their source PDFs (HigherLogic issue_url)**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Chip's ask: profile.php's "My Research" section (e.g. "Business & Shop Practices -- 10 / 67 articles cited -- click to expand and view links to articles") currently shows counts with no actual links to the articles. Chip asked whether we should use AWS-hosted PDF links from the recently-ingested index -- checked and corrected: `article_index.issue_url` (journalgpt/migrations/018_article_index.sql, populated from journalgpt/data/article_index.csv) is NOT AWS-hosted -- it's a `my.ptg.org` HigherLogic document-library download link (`DownloadDocumentFile.ashx?DocumentFileKey=...`). Chip confirmed 2026-08-18: use these HigherLogic links.
+- Wire "click to expand" in profile.php's My Research section to list the actual cited articles per category (find the citation source -- likely journalgpt_citation_logs per journalgpt/migrations/016_journalgpt_citation_logs.sql, or wherever "N / 67 articles cited" is currently counted from) with each article title linking out to its `article_index.issue_url`.
+- These are `my.ptg.org` member-portal links -- they will require the member to already be logged into my.ptg.org in their browser (separate session from this app); do not attempt to proxy or embed the PDF, just link out target="_blank" and say so in adjacent copy if it reads as unclear.
+- CORRECTED DURING IMPLEMENTATION (2026-08-18): checked, and "N / 67 articles cited" is backed by issue-level `articles`/`article_topics`/`journalgpt_citation_logs` (article_id + physical page), NOT `article_index` -- no direct FK between them. Chip pointed out `ArticleIndexResolver.php` (built for T-PTG-052) already exists and does exactly this join (issue-level articles.id + PRINTED page -> article_index_id), used and tested for CoverageRadarService/TourProposer/TourService. Use it: convert journalgpt_citation_logs.page (physical) to printed via JournalAnswerService::physicalToPrintedPage($page, $article['pdf_page_offset']), call ArticleIndexResolver::resolve($articleId, $printedPage), then look up that article_index row's issue_url. On any resolver miss or null issue_url, fall back to the existing internal source.php?article_id=X&page=Y link (article_id + physical page are always available regardless of resolution) rather than showing nothing.
+
+**Definition of Done:**
+- Test proves: expanding a "My Research" category renders one link per cited article, pointed at the correct issue_url when present, and degrades gracefully (no dead link, no fatal) when an article's issue_url is null.
+- Manual verification via the browse skill that clicking a category expands to real article links.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
 ### ⏳ T-PTG-065 · P2 · backend · PEER_REVIEW

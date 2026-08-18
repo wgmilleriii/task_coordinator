@@ -4,7 +4,7 @@ title: 'Profile page: link "My Research" article citations to their source PDFs 
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: CLAIMED
+status: PEER_REVIEW
 created_at: '2026-08-18T22:40:00-06:00'
 dependencies: []
 scope:
@@ -31,12 +31,12 @@ scope:
   Chip pointed out `ArticleIndexResolver.php` (built for T-PTG-052) already exists
   and does exactly this join (issue-level articles.id + PRINTED page -> article_index_id),
   used and tested for CoverageRadarService/TourProposer/TourService. Use it: convert
-  journalgpt_citation_logs.page (physical) to printed via
-  JournalAnswerService::physicalToPrintedPage($page, $article[''pdf_page_offset'']),
-  call ArticleIndexResolver::resolve($articleId, $printedPage), then look up that
-  article_index row''s issue_url. On any resolver miss or null issue_url, fall back
-  to the existing internal source.php?article_id=X&page=Y link (article_id + physical
-  page are always available regardless of resolution) rather than showing nothing.'
+  journalgpt_citation_logs.page (physical) to printed via JournalAnswerService::physicalToPrintedPage($page,
+  $article[''pdf_page_offset'']), call ArticleIndexResolver::resolve($articleId, $printedPage),
+  then look up that article_index row''s issue_url. On any resolver miss or null issue_url,
+  fall back to the existing internal source.php?article_id=X&page=Y link (article_id
+  + physical page are always available regardless of resolution) rather than showing
+  nothing.'
 definition_of_done:
 - 'Test proves: expanding a "My Research" category renders one link per cited article,
   pointed at the correct issue_url when present, and degrades gracefully (no dead
@@ -62,6 +62,9 @@ events:
   details: Audited against 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
 - timestamp: '2026-08-18T22:54:46.879728Z'
   action: CLAIM
+  actor: Claude-Sonnet-Session
+- timestamp: '2026-08-18T23:09:01.394960Z'
+  action: SUBMIT
   actor: Claude-Sonnet-Session
 audited_at: '2026-08-18T22:40:20.808352Z'
 audited_by: PM-Claude-Sonnet-Session

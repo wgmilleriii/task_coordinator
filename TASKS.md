@@ -52,10 +52,10 @@ graph TD
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
-    T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]
+    T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
     T-PTG-066 --> T-PTG-067
     T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
-    T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::review
+    T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
 ```
 
 ---
@@ -210,6 +210,25 @@ graph TD
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
+### ✅ T-PTG-066 · P1 · ANY · DONE
+**Compute Engine A topic weights live on message send (fix colorless new conversations)**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Bug found live: a brand-new conversation shows no topic-color-bar at all in the sidebar until someone manually runs a full admin_conversation_weights.php batch. Root cause confirmed: index.php:237 only renders the bar `if (!empty($conv['combined_weights_json']))`, and that column is exclusively written by ConversationTopicWeightRunner::run(), which only ever runs as a manual batch job (admin_conversation_weights.php) -- nothing computes weights at conversation-creation or per-message time.
+- Extract ConversationTopicWeightRunner::scoreEngineA() (journalgpt/lib/ConversationTopicWeightRunner.php) usage into a path that can run synchronously and cheaply after every message send (wherever messages are inserted -- likely journalgpt/api/ask.php or the conversation-creation handler). Engine A is pure local keyword scoring (no OpenAI call, no cost, no budget check needed) -- safe to run on every turn.
+- On each message send: recompute engine_a_weights_json for the conversation from all its messages so far, and write combined_weights_json using the SAME combine() logic ConversationTopicWeightRunner uses today (Engine A alone if Engine B has never run yet, otherwise Engine A + the last computed Engine B). Do NOT touch topic_weights_attempted_at or engine_b_weights_json here -- those stay exclusively owned by ConversationTopicWeightRunner's batch job (T-PTG-061/023/024's eligibility and retry-count machinery must not be disturbed by this live path).
+- A brand-new conversation must show SOME color bar in the sidebar after its first message, even before any admin batch has ever run.
+
+**Definition of Done:**
+- New test proves: creating a conversation and sending one message (with real piano-technology keywords) results in engine_a_weights_json and combined_weights_json being populated immediately, with no OpenAI/Engine B call involved.
+- Existing ConversationTopicWeightRunnerTest suite (7 tests) and the topicless/retry regression tests still pass unmodified -- this task must not touch batch eligibility logic (topic_weights_attempted_at, topic_weights_attempt_count).
+- The sidebar (index.php) renders a non-empty topic-color-bar for a freshly created, never-batch-processed conversation after its first message, verified via the browse skill against the local test-branch preview server.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW
 **Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge**
 **Owner:** Claude-Fable-Session
@@ -328,25 +347,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
-### ⏳ T-PTG-066 · P1 · ANY · PEER_REVIEW
-**Compute Engine A topic weights live on message send (fix colorless new conversations)**
-**Owner:** Claude-Sonnet-Session
-
-**Scope:**
-- Bug found live: a brand-new conversation shows no topic-color-bar at all in the sidebar until someone manually runs a full admin_conversation_weights.php batch. Root cause confirmed: index.php:237 only renders the bar `if (!empty($conv['combined_weights_json']))`, and that column is exclusively written by ConversationTopicWeightRunner::run(), which only ever runs as a manual batch job (admin_conversation_weights.php) -- nothing computes weights at conversation-creation or per-message time.
-- Extract ConversationTopicWeightRunner::scoreEngineA() (journalgpt/lib/ConversationTopicWeightRunner.php) usage into a path that can run synchronously and cheaply after every message send (wherever messages are inserted -- likely journalgpt/api/ask.php or the conversation-creation handler). Engine A is pure local keyword scoring (no OpenAI call, no cost, no budget check needed) -- safe to run on every turn.
-- On each message send: recompute engine_a_weights_json for the conversation from all its messages so far, and write combined_weights_json using the SAME combine() logic ConversationTopicWeightRunner uses today (Engine A alone if Engine B has never run yet, otherwise Engine A + the last computed Engine B). Do NOT touch topic_weights_attempted_at or engine_b_weights_json here -- those stay exclusively owned by ConversationTopicWeightRunner's batch job (T-PTG-061/023/024's eligibility and retry-count machinery must not be disturbed by this live path).
-- A brand-new conversation must show SOME color bar in the sidebar after its first message, even before any admin batch has ever run.
-
-**Definition of Done:**
-- New test proves: creating a conversation and sending one message (with real piano-technology keywords) results in engine_a_weights_json and combined_weights_json being populated immediately, with no OpenAI/Engine B call involved.
-- Existing ConversationTopicWeightRunnerTest suite (7 tests) and the topicless/retry regression tests still pass unmodified -- this task must not touch batch eligibility logic (topic_weights_attempted_at, topic_weights_attempt_count).
-- The sidebar (index.php) renders a non-empty topic-color-bar for a freshly created, never-batch-processed conversation after its first message, verified via the browse skill against the local test-branch preview server.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
-
----
 ### 📋 T-PTG-068 · P2 · ANY · AUDITED
 **Profile page: link to conversations, grouped by dominant topic**
 **Owner:** None
@@ -361,25 +361,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Test proves conversations are correctly grouped by dominant topic from combined_weights_json fixtures, including the multi-topic-threshold decision documented above.
 - Manual verification via the browse skill: profile.php renders topic groups with working links that open the correct conversation in index.php.
 - No N+1 query blowup -- one query (or a small fixed number) fetches all of a member''s conversations with weights, not one query per topic.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
-
----
-### 📋 T-PTG-067 · P2 · ANY · AUDITED
-**Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues**
-**Owner:** None
-
-**Scope:**
-- Chip's ask: "I want bars to evolve and change in color as the conversation continues." T-PTG-066 makes the bar appear instantly (Engine A only, free). This task adds the real LLM-scored half (Engine B) back in on a live cadence instead of only via the manual admin batch, so the bar's shape actually sharpens/shifts as more is discussed -- without calling OpenAI on every single message (cost + latency).
-- Cooldown policy: recompute Engine B (ConversationTopicWeightRunner::scoreEngineB()) for a conversation when BOTH (a) at least N messages (suggest N=4, confirm with Chip or pick a sensible default and document the reasoning) have been added since the last Engine B computation, AND (b) the org monthly budget check (UsagePolicy) passes -- reuse the existing budget-skip behavior from ConversationTopicWeightRunner rather than duplicating it.
-- This is a SEPARATE trigger path from the T-PTG-066 live Engine A write and from the existing batch job -- do not let all three race and double-log usage_events for the same conversation. Reuse scoreEngineB()'s existing usage_events logging (one row per real LLM call, T-PTG-030 convention) as the single source of truth; this task must not introduce a second logging path.
-- The manual admin batch (admin_conversation_weights.php / topic_weights_attempted_at eligibility) keeps working as the backstop for conversations that go quiet before hitting the live cooldown threshold -- this task does not replace it, it just makes most conversations settle live instead of waiting for a manual batch click.
-
-**Definition of Done:**
-- Test proves: a conversation that accumulates >= N messages triggers exactly one live Engine B call and updates combined_weights_json; a conversation with fewer than N new messages since its last Engine B pass triggers zero live calls.
-- Test proves the live path and the batch path never double-bill: a conversation whose live cooldown already ran Engine B is not re-billed by the next admin batch run for the same content (extend the existing topic_weights_attempted_at semantics rather than inventing a parallel state).
-- Budget-exhausted behavior matches the batch job exactly (Engine A/live-partial result kept, Engine B silently skipped, no error surfaced to the member).
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
@@ -1138,5 +1119,24 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `b11317aaf5b0e0b8903c459813a1907b2f9a7ab2`
+
+---
+### ⏳ T-PTG-067 · P2 · ANY · PEER_REVIEW
+**Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Chip's ask: "I want bars to evolve and change in color as the conversation continues." T-PTG-066 makes the bar appear instantly (Engine A only, free). This task adds the real LLM-scored half (Engine B) back in on a live cadence instead of only via the manual admin batch, so the bar's shape actually sharpens/shifts as more is discussed -- without calling OpenAI on every single message (cost + latency).
+- Cooldown policy: recompute Engine B (ConversationTopicWeightRunner::scoreEngineB()) for a conversation when BOTH (a) at least N messages (suggest N=4, confirm with Chip or pick a sensible default and document the reasoning) have been added since the last Engine B computation, AND (b) the org monthly budget check (UsagePolicy) passes -- reuse the existing budget-skip behavior from ConversationTopicWeightRunner rather than duplicating it.
+- This is a SEPARATE trigger path from the T-PTG-066 live Engine A write and from the existing batch job -- do not let all three race and double-log usage_events for the same conversation. Reuse scoreEngineB()'s existing usage_events logging (one row per real LLM call, T-PTG-030 convention) as the single source of truth; this task must not introduce a second logging path.
+- The manual admin batch (admin_conversation_weights.php / topic_weights_attempted_at eligibility) keeps working as the backstop for conversations that go quiet before hitting the live cooldown threshold -- this task does not replace it, it just makes most conversations settle live instead of waiting for a manual batch click.
+
+**Definition of Done:**
+- Test proves: a conversation that accumulates >= N messages triggers exactly one live Engine B call and updates combined_weights_json; a conversation with fewer than N new messages since its last Engine B pass triggers zero live calls.
+- Test proves the live path and the batch path never double-bill: a conversation whose live cooldown already ran Engine B is not re-billed by the next admin batch run for the same content (extend the existing topic_weights_attempted_at semantics rather than inventing a parallel state).
+- Budget-exhausted behavior matches the batch job exactly (Engine A/live-partial result kept, Engine B silently skipped, no error surfaced to the member).
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---

@@ -42,7 +42,7 @@ graph TD
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
-    T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]
+    T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::active
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
@@ -321,6 +321,23 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
+### 🛠 T-PTG-056 · P2 · ANY · CLAIMED
+**Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration**
+**Owner:** Claude-Fable-Session
+
+**Scope:**
+- Spec: sections 4-5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing shelf (tours.php: published tours/threads listed with blurb, stop count, estimated reading time) and tour detail page (tour.php?id=N: ordered stops with connective notes, links to each article's source PDF at its page, per-stop read tracking into member_article_activity via T-PTG-052's hooks).
+- Closing quiz: "Finish with a quiz" generates one quiz drawn from the tour's articles. Reuse the existing engine -- generate_topic_quiz.php is the closest precedent for non-conversation quiz generation; the tour variant seeds generation from the tour's article set. Grounding rules unchanged: every question keeps its NOT NULL article FK. Passing logs quiz_passed activity for the tour's articles answered correctly, so finishing a tour visibly lands on the member's radar.
+- Completion display: a tour shows per-member progress (stops engaged / total, quiz taken or not) derived from member_article_activity -- no new progress table (spec section 4 explicitly forbids one).
+
+**Definition of Done:**
+- Shelf and detail pages render for a member; draft tours are never visible.
+- Tour quiz generation proven by test (mocked model) - questions ground only to the tour''s articles; ungrounded proposals discarded.
+- Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
+- Progress derivation proven by test against member_article_activity fixtures.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+---
 ### ✅ T-PTG-062 · P2 · frontend · DONE
 **Feature: Advanced Prompt Builder Grid UI**
 **Owner:** Worker-Agent
@@ -352,23 +369,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### 📋 T-PTG-056 · P2 · ANY · OPEN
-**Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration**
-**Owner:** None
-
-**Scope:**
-- Spec: sections 4-5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing shelf (tours.php: published tours/threads listed with blurb, stop count, estimated reading time) and tour detail page (tour.php?id=N: ordered stops with connective notes, links to each article's source PDF at its page, per-stop read tracking into member_article_activity via T-PTG-052's hooks).
-- Closing quiz: "Finish with a quiz" generates one quiz drawn from the tour's articles. Reuse the existing engine -- generate_topic_quiz.php is the closest precedent for non-conversation quiz generation; the tour variant seeds generation from the tour's article set. Grounding rules unchanged: every question keeps its NOT NULL article FK. Passing logs quiz_passed activity for the tour's articles answered correctly, so finishing a tour visibly lands on the member's radar.
-- Completion display: a tour shows per-member progress (stops engaged / total, quiz taken or not) derived from member_article_activity -- no new progress table (spec section 4 explicitly forbids one).
-
-**Definition of Done:**
-- Shelf and detail pages render for a member; draft tours are never visible.
-- Tour quiz generation proven by test (mocked model) - questions ground only to the tour''s articles; ungrounded proposals discarded.
-- Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
-- Progress derivation proven by test against member_article_activity fixtures.
-- Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
 ### ⏳ T-PTG-065 · P2 · backend · PEER_REVIEW

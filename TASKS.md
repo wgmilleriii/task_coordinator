@@ -31,7 +31,7 @@ graph TD
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]
     T-PTG-054 --> T-PTG-055
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
-    T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]
+    T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
     T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
@@ -46,7 +46,7 @@ graph TD
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
-    T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]:::active
+    T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
 ```
@@ -138,9 +138,9 @@ graph TD
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
-### 🛠 T-PTG-021 · P1 · ANY · CLAIMED
+### 📋 T-PTG-021 · P1 · ANY · AUDITED
 **Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)**
-**Owner:** Antigravity
+**Owner:** None
 
 **Scope:**
 - FINDING: Chip asked that no future work be pushed to main without running the full "golden hammer" regression suite (`journalgpt/tests/security_and_eval_suite.php`, which runs 8 PHP suites plus the Python eval_runner.py -- 9 suites total). Running it as a baseline check surfaced one pre-existing failure: `JournalChatRenderTest.php:115` asserts the rendered `index.php` HTML contains the exact literal substring `href="assets/journal-chat.css"` (no query string). `index.php`'s actual stylesheet link has ALWAYS included a cache-busting `?v=<hash>` query param (confirmed via git history -- this predates every task from today's session), so this exact-substring assertion has likely been failing since the test was first written (single commit in its git history, `b89a4d7`, never updated since). This is a stale/wrong test assertion, not a real product bug -- confirmed the actual rendered HTML is correct and functional (T-PTG-013 extended the same versioned-link pattern to 6 more pages earlier today specifically because it is the correct, intentional behavior).
@@ -368,22 +368,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Drafts appear in admin_tours.php for curation; nothing member-visible changes.
 - Duplicate-title guard proven by test.
 - Golden hammer suite passes with zero regressions.
-
----
-### 📋 T-PTG-054 · P2 · ANY · OPEN
-**Coverage Atlas Phase 2a: tours/threads schema + curator admin page**
-**Owner:** None
-
-**Scope:**
-- Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. New migration (020): tours (id, title, kind ENUM(tour, thread), blurb, status ENUM(draft, published), created_by FK users, timestamps) and tour_articles (tour_id FK CASCADE, article_index_id FK, sort_order, connective_note TEXT; unique (tour_id, article_index_id)). Additive-only, mirrors 018's conventions.
-- Curator admin page (admin_tours.php, following admin_article_index_matrix.php's auth + no-framework pattern): list tours with status; create/edit a tour (title, kind, blurb); add/remove/reorder articles by searching the article_index (title/ author/issue search, same client-side approach as the matrix page); edit each stop's connective_note; draft/publish toggle. Only status=published tours are ever visible to member-facing pages (enforced in queries, not just UI).
-- Write endpoints follow the pure-handler + LIBRARY_ONLY + CSRF pattern (api/toggle_article_index_topic.php is the closest template).
-
-**Definition of Done:**
-- Migration 020 applies cleanly via cli/migrate.php on the local test DB.
-- Handler tests prove - create tour, add three articles with order, reorder, edit connective_note, publish; CSRF rejection; draft tours excluded by the member-visibility query helper.
-- Curator page browser-verified locally (create a 3-stop tour end to end).
-- Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
 ### 📋 T-PTG-056 · P2 · ANY · OPEN
@@ -1033,5 +1017,23 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - The existing test suite still passes in full -- journalgpt/tests/AskEndpointTest.php, journalgpt/tests/UsagePolicyTest.php, and journalgpt/tests/JournalAnswerServiceTest.php all run clean (0 failures).
 
 *Audited against SHA:* `aba832b031b0fd796459d2f75aa8dc4099f14d1c`
+
+---
+### ⏳ T-PTG-054 · P2 · ANY · PEER_REVIEW
+**Coverage Atlas Phase 2a: tours/threads schema + curator admin page**
+**Owner:** Antigravity
+
+**Scope:**
+- Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. New migration (020): tours (id, title, kind ENUM(tour, thread), blurb, status ENUM(draft, published), created_by FK users, timestamps) and tour_articles (tour_id FK CASCADE, article_index_id FK, sort_order, connective_note TEXT; unique (tour_id, article_index_id)). Additive-only, mirrors 018's conventions.
+- Curator admin page (admin_tours.php, following admin_article_index_matrix.php's auth + no-framework pattern): list tours with status; create/edit a tour (title, kind, blurb); add/remove/reorder articles by searching the article_index (title/ author/issue search, same client-side approach as the matrix page); edit each stop's connective_note; draft/publish toggle. Only status=published tours are ever visible to member-facing pages (enforced in queries, not just UI).
+- Write endpoints follow the pure-handler + LIBRARY_ONLY + CSRF pattern (api/toggle_article_index_topic.php is the closest template).
+
+**Definition of Done:**
+- Migration 020 applies cleanly via cli/migrate.php on the local test DB.
+- Handler tests prove - create tour, add three articles with order, reorder, edit connective_note, publish; CSRF rejection; draft tours excluded by the member-visibility query helper.
+- Curator page browser-verified locally (create a 3-stop tour end to end).
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `b11317aaf5b0e0b8903c459813a1907b2f9a7ab2`
 
 ---

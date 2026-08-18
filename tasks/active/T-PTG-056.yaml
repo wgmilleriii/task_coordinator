@@ -1,49 +1,66 @@
 id: T-PTG-056
-title: 'Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration'
+title: 'Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar
+  integration'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: CLAIMED
+status: BLOCKED
 created_at: '2026-08-17T10:30:00-06:00'
 dependencies:
 - T-PTG-054
 - T-PTG-052
 scope:
-- 'Spec: sections 4-5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing
-  shelf (tours.php: published tours/threads listed with blurb, stop count, estimated reading
-  time) and tour detail page (tour.php?id=N: ordered stops with connective notes, links to each
-  article''s source PDF at its page, per-stop read tracking into member_article_activity via
-  T-PTG-052''s hooks).'
-- 'Closing quiz: "Finish with a quiz" generates one quiz drawn from the tour''s articles. Reuse
-  the existing engine -- generate_topic_quiz.php is the closest precedent for non-conversation
-  quiz generation; the tour variant seeds generation from the tour''s article set. Grounding
-  rules unchanged: every question keeps its NOT NULL article FK. Passing logs quiz_passed activity
-  for the tour''s articles answered correctly, so finishing a tour visibly lands on the member''s
-  radar.'
-- 'Completion display: a tour shows per-member progress (stops engaged / total, quiz taken or
-  not) derived from member_article_activity -- no new progress table (spec section 4 explicitly
-  forbids one).'
+- 'Spec: sections 4-5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md.
+  Member-facing shelf (tours.php: published tours/threads listed with blurb, stop
+  count, estimated reading time) and tour detail page (tour.php?id=N: ordered stops
+  with connective notes, links to each article''s source PDF at its page, per-stop
+  read tracking into member_article_activity via T-PTG-052''s hooks).'
+- 'Closing quiz: "Finish with a quiz" generates one quiz drawn from the tour''s articles.
+  Reuse the existing engine -- generate_topic_quiz.php is the closest precedent for
+  non-conversation quiz generation; the tour variant seeds generation from the tour''s
+  article set. Grounding rules unchanged: every question keeps its NOT NULL article
+  FK. Passing logs quiz_passed activity for the tour''s articles answered correctly,
+  so finishing a tour visibly lands on the member''s radar.'
+- 'Completion display: a tour shows per-member progress (stops engaged / total, quiz
+  taken or not) derived from member_article_activity -- no new progress table (spec
+  section 4 explicitly forbids one).'
 definition_of_done:
 - Shelf and detail pages render for a member; draft tours are never visible.
-- Tour quiz generation proven by test (mocked model) - questions ground only to the tour''s
-  articles; ungrounded proposals discarded.
-- Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis
-  in T-PTG-053''s scoring test harness.
+- Tour quiz generation proven by test (mocked model) - questions ground only to the
+  tour''s articles; ungrounded proposals discarded.
+- Completing a tour (engage all stops + pass quiz) measurably moves the member''s
+  radar axis in T-PTG-053''s scoring test harness.
 - Progress derivation proven by test against member_article_activity fixtures.
 - Golden hammer suite passes with zero regressions; php -l clean.
-verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php
-  journalgpt/tests/security_and_eval_suite.php
+verification_command: DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
 human_review_required: true
 requires_doc_update: true
 events:
 - timestamp: '2026-08-17T10:30:00-06:00'
   action: SCOUT
   actor: Claude-Fable-Session
-  details: Filed from the Coverage Atlas design session. human_review_required for the member-facing
-    UX; requires_doc_update because this completes the epic and the architecture docs should
-    reflect the shipped shape.
+  details: Filed from the Coverage Atlas design session. human_review_required for
+    the member-facing UX; requires_doc_update because this completes the epic and
+    the architecture docs should reflect the shipped shape.
 - timestamp: '2026-08-18T14:09:55.406Z'
   action: CLAIM
   actor: Claude-Fable-Session
+- timestamp: '2026-08-18T22:46:13.771740Z'
+  action: BLOCK
+  actor: Unknown
+  details: 'Reason: Interrupted mid-implementation by an unrelated homepage redesign
+    task in the same session. Uncommitted work (TourQuizService.php, generate_tour_quiz.php,
+    3 tests -- one referencing TourProgressService which was never written) stashed
+    on branch test-T-PTG-056 in worktree ../newmexicoptg.org-tourpages (git stash
+    list). Blocking to release the repo lock for P1 work (T-PTG-066); resume by popping
+    the stash and continuing from TourProgressService.'
 owner: Claude-Fable-Session
 claimed_at: '2026-08-18T14:09:55.406Z'
+previous_status: CLAIMED
+blocked_reason: Interrupted mid-implementation by an unrelated homepage redesign task
+  in the same session. Uncommitted work (TourQuizService.php, generate_tour_quiz.php,
+  3 tests -- one referencing TourProgressService which was never written) stashed
+  on branch test-T-PTG-056 in worktree ../newmexicoptg.org-tourpages (git stash list).
+  Blocking to release the repo lock for P1 work (T-PTG-066); resume by popping the
+  stash and continuing from TourProgressService.

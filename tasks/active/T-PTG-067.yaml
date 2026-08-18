@@ -1,0 +1,62 @@
+id: T-PTG-067
+title: Live Engine B refresh on a cooldown, so the conversation color bar evolves
+  as the chat continues
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: AUDITED
+created_at: '2026-08-18T22:40:00-06:00'
+dependencies:
+- T-PTG-066
+scope:
+- 'Chip''s ask: "I want bars to evolve and change in color as the conversation continues."
+  T-PTG-066 makes the bar appear instantly (Engine A only, free). This task adds the
+  real LLM-scored half (Engine B) back in on a live cadence instead of only via the
+  manual admin batch, so the bar''s shape actually sharpens/shifts as more is discussed
+  -- without calling OpenAI on every single message (cost + latency).'
+- 'Cooldown policy: recompute Engine B (ConversationTopicWeightRunner::scoreEngineB())
+  for a conversation when BOTH (a) at least N messages (suggest N=4, confirm with
+  Chip or pick a sensible default and document the reasoning) have been added since
+  the last Engine B computation, AND (b) the org monthly budget check (UsagePolicy)
+  passes -- reuse the existing budget-skip behavior from ConversationTopicWeightRunner
+  rather than duplicating it.'
+- This is a SEPARATE trigger path from the T-PTG-066 live Engine A write and from
+  the existing batch job -- do not let all three race and double-log usage_events
+  for the same conversation. Reuse scoreEngineB()'s existing usage_events logging
+  (one row per real LLM call, T-PTG-030 convention) as the single source of truth;
+  this task must not introduce a second logging path.
+- The manual admin batch (admin_conversation_weights.php / topic_weights_attempted_at
+  eligibility) keeps working as the backstop for conversations that go quiet before
+  hitting the live cooldown threshold -- this task does not replace it, it just makes
+  most conversations settle live instead of waiting for a manual batch click.
+definition_of_done:
+- 'Test proves: a conversation that accumulates >= N messages triggers exactly one
+  live Engine B call and updates combined_weights_json; a conversation with fewer
+  than N new messages since its last Engine B pass triggers zero live calls.'
+- 'Test proves the live path and the batch path never double-bill: a conversation
+  whose live cooldown already ran Engine B is not re-billed by the next admin batch
+  run for the same content (extend the existing topic_weights_attempted_at semantics
+  rather than inventing a parallel state).'
+- Budget-exhausted behavior matches the batch job exactly (Engine A/live-partial result
+  kept, Engine B silently skipped, no error surfaced to the member).
+- Golden hammer suite passes with zero regressions; php -l clean.
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-18T22:40:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed alongside T-PTG-066 from the same conversation. human_review_required
+    because the cooldown threshold N and the exact interaction with the existing batch
+    job's eligibility/retry state (023/024 migrations) is a real design decision,
+    not just an implementation detail -- flagging for Chip's sign-off before this
+    ships.
+- timestamp: '2026-08-18T22:40:19.932669Z'
+  action: AUDIT
+  actor: PM-Claude-Sonnet-Session
+  details: Audited against 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
+audited_at: '2026-08-18T22:40:19.932460Z'
+audited_by: PM-Claude-Sonnet-Session
+audited_repo_sha: 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5

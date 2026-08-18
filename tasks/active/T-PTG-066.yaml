@@ -1,0 +1,59 @@
+id: T-PTG-066
+title: Compute Engine A topic weights live on message send (fix colorless new conversations)
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+created_at: '2026-08-18T22:40:00-06:00'
+dependencies: []
+scope:
+- 'Bug found live: a brand-new conversation shows no topic-color-bar at all in the
+  sidebar until someone manually runs a full admin_conversation_weights.php batch.
+  Root cause confirmed: index.php:237 only renders the bar `if (!empty($conv[''combined_weights_json'']))`,
+  and that column is exclusively written by ConversationTopicWeightRunner::run(),
+  which only ever runs as a manual batch job (admin_conversation_weights.php) -- nothing
+  computes weights at conversation-creation or per-message time.'
+- Extract ConversationTopicWeightRunner::scoreEngineA() (journalgpt/lib/ConversationTopicWeightRunner.php)
+  usage into a path that can run synchronously and cheaply after every message send
+  (wherever messages are inserted -- likely journalgpt/api/ask.php or the conversation-creation
+  handler). Engine A is pure local keyword scoring (no OpenAI call, no cost, no budget
+  check needed) -- safe to run on every turn.
+- 'On each message send: recompute engine_a_weights_json for the conversation from
+  all its messages so far, and write combined_weights_json using the SAME combine()
+  logic ConversationTopicWeightRunner uses today (Engine A alone if Engine B has never
+  run yet, otherwise Engine A + the last computed Engine B). Do NOT touch topic_weights_attempted_at
+  or engine_b_weights_json here -- those stay exclusively owned by ConversationTopicWeightRunner''s
+  batch job (T-PTG-061/023/024''s eligibility and retry-count machinery must not be
+  disturbed by this live path).'
+- A brand-new conversation must show SOME color bar in the sidebar after its first
+  message, even before any admin batch has ever run.
+definition_of_done:
+- 'New test proves: creating a conversation and sending one message (with real piano-technology
+  keywords) results in engine_a_weights_json and combined_weights_json being populated
+  immediately, with no OpenAI/Engine B call involved.'
+- Existing ConversationTopicWeightRunnerTest suite (7 tests) and the topicless/retry
+  regression tests still pass unmodified -- this task must not touch batch eligibility
+  logic (topic_weights_attempted_at, topic_weights_attempt_count).
+- The sidebar (index.php) renders a non-empty topic-color-bar for a freshly created,
+  never-batch-processed conversation after its first message, verified via the browse
+  skill against the local test-branch preview server.
+- Golden hammer suite passes with zero regressions; php -l clean.
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-18T22:40:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed from a live bug report -- Chip created a new conversation on test.newmexicoptg.org
+    and its sidebar entry had no color bar. Confirmed root cause by reading index.php's
+    render condition and ConversationTopicWeightRunner's write path. P1 because it's
+    a visible, reproducible defect on every new conversation, not just an enhancement.
+- timestamp: '2026-08-18T22:40:19.485321Z'
+  action: AUDIT
+  actor: PM-Claude-Sonnet-Session
+  details: Audited against 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
+audited_at: '2026-08-18T22:40:19.484798Z'
+audited_by: PM-Claude-Sonnet-Session
+audited_repo_sha: 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5

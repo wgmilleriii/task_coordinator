@@ -1,0 +1,59 @@
+id: T-PTG-069
+title: 'Profile page: link "My Research" article citations to their source PDFs (HigherLogic
+  issue_url)'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: AUDITED
+created_at: '2026-08-18T22:40:00-06:00'
+dependencies: []
+scope:
+- 'Chip''s ask: profile.php''s "My Research" section (e.g. "Business & Shop Practices
+  -- 10 / 67 articles cited -- click to expand and view links to articles") currently
+  shows counts with no actual links to the articles. Chip asked whether we should
+  use AWS-hosted PDF links from the recently-ingested index -- checked and corrected:
+  `article_index.issue_url` (journalgpt/migrations/018_article_index.sql, populated
+  from journalgpt/data/article_index.csv) is NOT AWS-hosted -- it''s a `my.ptg.org`
+  HigherLogic document-library download link (`DownloadDocumentFile.ashx?DocumentFileKey=...`).
+  Chip confirmed 2026-08-18: use these HigherLogic links.'
+- Wire "click to expand" in profile.php's My Research section to list the actual cited
+  articles per category (find the citation source -- likely journalgpt_citation_logs
+  per journalgpt/migrations/016_journalgpt_citation_logs.sql, or wherever "N / 67
+  articles cited" is currently counted from) with each article title linking out to
+  its `article_index.issue_url`.
+- These are `my.ptg.org` member-portal links -- they will require the member to already
+  be logged into my.ptg.org in their browser (separate session from this app); do
+  not attempt to proxy or embed the PDF, just link out target="_blank" and say so
+  in adjacent copy if it reads as unclear.
+- Not every article_index row has a non-null issue_url or a resolvable link to the
+  citation-log's article identity -- some citations may trace to `articles`/`article_topics`
+  (issue-level) rather than `article_index` (per-article) rows entirely, since these
+  are deliberately separate tables (see 018_article_index.sql's docblock). Figure
+  out which table actually backs "N / 67 articles cited" today before wiring links
+  -- do not assume it's article_index without checking.
+definition_of_done:
+- 'Test proves: expanding a "My Research" category renders one link per cited article,
+  pointed at the correct issue_url when present, and degrades gracefully (no dead
+  link, no fatal) when an article''s issue_url is null.'
+- Manual verification via the browse skill that clicking a category expands to real
+  article links.
+- Golden hammer suite passes with zero regressions; php -l clean.
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-18T22:40:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed from the same profile-page design conversation as T-PTG-068. Corrected
+    a factual premise in Chip's request (issue_url is HigherLogic, not AWS S3) before
+    scoping -- confirmed with Chip, who chose to proceed with the HigherLogic links
+    as-is.
+- timestamp: '2026-08-18T22:40:20.808530Z'
+  action: AUDIT
+  actor: PM-Claude-Sonnet-Session
+  details: Audited against 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
+audited_at: '2026-08-18T22:40:20.808352Z'
+audited_by: PM-Claude-Sonnet-Session
+audited_repo_sha: 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5

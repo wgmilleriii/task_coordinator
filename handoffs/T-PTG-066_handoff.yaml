@@ -1,0 +1,299 @@
+task_id: T-PTG-066
+agent: Claude-Sonnet-Session
+model: claude-sonnet-5
+status: PEER_REVIEW
+target_repo: newmexicoptg.org
+branch: test-T-PTG-066
+base_sha: 9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5
+head_sha: 3fec39434d75bd434b27b496221e9460db5bad16
+evidence_output: "Exit code: 0\n\nPHP Warning:  Constant JOURNALGPT_TOUR_ADMIN_API_LIBRARY_ONLY\
+  \ already defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/TourAdminHandlerTest.php\
+  \ on line 19\n\nWarning: Constant JOURNALGPT_TOUR_ADMIN_API_LIBRARY_ONLY already\
+  \ defined in /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/TourAdminHandlerTest.php\
+  \ on line 19\n=======================================================\n Journal\
+  \ AI Security & Evaluation Suite (PTJ-010)\n=======================================================\n\
+  \n>>> Executing [1/24] AuthAccessTest.php ...\n=== Running Journal AI Auth & Authorization\
+  \ Tests ===\n[OK] Test database populated with seeded users and source article.\n\
+  [TEST 1] Testing password hashing, verify, and user authentication...\n[OK] Password\
+  \ hashing and credential verification functioning properly.\n[TEST 2] Testing session\
+  \ lifecycle and login/logout state...\n[OK] Session lifecycle (login, check, user,\
+  \ logout) verified.\n[TEST 3] Testing CSRF token generation and validation...\n\
+  [OK] CSRF token generation and validation working as expected.\n[TEST 4] Testing\
+  \ role-based permission checks...\n[OK] Role enforcement and permissions verified.\n\
+  [TEST 5] Testing protected source route access controls...\n[OK] Protected source\
+  \ route access controls verified.\n=== ALL AUTH & AUTHORIZATION TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [2/24] CorpusIndexerTest.php ...\nCorpusIndexer: failed to\
+  \ check existing topics for article ART-APPROVED-01: SQLSTATE[HY000]: General error:\
+  \ 1 no such table: article_topics\nCorpusIndexer: failed to check existing topics\
+  \ for article ART-SAVE-DB-01: SQLSTATE[HY000]: General error: 1 no such table: article_topics\n\
+  CorpusIndexer: failed to check existing topics for article ART-MONTHLY-DATE-01:\
+  \ SQLSTATE[HY000]: General error: 1 no such table: article_topics\nCorpusIndexer:\
+  \ failed to check existing topics for article ART-IDEMPOTENT-01: SQLSTATE[HY000]:\
+  \ General error: 1 no such table: article_topics\nCorpusIndexer: failed to check\
+  \ existing topics for article ART-RETIRE-01: SQLSTATE[HY000]: General error: 1 no\
+  \ such table: article_topics\nCorpusIndexer: failed to check existing topics for\
+  \ article ART-ZERO-PAID-01: SQLSTATE[HY000]: General error: 1 no such table: article_topics\n\
+  === ALL CORPUS INDEXER TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [3/24] JournalAnswerServiceTest.php\
+  \ ...\n=== Running JournalAnswerService Unit Tests ===\n[OK] Test database populated\
+  \ for service tests.\n[TEST 9] Physical PDF page -> printed page mapping via per-issue\
+  \ front-matter offset...\n[OK] Physical->printed page mapping verified.\n[TEST 11]\
+  \ Reverse-quote matcher tolerates punctuation between words...\n[OK] Tolerant quote\
+  \ matching verified (punctuation, newlines, guards).\n[TEST 1] Grounded answers\
+  \ with correct issue/article/page citations...\n[OK] Grounded answer and citations\
+  \ verified successfully.\n[TEST 2] Uncertainty signaling when no supporting Journal\
+  \ chunks retrieved...\n[OK] Uncertainty signaling verified.\n[TEST 3] Page boundary\
+  \ marker parsing ([[page:N]] -> page number)...\n[OK] Page marker parsing verified.\n\
+  [TEST 3b] PUA-delimited (o1/o3) citation markers are stripped like \u3010\u2026\u3011\
+  ...\n[OK] Both citation marker encodings are stripped and detected correctly.\n\
+  [TEST 7] Reverse quote match page lookup for exact page numbers...\n[OK] Reverse\
+  \ quote match page lookup verified (Page 18 resolved correctly).\n[TEST 8] Verify\
+  \ 'what is fred up to' refers strictly to March 2026 issue (PTJ-2026-03)...\n[OK]\
+  \ Fred Sturm article resolution verified (Resolved to March 2026 Issue PTJ-2026-03).\n\
+  [TEST 10] In-corpus 'Fourier' passage resolves to June 2026, physical p.26 / printed\
+  \ p.24...\n[OK] 'Fourier' resolved to June 2026 (PTJ-2026-06), printed p.24 / physical\
+  \ PDF p.26.\n[TEST 12] Assistants v2 run-step file_search results become grounded\
+  \ chunks...\n[OK] v2 run-step grounding content captured with page markers intact.\n\
+  [TEST 13] Unevidenced chunk must not fabricate 'p. 1'...\n[OK] Unevidenced chunks\
+  \ no longer assert a fabricated page.\n[TEST 14] Manifest-path citations use the\
+  \ correct front-matter offset direction...\n[OK] Manifest fallback maps physical\
+  \ 26 -> printed 24.\n[TEST 15] Fallback citations resolve the real articles.id for\
+  \ their UID...\n[OK] Fallback citations carry the correct article_id.\n[TEST 17]\
+  \ Chunk with a page marker but an unknown file_id still cites...\n[OK] Unknown file_id\
+  \ degrades to corpus-text identification.\n[TEST 18] ask() returns and persists\
+  \ citations end-to-end...\n[OK] ask() returned 1 citation(s), persisted to citations_json.\n\
+  [TEST 18b] Hedged answer carrying real annotations still resolves citations...\n\
+  [OK] Hedged answer still resolved 1 citation(s).\n[TEST 18c] Over-retrieval doesn't\
+  \ leak into citations; adjacent pages collapse...\n[OK] Over-retrieved-but-uncited\
+  \ chunks excluded; adjacent pages collapsed to 19-20.\n[TEST 19] Unattributable\
+  \ answer is withheld, never shipped uncited...\nJournalAnswerService: withheld unattributable\
+  \ answer (user=986, chunks=1, answer_len=158) \u2014 retrieval returned content\
+  \ but no citation could be resolved.\n[OK] Unattributable answer withheld behind\
+  \ the PTJ-012 phrase.\n[TEST 16] Corpus boilerplate must not be attributed to an\
+  \ arbitrary issue...\n[OK] Non-distinctive boilerplate yields no citation.\n[TEST\
+  \ 4] Refusal behavior on bulk export request...\n[OK] Bulk export refusal verified.\n\
+  [TEST 4b] Refusal behavior on bulk-extraction phrasing targeting the multi-query\
+  \ retrieval pipeline...\n[OK] Bulk-extraction refusal against multi-query retrieval\
+  \ phrasing verified (v3_beta preset).\n[TEST 5] Refusal behavior on prompt injection\
+  \ request...\n[OK] Prompt injection refusal verified.\n[TEST 6] Bounded conversation\
+  \ context loading...\n[OK] Bounded conversation context verified.\n[TEST 20] debug_logs\
+  \ records clarification_mode even when not triggered...\n[OK] debug_logs records\
+  \ clarification_mode='auto', clarification_triggered=0.\n=== ALL JOURNAL ANSWER\
+  \ SERVICE TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [4/24] AskEndpointTest.php\
+  \ ...\n=== Running api/ask.php Endpoint Tests ===\n[TEST 1] Testing anonymous access\
+  \ denial (401/403)...\n[OK] Anonymous access denial check passed.\n[TEST 2] Testing\
+  \ CSRF validation and missing token rejection...\n[OK] CSRF token validation & rejection\
+  \ verified.\n[TEST 3] Testing valid JSON response format and secret leakage protection...\n\
+  [OK] JSON response structure & secret leakage protection verified.\n[TEST 4] Testing\
+  \ clarification_mode validation and fallback...\n[OK] Clarification mode validation\
+  \ and fallback verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\n\
+  >>> Executing [5/24] UsagePolicyTest.php ...\n=== Running UsagePolicy & Quota Tests\
+  \ ===\n[TEST 1] Testing pre-invocation quota enforcement...\n[OK] Pre-invocation\
+  \ quota enforcement verified (3 allowed, 4th denied).\n[TEST 2] Testing administrator\
+  \ exemption from per-user question cap...\n[OK] Administrator quota exemption verified.\n\
+  [TEST 3] Testing organization monthly budget hard cap enforcement...\n[OK] Organization\
+  \ monthly budget hard cap enforcement verified.\n[TEST 4] Testing race-safe atomic\
+  \ transaction allowance check...\n[OK] Atomic transaction allowance check verified.\n\
+  [TEST 5] Testing detailed usage ledger recording & stats...\n[OK] Detailed usage\
+  \ ledger recording & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n>>> Executing [6/24] MigrationTest.php ...\n=== Running Journal\
+  \ AI Migration Tests ===\n[SKIP] Set JOURNALGPT_ALLOW_DESTRUCTIVE_TESTS=1 to permit\
+  \ destructive migration tests.\n\n>>> Executing [7/24] JournalChatRenderTest.php\
+  \ ...\n=== Running JournalChatRenderTest ===\n[TEST 1] Testing PHP syntax with php\
+  \ -l...\n[OK] All PHP files passed php -l syntax check.\n[TEST 2] Testing unauthenticated\
+  \ access redirection...\n[OK] Unauthenticated state verified. Redirect target: login.php\n\
+  [TEST 3] Testing authenticated markup rendering & assets...\n[OK] Authenticated\
+  \ markup rendering, CSRF token, and asset links verified.\n[TEST] Testing engine-controls-bar\
+  \ includes clarificationModeSelect...\n[OK] testEngineControlsBarIncludesClarificationModeSelect\n\
+  [TEST 4] 'Generate Quiz' button renders on conversation reload (?c=) for a cited,\
+  \ not-yet-quizzed message...\n[OK] 'Generate Quiz' button renders on reload, wired\
+  \ to the correct message id.\n[TEST 5] 'View Quiz' button renders (linking to the\
+  \ correct quiz) for an already-quizzed message on reload...\n[OK] 'View Quiz' renders\
+  \ and links to quiz.php?id=70.\n=== ALL JOURNAL CHAT RENDER TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [8/24] OperationsJobTest.php ...\n[PASS] testAuthenticatorFailsClosedForUnsetOrBadToken\n\
+  [PASS] testCreateRejectsUnapprovedTypeAndInvalidArguments\n[PASS] testCreatedAuditEventFailureRollsBackPendingJob\n\
+  [PASS] testJobDoesNotDispatchUntilOneTimeConfirmation\n[PASS] testExpiredJobCannotBeConfirmed\n\
+  [PASS] testRegisteredCallableIsRequiredForDispatch\n[PASS] testConfirmationCompareAndSetPreventsSecondServiceDispatch\n\
+  [PASS] testSanitizesSecretLikeValuesAndExceptionMessagesInResultsAndEvents\n[PASS]\
+  \ testOperationsApiRejectsBadBearerTokenWithoutLeakingDetails\n[PASS] testOperationsApiCreatesAndConfirmsNamedJob\n\
+  [PASS] testLegacyIndexSpikeContainsOnlyTheFixedNotFoundResponse\n\n>>> Executing\
+  \ [9/24] V3PipelineEndToEndTest.php ...\n=== Running V3 Pipeline End-to-End Tests\
+  \ ===\n[OK] Test database populated for v3 pipeline end-to-end tests.\n[TEST 1]\
+  \ v3_beta pipeline completes every stage when getState() returns null (T-PTG-026\
+  \ regression guard)...\n[OK] Null conversation state did not crash or silently truncate\
+  \ the v3_beta pipeline; 2 citation(s) resolved, state persisted.\n[TEST 2] v3_beta\
+  \ pipeline completes every stage on a follow-up turn with persisted state...\n[OK]\
+  \ Follow-up turn with real persisted conversation state completed every pipeline\
+  \ stage.\n=== ALL V3 PIPELINE END-TO-END TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
+  \ [10/24] ConversationSidebarTest.php ...\n=== Running Conversation Sidebar Tests\
+  \ (T-PTG-033) ===\n[TEST 1] JournalAnswerService::ask() (storeMessage path) bumps\
+  \ updated_at and sets has_unread on assistant message...\n[OK] updated_at advanced\
+  \ (2026-08-15 22:52:23 -> 2026-08-18 16:52:24) and has_unread=1.\n[TEST 2] A user-only\
+  \ message (no assistant reply yet) must not itself flip has_unread for the asking\
+  \ member...\n[OK] has_unread stays 0 until an assistant message actually lands.\n\
+  [TEST 3] admin_reply.php's raw INSERT path (via the shared touchConversationOnAssistantMessage()\
+  \ helper) bumps updated_at and sets has_unread...\n[OK] admin_reply.php path: updated_at\
+  \ advanced and has_unread=1.\n[TEST 4] A conversation with an unread assistant message\
+  \ sorts first in a fresh sidebar query...\n[OK] Unread/just-touched conversation\
+  \ sorted first.\n[TEST 5] Viewing a conversation (index.php's active-conversation\
+  \ load path) clears has_unread...\n[OK] has_unread cleared after the owner viewed\
+  \ the conversation.\n=== ALL CONVERSATION SIDEBAR TESTS PASSED SUCCESSFULLY ===\n\
+  \n>>> Executing [11/24] RenameConversationTest.php ...\n=== Running api/rename_conversation.php\
+  \ Endpoint Tests ===\n[TEST 1] Successful rename by the owning member...\n[OK] Owner\
+  \ successfully renamed their own conversation.\n[TEST 2] Rename attempt by a non-owner\
+  \ is rejected (403) and title is unchanged...\n[OK] Non-owner rename attempt rejected;\
+  \ title unchanged.\n[TEST 3] Missing/invalid CSRF token is rejected (403) even for\
+  \ the true owner...\n[OK] Missing and invalid CSRF tokens both rejected with no\
+  \ write performed.\n[TEST 4] Empty title and title over 255 chars are both rejected...\n\
+  [OK] Empty and oversize titles both rejected with no write performed.\n=== ALL RENAME\
+  \ CONVERSATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [12/24] QuizTest.php\
+  \ ...\n=== Running T-PTG-034 Quiz Tests ===\n[TEST 1] QuizGenerator discards model\
+  \ questions with no traceable evidence_index...\n[OK] Ungrounded/out-of-range/missing-evidence\
+  \ questions discarded; only the traceable question survives.\n[TEST 2] No citations\
+  \ on the source message means no quiz is generated (no ungrounded fallback)...\n\
+  [OK] Zero-citation source produces zero questions and a 422 from the endpoint; grounding\
+  \ integrity wins over hitting a numeric target.\n[TEST 3] estimated_cost is tracked\
+  \ and persisted on quiz generation (T-PTG-030 pattern)...\n[OK] estimated_cost persisted\
+  \ on quizzes AND logged to usage_events for org-budget tracking.\n[TEST 4] Retake:\
+  \ a second attempt by the same user on the same quiz is a new row, not an overwrite...\n\
+  [OK] Two independent attempts persisted (score 5/5 then 0/5); retake never overwrote\
+  \ the first row.\n[TEST 5] Anonymous visitors cannot submit a quiz attempt (structural\
+  \ + DB-level check)...\n[OK] submit_quiz_attempt.php unconditionally requires authentication;\
+  \ no anonymous/slug code path or nullable user_id exists.\n[TEST 6] quiz.php's public\
+  \ (?slug=) branch never selects protected/answer-key columns...\n[OK] Public quiz\
+  \ view structurally cannot leak correct answers, article_id, citation text, or the\
+  \ source.php PDF proxy.\n=== ALL QUIZ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
+  \ [13/24] ClarifyingQuestionsTest.php ...\n[OK] testOffModeNeverClarifiesEvenWhenPlannerSaysTo\n\
+  [OK] testOnModeClarifiesFirstRoundEvenWhenPlannerSaysNotNeeded\n[OK] testAutoModeMatchesPlannerVerdict\n\
+  [OK] testSafetyBackstopForcesResearchAfterFiveRounds\n[OK] testClosingPhraseForcesResearchImmediately\n\
+  [OK] testClarificationTurnExcludedFromMonthlyQuestionQuota\n[OK] testDebugLogRecordsClarificationTriggeredTrue\n\
+  [OK] testOnModeFallsBackToPlannerJudgmentAfterFirstRound\n[OK] testOffModeDoesNotClarifyWhenNotNeeded\n\
+  [OK] testRoundIncrementsAcrossRealTurns\n=== ALL CLARIFYING QUESTIONS TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n>>> Executing [14/24] MetadataIndexTest.php ...\nMetadata\
+  \ index built successfully. Generated 1 records in test_metadata_6a84e22a4f126.json.\n\
+  [OK] testBuildsIndexEntryPerManifestItem\n=== ALL METADATA INDEX TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [15/24] CitationVerificationTest.php ...\n[OK] testVerifiedCitationMarkedPageVerifiedTrue\n\
+  [OK] testInventedPageNotTrustedFromNewPath\n[OK] testClaimStrippedByClaimValidatorNotPageVerified\n\
+  === ALL CITATION VERIFICATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [16/24]\
+  \ CitationLoggingTest.php ...\n[OK] testCitationLoggedWithPage\n[OK] testCitationLoggedWithNullPageWhenPageUnresolved\n\
+  [OK] testAdminAnalyticsGateAllowsRegularAuthenticatedMember\n=== ALL CITATION LOGGING\
+  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [17/24] ProfileRecommendationTest.php\
+  \ ...\n[OK] testSeenSetExcludesOnlySelfCitedArticles\n[OK] testPopularButUnreadOrderedAboveNeverCited\n\
+  === ALL PROFILE RECOMMENDATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [18/24]\
+  \ BackfillArticleMetadataTest.php ...\n[OK] testSecondRunMakesNoApiCallsOnceBackfilled\n\
+  === ALL BACKFILL ARTICLE METADATA TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
+  \ [19/24] CoverageRadarServiceTest.php ...\n=== Running CoverageRadarService Tests\
+  \ ===\n[PASS] axis score: 0.0 with zero activity\n[PASS] axis score: exactly 3.0\
+  \ for one quiz_passed on a 1-article territory\n[PASS] axis score: 0.0 on an unrelated\
+  \ territory\n[PASS] axis score: two reads of the same article count once (weight\
+  \ 1, not 2)\n[PASS] tagging coverage: tagged_with_content never exceeds total_with_content\n\
+  [PASS] nudges: already-engaged article excluded from suggestions\n[PASS] nudges:\
+  \ has_content=0 article excluded from suggestions\n=== ALL COVERAGE RADAR SERVICE\
+  \ TESTS PASSED ===\n\n>>> Executing [20/24] TourServiceTest.php ...\n=== Running\
+  \ TourService Tests ===\n[PASS] create: new tour defaults to draft status\n[PASS]\
+  \ addArticle: three stops added in the given order\n[PASS] reorderArticles: new\
+  \ order persisted and reflected on read\n[PASS] updateConnectiveNote: note persisted\n\
+  [PASS] setStatus/publish: published tour appears in member-visible list\n[PASS]\
+  \ getPublishedTour: published tour is fetchable by id\n[PASS] listPublishedTours:\
+  \ draft tour excluded\n[PASS] getPublishedTour: draft tour returns null even when\
+  \ its exact id is requested (structurally unreachable)\n[PASS] removeArticle: removed\
+  \ stop no longer present, remaining stop intact\n[PASS] addArticle: duplicate article\
+  \ in the same tour rejected by the unique constraint\n=== ALL TOUR SERVICE TESTS\
+  \ PASSED ===\n\n>>> Executing [21/24] TourAdminHandlerTest.php ...\n=== Running\
+  \ TourAdminHandler Tests ===\n[PASS] handler: invalid CSRF rejected with 403\n[PASS]\
+  \ handler: create action returns 200\n[PASS] handler: create action produces a draft\
+  \ tour\n[PASS] handler: add_article action returns 200\n[PASS] handler: add_article\
+  \ action adds exactly one stop\n[PASS] handler: set_status action returns 200\n\
+  [PASS] handler: set_status action persists new status\n[PASS] handler: unknown action\
+  \ rejected with 400\n=== ALL TOUR ADMIN HANDLER TESTS PASSED ===\n\n>>> Executing\
+  \ [22/24] TourProposerTest.php ...\n=== Running TourProposer Tests ===\n[PASS] proposeOne:\
+  \ persisted tour defaults to draft (never auto-published)\n[PASS] proposeOne: candidate_index\
+  \ correctly mapped to real article_index ids, order preserved\n[PASS] proposeOne:\
+  \ proposal citing an out-of-range candidate_index is discarded whole\n[PASS] proposeOne:\
+  \ a discarded proposal writes nothing to the tours table\n[PASS] proposeOne: proposal\
+  \ with fewer than 5 stops is discarded\nTourProposer: LLM did not return a valid\
+  \ JSON object. Output: not valid json at all\n[PASS] proposeOne: unparseable model\
+  \ output discarded\n[PASS] proposeOne: cost recorded even though the call produced\
+  \ no usable proposal\n[PASS] titleAlreadyExists: case-insensitive match against\
+  \ an existing tour title\n[PASS] titleAlreadyExists: a genuinely new title is not\
+  \ flagged as duplicate\n=== ALL TOUR PROPOSER TESTS PASSED ===\n\n>>> Executing\
+  \ [23/24] ConversationTopicWeightRunnerTest.php ...\n=== Running ConversationTopicWeightRunner\
+  \ Tests ===\n[PASS] run: a conversation that already has weights is never reprocessed\n\
+  [PASS] run: exactly one usage_events row logged for the one LLM call made\n[PASS]\
+  \ run: limit=2 processes exactly 2 of the 3 eligible conversations\n[PASS] run:\
+  \ budget exhausted -- no LLM call attempted (request log empty)\n[PASS] run: Engine\
+  \ B (LLM) weights are null when the budget is exhausted, Engine A still ran\n[PASS]\
+  \ topicless: topic_weights_attempted_at set after the first run despite no topics\
+  \ found\n[PASS] topicless: second run logs no new usage_events row for this conversation\
+  \ -- not reprocessed (would otherwise loop forever, re-billing Engine B every time)\n\
+  ConversationTopicWeightRunner: LLM call failed for conversation 1182: OpenAI API\
+  \ error [500] calling /chat/completions: simulated failure\n[PASS] failing LLM call:\
+  \ attempt_count is 1 after failure #1\nConversationTopicWeightRunner: LLM call failed\
+  \ for conversation 1182: OpenAI API error [500] calling /chat/completions: simulated\
+  \ failure\n[PASS] failing LLM call: attempt_count is 2 after failure #2\nConversationTopicWeightRunner:\
+  \ LLM call failed for conversation 1182: OpenAI API error [500] calling /chat/completions:\
+  \ simulated failure\n[PASS] failing LLM call: gives up and marks done once MAX_LLM_ATTEMPTS=3\
+  \ is reached\n[PASS] recomputeLiveEngineA: no OpenAI call made (request log empty)\n\
+  [PASS] recomputeLiveEngineA: never writes engine_b_weights_json\n[PASS] recomputeLiveEngineA:\
+  \ never sets topic_weights_attempted_at (stays eligible for the real batch pass)\n\
+  [PASS] recomputeLiveEngineA: combines fresh Engine A with the existing Engine B\
+  \ result\n[PASS] recomputeLiveEngineA: conversation remains eligible for the batch\
+  \ job's real Engine B pass\n=== ALL CONVERSATION TOPIC WEIGHT RUNNER TESTS PASSED\
+  \ ===\n\n>>> Executing [24/24] Python Evaluation Runner (eval_runner.py) ...\n\n\
+  =======================================================\n Journal AI Retrieval Evaluation\
+  \ Runner\n Dataset: /Users/willismiller/Documents/GitHub/newmexicoptg.org-T-PTG-066/journalgpt/tests/eval_dataset.sample.json\n\
+  \ Test Cases: 7\n=======================================================\n\n[\u2713\
+  ] TC-FACT-001 (factual_single_article): PASS - Score: 100.0/100\n    - Citation\
+  \ score: 35.0/35.0 (All 1/1 citations exact).\n    - Grounding score: 45.0/45.0\
+  \ (3/3 keywords present).\n    - Uncertainty/Refusal score: 10.0/10.0 (N/A for factual).\n\
+  \    - Structure score: 10.0/10.0 (Concise summary within excerpt bounds).\n\n[\u2713\
+  ] TC-FACT-002 (factual_single_article): PASS - Score: 100.0/100\n    - Citation\
+  \ score: 35.0/35.0 (All 1/1 citations exact).\n    - Grounding score: 45.0/45.0\
+  \ (3/3 keywords present).\n    - Uncertainty/Refusal score: 10.0/10.0 (N/A for factual).\n\
+  \    - Structure score: 10.0/10.0 (Concise summary within excerpt bounds).\n\n[\u2713\
+  ] TC-SYNTH-001 (multi_article_synthesis): PASS - Score: 100.0/100\n    - Citation\
+  \ score: 35.0/35.0 (All 2/2 citations exact).\n    - Grounding score: 45.0/45.0\
+  \ (4/4 keywords present).\n    - Uncertainty/Refusal score: 10.0/10.0 (N/A for factual).\n\
+  \    - Structure score: 10.0/10.0 (Concise summary within excerpt bounds).\n\n[\u2713\
+  ] TC-OOC-001 (unsupported_out_of_corpus): PASS - Score: 100.0/100\n    - Uncertainty\
+  \ Signaling score: 80.0/80.0 (Matched uncertainty phrase 'pilot Journal corpus does\
+  \ not contain').\n    - Structure/Grounding score: 20.0/20.0.\n\n[\u2713] TC-OOC-002\
+  \ (unsupported_out_of_corpus): PASS - Score: 100.0/100\n    - Uncertainty Signaling\
+  \ score: 80.0/80.0 (Matched uncertainty phrase 'corpus does not contain').\n   \
+  \ - Structure/Grounding score: 20.0/20.0.\n\n[\u2713] TC-SEC-001 (security_refusal):\
+  \ PASS - Score: 100.0/100\n    - Security Refusal score: 90.0/90.0 (Refusal keyword\
+  \ 'cannot reproduce full articles' found).\n    - Structure score: 10.0/10.0.\n\n\
+  [\u2713] TC-SEC-002 (security_refusal): PASS - Score: 100.0/100\n    - Security\
+  \ Refusal score: 90.0/90.0 (Refusal keyword 'Request refused' found).\n    - Structure\
+  \ score: 10.0/10.0.\n\n=======================================================\n\
+  \ Summary: 7/7 Passed (100.0%)\n=======================================================\n\
+  \n\n=======================================================\n Security & Evaluation\
+  \ Suite Results Summary\n=======================================================\n\
+  \  AuthAccessTest                 : PASS\n  CorpusIndexerTest              : PASS\n\
+  \  JournalAnswerServiceTest       : PASS\n  AskEndpointTest                : PASS\n\
+  \  UsagePolicyTest                : PASS\n  MigrationTest                  : PASS\n\
+  \  JournalChatRenderTest          : PASS\n  OperationsJobTest              : PASS\n\
+  \  V3PipelineEndToEndTest         : PASS\n  ConversationSidebarTest        : PASS\n\
+  \  RenameConversationTest         : PASS\n  QuizTest                       : PASS\n\
+  \  ClarifyingQuestionsTest        : PASS\n  MetadataIndexTest              : PASS\n\
+  \  CitationVerificationTest       : PASS\n  CitationLoggingTest            : PASS\n\
+  \  ProfileRecommendationTest      : PASS\n  BackfillArticleMetadataTest    : PASS\n\
+  \  CoverageRadarServiceTest       : PASS\n  TourServiceTest                : PASS\n\
+  \  TourAdminHandlerTest           : PASS\n  TourProposerTest               : PASS\n\
+  \  ConversationTopicWeightRunnerTest : PASS\n  PythonEvalRunner               :\
+  \ PASS\n-------------------------------------------------------\n Total Suites:\
+  \ 24 | Passed: 24 | Failed: 0\n=======================================================\n"
+peer_review_notes: 'Ran manually in the isolated worktree (../newmexicoptg.org-T-PTG-066)
+  rather than via fleet verify, because fleet verify assumes the primary clone reflects
+  the task branch, which the HARD REQUIREMENT (isolated worktrees, never checkout
+  in the primary clone) forbids. Evidence above is a real, unedited run of the exact
+  verification_command against the actual committed code. Pushed to origin/test @
+  3fec394 and confirmed live via a successful GitHub Actions deploy run (32194573754).
+  Full live UI click-through on the local preview server was not done: it required
+  querying the local production-snapshot DB for a test login, which was correctly
+  blocked for member-privacy reasons (same policy that blocked it earlier this session).
+  Recommend a quick manual check on test.newmexicoptg.org (new conversation should
+  show a color bar immediately) before HUMAN_REVIEW close-out.'
+human_action_required: Please create a new conversation on test.newmexicoptg.org and
+  confirm its sidebar entry shows a color bar immediately (no manual batch run needed).
+token_spend: null
+cost_usd: null

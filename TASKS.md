@@ -18,10 +18,13 @@ graph TD
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]:::review
     T-PTG-052 --> T-PTG-053
+    T-PTG-069["T-PTG-069<br/>Profile page: link 'My Research' article citations to their source PDFs (HigherLogic issue_url)"]
     T-PTG-065["T-PTG-065<br/>Webhook Sync for Localhost Conversations"]:::review
     T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
     T-PTG-047 --> T-PTG-048
+    T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]
+    T-PTG-066 --> T-PTG-068
     T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
     T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
@@ -42,13 +45,16 @@ graph TD
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
-    T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::active
+    T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
+    T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]
+    T-PTG-066 --> T-PTG-067
+    T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::review
 ```
 
 ---
@@ -321,8 +327,85 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
-### 🛠 T-PTG-056 · P2 · ANY · CLAIMED
+### ⏳ T-PTG-066 · P1 · ANY · PEER_REVIEW
+**Compute Engine A topic weights live on message send (fix colorless new conversations)**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Bug found live: a brand-new conversation shows no topic-color-bar at all in the sidebar until someone manually runs a full admin_conversation_weights.php batch. Root cause confirmed: index.php:237 only renders the bar `if (!empty($conv['combined_weights_json']))`, and that column is exclusively written by ConversationTopicWeightRunner::run(), which only ever runs as a manual batch job (admin_conversation_weights.php) -- nothing computes weights at conversation-creation or per-message time.
+- Extract ConversationTopicWeightRunner::scoreEngineA() (journalgpt/lib/ConversationTopicWeightRunner.php) usage into a path that can run synchronously and cheaply after every message send (wherever messages are inserted -- likely journalgpt/api/ask.php or the conversation-creation handler). Engine A is pure local keyword scoring (no OpenAI call, no cost, no budget check needed) -- safe to run on every turn.
+- On each message send: recompute engine_a_weights_json for the conversation from all its messages so far, and write combined_weights_json using the SAME combine() logic ConversationTopicWeightRunner uses today (Engine A alone if Engine B has never run yet, otherwise Engine A + the last computed Engine B). Do NOT touch topic_weights_attempted_at or engine_b_weights_json here -- those stay exclusively owned by ConversationTopicWeightRunner's batch job (T-PTG-061/023/024's eligibility and retry-count machinery must not be disturbed by this live path).
+- A brand-new conversation must show SOME color bar in the sidebar after its first message, even before any admin batch has ever run.
+
+**Definition of Done:**
+- New test proves: creating a conversation and sending one message (with real piano-technology keywords) results in engine_a_weights_json and combined_weights_json being populated immediately, with no OpenAI/Engine B call involved.
+- Existing ConversationTopicWeightRunnerTest suite (7 tests) and the topicless/retry regression tests still pass unmodified -- this task must not touch batch eligibility logic (topic_weights_attempted_at, topic_weights_attempt_count).
+- The sidebar (index.php) renders a non-empty topic-color-bar for a freshly created, never-batch-processed conversation after its first message, verified via the browse skill against the local test-branch preview server.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-069 · P2 · ANY · AUDITED
+**Profile page: link "My Research" article citations to their source PDFs (HigherLogic issue_url)**
+**Owner:** None
+
+**Scope:**
+- Chip's ask: profile.php's "My Research" section (e.g. "Business & Shop Practices -- 10 / 67 articles cited -- click to expand and view links to articles") currently shows counts with no actual links to the articles. Chip asked whether we should use AWS-hosted PDF links from the recently-ingested index -- checked and corrected: `article_index.issue_url` (journalgpt/migrations/018_article_index.sql, populated from journalgpt/data/article_index.csv) is NOT AWS-hosted -- it's a `my.ptg.org` HigherLogic document-library download link (`DownloadDocumentFile.ashx?DocumentFileKey=...`). Chip confirmed 2026-08-18: use these HigherLogic links.
+- Wire "click to expand" in profile.php's My Research section to list the actual cited articles per category (find the citation source -- likely journalgpt_citation_logs per journalgpt/migrations/016_journalgpt_citation_logs.sql, or wherever "N / 67 articles cited" is currently counted from) with each article title linking out to its `article_index.issue_url`.
+- These are `my.ptg.org` member-portal links -- they will require the member to already be logged into my.ptg.org in their browser (separate session from this app); do not attempt to proxy or embed the PDF, just link out target="_blank" and say so in adjacent copy if it reads as unclear.
+- Not every article_index row has a non-null issue_url or a resolvable link to the citation-log's article identity -- some citations may trace to `articles`/`article_topics` (issue-level) rather than `article_index` (per-article) rows entirely, since these are deliberately separate tables (see 018_article_index.sql's docblock). Figure out which table actually backs "N / 67 articles cited" today before wiring links -- do not assume it's article_index without checking.
+
+**Definition of Done:**
+- Test proves: expanding a "My Research" category renders one link per cited article, pointed at the correct issue_url when present, and degrades gracefully (no dead link, no fatal) when an article's issue_url is null.
+- Manual verification via the browse skill that clicking a category expands to real article links.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-068 · P2 · ANY · AUDITED
+**Profile page: link to conversations, grouped by dominant topic**
+**Owner:** None
+
+**Scope:**
+- Chip's ask: "we'll need a link from my profile to various conversations (how would you make this useful?)". Plain reasoning: profile.php already aggregates combined_weights_json across a member's conversations into the coverage bar (see its "Aggregate topic color bar" comment block) but never links back to the individual conversations that fed it. The useful version groups conversations by DOMINANT topic (the highest-weight entry in each conversation's combined_weights_json) using the SAME 15-color palette as the sidebar/homepage grid, turning the profile page into topic-based navigation rather than a dead-end stat.
+- Add a section to profile.php: for each of the 15 topics the member has any coverage in, a collapsible group titled with the topic (colored swatch matching $topicColors) listing that topic's conversations (title, updated_at, link to index.php?conversation=ID or however conversations are opened today -- check index.php's existing conversation-open URL/JS pattern rather than inventing a new one). A conversation with multiple significant topic weights may need to decide whether it appears under just its top topic or every topic above some threshold (e.g. >= 15%) -- pick one, document the reasoning in a code comment.
+- Depends on T-PTG-066 because grouping is only useful once new conversations actually get combined_weights_json promptly instead of sitting colorless/ungrouped until the next manual batch.
+- Empty/sparse states matter: a member with zero weighted conversations, or a topic with zero conversations, must render sensibly (no empty accordion headers with nothing useful under them) -- this page already has a coverage note for partial-data honesty, follow that same pattern.
+
+**Definition of Done:**
+- Test proves conversations are correctly grouped by dominant topic from combined_weights_json fixtures, including the multi-topic-threshold decision documented above.
+- Manual verification via the browse skill: profile.php renders topic groups with working links that open the correct conversation in index.php.
+- No N+1 query blowup -- one query (or a small fixed number) fetches all of a member''s conversations with weights, not one query per topic.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-067 · P2 · ANY · AUDITED
+**Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues**
+**Owner:** None
+
+**Scope:**
+- Chip's ask: "I want bars to evolve and change in color as the conversation continues." T-PTG-066 makes the bar appear instantly (Engine A only, free). This task adds the real LLM-scored half (Engine B) back in on a live cadence instead of only via the manual admin batch, so the bar's shape actually sharpens/shifts as more is discussed -- without calling OpenAI on every single message (cost + latency).
+- Cooldown policy: recompute Engine B (ConversationTopicWeightRunner::scoreEngineB()) for a conversation when BOTH (a) at least N messages (suggest N=4, confirm with Chip or pick a sensible default and document the reasoning) have been added since the last Engine B computation, AND (b) the org monthly budget check (UsagePolicy) passes -- reuse the existing budget-skip behavior from ConversationTopicWeightRunner rather than duplicating it.
+- This is a SEPARATE trigger path from the T-PTG-066 live Engine A write and from the existing batch job -- do not let all three race and double-log usage_events for the same conversation. Reuse scoreEngineB()'s existing usage_events logging (one row per real LLM call, T-PTG-030 convention) as the single source of truth; this task must not introduce a second logging path.
+- The manual admin batch (admin_conversation_weights.php / topic_weights_attempted_at eligibility) keeps working as the backstop for conversations that go quiet before hitting the live cooldown threshold -- this task does not replace it, it just makes most conversations settle live instead of waiting for a manual batch click.
+
+**Definition of Done:**
+- Test proves: a conversation that accumulates >= N messages triggers exactly one live Engine B call and updates combined_weights_json; a conversation with fewer than N new messages since its last Engine B pass triggers zero live calls.
+- Test proves the live path and the batch path never double-bill: a conversation whose live cooldown already ran Engine B is not re-billed by the next admin batch run for the same content (extend the existing topic_weights_attempted_at semantics rather than inventing a parallel state).
+- Budget-exhausted behavior matches the batch job exactly (Engine A/live-partial result kept, Engine B silently skipped, no error surfaced to the member).
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 🛑 T-PTG-056 · P2 · ANY · BLOCKED
 **Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration**
+> 🛑 **BLOCKED REASON:** Interrupted mid-implementation by an unrelated homepage redesign task in the same session. Uncommitted work (TourQuizService.php, generate_tour_quiz.php, 3 tests -- one referencing TourProgressService which was never written) stashed on branch test-T-PTG-056 in worktree ../newmexicoptg.org-tourpages (git stash list). Blocking to release the repo lock for P1 work (T-PTG-066); resume by popping the stash and continuing from TourProgressService.
+
 **Owner:** Claude-Fable-Session
 
 **Scope:**

@@ -23,7 +23,7 @@ graph TD
     T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
     T-PTG-047 --> T-PTG-048
-    T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]
+    T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]:::review
     T-PTG-066 --> T-PTG-068
     T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
     T-PTG-051 --> T-PTG-052
@@ -345,25 +345,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Full suite (tests/JournalAnswerServiceTest.php) passes.
 
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
-
----
-### 📋 T-PTG-068 · P2 · ANY · AUDITED
-**Profile page: link to conversations, grouped by dominant topic**
-**Owner:** None
-
-**Scope:**
-- Chip's ask: "we'll need a link from my profile to various conversations (how would you make this useful?)". Plain reasoning: profile.php already aggregates combined_weights_json across a member's conversations into the coverage bar (see its "Aggregate topic color bar" comment block) but never links back to the individual conversations that fed it. The useful version groups conversations by DOMINANT topic (the highest-weight entry in each conversation's combined_weights_json) using the SAME 15-color palette as the sidebar/homepage grid, turning the profile page into topic-based navigation rather than a dead-end stat.
-- Add a section to profile.php: for each of the 15 topics the member has any coverage in, a collapsible group titled with the topic (colored swatch matching $topicColors) listing that topic's conversations (title, updated_at, link to index.php?conversation=ID or however conversations are opened today -- check index.php's existing conversation-open URL/JS pattern rather than inventing a new one). A conversation with multiple significant topic weights may need to decide whether it appears under just its top topic or every topic above some threshold (e.g. >= 15%) -- pick one, document the reasoning in a code comment.
-- Depends on T-PTG-066 because grouping is only useful once new conversations actually get combined_weights_json promptly instead of sitting colorless/ungrouped until the next manual batch.
-- Empty/sparse states matter: a member with zero weighted conversations, or a topic with zero conversations, must render sensibly (no empty accordion headers with nothing useful under them) -- this page already has a coverage note for partial-data honesty, follow that same pattern.
-
-**Definition of Done:**
-- Test proves conversations are correctly grouped by dominant topic from combined_weights_json fixtures, including the multi-topic-threshold decision documented above.
-- Manual verification via the browse skill: profile.php renders topic groups with working links that open the correct conversation in index.php.
-- No N+1 query blowup -- one query (or a small fixed number) fetches all of a member''s conversations with weights, not one query per topic.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
 ### 📋 T-PTG-070 · P2 · ANY · AUDITED
@@ -1041,6 +1022,25 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `278031af013b6aa2ba22d638534c78bff4319f51`
+
+---
+### ⏳ T-PTG-068 · P2 · ANY · PEER_REVIEW
+**Profile page: link to conversations, grouped by dominant topic**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Chip's ask: "we'll need a link from my profile to various conversations (how would you make this useful?)". Plain reasoning: profile.php already aggregates combined_weights_json across a member's conversations into the coverage bar (see its "Aggregate topic color bar" comment block) but never links back to the individual conversations that fed it. The useful version groups conversations by DOMINANT topic (the highest-weight entry in each conversation's combined_weights_json) using the SAME 15-color palette as the sidebar/homepage grid, turning the profile page into topic-based navigation rather than a dead-end stat.
+- Add a section to profile.php: for each of the 15 topics the member has any coverage in, a collapsible group titled with the topic (colored swatch matching $topicColors) listing that topic's conversations (title, updated_at, link to index.php?conversation=ID or however conversations are opened today -- check index.php's existing conversation-open URL/JS pattern rather than inventing a new one). A conversation with multiple significant topic weights may need to decide whether it appears under just its top topic or every topic above some threshold (e.g. >= 15%) -- pick one, document the reasoning in a code comment.
+- Depends on T-PTG-066 because grouping is only useful once new conversations actually get combined_weights_json promptly instead of sitting colorless/ungrouped until the next manual batch.
+- Empty/sparse states matter: a member with zero weighted conversations, or a topic with zero conversations, must render sensibly (no empty accordion headers with nothing useful under them) -- this page already has a coverage note for partial-data honesty, follow that same pattern.
+
+**Definition of Done:**
+- Test proves conversations are correctly grouped by dominant topic from combined_weights_json fixtures, including the multi-topic-threshold decision documented above.
+- Manual verification via the browse skill: profile.php renders topic groups with working links that open the correct conversation in index.php.
+- No N+1 query blowup -- one query (or a small fixed number) fetches all of a member''s conversations with weights, not one query per topic.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
 ### ⏳ T-PTG-059 · P2 · frontend · PEER_REVIEW

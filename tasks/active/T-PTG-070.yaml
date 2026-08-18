@@ -1,0 +1,70 @@
+id: T-PTG-070
+title: Staged progress indicator while a conversation response is generating
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: AUDITED
+created_at: '2026-08-18T23:15:00-06:00'
+dependencies: []
+scope:
+- 'Chip''s ask: a question can take a while to answer with no feedback beyond a spinner.
+  Wants a status line under the conversation showing real stages as they happen (e.g.
+  "Tagging conversation... researching articles... tying concepts together...") with
+  a rough time expectation.'
+- 'Investigated JournalAnswerService::ask() (v3_beta preset, the default path): it
+  is NOT one OpenAI call, it is 4-6 SEQUENTIAL calls -- ResearchPlanner (1 call, decides
+  search queries, may branch into a clarifying question instead), EvidenceRetriever
+  (1 call PER search query the planner generated, usually 2-4), EvidenceRanker (1
+  call, filters/ranks retrieved chunks), AnswerSynthesizer (1 call, writes the final
+  answer). ClaimValidator and citation resolution after that are local/instant. These
+  are the real, honest stages to surface -- not decorative copy.'
+- 'ARCHITECTURE DECISION NEEDED (why human_review_required): ask.php currently runs
+  synchronously -- one HTTP request, one response, no way for the frontend to see
+  intermediate progress mid-request. Two ways to get real stage updates to the member
+  while waiting, pick one: (a) POLLING: JournalAnswerService writes its current stage
+  to a lightweight per-request progress row (new table or reuse an existing one) as
+  it reaches each stage; the frontend polls a small status endpoint every ~1s while
+  ask() is in flight. Simpler, fits the existing synchronous-PHP-request architecture,
+  no new infrastructure. (b) STREAMING (SSE or chunked response): ask.php pushes stage-transition
+  events directly down the same connection as they happen. No polling overhead, but
+  nothing in this codebase uses SSE/streaming today -- new infrastructure, more invasive
+  change. Recommend (a) given the codebase''s existing patterns, but this is Chip''s
+  call.'
+- 'Time expectations: duration_ms is currently only logged as a single TOTAL per request
+  (debug_logs.duration_ms, usage_events.request_duration_ms) -- there is no per-stage
+  timing history to draw a real "usually takes N seconds" estimate from yet. Either
+  (a) ship with a rough static estimate per stage for v1 and add per-stage timing
+  logging alongside this feature so real historical estimates become possible later,
+  or (b) add per-stage duration_ms columns/logging as part of this task itself if
+  Chip wants real estimates from day one. Flag this choice for review too.'
+definition_of_done:
+- A member watching a question generate sees the status line advance through real
+  stages (not a generic spinner) matching what ask() is actually doing at that moment.
+- Test proves stage transitions are recorded/exposed correctly for both the v3_beta
+  pipeline (4-6 stages) and the legacy/fallback path (fewer stages) -- the indicator
+  must not lie about a stage that didn't actually run (e.g. no "ranking evidence"
+  stage shown for a request that degraded to the legacy path per T-PTG-026's graceful-degradation
+  catch).
+- No regression to actual answer latency -- the progress mechanism (polling or streaming)
+  must not itself slow down ask()'s critical path.
+- Golden hammer suite passes with zero regressions; php -l clean.
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-18T23:15:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed from Chip noticing response latency with no feedback. Investigated
+    the real pipeline stages in JournalAnswerService::ask() rather than guessing at
+    generic copy. human_review_required because polling-vs-streaming is a real architecture
+    decision this codebase hasn't made before (no SSE/streaming anywhere today), and
+    the per-stage-timing-data gap needs a scope call too.
+- timestamp: '2026-08-18T23:11:53.093150Z'
+  action: AUDIT
+  actor: PM-Claude-Sonnet-Session
+  details: Audited against 30d1985719a9b9935dbb77fdde540a87102a23b5
+audited_at: '2026-08-18T23:11:53.093003Z'
+audited_by: PM-Claude-Sonnet-Session
+audited_repo_sha: 30d1985719a9b9935dbb77fdde540a87102a23b5

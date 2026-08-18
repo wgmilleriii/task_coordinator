@@ -18,28 +18,37 @@ graph TD
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
     T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]
     T-PTG-052 --> T-PTG-053
+    T-PTG-065["T-PTG-065<br/>Webhook Sync for Localhost Conversations"]:::review
+    T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
     T-PTG-047 --> T-PTG-048
-    T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]
+    T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
     T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
+    T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
+    T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]
     T-PTG-054 --> T-PTG-055
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]
     T-PTG-051 --> T-PTG-054
-    T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]
-    T-PTG-001 --> T-PTG-003
-    T-PTG-002 --> T-PTG-003
+    T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
+    T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
+    T-PTG-058["T-PTG-058<br/>Conversation Sidebar: Minimal Weighted Topic Color Bar"]:::done
+    T-PTG-061["T-PTG-061<br/>Dynamic Conversation Topic Weighting Engine"]:::done
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
+    T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
+    T-PTG-051 --> T-PTG-057
+    T-PTG-052 --> T-PTG-057
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
-    T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]
-    T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
-    T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]
+    T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
+    T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]:::active
+    T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
+    T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
 ```
 
 ---
@@ -91,9 +100,9 @@ graph TD
 
 ## Repo: `minchiate_tarot`
 
-### 📋 T-MIN-008 · P2 · ANY · OPEN
+### ⏳ T-MIN-008 · P2 · ANY · PEER_REVIEW
 **Pin down Bernardi's verzicola boundary from the 1790 rules directly**
-**Owner:** None
+**Owner:** Antigravity
 
 **Scope:**
 - Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola combination example, replacing the Justice pilot's hedge ('I-V and beginning around XXVIII', pilot line 92) with an exact list.
@@ -106,30 +115,32 @@ graph TD
 - The reconciliation queue of affected files is listed with per-file line references.
 - The hedge is superseded only by direct transcription, never by memory.
 
+*Audited against SHA:* `3556e682ee0493b832d0fe092b0f1d2e20e0a3d6`
+
 ---
 
 ## Repo: `newmexicoptg.org`
 
-### 📋 T-PTG-003 · P1 · ANY · AUDITED
-**Lock in citation-numbering fix with a real-shape regression fixture**
+### 📋 T-PTG-057 · P1 · ANY · AUDITED
+**Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index**
 **Owner:** None
 
 **Scope:**
-- journalgpt/tests/JournalAnswerServiceTest.php
-- journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) — add a fixture reproducing the actual reported 'Golden Hammer Award recipients' case shape as closely as possible without shipping real user data: a multi-paragraph answer with a handful of inline [n] markers, and a StubOpenAIClient retrieved_chunks payload spanning many issues/pages (2019 through 2025) so the test exercises real cross-issue volume, not just 2-3 chunks.
-- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily synthetic/minimal; this task's job is to add a second, independent test built directly from the bug report so the fix is verified against the actual failure shape, not just a simplified version of it.
+- Build a "v4 situation" for the conversation workflow, likely introducing `journalgpt/v4/` parallel to `v3`.
+- Migrate the search and RAG context gathering to take advantage of the new `article_index` and `article_index_topics` tables introduced in T-PTG-051/052, moving away from issue-level `articles` citations.
+- Run A/B tests or evaluations against Production for this v4 implementation to ensure search results remain high quality and improve the conversational experience.
 
 **Definition of Done:**
-- New test method added asserting, end-to-end through JournalAnswerService::ask() (not just the internal resolver methods), that the final answer string's footnote count equals its inline marker count, and every footnote's citation_label refers to an article/page combination that genuinely appears in the stubbed retrieved_chunks/annotations — no orphaned or fabricated footnote.
-- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out the prior revision or reasoning through the diff) and passes after.
-- Full suite (tests/JournalAnswerServiceTest.php) passes.
+- V4 conversation pipeline is established and uses the new article-based indexing system.
+- Search results and context are derived from `article_index` rather than issue-level PDFs.
+- Evaluation tests are run against Production data to validate the new v4 workflow without breaking the existing v3 production system.
 
-*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
-### 📋 T-PTG-021 · P1 · ANY · AUDITED
+### 🛠 T-PTG-021 · P1 · ANY · CLAIMED
 **Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)**
-**Owner:** None
+**Owner:** Antigravity
 
 **Scope:**
 - FINDING: Chip asked that no future work be pushed to main without running the full "golden hammer" regression suite (`journalgpt/tests/security_and_eval_suite.php`, which runs 8 PHP suites plus the Python eval_runner.py -- 9 suites total). Running it as a baseline check surfaced one pre-existing failure: `JournalChatRenderTest.php:115` asserts the rendered `index.php` HTML contains the exact literal substring `href="assets/journal-chat.css"` (no query string). `index.php`'s actual stylesheet link has ALWAYS included a cache-busting `?v=<hash>` query param (confirmed via git history -- this predates every task from today's session), so this exact-substring assertion has likely been failing since the test was first written (single commit in its git history, `b89a4d7`, never updated since). This is a stale/wrong test assertion, not a real product bug -- confirmed the actual rendered HTML is correct and functional (T-PTG-013 extended the same versioned-link pattern to 6 more pages earlier today specifically because it is the correct, intentional behavior).
@@ -143,6 +154,53 @@ graph TD
 - php -l passes on journalgpt/tests/JournalChatRenderTest.php.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### ✅ T-PTG-052 · P1 · ANY · DONE
+**Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver**
+**Owner:** Worker-Agent
+
+**Scope:**
+- Spec: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md section 3. New migration (019): member_article_activity (user_id, article_index_id, activity_type ENUM(read, quiz_passed, discussed), created_at; FK to article_index; append-only, no unique constraint -- repeat engagement is real signal for recency even though the radar aggregation deduplicates per (user, article, type)).
+- THE KEY TECHNICAL RISK, solve first: existing engagement signals are keyed to the ISSUE-LEVEL articles table (journalgpt_citation_logs.article_id, quiz_questions.article_id both FK to articles), but the radar needs PER-ARTICLE article_index rows. Build a resolver lib (e.g. lib/ArticleIndexResolver.php) mapping (issue-level article_id, page) -> article_index_id by joining articles.issue_date/volume/pdf_filename to article_index.issue_label (format like "Jan-79") and picking the article_index row whose page range contains the cited page (rows sorted by page within an issue; a row spans from its page to the next row's page - 1). Resolver returns null on no-match; log unresolved hits, never guess. TDD the resolver against real fixture rows before wiring any hooks.
+- Hooks, all thin: (1) read -- source.php PDF opens that carry an article_index context, and citation renders in answers count via (3); (2) quiz_passed -- in submit_quiz_attempt.php after scoring, for each correctly-answered question resolve its article_id+page and log; (3) discussed -- where journalgpt_citation_logs rows are written, resolve and log alongside. Hooks must be fail-open: a resolver miss or insert failure must never break the member-facing request.
+
+**Definition of Done:**
+- Migration 019 applied to the local test DB via cli/migrate.php with no errors.
+- Resolver test proves correct mapping for a multi-article issue fixture (first, middle, last article by page) and returns null for an unmatchable page/issue.
+- Each of the three hooks writes a correct member_article_activity row in its existing test (extend QuizTest / CitationLoggingTest rather than new suites where natural), and a forced resolver failure does not change the endpoint''s response.
+- Golden hammer suite passes with zero regressions.
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-061 · P1 · backend · DONE
+**Dynamic Conversation Topic Weighting Engine**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-051 · P1 · ANY · DONE
+**Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live**
+**Owner:** Worker-Agent
+
+**Scope:**
+- Background, read first: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md (the Coverage Atlas spec this epic delivers; supersedes the 2026-08-16 learning-paths skill-tree spec). The code is ALREADY MERGED into test and pushed (commit a8f88e1 "feat: editable article-index x topic matrix"): migration journalgpt/migrations/018_article_index.sql, lib/ArticleIndexImporter.php, cli/import_article_index.php, data/article_index.csv (4,120 rows), admin_article_index_matrix.php, api/toggle_article_index_topic.php, tests/ArticleIndexMatrixTest.php (22 assertions, passing locally).
+- This task is ONLY the shared-database rollout: run migration 018 and cli/import_article_index.php against the deployed environment, then browser-verify admin_article_index_matrix.php on test.newmexicoptg.org (login, grid renders 4,120 articles, one checkbox toggle round-trips to article_index_topics and survives reload).
+- HARD CONSTRAINT (memory + fleet README): test.newmexicoptg.org SHARES the production database. Migration 018 is additive-only (two new tables, no ALTERs), but the DB write still requires Chip's explicit go at execution time. Do not run the migration or import without that confirmation recorded in this task's events.
+
+**Definition of Done:**
+- article_index and article_index_topics tables exist in the shared DB; SELECT COUNT(*) FROM article_index returns 4120.
+- Re-running cli/import_article_index.php a second time leaves the count at 4120 (idempotency verified in the real environment).
+- admin_article_index_matrix.php on test.newmexicoptg.org renders the grid for a logged-in member, one checkbox toggle persists across a reload, and no PHP errors appear in debug_logs.
+- Golden hammer suite still passes locally (DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php).
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
 ### 📋 T-PTG-053 · P1 · ANY · OPEN
@@ -161,38 +219,6 @@ graph TD
 - Nudge query proven by test - suggests only untagged-by-member articles from weak territories, popularity-ordered.
 - Tagging-coverage line shows the true tagged/total counts.
 - Golden hammer suite passes with zero regressions; php -l clean.
-
----
-### 📋 T-PTG-052 · P1 · ANY · OPEN
-**Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver**
-**Owner:** None
-
-**Scope:**
-- Spec: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md section 3. New migration (019): member_article_activity (user_id, article_index_id, activity_type ENUM(read, quiz_passed, discussed), created_at; FK to article_index; append-only, no unique constraint -- repeat engagement is real signal for recency even though the radar aggregation deduplicates per (user, article, type)).
-- THE KEY TECHNICAL RISK, solve first: existing engagement signals are keyed to the ISSUE-LEVEL articles table (journalgpt_citation_logs.article_id, quiz_questions.article_id both FK to articles), but the radar needs PER-ARTICLE article_index rows. Build a resolver lib (e.g. lib/ArticleIndexResolver.php) mapping (issue-level article_id, page) -> article_index_id by joining articles.issue_date/volume/pdf_filename to article_index.issue_label (format like "Jan-79") and picking the article_index row whose page range contains the cited page (rows sorted by page within an issue; a row spans from its page to the next row's page - 1). Resolver returns null on no-match; log unresolved hits, never guess. TDD the resolver against real fixture rows before wiring any hooks.
-- Hooks, all thin: (1) read -- source.php PDF opens that carry an article_index context, and citation renders in answers count via (3); (2) quiz_passed -- in submit_quiz_attempt.php after scoring, for each correctly-answered question resolve its article_id+page and log; (3) discussed -- where journalgpt_citation_logs rows are written, resolve and log alongside. Hooks must be fail-open: a resolver miss or insert failure must never break the member-facing request.
-
-**Definition of Done:**
-- Migration 019 applied to the local test DB via cli/migrate.php with no errors.
-- Resolver test proves correct mapping for a multi-article issue fixture (first, middle, last article by page) and returns null for an unmatchable page/issue.
-- Each of the three hooks writes a correct member_article_activity row in its existing test (extend QuizTest / CitationLoggingTest rather than new suites where natural), and a forced resolver failure does not change the endpoint''s response.
-- Golden hammer suite passes with zero regressions.
-
----
-### 📋 T-PTG-051 · P1 · ANY · OPEN
-**Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live**
-**Owner:** None
-
-**Scope:**
-- Background, read first: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md (the Coverage Atlas spec this epic delivers; supersedes the 2026-08-16 learning-paths skill-tree spec). The code is ALREADY MERGED into test and pushed (commit a8f88e1 "feat: editable article-index x topic matrix"): migration journalgpt/migrations/018_article_index.sql, lib/ArticleIndexImporter.php, cli/import_article_index.php, data/article_index.csv (4,120 rows), admin_article_index_matrix.php, api/toggle_article_index_topic.php, tests/ArticleIndexMatrixTest.php (22 assertions, passing locally).
-- This task is ONLY the shared-database rollout: run migration 018 and cli/import_article_index.php against the deployed environment, then browser-verify admin_article_index_matrix.php on test.newmexicoptg.org (login, grid renders 4,120 articles, one checkbox toggle round-trips to article_index_topics and survives reload).
-- HARD CONSTRAINT (memory + fleet README): test.newmexicoptg.org SHARES the production database. Migration 018 is additive-only (two new tables, no ALTERs), but the DB write still requires Chip's explicit go at execution time. Do not run the migration or import without that confirmation recorded in this task's events.
-
-**Definition of Done:**
-- article_index and article_index_topics tables exist in the shared DB; SELECT COUNT(*) FROM article_index returns 4120.
-- Re-running cli/import_article_index.php a second time leaves the count at 4120 (idempotency verified in the real environment).
-- admin_article_index_matrix.php on test.newmexicoptg.org renders the grid for a logged-in member, one checkbox toggle persists across a reload, and no PHP errors appear in debug_logs.
-- Golden hammer suite still passes locally (DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php).
 
 ---
 ### ⏳ T-PTG-048 · P1 · ANY · PEER_REVIEW
@@ -278,6 +304,56 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `267ebaf267b3cd0b5b0727baa79c26b858cf32ac`
 
 ---
+### ⏳ T-PTG-003 · P1 · ANY · PEER_REVIEW
+**Lock in citation-numbering fix with a real-shape regression fixture**
+**Owner:** Antigravity
+
+**Scope:**
+- journalgpt/tests/JournalAnswerServiceTest.php
+- journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) — add a fixture reproducing the actual reported 'Golden Hammer Award recipients' case shape as closely as possible without shipping real user data: a multi-paragraph answer with a handful of inline [n] markers, and a StubOpenAIClient retrieved_chunks payload spanning many issues/pages (2019 through 2025) so the test exercises real cross-issue volume, not just 2-3 chunks.
+- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily synthetic/minimal; this task's job is to add a second, independent test built directly from the bug report so the fix is verified against the actual failure shape, not just a simplified version of it.
+
+**Definition of Done:**
+- New test method added asserting, end-to-end through JournalAnswerService::ask() (not just the internal resolver methods), that the final answer string's footnote count equals its inline marker count, and every footnote's citation_label refers to an article/page combination that genuinely appears in the stubbed retrieved_chunks/annotations — no orphaned or fabricated footnote.
+- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out the prior revision or reasoning through the diff) and passes after.
+- Full suite (tests/JournalAnswerServiceTest.php) passes.
+
+*Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
+
+---
+### ✅ T-PTG-062 · P2 · frontend · DONE
+**Feature: Advanced Prompt Builder Grid UI**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-058 · P2 · Frontend · DONE
+**Conversation Sidebar: Minimal Weighted Topic Color Bar**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-060 · P2 · frontend · DONE
+**Extend Admin Reply Mechanism for 'In Progress' Status**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
 ### 📋 T-PTG-055 · P2 · ANY · OPEN
 **Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)**
 **Owner:** None
@@ -325,6 +401,616 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
 - Progress derivation proven by test against member_article_activity fixtures.
 - Golden hammer suite passes with zero regressions; php -l clean.
+
+---
+### ⏳ T-PTG-065 · P2 · backend · PEER_REVIEW
+**Webhook Sync for Localhost Conversations**
+**Owner:** None
+
+**Scope:**
+- I
+- m
+- p
+- l
+- e
+- m
+- e
+- n
+- t
+-  
+- a
+-  
+- w
+- e
+- b
+- h
+- o
+- o
+- k
+-  
+- t
+- o
+-  
+- s
+- y
+- n
+- c
+- h
+- r
+- o
+- n
+- i
+- z
+- e
+-  
+- l
+- o
+- c
+- a
+- l
+- h
+- o
+- s
+- t
+-  
+- c
+- o
+- n
+- v
+- e
+- r
+- s
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+- 1
+- .
+-  
+- C
+- r
+- e
+- a
+- t
+- e
+-  
+- `
+- j
+- o
+- u
+- r
+- n
+- a
+- l
+- g
+- p
+- t
+- /
+- a
+- p
+- i
+- /
+- s
+- y
+- n
+- c
+- _
+- c
+- h
+- a
+- t
+- .
+- p
+- h
+- p
+- `
+-  
+- t
+- o
+-  
+- r
+- e
+- c
+- e
+- i
+- v
+- e
+-  
+- i
+- n
+- c
+- o
+- m
+- i
+- n
+- g
+-  
+- c
+- o
+- n
+- v
+- e
+- r
+- s
+- a
+- t
+- i
+- o
+- n
+-  
+- p
+- a
+- y
+- l
+- o
+- a
+- d
+- s
+- .
+- 
+
+- 2
+- .
+-  
+- P
+- r
+- o
+- t
+- e
+- c
+- t
+-  
+- t
+- h
+- e
+-  
+- e
+- n
+- d
+- p
+- o
+- i
+- n
+- t
+-  
+- w
+- i
+- t
+- h
+-  
+- a
+-  
+- s
+- h
+- a
+- r
+- e
+- d
+-  
+- s
+- e
+- c
+- r
+- e
+- t
+-  
+- k
+- e
+- y
+-  
+- (
+- e
+- .
+- g
+- .
+-  
+- S
+- Y
+- N
+- C
+- _
+- S
+- E
+- C
+- R
+- E
+- T
+- )
+- .
+- 
+
+- 3
+- .
+-  
+- M
+- o
+- d
+- i
+- f
+- y
+-  
+- `
+- j
+- o
+- u
+- r
+- n
+- a
+- l
+- g
+- p
+- t
+- /
+- a
+- p
+- i
+- /
+- a
+- s
+- k
+- .
+- p
+- h
+- p
+- `
+-  
+- (
+- o
+- r
+-  
+- w
+- h
+- e
+- r
+- e
+- v
+- e
+- r
+-  
+- c
+- o
+- n
+- v
+- e
+- r
+- s
+- a
+- t
+- i
+- o
+- n
+- s
+-  
+- a
+- r
+- e
+-  
+- i
+- n
+- s
+- e
+- r
+- t
+- e
+- d
+- )
+-  
+- s
+- o
+-  
+- t
+- h
+- a
+- t
+-  
+- i
+- f
+-  
+- a
+-  
+- S
+- Y
+- N
+- C
+- _
+- E
+- N
+- D
+- P
+- O
+- I
+- N
+- T
+-  
+- e
+- n
+- v
+- i
+- r
+- o
+- n
+- m
+- e
+- n
+- t
+-  
+- v
+- a
+- r
+- i
+- a
+- b
+- l
+- e
+-  
+- i
+- s
+-  
+- s
+- e
+- t
+- ,
+-  
+- i
+- t
+-  
+- f
+- i
+- r
+- e
+- s
+-  
+- a
+-  
+- b
+- a
+- c
+- k
+- g
+- r
+- o
+- u
+- n
+- d
+-  
+- c
+- u
+- r
+- l
+-  
+- P
+- O
+- S
+- T
+-  
+- r
+- e
+- q
+- u
+- e
+- s
+- t
+-  
+- w
+- i
+- t
+- h
+-  
+- t
+- h
+- e
+-  
+- c
+- o
+- n
+- v
+- e
+- r
+- s
+- a
+- t
+- i
+- o
+- n
+-  
+- p
+- a
+- y
+- l
+- o
+- a
+- d
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- p
+- r
+- o
+- d
+- u
+- c
+- t
+- i
+- o
+- n
+-  
+- s
+- e
+- r
+- v
+- e
+- r
+- .
+- 
+
+- 4
+- .
+-  
+- E
+- n
+- s
+- u
+- r
+- e
+-  
+- e
+- r
+- r
+- o
+- r
+-  
+- h
+- a
+- n
+- d
+- l
+- i
+- n
+- g
+-  
+- s
+- o
+-  
+- t
+- h
+- a
+- t
+-  
+- l
+- o
+- c
+- a
+- l
+-  
+- g
+- e
+- n
+- e
+- r
+- a
+- t
+- i
+- o
+- n
+-  
+- d
+- o
+- e
+- s
+-  
+- n
+- o
+- t
+-  
+- f
+- a
+- i
+- l
+-  
+- i
+- f
+-  
+- t
+- h
+- e
+-  
+- w
+- e
+- b
+- h
+- o
+- o
+- k
+-  
+- i
+- s
+-  
+- u
+- n
+- r
+- e
+- a
+- c
+- h
+- a
+- b
+- l
+- e
+- .
+
+**Definition of Done:**
+
+*Audited against SHA:* `5a022d2b7d50146a26a014098ae372ab99a7d6d2`
+
+---
+### ⏳ T-PTG-064 · P2 · frontend · PEER_REVIEW
+**Feature: Pool Ball Triangle Layout**
+**Owner:** Antigravity
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `278031af013b6aa2ba22d638534c78bff4319f51`
+
+---
+### ⏳ T-PTG-059 · P2 · frontend · PEER_REVIEW
+**Feature: Greet the user in JournalGPT**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ⏳ T-PTG-063 · P2 · frontend · PEER_REVIEW
+**Feature: Mobile-Optimized Minimalist UI**
+**Owner:** Worker-Agent
+
+**Scope:**
+
+**Definition of Done:**
+
+*Audited against SHA:* `5583f85ad5935f425c6f3a774052f742d581e69e`
 
 ---
 ### ⏳ T-PTG-014 · P2 · ANY · PEER_REVIEW

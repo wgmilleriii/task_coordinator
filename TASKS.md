@@ -51,7 +51,7 @@ graph TD
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
-    T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::review
+    T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
@@ -85,7 +85,7 @@ graph TD
 *Audited against SHA:* `8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516`
 
 ---
-### ⏳ T-INTY-022 · P1 · FEATURE · HUMAN_REVIEW
+### ✅ T-INTY-022 · P1 · FEATURE · DONE
 **V2 Personnel Management Interface**
 **Owner:** Antigravity
 

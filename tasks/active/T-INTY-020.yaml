@@ -1,0 +1,36 @@
+id: T-INTY-020
+title: Admin V2 Timeslot Management Interface
+repo: intypiano
+priority: P2
+lane: ANY
+status: CLAIMED
+owner: Antigravity
+created_at: '2026-08-20T09:45:00-06:00'
+dependencies: []
+requires_doc_update: false
+scope:
+- Append a Timeslots management section to `admin/v2/scheduling.php`.
+- Provide an interface to view, add, and delete records from the `timeslot` table.
+- This allows administrators to manage scheduling timeslots (e.g. 6-8PM, 8-10AM) without
+  using phpMyAdmin.
+- Ensure all actions use the existing CSRF protection tokens and admin gating in `admin/v2/scheduling.php`.
+definition_of_done:
+- A new section "Timeslots" is visible on `admin/v2/scheduling.php`.
+- Users can view existing timeslots, add new ones (specifying at minimum the display
+  name), and delete them.
+- Deletion is protected by a safety check or at least standard CSRF token.
+- '`php -l admin/v2/scheduling.php` passes without syntax errors.'
+verification_command: php -l admin/v2/scheduling.php
+human_review_required: true
+audited_at: '2026-08-20T16:04:41.677977Z'
+audited_by: Antigravity
+audited_repo_sha: eb705b935fa81269373a7f68e9052242bebcae63
+events:
+- timestamp: '2026-08-20T16:04:41.678958Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against eb705b935fa81269373a7f68e9052242bebcae63
+- timestamp: '2026-08-20T16:04:45.693995Z'
+  action: CLAIM
+  actor: Antigravity
+claimed_at: '2026-08-20T16:04:45.693738Z'

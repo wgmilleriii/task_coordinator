@@ -1,0 +1,69 @@
+id: T-PTG-066
+title: "JournalGPT public guest access: 3-interaction trial, verified-email continuation, and citation-image-only source access"
+status: OPEN
+priority: P1
+repo: newmexicoptg.org
+lane: ANY
+created_at: '2026-08-20T05:04:00Z'
+dependencies: []
+scope:
+  - >-
+    Product requirement from the owner: change the main JournalGPT login experience so it offers an explicit "Continue as Guest" / "Login as Guest" path in addition to the existing member login. A guest must be able to enter JournalGPT without an account and complete exactly 3 successful JournalGPT interactions before verified email registration is required. Existing members must continue to be able to log in normally without consuming a guest trial.
+  - >-
+    Guest identity and usage accounting must be server-authoritative. Use a cryptographically random opaque guest identifier stored in a Secure, HttpOnly, SameSite cookie and a server-side guest-session/usage record. Browser localStorage or client-supplied counters must never be authoritative. Clearing UI state must not by itself reset the server-side trial. IP/network signals may be used as secondary abuse controls but must not be the primary guest identity because shared networks, carrier NAT, and privacy relays make IP-only identity unreliable.
+  - >-
+    The owner requested GPS/location tracking in addition to cookies. Implement this as consent-based browser geolocation only: the guest UI may request navigator.geolocation permission with a clear purpose disclosure, and the server may store the returned coordinates/accuracy/timestamp (or a privacy-reduced derived location if the worker documents and implements that choice) only after the browser/user grants permission. Do not attempt to bypass browser permission, infer precise GPS from IP, or make geolocation denial silently reset or bypass the 3-interaction trial. The task must document what location data is stored, retention expectations, and how a user can proceed if location permission is denied.
+  - >-
+    Count only successful JournalGPT answer interactions toward the 3-interaction trial. Validation errors, blocked requests, server failures, and failed model calls must not consume the allowance. Before interaction 4, enforce the gate before any OpenAI/model request so an exhausted guest cannot generate model cost. The API must return an explicit machine-readable registration-required state/code and remaining interaction count.
+  - >-
+    After the third successful interaction, require email registration before any further JournalGPT interaction. Registration must collect an email address, create or stage a non-administrator account/identity, generate a cryptographically secure single-use verification token with an expiry, send a verification email containing a confirmation URL, and keep JournalGPT locked until the user clicks the confirmation link successfully. Merely submitting an email form or receiving the email is not sufficient. The confirmation endpoint must be idempotent/safe on repeat clicks and must not expose raw tokens in persistent logs.
+  - >-
+    After successful email confirmation, return the user to JournalGPT and preserve the guest session context where feasible. At minimum, the application must associate the verified identity with the guest session so the user can continue without being placed back into an exhausted anonymous state. If guest conversation migration is practical within the existing conversations schema, migrate the active guest conversation into the registered account; if not, document the deliberately limited continuity behavior rather than silently losing state.
+  - >-
+    Public source rights remain intentionally narrower than registered-member rights. Guests may receive citation page images only, with a lifetime anonymous-trial maximum of 10 citation images delivered per guest identity. The question/interaction allowance (3) and citation-image allowance (10) are separate counters. Once the image allowance is exhausted, any remaining allowed guest answer may still return citation metadata (article/title/issue/page) but no additional citation page image.
+  - >-
+    Guests must never receive complete PDFs. Enforce this on the server, not just in the UI. Audit journalgpt/source.php and every source/citation route reachable from guest mode. Any guest attempt to use download=pdf, a PDF proxy/stream endpoint, a backing Google Drive URL, local source path, or equivalent direct-object route must fail closed with a guest-forbidden response before file resolution/redirect/streaming. Never expose PDF filename, Google Drive ID, filesystem path, object-storage URL, or raw PDF bytes to a guest.
+  - >-
+    Add or adapt a dedicated guest-safe citation-image delivery path. It must validate that the requested page is an authorized citation for the guest-visible answer (or use a signed/opaque citation token), enforce the 10-image counter server-side, record successful deliveries, and return only an image format such as WebP/JPEG/PNG. A citation-render failure must fail closed and must never fall back to serving the PDF.
+  - >-
+    Preserve existing authenticated behavior and role boundaries. Public registration must never allow a user to self-select administrator or any privileged role. Existing administrator/member routes, profile tools, admin analytics/migrations, and other privileged functions must remain protected by the current Authorization layer or an equivalent capability check. Guest mode should expose only the minimum features required for the 3-interaction public trial unless the worker documents another route as intentionally guest-safe.
+  - >-
+    Add abuse and security controls appropriate to a public endpoint: pre-model rate limiting, CSRF or equivalent request-integrity protection for browser requests, secure cookie flags, HTTPS-aware session handling, prompt-size limits, email-registration throttling, verification-token expiry/single use, and logging for exhausted-trial attempts, repeated verification requests, citation-image deliveries, and blocked PDF/source attempts. Do not introduce invasive browser fingerprinting.
+  - >-
+    Public-facing copy must clearly explain the trial: guests get 3 interactions before verified email is required; source evidence may include a limited number of citation page images; complete PDFs are not part of guest access; location permission is optional/consent-based and used for the stated analytics/abuse-control purpose. Replace closed-pilot-only wording such as "Authorized access only" where it conflicts with the new public flow while keeping rights/copyright language accurate.
+  - >-
+    Integration constraint from task_coordinator README: newmexicoptg.org remains test-branch-only for ordinary fleet work. Worker implementation must occur in an isolated worktree/feature branch and merge to the repository's `test` integration branch after review; do not push or merge to `main` without a separate current authorization from the owner.
+  - >-
+    Documentation is required because this changes authentication, public-access rights, guest identity, email verification, geolocation handling, and source-delivery architecture. Add/update Dewey-compliant docs under docs/10-Product and/or docs/20-Architecture with valid frontmatter, and reconcile the existing JournalGPT public-access whitepaper so it reflects the final 3-interaction verified-email model rather than the earlier 10-question registration proposal.
+definition_of_done:
+  - >-
+    The main JournalGPT login page visibly offers both the existing member login and a guest-entry option. A fresh unauthenticated guest can enter JournalGPT without supplying an email/password.
+  - >-
+    A server-side guest identity exists with an opaque secure cookie, and automated/manual tests demonstrate that exactly 3 successful JournalGPT interactions are allowed before registration is required; the 4th interaction is rejected before any model/OpenAI call.
+  - >-
+    The guest usage counter increments only on successful answer completion. Failed validation, failed model calls, server errors, and blocked requests are proven not to consume the 3-interaction allowance.
+  - >-
+    Browser geolocation is requested only through the standard permission flow with clear user-facing disclosure. Tests/manual verification cover both permission granted and permission denied. Denying geolocation does not reset the trial, create unlimited guest access, or block the user from the documented guest path unless a separate explicit product decision is recorded.
+  - >-
+    After interaction 3, the UI requires an email address and sends a real verification email through the configured mail delivery mechanism. The user remains unable to continue JournalGPT until the emailed confirmation link is clicked successfully.
+  - >-
+    Email verification uses a high-entropy expiring single-use token, handles duplicate/replayed clicks safely, prevents self-assignment of privileged roles, and does not persist/log raw verification tokens in plaintext beyond what is operationally necessary to deliver the link.
+  - >-
+    Successful confirmation transitions the guest into a verified registered state and returns the user to JournalGPT. The guest identity is linked/migrated so the user does not remain trapped behind the exhausted anonymous gate; active conversation continuity is preserved or the documented intentionally limited behavior is demonstrated.
+  - >-
+    Guest source delivery is image-only. A guest can receive at most 10 citation page images total, tracked server-side independently from the 3-interaction counter. After the image limit is reached, permitted answers render citation metadata without additional source images.
+  - >-
+    Direct guest requests for source.php?download=pdf and every equivalent PDF/source path return a guest-forbidden response before any PDF bytes, storage redirects, Google Drive IDs, local paths, filenames, or backing URLs are disclosed. Tests explicitly cover manually constructed URLs rather than only hidden UI controls.
+  - >-
+    Guest citation images are served through an authorization-aware image-only endpoint/path that validates the citation/page, records successful delivery, enforces the counter, and cannot fall through to PDF delivery on errors.
+  - >-
+    Existing authenticated member/admin login and authorization behavior continues to pass regression tests. Guest mode cannot access admin pages, member-only account tools, privileged APIs, or member-only source rights.
+  - >-
+    Public endpoint protections include rate limiting/throttling for guest questions, login/registration/verification, and citation-image delivery; secure cookies/HTTPS handling; request integrity protection; safe generic error output; and observable logs for guest abuse/source-denial events.
+  - >-
+    Public-facing copy and docs accurately state: 3 guest interactions, verified email required thereafter, up to 10 guest citation images, no guest PDFs, and consent-based location handling. The earlier public-access whitepaper is updated so it no longer claims a 10-question anonymous trial.
+  - >-
+    Verification includes automated tests for guest-counter boundaries, verification-token lifecycle, guest/member authorization separation, citation-image limit, and guest PDF denial, plus a manual browser walkthrough on the test deployment covering: guest entry -> three interactions -> registration gate -> email received -> confirmation click -> continued access.
+verification_command: null
+human_review_required: true
+requires_doc_update: true

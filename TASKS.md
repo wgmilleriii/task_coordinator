@@ -39,6 +39,7 @@ graph TD
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
     T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
     T-PTG-058["T-PTG-058<br/>Conversation Sidebar: Minimal Weighted Topic Color Bar"]:::done
+    T-INTY-020["T-INTY-020<br/>Admin V2 Timeslot Management Interface"]:::done
     T-PTG-061["T-PTG-061<br/>Dynamic Conversation Topic Weighting Engine"]:::done
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
@@ -102,6 +103,25 @@ graph TD
 - PM AUDIT NOTE ON TEST BASELINE (2026-08-12, repo-sha 6d955d99) - neither CLAUDE.md's stale "259 tests, 0 failures" nor T-INTY-018's captured "330/564/Errors=18/Failures=114/Skipped=6" is reproducible right now. A clean run on this exact sha (server up on :2027, then ./vendor/bin/phpunit) produced Tests=330, Assertions=666, Errors=1, Failures=68 - fewer errors/failures than T-INTY-018's snapshot, consistent with T-INTY-021's admin/v2 fix landing in between, but still not 0. Do NOT let a Worker chase these pre-existing failures as part of this task - they are unrelated to Gazelle. The bar for this task is - no NEW errors/failures beyond this 330/666/1/68 shape.
 
 *Audited against SHA:* `6d955d9962a89d24af8a5d8052eb1d67b1ea0186`
+
+---
+### ✅ T-INTY-020 · P2 · ANY · DONE
+**Admin V2 Timeslot Management Interface**
+**Owner:** Antigravity
+
+**Scope:**
+- Append a Timeslots management section to `admin/v2/scheduling.php`.
+- Provide an interface to view, add, and delete records from the `timeslot` table.
+- This allows administrators to manage scheduling timeslots (e.g. 6-8PM, 8-10AM) without using phpMyAdmin.
+- Ensure all actions use the existing CSRF protection tokens and admin gating in `admin/v2/scheduling.php`.
+
+**Definition of Done:**
+- A new section "Timeslots" is visible on `admin/v2/scheduling.php`.
+- Users can view existing timeslots, add new ones (specifying at minimum the display name), and delete them.
+- Deletion is protected by a safety check or at least standard CSRF token.
+- `php -l admin/v2/scheduling.php` passes without syntax errors.
+
+*Audited against SHA:* `eb705b935fa81269373a7f68e9052242bebcae63`
 
 ---
 

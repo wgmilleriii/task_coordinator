@@ -3,7 +3,7 @@ title: V2 Personnel Management Interface
 repo: intypiano
 priority: P1
 lane: FEATURE
-status: CLAIMED
+status: PEER_REVIEW
 owner: Antigravity
 created_at: '2026-08-20T15:00:00-06:00'
 dependencies: []
@@ -17,7 +17,7 @@ scope:
 definition_of_done:
 - admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
 - Users can be created, edited, and toggled active/inactive natively in V2.
-verification_command: php -l admin/v2/personnel.php
+verification_command: php -l ../intypiano-T-INTY-022/admin/v2/personnel.php
 human_review_required: true
 audited_at: '2026-08-20T21:01:15.663937Z'
 audited_by: Antigravity
@@ -29,5 +29,8 @@ events:
   details: Audited against c9637f1919f7c2dede742416a975ab7ffd07998c
 - timestamp: '2026-08-20T21:01:19.551221Z'
   action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-20T21:03:17.457739Z'
+  action: SUBMIT
   actor: Antigravity
 claimed_at: '2026-08-20T21:01:19.550991Z'

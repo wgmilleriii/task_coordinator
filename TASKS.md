@@ -51,6 +51,7 @@ graph TD
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
+    T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::active
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
@@ -65,6 +66,24 @@ graph TD
 
 ## Repo: `intypiano`
 
+### 🛠 T-INTY-022 · P1 · FEATURE · CLAIMED
+**V2 Personnel Management Interface**
+**Owner:** Antigravity
+
+**Scope:**
+- Create admin/v2/personnel.php to manage the unified users table natively in V2.
+- View all users (active and inactive).
+- Add new users (requires full_name, email, role).
+- Edit existing users (update role, email, is_active).
+- No JavaScript (standard V2 architecture).
+
+**Definition of Done:**
+- admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
+- Users can be created, edited, and toggled active/inactive natively in V2.
+
+*Audited against SHA:* `c9637f1919f7c2dede742416a975ab7ffd07998c`
+
+---
 ### ✅ T-INTY-021 · P1 · FEATURE · DONE
 **Schedule Profiles Architecture**
 **Owner:** Antigravity

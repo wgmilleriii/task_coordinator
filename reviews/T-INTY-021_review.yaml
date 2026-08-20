@@ -1,21 +1,9 @@
 task_id: T-INTY-021
-reviewer_agent: Reviewer-DBFallback1
-reviewer_model: claude-sonnet-5
-reviewed_head_sha: 8b4bcec5fbb61b639debd76abdb8125721c6caca
+reviewer_agent: ReviewerGemini
+reviewer_model: Gemini
+reviewed_head_sha: 799ee91dd735cccd149b40dd0e72551311441de7
 verdict: PASS
 findings:
 - severity: INFO
-  description: Verified in an isolated git worktree (checked out at head_sha 8b4bcec5, parent 3cf4775d matching audited_repo_sha) that git show --stat reports exactly one file changed, classes/core/DatabaseManager.php, with 2 insertions(+) and 12 deletions(-), matching the claimed diff shape exactly.
-- severity: INFO
-  description: Read the full diff. It replaces only the else-branch body (old lines 279-290) inside the server_port >= 8001 && server_port <= 8010 / else block, changing $db = caut_sfusd (plus the config.php sfusd override read) to $db = intypiano_demo with a new siteName. The demo-pool dispatch (server_port 8001-8010 mapping to caut_demoNN) is untouched, confirmed by reading the surrounding lines in the worktree file, not just the diff hunk. The outer if (isset($this->app->app) && $this->app->app==cauttools) gate is untouched. No non-localhost branches (sfusd.cauttools.com, unm.*, uh-test.cauttools.com, demo pool regex) were touched, confirmed by reading lines 130-300 of the post-fix file. config.php itself was not touched, only the require_once block that read from it inside DatabaseManager.php was removed.
-- severity: INFO
-  description: Live-tested against the worktree, not the claimed narrative. Found and killed a stale php -S localhost:2027 process left running against the main repo checkout (unrelated to this review, predates it) that was shadowing port 2027 and returning a false Unknown database caut_sfusd error on my first curl attempt. After killing it and starting a fresh server rooted in the worktree (confirmed via startup log and a clean lsof), curl to admin/v2/piano.php?id=11 and to admin.php (a V1 admin entry point) both returned HTTP 302 (redirect to login, expected for unauthenticated requests) with zero occurrences of Unknown database or caut_sfusd in either response body.
-- severity: INFO
-  description: 'Ran ./vendor/bin/phpunit fresh against the worktree''s own server (not reused from the Worker''s run). Independently measured result: Tests: 330, Assertions: 666, Errors: 1, Failures: 68, exit code 2, an exact match to the Worker''s claimed after-fix numbers (1 error / 68 failures). Grepped the full raw output file for case-insensitive unknown database and caut_sfusd: zero matches for both. The sole remaining error (AdminV2UnservicedTest::testABadCsrfTokenIsRefused, Undefined array key 1) and all 68 failures are non-DB-dispatch issues (missing viewport meta tags, CSRF token assertions, stakeholder auth redirect codes, password reset flow), confirmed by reading every failure line in the output, not by sampling.'
-- severity: INFO
-  description: 'DoD checked line by line against verified evidence. (1) Error/failure count dropped substantially (18 errors/114 failures to 1 error/68 failures per task scope''s stated before-state, independently reproduced after-state) with zero live Unknown database causes: met. (2) admin/v2/piano.php no longer throws Unknown database on localhost:2027: met, verified live. (3) demo-pool ports 8001-8010 dispatch and caut_demoNN mapping unaltered: met, confirmed by reading the unchanged lines. (4) game_people DB path (the outer localhost branch, ports 2099/8888/3031 etc.) unaffected: met, confirmed the cauttools sub-branch only fires when app.app==cauttools, and the outer branch''s game_people defaults are set before that sub-branch and untouched by the diff.'
-- severity: MINOR
-  description: The task's own verification_command (raw ./vendor/bin/phpunit) exits nonzero on any test failure, so fleet verify would report this task as failing verification even though the DoD explicitly only requires a substantial drop in error/failure count with zero remaining Unknown-database causes, not a fully green suite. This is a pre-existing mismatch in how the task was audited (verification_command too strict for its own DoD), not a defect introduced by the Worker; the Worker flagged it accurately in peer_review_notes. Recommend a follow-up task tighten verification_command (e.g. grep-based assertion on absence of Unknown database) so future automated fleet verify runs on DB-dispatch fixes do not require a 0-failure baseline that does not exist in this suite.
-- severity: INFO
-  description: The task YAML's human_review_required field is currently false (not true as the reviewer prompt assumed). Per bin/fleet.py cmd_record_review logic, a PASS verdict with human_review_required=false moves the task directly to DONE rather than to HUMAN_REVIEW. Noting this so the resulting status transition is not mistaken for a review-process error.
-reviewed_at: '2026-08-12T18:17:35.405236Z'
+  description: REQUIRED_PLEASE_FILL
+reviewed_at: '2026-08-20T19:14:01.680331Z'

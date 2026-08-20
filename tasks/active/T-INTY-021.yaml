@@ -1,0 +1,44 @@
+id: T-INTY-021
+title: Schedule Profiles Architecture
+repo: intypiano
+priority: P1
+lane: FEATURE
+status: DONE
+owner: Antigravity
+created_at: '2026-08-20T13:00:00-06:00'
+dependencies: []
+requires_doc_update: false
+scope:
+- Create schedule_profiles table via DDL.
+- Update timeslot, tuner_schedules, and availability exceptions to link to profile_id.
+- Build Admin UI in admin/v2/scheduling.php to manage profiles and assign them.
+- Refactor frontend js/schedule_tuning_red.js to use a new getTimeslotsJSON.php API.
+definition_of_done:
+- DDL runs successfully.
+- Admin UI allows creating profiles and assigning timeslots/exceptions/tuners to them.
+- Frontend fetches dynamic timeslots.
+- php -l passes for modified PHP files.
+verification_command: php -l admin/v2/scheduling.php
+human_review_required: true
+audited_at: '2026-08-20T19:02:59.073261Z'
+audited_by: Antigravity
+audited_repo_sha: 8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516
+events:
+- timestamp: '2026-08-20T19:02:59.073588Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against 8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516
+- timestamp: '2026-08-20T19:03:06.095779Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-20T19:13:56.878554Z'
+  action: SUBMIT
+  actor: Antigravity
+- timestamp: '2026-08-20T19:14:01.864142Z'
+  action: RECORD_REVIEW
+  actor: ReviewerGemini
+  details: 'Verdict: PASS'
+- timestamp: '2026-08-20T19:14:24.116783Z'
+  action: CLOSE
+  actor: Willis Miller
+claimed_at: '2026-08-20T19:03:06.095552Z'

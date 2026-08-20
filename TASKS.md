@@ -28,6 +28,7 @@ graph TD
     T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
     T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
+    T-INTY-021["T-INTY-021<br/>Schedule Profiles Architecture"]:::done
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
     T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
@@ -64,6 +65,25 @@ graph TD
 
 ## Repo: `intypiano`
 
+### ✅ T-INTY-021 · P1 · FEATURE · DONE
+**Schedule Profiles Architecture**
+**Owner:** Antigravity
+
+**Scope:**
+- Create schedule_profiles table via DDL.
+- Update timeslot, tuner_schedules, and availability exceptions to link to profile_id.
+- Build Admin UI in admin/v2/scheduling.php to manage profiles and assign them.
+- Refactor frontend js/schedule_tuning_red.js to use a new getTimeslotsJSON.php API.
+
+**Definition of Done:**
+- DDL runs successfully.
+- Admin UI allows creating profiles and assigning timeslots/exceptions/tuners to them.
+- Frontend fetches dynamic timeslots.
+- php -l passes for modified PHP files.
+
+*Audited against SHA:* `8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516`
+
+---
 ### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
 **Piano Dossier Data Entry Interface (Modern EAV)**
 **Owner:** TaskForce

@@ -85,6 +85,24 @@ graph TD
 *Audited against SHA:* `8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516`
 
 ---
+### ⏳ T-INTY-022 · P1 · FEATURE · HUMAN_REVIEW
+**V2 Personnel Management Interface**
+**Owner:** Antigravity
+
+**Scope:**
+- Create admin/v2/personnel.php to manage the unified users table natively in V2.
+- View all users (active and inactive).
+- Add new users (requires full_name, email, role).
+- Edit existing users (update role, email, is_active).
+- No JavaScript (standard V2 architecture).
+
+**Definition of Done:**
+- admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
+- Users can be created, edited, and toggled active/inactive natively in V2.
+
+*Audited against SHA:* `c9637f1919f7c2dede742416a975ab7ffd07998c`
+
+---
 ### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
 **Piano Dossier Data Entry Interface (Modern EAV)**
 **Owner:** TaskForce
@@ -102,24 +120,6 @@ graph TD
 - Tested via PHP linting.
 
 *Audited against SHA:* `efef90953c62f09c2e6c74e3cee15c97ddf57980`
-
----
-### ⏳ T-INTY-022 · P1 · FEATURE · PEER_REVIEW
-**V2 Personnel Management Interface**
-**Owner:** Antigravity
-
-**Scope:**
-- Create admin/v2/personnel.php to manage the unified users table natively in V2.
-- View all users (active and inactive).
-- Add new users (requires full_name, email, role).
-- Edit existing users (update role, email, is_active).
-- No JavaScript (standard V2 architecture).
-
-**Definition of Done:**
-- admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
-- Users can be created, edited, and toggled active/inactive natively in V2.
-
-*Audited against SHA:* `c9637f1919f7c2dede742416a975ab7ffd07998c`
 
 ---
 ### 📋 T-INTY-019 · P2 · ANY · AUDITED

@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: admin_article_index_matrix.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -50,3 +50,25 @@ events:
   details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
     index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
     human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'
+- timestamp: '2026-08-21T08:05:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Stage A: page earns its place -- it is the only editable surface for article_index_topics,
+    the join table Coverage Atlas and profile.php read from; without it those pages would stay empty.
+    No merge/rename/simplify needed. Stages B/C/E (layout/polish/typeset) already strong: sticky headers/columns,
+    client-side chunked rendering for ~4,100 rows, debounced search, disabled-during-save checkboxes --
+    no changes required. Stage D (colorize) was already nearly complete (built entirely on var(--color-*)
+    tokens from the start) except two literals: .save-flash.error used #c0392b instead of the codebase''s
+    real --color-danger token, and the row-hover tint used a flat rgba(0,0,0,.015) that would look wrong
+    in dark theme -- both retokenized. Stage F (harden): wrapped the three DB queries building the matrix
+    payload in try/catch with a friendly $loadError message and guarded both the markup and the trailing
+    script block so nothing references missing DOM on failure; previously a DB hiccup meant an uncaught
+    PDOException and a raw fatal-error page. Verification: php -l clean, detect.mjs run (11 advisories,
+    all pre-reasoned stale-sidecar false positives matching the pattern on the other 5 swept pages), golden
+    hammer suite 28/28 pass.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T08:05:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: f775d0223d3653d409b5e506a04b0f7887d0da09
+claimed_at: '2026-08-21T08:05:00.000000-06:00'
+last_transition: '2026-08-21T08:05:00.000000-06:00'

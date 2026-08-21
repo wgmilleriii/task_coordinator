@@ -1,0 +1,46 @@
+id: T-PTG-106
+title: 'Investigate: has_content resync test may zero out other fixtures'' flags cross-process'
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: OPEN
+created_at: '2026-08-21T12:35:00-06:00'
+dependencies: []
+scope:
+- 'Flagged during a 2026-08-21 audit fork dispatched after fixing a confirmed flaky test
+  (ConversationTopicWeightRunnerTest.php, see that file''s git history same day) -- the audit checked
+  every other test file for the SAME bug class (absolute global-count assertion against an unscoped
+  query) and found none, but surfaced a DIFFERENT, unconfirmed risk worth a real look.'
+- 'journalgpt/tests/ArticleIndexHasContentBackfillRunnerTest.php''s testUnflagsCsvNumbersNoLongerInMetadata
+  exercises ArticleIndexHasContentBackfillRunner::run(), which by design does an exact resync: it
+  sets has_content=0 for every article_index row NOT in its small fixture metadata list -- a deliberate,
+  correct GLOBAL WRITE against the whole shared MySQL test database (confirmed via the runner''s
+  own docblock: "resync must be exact, not additive"). The test''s own assertions are fine (scoped
+  to the csv_numbers it controls), but if this test runs in the same golden-hammer-suite process
+  as another file whose fixtures depend on has_content=1 persisting on article_index rows THEY seeded
+  (e.g. CoverageRadarServiceTest.php), this resync could silently zero those out depending on execution
+  order.'
+- 'This is UNCONFIRMED -- the audit fork read the code and reasoned about the risk but did not reproduce
+  an actual failure (unlike the ConversationTopicWeightRunnerTest bug, which WAS reproduced via 8
+  repeated runs before being called a real bug). Do not "fix" anything based on the theory alone --
+  first try to actually reproduce a failure (e.g. run the full golden hammer suite repeatedly, or
+  construct a targeted repro running ArticleIndexHasContentBackfillRunnerTest.php followed immediately
+  by CoverageRadarServiceTest.php in the same process/DB state) before concluding this is real.'
+definition_of_done:
+- Either a real, reproduced failure is found and fixed (test isolation, not the runner -- the runner''s
+  exact-resync behavior is correct production behavior per its own docblock), or the investigation
+  concludes it is not actually triggerable in practice (e.g. golden_hammer_suite.php''s own fixed
+  test order never actually places them adjacently in a way that collides) and this task is closed
+  with that reasoning recorded.
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-21T12:35:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: 'Filed from an audit fork''s finding while working autonomously through the task_coordinator
+    backlog (Chip''s instruction: "begin work on some more while I review these... keep working as
+    long as you can"). Low priority (P3) and human_review_required=false since this is purely internal
+    test-infrastructure risk, not user-facing -- a future session (or this one, later) can pick it
+    up without needing Chip''s input first.'

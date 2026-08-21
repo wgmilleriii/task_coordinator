@@ -40,6 +40,7 @@ graph TD
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
     T-PTG-075["T-PTG-075<br/>Full impeccable UI/UX pass: admin_backfill_article_topics.php"]:::done
     T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
+    T-PTG-106["T-PTG-106<br/>Investigate: has_content resync test may zero out other fixtures' flags cross-process"]
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]:::review
     T-PTG-054 --> T-PTG-055
@@ -2070,5 +2071,18 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Chip''s decision recorded in this task''s events, then implemented (or explicitly closed as "leave as-is" with no code change) -- either outcome is a valid completion, but the decision must be written down, not left ambiguous.
 
 *Audited against SHA:* `40e3342f813e548606016a0f1e950c39d08aeb28`
+
+---
+### 📋 T-PTG-106 · P3 · ANY · OPEN
+**Investigate: has_content resync test may zero out other fixtures' flags cross-process**
+**Owner:** None
+
+**Scope:**
+- Flagged during a 2026-08-21 audit fork dispatched after fixing a confirmed flaky test (ConversationTopicWeightRunnerTest.php, see that file's git history same day) -- the audit checked every other test file for the SAME bug class (absolute global-count assertion against an unscoped query) and found none, but surfaced a DIFFERENT, unconfirmed risk worth a real look.
+- journalgpt/tests/ArticleIndexHasContentBackfillRunnerTest.php's testUnflagsCsvNumbersNoLongerInMetadata exercises ArticleIndexHasContentBackfillRunner::run(), which by design does an exact resync: it sets has_content=0 for every article_index row NOT in its small fixture metadata list -- a deliberate, correct GLOBAL WRITE against the whole shared MySQL test database (confirmed via the runner's own docblock: "resync must be exact, not additive"). The test's own assertions are fine (scoped to the csv_numbers it controls), but if this test runs in the same golden-hammer-suite process as another file whose fixtures depend on has_content=1 persisting on article_index rows THEY seeded (e.g. CoverageRadarServiceTest.php), this resync could silently zero those out depending on execution order.
+- This is UNCONFIRMED -- the audit fork read the code and reasoned about the risk but did not reproduce an actual failure (unlike the ConversationTopicWeightRunnerTest bug, which WAS reproduced via 8 repeated runs before being called a real bug). Do not "fix" anything based on the theory alone -- first try to actually reproduce a failure (e.g. run the full golden hammer suite repeatedly, or construct a targeted repro running ArticleIndexHasContentBackfillRunnerTest.php followed immediately by CoverageRadarServiceTest.php in the same process/DB state) before concluding this is real.
+
+**Definition of Done:**
+- Either a real, reproduced failure is found and fixed (test isolation, not the runner -- the runner''s exact-resync behavior is correct production behavior per its own docblock), or the investigation concludes it is not actually triggerable in practice (e.g. golden_hammer_suite.php''s own fixed test order never actually places them adjacently in a way that collides) and this task is closed with that reasoning recorded.
 
 ---

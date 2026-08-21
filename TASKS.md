@@ -68,7 +68,7 @@ graph TD
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
-    T-PTG-104["T-PTG-104<br/>Extend the async job pattern to Generate Quiz"]
+    T-PTG-104["T-PTG-104<br/>Extend the async job pattern to Generate Quiz"]:::review
     T-PTG-103 --> T-PTG-104
     T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]:::review
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
@@ -1148,6 +1148,25 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `363dbb0a0cbf8709d117e72932cb32fe39013553`
 
 ---
+### ⏳ T-PTG-104 · P2 · ANY · HUMAN_REVIEW
+**Extend the async job pattern to Generate Quiz**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Identified 2026-08-21 while shipping T-PTG-103 (async chat answers): api/generate_quiz.php ("Generate Quiz" button under a cited answer) has the exact same architectural problem T-PTG-103 just fixed for api/ask.php -- one blocking HTTP request holding the button disabled for the full OpenAI generation time (@set_time_limit(120)), and on success today the client does a full `window.location.href = 'quiz.php?id=...'` navigation. Navigating away mid-generation today loses the quiz entirely, same failure mode T-PTG-103 fixed for chat.
+- Reuse T-PTG-103's pattern directly: api/generate_quiz.php already IS structured as a pure *_LIBRARY_ONLY handler (handleGenerateQuizRequest() or similar, matching api/ask_job_status.php's own established shape) -- this makes wiring it into the accept+continue flow more mechanical than ask.php was, not less. Prefer GENERALIZING the existing `pending_ask_jobs` table (add a `job_type` ENUM('ask','quiz') column and a `quiz_id` nullable result column, or similar) over creating a second parallel `pending_quiz_jobs` table, unless a real reason to keep them separate turns up during implementation.
+- Real UX decision this task must make (NOT simply mirror ask.php's pattern): on completion, DO NOT auto-navigate the member to quiz.php via window.location.href -- if they've since navigated elsewhere (the whole point of this being async), a forced redirect away from wherever they are would be jarring and defeats the feature. Instead show a small, persistent notification/toast ("Your quiz is ready -- Open it") the member clicks through to quiz.php on their own schedule, not automatically.
+- Also fold in: journal-chat.js's existing CSRF-retry-on-403 logic (isCsrfError/refreshCsrfToken, already used by this exact generate-quiz flow at its current call site) needs to carry over correctly into the new accept-phase request -- confirm it still applies to the fast accept POST, not just a version of the flow that no longer exists after this change.
+
+**Definition of Done:**
+- Clicking Generate Quiz re-enables the button/UI almost immediately instead of staying disabled for the full generation time, matching T-PTG-103''s ask.php fix.
+- A member can navigate away entirely (different conversation, different page, close the tab) while a quiz is generating and still get a real, working notification once it''s ready, pointing to the correct quiz.php?id=... -- proven by a real test, not just manual spot-check.
+- No auto-navigation on completion -- verified the member stays wherever they currently are, with only a dismissible/clickable notification appearing.
+- Golden hammer suite passes with zero regressions; php -l clean.
+
+*Audited against SHA:* `532056743015db618be6cf3e3d94462736a8c7f2`
+
+---
 ### ⏳ T-PTG-095 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: profile.php**
 **Owner:** Claude-Sonnet-Session
@@ -1315,23 +1334,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 *Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
-
----
-### 📋 T-PTG-104 · P2 · ANY · OPEN
-**Extend the async job pattern to Generate Quiz**
-**Owner:** None
-
-**Scope:**
-- Identified 2026-08-21 while shipping T-PTG-103 (async chat answers): api/generate_quiz.php ("Generate Quiz" button under a cited answer) has the exact same architectural problem T-PTG-103 just fixed for api/ask.php -- one blocking HTTP request holding the button disabled for the full OpenAI generation time (@set_time_limit(120)), and on success today the client does a full `window.location.href = 'quiz.php?id=...'` navigation. Navigating away mid-generation today loses the quiz entirely, same failure mode T-PTG-103 fixed for chat.
-- Reuse T-PTG-103's pattern directly: api/generate_quiz.php already IS structured as a pure *_LIBRARY_ONLY handler (handleGenerateQuizRequest() or similar, matching api/ask_job_status.php's own established shape) -- this makes wiring it into the accept+continue flow more mechanical than ask.php was, not less. Prefer GENERALIZING the existing `pending_ask_jobs` table (add a `job_type` ENUM('ask','quiz') column and a `quiz_id` nullable result column, or similar) over creating a second parallel `pending_quiz_jobs` table, unless a real reason to keep them separate turns up during implementation.
-- Real UX decision this task must make (NOT simply mirror ask.php's pattern): on completion, DO NOT auto-navigate the member to quiz.php via window.location.href -- if they've since navigated elsewhere (the whole point of this being async), a forced redirect away from wherever they are would be jarring and defeats the feature. Instead show a small, persistent notification/toast ("Your quiz is ready -- Open it") the member clicks through to quiz.php on their own schedule, not automatically.
-- Also fold in: journal-chat.js's existing CSRF-retry-on-403 logic (isCsrfError/refreshCsrfToken, already used by this exact generate-quiz flow at its current call site) needs to carry over correctly into the new accept-phase request -- confirm it still applies to the fast accept POST, not just a version of the flow that no longer exists after this change.
-
-**Definition of Done:**
-- Clicking Generate Quiz re-enables the button/UI almost immediately instead of staying disabled for the full generation time, matching T-PTG-103''s ask.php fix.
-- A member can navigate away entirely (different conversation, different page, close the tab) while a quiz is generating and still get a real, working notification once it''s ready, pointing to the correct quiz.php?id=... -- proven by a real test, not just manual spot-check.
-- No auto-navigation on completion -- verified the member stays wherever they currently are, with only a dismissible/clickable notification appearing.
-- Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
 ### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW

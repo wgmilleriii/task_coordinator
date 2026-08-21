@@ -93,7 +93,7 @@ graph TD
     T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
     T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
     T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]:::done
-    T-PTG-103["T-PTG-103<br/>Async chat answers: let members keep using the site while a question is processing"]
+    T-PTG-103["T-PTG-103<br/>Async chat answers: let members keep using the site while a question is processing"]:::review
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
     T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]:::done
 ```
@@ -363,7 +363,7 @@ graph TD
 - profile.php and explore.php show working "Read the full article" links for the 6 pilot articles.
 - New DESIGN.md section documents the drop-cap/pull-quote/reading typography choices made.
 
-*Audited against SHA:* `418ee20a60d8ba8fa36116a1d4bce4bf7273beb5`
+*Audited against SHA:* `0583a419478f7fac3b9ae4d66776b1fab278a3f4`
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW
@@ -1273,6 +1273,25 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `acdf276fa9f497fed6deee4408b461923d7c57d2`
 
 ---
+### ⏳ T-PTG-103 · P2 · ANY · HUMAN_REVIEW
+**Async chat answers: let members keep using the site while a question is processing**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Root cause traced 2026-08-21 (Chip asked why long answers block the tab): api/ask.php is fully synchronous -- one HTTP request holds open the whole pipeline (OpenAIClient.php's threads/runs poll loop, up to 100 x 1s sleeps for Deep-tier reasoning, then citation resolution, then the DB write). Nothing is persisted to `messages` until the very end (see JournalAnswerService.php's INSERT INTO messages) -- there is no "pending" row, so a request that dies early leaves no trace the question was ever asked. Client-side, journal-chat.js only disables the send button/input (setSubmittingState) -- it does NOT block navigation, but every sidebar conversation link is a plain `<a href>` full-page reload (no client-side routing), so navigating away mid-answer kills the in-flight fetch, and whether server-side PHP keeps running after that depends on ignore_user_abort, which is never set (coin flip on this host).
+- FIRST STEP -- verify, don't assume: determine whether production PHP runs as PHP-FPM (in which case fastcgi_finish_request() can flush an instant "accepted" response to the browser and keep processing the OpenAI call afterward in the SAME request -- no cron/queue infrastructure needed at all) or classic mod_php (in which case a real pending-queue + cPanel-cron-driven worker script is needed instead, following the same pattern already established by cli/migrate.php and the backfill runners). This determines which of the two designs below applies -- do not build both speculatively.
+- Design once SAPI is known: (1) api/ask.php becomes a fast enqueue -- validate, deduct quota, INSERT a pending message/job row, return immediately with an id. (2) The actual OpenAI thread-run/poll/citation-resolve/DB-write logic (already exists in OpenAIClient.php + JournalAnswerService.php -- reuse, do not rewrite) runs either post-fastcgi_finish_request() in the same script, or in a new cli/process_pending_questions.php worker invoked by cPanel cron. (3) Client-side: journal-chat.js polls a new lightweight status endpoint every few seconds instead of awaiting one long fetch; a "thinking..." placeholder in the message list resumes polling automatically on page reload/different tab if a question for that conversation is still pending, so the member can navigate freely, come back, and see the finished answer.
+- Explicitly OUT of scope for this task: full streaming/SSE token-by-token rendering (discussed as a separate, lower-priority improvement that does not by itself solve "keep using the site while it works" -- streaming still ties up one open connection that dies on navigation).
+
+**Definition of Done:**
+- SAPI mode confirmed and recorded in this task''s events before any design/implementation work begins.
+- A member can submit a question, immediately navigate to another conversation or another page (or close the tab and come back), and see the finished answer render correctly once ready -- proven by a real test, not just manual spot-check.
+- No regression to existing conversation history, citation resolution, quota deduction, or the golden hammer suite (journalgpt/tests/security_and_eval_suite.php, currently 28/28).
+- If a cron-based worker is required: a documented cPanel cron entry (Chip must add it manually -- no automated cron-provisioning access) and a locking/claim mechanism so overlapping cron firings never double-process the same pending question.
+
+*Audited against SHA:* `64e3a543e21b8cafd7d23521d547ee871d56ee3b`
+
+---
 ### ⏳ T-PTG-093 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: labs.php**
 **Owner:** Claude-Sonnet-Session
@@ -1313,23 +1332,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - A member can navigate away entirely (different conversation, different page, close the tab) while a quiz is generating and still get a real, working notification once it''s ready, pointing to the correct quiz.php?id=... -- proven by a real test, not just manual spot-check.
 - No auto-navigation on completion -- verified the member stays wherever they currently are, with only a dismissible/clickable notification appearing.
 - Golden hammer suite passes with zero regressions; php -l clean.
-
----
-### 📋 T-PTG-103 · P2 · ANY · OPEN
-**Async chat answers: let members keep using the site while a question is processing**
-**Owner:** None
-
-**Scope:**
-- Root cause traced 2026-08-21 (Chip asked why long answers block the tab): api/ask.php is fully synchronous -- one HTTP request holds open the whole pipeline (OpenAIClient.php's threads/runs poll loop, up to 100 x 1s sleeps for Deep-tier reasoning, then citation resolution, then the DB write). Nothing is persisted to `messages` until the very end (see JournalAnswerService.php's INSERT INTO messages) -- there is no "pending" row, so a request that dies early leaves no trace the question was ever asked. Client-side, journal-chat.js only disables the send button/input (setSubmittingState) -- it does NOT block navigation, but every sidebar conversation link is a plain `<a href>` full-page reload (no client-side routing), so navigating away mid-answer kills the in-flight fetch, and whether server-side PHP keeps running after that depends on ignore_user_abort, which is never set (coin flip on this host).
-- FIRST STEP -- verify, don't assume: determine whether production PHP runs as PHP-FPM (in which case fastcgi_finish_request() can flush an instant "accepted" response to the browser and keep processing the OpenAI call afterward in the SAME request -- no cron/queue infrastructure needed at all) or classic mod_php (in which case a real pending-queue + cPanel-cron-driven worker script is needed instead, following the same pattern already established by cli/migrate.php and the backfill runners). This determines which of the two designs below applies -- do not build both speculatively.
-- Design once SAPI is known: (1) api/ask.php becomes a fast enqueue -- validate, deduct quota, INSERT a pending message/job row, return immediately with an id. (2) The actual OpenAI thread-run/poll/citation-resolve/DB-write logic (already exists in OpenAIClient.php + JournalAnswerService.php -- reuse, do not rewrite) runs either post-fastcgi_finish_request() in the same script, or in a new cli/process_pending_questions.php worker invoked by cPanel cron. (3) Client-side: journal-chat.js polls a new lightweight status endpoint every few seconds instead of awaiting one long fetch; a "thinking..." placeholder in the message list resumes polling automatically on page reload/different tab if a question for that conversation is still pending, so the member can navigate freely, come back, and see the finished answer.
-- Explicitly OUT of scope for this task: full streaming/SSE token-by-token rendering (discussed as a separate, lower-priority improvement that does not by itself solve "keep using the site while it works" -- streaming still ties up one open connection that dies on navigation).
-
-**Definition of Done:**
-- SAPI mode confirmed and recorded in this task''s events before any design/implementation work begins.
-- A member can submit a question, immediately navigate to another conversation or another page (or close the tab and come back), and see the finished answer render correctly once ready -- proven by a real test, not just manual spot-check.
-- No regression to existing conversation history, citation resolution, quota deduction, or the golden hammer suite (journalgpt/tests/security_and_eval_suite.php, currently 28/28).
-- If a cron-based worker is required: a documented cPanel cron entry (Chip must add it manually -- no automated cron-provisioning access) and a locking/claim mechanism so overlapping cron firings never double-process the same pending question.
 
 ---
 ### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW

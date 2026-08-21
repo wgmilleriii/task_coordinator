@@ -3,7 +3,7 @@ title: 'Async chat answers: let members keep using the site while a question is 
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-21T09:00:00-06:00'
 dependencies: []
 scope:
@@ -79,3 +79,29 @@ events:
     UI state, and a real test proving a member can navigate away and still get their answer -- not
     yet built. Awaiting Chip''s sign-off on this design before implementation begins (human_review_required
     still applies).'
+- timestamp: '2026-08-21T12:00:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Built and deployed (status field was never flipped from OPEN despite this work landing --
+    corrected now). api/ask.php''s slow RAG-pipeline branch restructured into accept + continuation:
+    INSERT one pending_ask_jobs row (new migration 029), respond immediately with a job_id, litespeed_finish_request()
+    to close the connection, then run the UNCHANGED JournalAnswerService::ask() call in the same
+    process. New api/ask_job_status.php polling endpoint (pure *_LIBRARY_ONLY handler). journal-chat.js
+    reworked: submit re-enables input immediately on accept, polls for completion, resumes via localStorage
+    on reload. Fixed a real bug caught during build: a new-conversation race (JournalAnswerService::createConversation()
+    has no locking) -- the button now stays locked ONLY for that one specific case, with queued
+    follow-up questions (Chip''s explicit follow-up request) auto-sending once the conversation resolves.
+    Also fixed the bug Chip reported mid-session (follow-up questions appearing unresponsive) --
+    root-caused to the old design''s up-to-120s disabled-button window, not a separate defect. New
+    AsyncAskJobTest.php (17 assertions) caught a real timezone bug during testing (MySQL server clock
+    ~6 hours behind PHP''s, breaking naive time()-based staleness comparison) -- fixed by computing
+    job age via MySQL''s own TIMESTAMPDIFF() instead. Golden hammer suite 28-30/pass at each step
+    (grew across this and later T-PTG-105 work in the same session). Manual live verification not
+    done by Claude (no login credentials available) -- Chip confirmed the reported bug''s fix live
+    and confirmed the queueing behavior works as designed via direct conversation in this session.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T12:00:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 64e3a543e21b8cafd7d23521d547ee871d56ee3b
+claimed_at: '2026-08-21T12:00:00.000000-06:00'
+last_transition: '2026-08-21T12:00:00.000000-06:00'

@@ -90,9 +90,26 @@ events:
     touched/new files, golden hammer suite 30/30, both test and main deploys confirmed successful.
     Phase 2 (review/approve/comment interface, reviewer email-allowlist, rollout beyond this pilot
     batch) explicitly not started -- to be filed as a new task once Chip reviews this pilot batch.'
+- timestamp: '2026-08-21T11:55:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Follow-up fix found during Chip''s own live check: corpus/article_html/<csv_number>.json
+    was directly fetchable by URL with zero auth (confirmed live: 200 on test.newmexicoptg.org),
+    completely bypassing article.php''s Authorization::requireRole() gate -- the full licensed article
+    text was reachable without login. Fixed with a .htaccess Deny-all rule (mirrors protected_assets/.htaccess''s
+    identical rule for the same reason). Confirmed live: 403 after deploy.'
+- timestamp: '2026-08-21T12:05:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Chip''s follow-up request: a simple index page listing every rendered article. New
+    articles.php + ArticleHtmlBundleBuilder::listAll() (sorted by issue then printed page). Linked
+    from article.php''s and explore.php''s nav as "All Articles". Visually verified via the same
+    local session-faked render + browse-skill screenshot technique used for article.php itself --
+    all 6 pilot articles listed correctly, sorted by page. Golden hammer suite still 30/30, both
+    deploys confirmed successful.'
 owner: Claude-Sonnet-Session
-audited_at: '2026-08-21T11:45:00.000000-06:00'
+audited_at: '2026-08-21T12:05:00.000000-06:00'
 audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
-audited_repo_sha: 418ee20a60d8ba8fa36116a1d4bce4bf7273beb5
+audited_repo_sha: 0583a419478f7fac3b9ae4d66776b1fab278a3f4
 claimed_at: '2026-08-21T11:45:00.000000-06:00'
-last_transition: '2026-08-21T11:45:00.000000-06:00'
+last_transition: '2026-08-21T12:05:00.000000-06:00'

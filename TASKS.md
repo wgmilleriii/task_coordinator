@@ -70,7 +70,7 @@ graph TD
     T-PTG-052 --> T-PTG-057
     T-PTG-104["T-PTG-104<br/>Extend the async job pattern to Generate Quiz"]
     T-PTG-103 --> T-PTG-104
-    T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]
+    T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]:::review
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
@@ -343,9 +343,9 @@ graph TD
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### 📋 T-PTG-105 · P1 · ANY · OPEN
+### ⏳ T-PTG-105 · P1 · ANY · HUMAN_REVIEW
 **HTML article pages Phase 1: pipeline + rendering template (pilot batch)**
-**Owner:** None
+**Owner:** Claude-Sonnet-Session
 
 **Scope:**
 - Chip's request (2026-08-21): deliver Journal articles as standalone, strikingly beautiful HTML reading pages -- large drop-cap first letters, 2-4 pull-quote/callout blocks, clean navigation, consistent styling -- generated from journalgpt/corpus/articles/<ISSUE>/<slug>.md (592 real files, rich YAML frontmatter, csv_number joins to article_index.csv_number). No images this phase. Citations keep pointing at the secure reader.php image delivery as they do today; each article page additionally links out to "read this in the reader" for the scanned original.
@@ -362,6 +362,8 @@ graph TD
 - New tests (frontmatter parsing, paragraph/page-marker splitting, slug validation) pass; golden hammer suite passes with zero regressions; php -l clean.
 - profile.php and explore.php show working "Read the full article" links for the 6 pilot articles.
 - New DESIGN.md section documents the drop-cap/pull-quote/reading typography choices made.
+
+*Audited against SHA:* `418ee20a60d8ba8fa36116a1d4bce4bf7273beb5`
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW

@@ -3,7 +3,7 @@ title: 'HTML article pages Phase 1: pipeline + rendering template (pilot batch)'
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-21T11:00:00-06:00'
 dependencies: []
 scope:
@@ -59,3 +59,40 @@ events:
     existing design-system state, and the review/role landscape. human_review_required=true given
     this is new user-facing visual design work Chip explicitly wants to review himself ("strikingly
     beautiful" is a subjective bar only he can confirm), not just a mechanical scan.'
+- timestamp: '2026-08-21T11:45:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Built and deployed. lib/ArticleHtmlBundleBuilder.php parses corpus .md frontmatter (regex-based,
+    no YAML dependency) + splits body into paragraphs + strips [[page:N]] markers + a best-effort
+    OCR cleanup pass + a byline-stripping heuristic (cuts right after the author''s name so the
+    masthead doesn''t repeat title/author as an ugly run-on first paragraph) + selects 2-4 pull-quote
+    candidates (longest sentences, spread through the article, never first/last paragraph). New
+    cli/generate_article_html_bundles.php writes committed JSON bundles to corpus/article_html/<csv_number>.json
+    (required since deploy.yml strips *.md at any depth -- same established workaround as corpus/article_topics_map.json).
+    New article.php renders a bundle with a real drop cap, pull-quote callout blocks, masthead,
+    and a device-responsive "read this in the reader" link reusing CoverageRadarService::sourceUrl()
+    (promoted to public for reuse). Strict slug allow-list (SLUG_PATTERN/isValidSlug/findBundleBySlug)
+    directly tested against path-traversal attempts. explore.php gets a conditional "Read the full
+    article" link wherever a bundle exists (getCategoryArticles() now also selects csv_number).
+    profile.php intentionally NOT wired -- its citation list runs on the older issue-level articles.id
+    system with no clean join to csv_number. Pilot batch: PTJ-2021-07 (6 articles, chosen because
+    it was already read in full earlier this session for verification). Visually verified (no live
+    login credentials available, so via a local session-faked render captured to a file and viewed
+    through the browse skill) at both desktop and a 390px mobile viewport, plus the messiest article
+    in the batch (a recurring tips column with a garbled OCR''d masthead) to confirm graceful degradation
+    rather than breakage -- one real quality gap surfaced there (a pull-quote landed on hotel-rate
+    convention-ad copy rather than technical content on a mixed-content article), noted as exactly
+    the kind of thing Phase 2''s review/override tooling exists to fix, not a bug. New DESIGN.md
+    section documents the resulting typography choices (serif reading body extending source.php''s
+    existing precedent, drop-cap/pull-quote specs, a new "Masthead-Once Rule"). New ArticleHtmlBundleBuilderTest.php
+    (22 assertions, including against a real corpus sample file, not just synthetic fixtures) wired
+    into test-ci.yml and the golden hammer suite (30/30 pass). Verification: php -l clean on all
+    touched/new files, golden hammer suite 30/30, both test and main deploys confirmed successful.
+    Phase 2 (review/approve/comment interface, reviewer email-allowlist, rollout beyond this pilot
+    batch) explicitly not started -- to be filed as a new task once Chip reviews this pilot batch.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T11:45:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 418ee20a60d8ba8fa36116a1d4bce4bf7273beb5
+claimed_at: '2026-08-21T11:45:00.000000-06:00'
+last_transition: '2026-08-21T11:45:00.000000-06:00'

@@ -3,7 +3,7 @@ title: 'Explore-by-category: filtered article browsing action'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-21T09:00:00-06:00'
 dependencies: []
 scope:
@@ -46,3 +46,31 @@ events:
     section 4/5''s Explore/Ask/Quiz actions are dynamic. Ask and Quiz already are (built pre-existing
     + this session); Explore has no destination anywhere in the codebase. human_review_required=true
     -- new page/route needs Chip''s eyes on placement and visual design, not just a mechanical scan.'
+- timestamp: '2026-08-21T09:30:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Built explore.php: new member page listing every has_content=1 article tagged into a
+    taxonomy category, via a new CoverageRadarService::getCategoryArticles() method reusing coverage.php''s
+    existing article_index/article_index_topics/member_article_activity query shape (HONEST-DATA GUARD
+    intact -- excludes has_content=0 rows). Each article carries the member''s own read/discussed/quiz_passed
+    flags and sorts not-yet-engaged articles first. Wired "Explore" links into profile.php''s Your
+    Journal Exposure list, profile.php''s Recommended Next Steps cards (replacing the less-specific
+    "Open Coverage Atlas" link), and coverage.php''s empty-wedge nudge group headers. Bonus fix while
+    touching the shared link-resolution code: CoverageRadarService::sourceUrl() now routes through
+    reader.php (the authenticated image-based Journal Reader) instead of the raw source.php PDF proxy
+    wherever a physical page is resolvable -- same fix already applied to quiz.php''s result citations
+    earlier this session, now consistent across coverage.php''s nudges and explore.php too. Full A-F
+    treatment applied at build time (not a retrofit): theme tokens across light/dark/sepia/ptg, try/catch
+    DB guard with a friendly $loadError, category-not-found state, zero-tagged-articles empty state.
+    New dedicated test coverage in CoverageRadarServiceTest.php (4 new assertions: excludes has_content=0
+    rows, correctly flags a member''s own engagement, resolves the same reader.php url nudges do, empty
+    array for an untagged category) plus updated the existing nudge-url test for the source.php->reader.php
+    change. Verification: php -l clean on all 4 touched files, detect.mjs run (10 advisories on explore.php,
+    all pre-reasoned stale-sidecar false positives matching the established pattern), golden hammer
+    suite 28/28 pass (including the new/updated CoverageRadarServiceTest assertions).'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T09:30:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 2b75e58cf28a595a9fc90ea99638ec1a473c5410
+claimed_at: '2026-08-21T09:30:00.000000-06:00'
+last_transition: '2026-08-21T09:30:00.000000-06:00'

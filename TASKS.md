@@ -76,7 +76,7 @@ graph TD
     T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
     T-PTG-076["T-PTG-076<br/>Full impeccable UI/UX pass: admin_classify_topics.php"]
-    T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]
+    T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
     T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]
@@ -524,6 +524,31 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ⏳ T-PTG-099 · P2 · ANY · HUMAN_REVIEW
+**Full impeccable UI/UX pass: source.php**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Page: journalgpt/source.php. Purpose: Protected source citation viewer: extracted text excerpt plus embedded PDF page. The .journalgpt-body scroll-lock fix and an excerpt-text color-contrast fix already landed this session -- verify that work holds, then continue with C-F.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/source.php -- structure, spacing scale, grouping, responsive behavior. The scroll-lock and color-contrast fixes already landed -- confirm they still hold before moving to C-F.
+- C) /impeccable polish journalgpt/source.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/source.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/source.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/source.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `88a96a35c74693a42a5c1b59988ff525d2d24c49`
 
 ---
 ### ⏳ T-PTG-088 · P2 · ANY · HUMAN_REVIEW
@@ -1072,29 +1097,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - D) /impeccable colorize journalgpt/admin_classify_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
 - E) /impeccable typeset journalgpt/admin_classify_topics.php -- typography hierarchy per DESIGN.md's documented scale.
 - F) /impeccable harden journalgpt/admin_classify_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-099 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: source.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/source.php. Purpose: Protected source citation viewer: extracted text excerpt plus embedded PDF page. The .journalgpt-body scroll-lock fix and an excerpt-text color-contrast fix already landed this session -- verify that work holds, then continue with C-F.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/source.php -- structure, spacing scale, grouping, responsive behavior. The scroll-lock and color-contrast fixes already landed -- confirm they still hold before moving to C-F.
-- C) /impeccable polish journalgpt/source.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/source.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/source.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/source.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
 - Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
 
 **Definition of Done:**

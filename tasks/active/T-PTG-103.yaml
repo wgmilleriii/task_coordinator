@@ -1,0 +1,61 @@
+id: T-PTG-103
+title: 'Async chat answers: let members keep using the site while a question is processing'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-21T09:00:00-06:00'
+dependencies: []
+scope:
+- 'Root cause traced 2026-08-21 (Chip asked why long answers block the tab): api/ask.php is fully
+  synchronous -- one HTTP request holds open the whole pipeline (OpenAIClient.php''s threads/runs
+  poll loop, up to 100 x 1s sleeps for Deep-tier reasoning, then citation resolution, then the DB
+  write). Nothing is persisted to `messages` until the very end (see JournalAnswerService.php''s
+  INSERT INTO messages) -- there is no "pending" row, so a request that dies early leaves no trace
+  the question was ever asked. Client-side, journal-chat.js only disables the send button/input
+  (setSubmittingState) -- it does NOT block navigation, but every sidebar conversation link is a
+  plain `<a href>` full-page reload (no client-side routing), so navigating away mid-answer kills
+  the in-flight fetch, and whether server-side PHP keeps running after that depends on ignore_user_abort,
+  which is never set (coin flip on this host).'
+- 'FIRST STEP -- verify, don''t assume: determine whether production PHP runs as PHP-FPM (in which
+  case fastcgi_finish_request() can flush an instant "accepted" response to the browser and keep
+  processing the OpenAI call afterward in the SAME request -- no cron/queue infrastructure needed
+  at all) or classic mod_php (in which case a real pending-queue + cPanel-cron-driven worker script
+  is needed instead, following the same pattern already established by cli/migrate.php and the
+  backfill runners). This determines which of the two designs below applies -- do not build both
+  speculatively.'
+- 'Design once SAPI is known: (1) api/ask.php becomes a fast enqueue -- validate, deduct quota, INSERT
+  a pending message/job row, return immediately with an id. (2) The actual OpenAI thread-run/poll/citation-resolve/DB-write
+  logic (already exists in OpenAIClient.php + JournalAnswerService.php -- reuse, do not rewrite)
+  runs either post-fastcgi_finish_request() in the same script, or in a new cli/process_pending_questions.php
+  worker invoked by cPanel cron. (3) Client-side: journal-chat.js polls a new lightweight status
+  endpoint every few seconds instead of awaiting one long fetch; a "thinking..." placeholder in the
+  message list resumes polling automatically on page reload/different tab if a question for that
+  conversation is still pending, so the member can navigate freely, come back, and see the finished
+  answer.'
+- 'Explicitly OUT of scope for this task: full streaming/SSE token-by-token rendering (discussed
+  as a separate, lower-priority improvement that does not by itself solve "keep using the site while
+  it works" -- streaming still ties up one open connection that dies on navigation).'
+definition_of_done:
+- SAPI mode confirmed and recorded in this task''s events before any design/implementation work begins.
+- A member can submit a question, immediately navigate to another conversation or another page (or
+  close the tab and come back), and see the finished answer render correctly once ready -- proven
+  by a real test, not just manual spot-check.
+- No regression to existing conversation history, citation resolution, quota deduction, or the golden
+  hammer suite (journalgpt/tests/security_and_eval_suite.php, currently 28/28).
+- 'If a cron-based worker is required: a documented cPanel cron entry (Chip must add it manually --
+  no automated cron-provisioning access) and a locking/claim mechanism so overlapping cron firings
+  never double-process the same pending question.'
+verification_command: null
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-21T09:00:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: 'Filed at Chip''s request (2026-08-21) after a thorough architecture review of api/ask.php''s
+    request pipeline. This is a real backend architecture change (moderate scope, not a quick fix)
+    -- schema addition, splitting one endpoint into an enqueue + a processor, and either a PHP-FPM
+    fastcgi_finish_request() trick or a new cron-driven worker depending on hosting SAPI (not yet
+    verified). human_review_required=true given the scope and hosting-environment uncertainty; do
+    not proceed past the SAPI-verification step without Chip''s sign-off on the resulting design.'

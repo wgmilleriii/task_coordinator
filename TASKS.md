@@ -35,6 +35,7 @@ graph TD
     T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
     T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
+    T-PTG-101["T-PTG-101<br/>Explore-by-category: filtered article browsing action"]
     T-INTY-021["T-INTY-021<br/>Schedule Profiles Architecture"]:::done
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
     T-PTG-075["T-PTG-075<br/>Full impeccable UI/UX pass: admin_backfill_article_topics.php"]:::done
@@ -81,6 +82,7 @@ graph TD
     T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]:::done
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
+    T-PTG-102["T-PTG-102<br/>Content decision: labs.php 'New' badge vs help.php's established-feature framing"]
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
     T-PTG-066 --> T-PTG-067
     T-PTG-088["T-PTG-088<br/>Full impeccable UI/UX pass: coverage.php"]:::review
@@ -88,6 +90,7 @@ graph TD
     T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
     T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
     T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]:::done
+    T-PTG-103["T-PTG-103<br/>Async chat answers: let members keep using the site while a question is processing"]
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
     T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]:::done
 ```
@@ -1250,6 +1253,40 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
 
 ---
+### 📋 T-PTG-101 · P2 · ANY · OPEN
+**Explore-by-category: filtered article browsing action**
+**Owner:** None
+
+**Scope:**
+- Gap identified 2026-08-21 reviewing whitepapers/knowledge-profile-vision.html section 5 ("Every Insight Should Lead Somewhere") against the live implementation: profile.php already wires two of the three named per-category actions to real endpoints -- "Ask JournalGPT" (generate-research-prompt-btn -> api/generate_research_prompt.php) and "Take a quiz" (generate-quiz-btn -> api/generate_topic_quiz.php) -- but "Explore" has no destination at all. No page anywhere in the codebase lists articles filtered by article_topic_categories.id/article_topics.category_id (verified by repo-wide grep -- only profile.php touches category_id, and only to expand an inline disclosure of ALREADY-cited articles, not a general browse).
+- Build a filtered article-listing view keyed on category_id, reusing the article_topics/article_index_topics join shape already used by coverage.php's getAxisScores() and profile.php's $topicCoverage query. Decide (and record the decision) whether this is a new small page (e.g. explore.php?category=slug, matching the existing one-page-per-function convention -- admin_reply.php, featured.php, help.php) or a filtered mode on an existing page (e.g. source.php or a new query param on profile.php). Prefer the smaller-surface option unless it conflicts with an existing page's established purpose.
+- Wire it into every place the vision doc's pattern shows an "Explore" action: profile.php's coverage list, coverage.php's empty-wedge nudges (currently link straight to a specific article -- confirm whether a category-level Explore link belongs there too or if the per-article link already covers the same need; do not duplicate without a clear reason).
+- HONEST-DATA GUARD: must handle a category with zero tagged articles (empty state, not a blank/broken page) given article_index_topics tagging coverage is partial and ongoing (see admin_article_index_matrix.php).
+
+**Definition of Done:**
+- A member can click "Explore" for a taxonomy category from at least profile.php and land on a real list of that category's tagged articles, each linking through the existing citation-link resolution (reader.php when a physical page is known, source.php otherwise -- see ArticleCitationLinker::resolveLink()).
+- Renders correctly for a category with 0 tagged articles, 1 tagged article, and many.
+- Full impeccable A-F pass on the new/changed page(s) (layout/polish/colorize/typeset/harden), matching this session's established sweep pattern -- theme tokens across light/dark/sepia/ptg, try/catch DB guards, php -l clean.
+- Golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+
+---
+### 📋 T-PTG-103 · P2 · ANY · OPEN
+**Async chat answers: let members keep using the site while a question is processing**
+**Owner:** None
+
+**Scope:**
+- Root cause traced 2026-08-21 (Chip asked why long answers block the tab): api/ask.php is fully synchronous -- one HTTP request holds open the whole pipeline (OpenAIClient.php's threads/runs poll loop, up to 100 x 1s sleeps for Deep-tier reasoning, then citation resolution, then the DB write). Nothing is persisted to `messages` until the very end (see JournalAnswerService.php's INSERT INTO messages) -- there is no "pending" row, so a request that dies early leaves no trace the question was ever asked. Client-side, journal-chat.js only disables the send button/input (setSubmittingState) -- it does NOT block navigation, but every sidebar conversation link is a plain `<a href>` full-page reload (no client-side routing), so navigating away mid-answer kills the in-flight fetch, and whether server-side PHP keeps running after that depends on ignore_user_abort, which is never set (coin flip on this host).
+- FIRST STEP -- verify, don't assume: determine whether production PHP runs as PHP-FPM (in which case fastcgi_finish_request() can flush an instant "accepted" response to the browser and keep processing the OpenAI call afterward in the SAME request -- no cron/queue infrastructure needed at all) or classic mod_php (in which case a real pending-queue + cPanel-cron-driven worker script is needed instead, following the same pattern already established by cli/migrate.php and the backfill runners). This determines which of the two designs below applies -- do not build both speculatively.
+- Design once SAPI is known: (1) api/ask.php becomes a fast enqueue -- validate, deduct quota, INSERT a pending message/job row, return immediately with an id. (2) The actual OpenAI thread-run/poll/citation-resolve/DB-write logic (already exists in OpenAIClient.php + JournalAnswerService.php -- reuse, do not rewrite) runs either post-fastcgi_finish_request() in the same script, or in a new cli/process_pending_questions.php worker invoked by cPanel cron. (3) Client-side: journal-chat.js polls a new lightweight status endpoint every few seconds instead of awaiting one long fetch; a "thinking..." placeholder in the message list resumes polling automatically on page reload/different tab if a question for that conversation is still pending, so the member can navigate freely, come back, and see the finished answer.
+- Explicitly OUT of scope for this task: full streaming/SSE token-by-token rendering (discussed as a separate, lower-priority improvement that does not by itself solve "keep using the site while it works" -- streaming still ties up one open connection that dies on navigation).
+
+**Definition of Done:**
+- SAPI mode confirmed and recorded in this task''s events before any design/implementation work begins.
+- A member can submit a question, immediately navigate to another conversation or another page (or close the tab and come back), and see the finished answer render correctly once ready -- proven by a real test, not just manual spot-check.
+- No regression to existing conversation history, citation resolution, quota deduction, or the golden hammer suite (journalgpt/tests/security_and_eval_suite.php, currently 28/28).
+- If a cron-based worker is required: a documented cPanel cron entry (Chip must add it manually -- no automated cron-provisioning access) and a locking/claim mechanism so overlapping cron firings never double-process the same pending question.
+
+---
 ### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW
 **Profile page: link "My Research" article citations to their source PDFs (HigherLogic issue_url)**
 **Owner:** Claude-Sonnet-Session
@@ -1970,5 +2007,17 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-102 · P3 · ANY · OPEN
+**Content decision: labs.php "New" badge vs help.php's established-feature framing**
+**Owner:** None
+
+**Scope:**
+- Flagged by the info/meta sweep subagent during T-PTG-093's Stage A review (2026-08-21): labs.php still badges Quiz Mode with a "New" pill (.labs-new-badge), while help.php documents Quiz Mode as an established, already-explained feature. This is a product-framing/content call, not a styling fix -- deliberately NOT acted on during the sweep.
+- Chip decides: (a) leave as-is (Labs badges genuinely-new-to-most-members features regardless of how long they've existed in code), (b) remove the "New" badge from Quiz Mode specifically since it's now documented as standard, or (c) graduate Quiz Mode out of Labs entirely into the main product surface, with labs.php trimmed accordingly.
+
+**Definition of Done:**
+- Chip''s decision recorded in this task''s events, then implemented (or explicitly closed as "leave as-is" with no code change) -- either outcome is a valid completion, but the decision must be written down, not left ambiguous.
 
 ---

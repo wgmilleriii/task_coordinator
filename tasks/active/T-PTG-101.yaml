@@ -1,0 +1,48 @@
+id: T-PTG-101
+title: 'Explore-by-category: filtered article browsing action'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-21T09:00:00-06:00'
+dependencies: []
+scope:
+- 'Gap identified 2026-08-21 reviewing whitepapers/knowledge-profile-vision.html section 5 ("Every
+  Insight Should Lead Somewhere") against the live implementation: profile.php already wires two
+  of the three named per-category actions to real endpoints -- "Ask JournalGPT" (generate-research-prompt-btn
+  -> api/generate_research_prompt.php) and "Take a quiz" (generate-quiz-btn -> api/generate_topic_quiz.php)
+  -- but "Explore" has no destination at all. No page anywhere in the codebase lists articles filtered
+  by article_topic_categories.id/article_topics.category_id (verified by repo-wide grep -- only
+  profile.php touches category_id, and only to expand an inline disclosure of ALREADY-cited articles,
+  not a general browse).'
+- 'Build a filtered article-listing view keyed on category_id, reusing the article_topics/article_index_topics
+  join shape already used by coverage.php''s getAxisScores() and profile.php''s $topicCoverage query.
+  Decide (and record the decision) whether this is a new small page (e.g. explore.php?category=slug,
+  matching the existing one-page-per-function convention -- admin_reply.php, featured.php, help.php)
+  or a filtered mode on an existing page (e.g. source.php or a new query param on profile.php). Prefer
+  the smaller-surface option unless it conflicts with an existing page''s established purpose.'
+- 'Wire it into every place the vision doc''s pattern shows an "Explore" action: profile.php''s coverage
+  list, coverage.php''s empty-wedge nudges (currently link straight to a specific article -- confirm
+  whether a category-level Explore link belongs there too or if the per-article link already covers
+  the same need; do not duplicate without a clear reason).'
+- 'HONEST-DATA GUARD: must handle a category with zero tagged articles (empty state, not a blank/broken
+  page) given article_index_topics tagging coverage is partial and ongoing (see admin_article_index_matrix.php).'
+definition_of_done:
+- A member can click "Explore" for a taxonomy category from at least profile.php and land on a real
+  list of that category's tagged articles, each linking through the existing citation-link resolution
+  (reader.php when a physical page is known, source.php otherwise -- see ArticleCitationLinker::resolveLink()).
+- Renders correctly for a category with 0 tagged articles, 1 tagged article, and many.
+- Full impeccable A-F pass on the new/changed page(s) (layout/polish/colorize/typeset/harden), matching
+  this session's established sweep pattern -- theme tokens across light/dark/sepia/ptg, try/catch
+  DB guards, php -l clean.
+- Golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-21T09:00:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: 'Filed at Chip''s request (2026-08-21) after he asked whether knowledge-profile-vision.html
+    section 4/5''s Explore/Ask/Quiz actions are dynamic. Ask and Quiz already are (built pre-existing
+    + this session); Explore has no destination anywhere in the codebase. human_review_required=true
+    -- new page/route needs Chip''s eyes on placement and visual design, not just a mechanical scan.'

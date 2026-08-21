@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: profile.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -48,3 +48,27 @@ events:
   details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
     index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
     human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'
+- timestamp: '2026-08-21T07:57:06.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Stage A: page earns its place -- it is the member-facing complement to coverage.php''s
+    per-article-taxonomy view, and the only surface showing a member their own interest mix, learning
+    evidence (read/discussed/quiz), and personalized recommendations. No merge/rename/simplify needed;
+    function is clear. Stages B/C/E (layout/polish/typeset) already solid from prior authoring -- responsive
+    grid breakpoints, consistent rem-based spacing scale, disclosure pattern for long lists -- no changes
+    required there. Stage D (colorize): replaced 9 hardcoded #2563eb literals (doc-link nav, coverage
+    bars, evidence badges, CTA buttons, back-link) with var(--color-primary, #1e3a8a), matching the
+    token already used on coverage.php/source.php/reader.php/admin_analytics.php. Stage F (harden):
+    wrapped the entire data-loading block (KnowledgeProfileService calls + 5 raw PDO queries) in try/catch
+    with safe empty defaults and a friendly $loadError message, since a DB hiccup previously meant an
+    uncaught PDOException and a raw fatal-error page -- same hardening pattern as coverage.php/admin_analytics.php.
+    Verification: php -l clean, detect.mjs run (38 advisories, all pre-reasoned stale-sidecar false
+    positives -- undocumented #e2e8f0/#94a3b8/#cbd5e1 border/muted-text colors and radius/font-size
+    steps already established as known false positives across the other 4 swept pages this session),
+    golden hammer suite 28/28 pass twice (before and after the harden commit).'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T07:57:06.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 02d35d3aed3748259bdf6210fe6f8f0823796bc9
+claimed_at: '2026-08-21T07:57:06.000000-06:00'
+last_transition: '2026-08-21T07:57:06.000000-06:00'

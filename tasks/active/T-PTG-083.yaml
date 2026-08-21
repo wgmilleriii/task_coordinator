@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: admin_topic_diagnostics.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: DONE
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -43,6 +43,13 @@ verification_command: null
 human_review_required: true
 requires_doc_update: false
 events:
+- timestamp: '2026-08-21T08:20:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Scope call by Chip (2026-08-21): admin/internal-only tools (backfill runners, migrate,
+    diagnostics, matrix, tours, external-eval workbench) are deliberately excluded from the full A-F
+    impeccable sweep -- low-traffic, seen only by the operator, not worth the design-polish investment
+    the member-facing pages need. Closed with no changes rather than left open indefinitely.'
 - timestamp: '2026-08-20T21:29:28.345652-06:00'
   action: SCOUT
   actor: Claude-Sonnet-Session

@@ -37,32 +37,32 @@ graph TD
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-INTY-021["T-INTY-021<br/>Schedule Profiles Architecture"]:::done
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
-    T-PTG-075["T-PTG-075<br/>Full impeccable UI/UX pass: admin_backfill_article_topics.php"]
+    T-PTG-075["T-PTG-075<br/>Full impeccable UI/UX pass: admin_backfill_article_topics.php"]:::done
     T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]:::review
     T-PTG-054 --> T-PTG-055
     T-PTG-096["T-PTG-096<br/>Full impeccable UI/UX pass: quiz.php"]
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
-    T-PTG-079["T-PTG-079<br/>Full impeccable UI/UX pass: admin_external_evaluations.php"]
-    T-PTG-080["T-PTG-080<br/>Full impeccable UI/UX pass: admin_import_article_index.php"]
-    T-PTG-081["T-PTG-081<br/>Full impeccable UI/UX pass: admin_migrate.php"]
+    T-PTG-079["T-PTG-079<br/>Full impeccable UI/UX pass: admin_external_evaluations.php"]:::done
+    T-PTG-080["T-PTG-080<br/>Full impeccable UI/UX pass: admin_import_article_index.php"]:::done
+    T-PTG-081["T-PTG-081<br/>Full impeccable UI/UX pass: admin_migrate.php"]:::done
     T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
-    T-PTG-078["T-PTG-078<br/>Full impeccable UI/UX pass: admin_external_evaluation_batches.php"]
+    T-PTG-078["T-PTG-078<br/>Full impeccable UI/UX pass: admin_external_evaluation_batches.php"]:::done
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
     T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
-    T-PTG-074["T-PTG-074<br/>Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php"]
+    T-PTG-074["T-PTG-074<br/>Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php"]:::done
     T-PTG-058["T-PTG-058<br/>Conversation Sidebar: Minimal Weighted Topic Color Bar"]:::done
     T-INTY-020["T-INTY-020<br/>Admin V2 Timeslot Management Interface"]:::done
     T-PTG-061["T-PTG-061<br/>Dynamic Conversation Topic Weighting Engine"]:::done
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
-    T-PTG-077["T-PTG-077<br/>Full impeccable UI/UX pass: admin_conversation_weights.php"]
+    T-PTG-077["T-PTG-077<br/>Full impeccable UI/UX pass: admin_conversation_weights.php"]:::done
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]
     T-INTY-023["T-INTY-023<br/>Pianos in the News - print sheet generator (scripts + PHP page)"]:::review
-    T-PTG-082["T-PTG-082<br/>Full impeccable UI/UX pass: admin_reply.php"]
+    T-PTG-082["T-PTG-082<br/>Full impeccable UI/UX pass: admin_reply.php"]:::done
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
     T-PTG-051 --> T-PTG-057
@@ -71,14 +71,14 @@ graph TD
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-PTG-095["T-PTG-095<br/>Full impeccable UI/UX pass: profile.php"]:::review
-    T-PTG-083["T-PTG-083<br/>Full impeccable UI/UX pass: admin_topic_diagnostics.php"]
+    T-PTG-083["T-PTG-083<br/>Full impeccable UI/UX pass: admin_topic_diagnostics.php"]:::done
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
     T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
-    T-PTG-076["T-PTG-076<br/>Full impeccable UI/UX pass: admin_classify_topics.php"]
+    T-PTG-076["T-PTG-076<br/>Full impeccable UI/UX pass: admin_classify_topics.php"]:::done
     T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
     T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
-    T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]
+    T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]:::done
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
@@ -87,9 +87,9 @@ graph TD
     T-PTG-071["T-PTG-071<br/>Full impeccable UI/UX pass: admin_analytics.php"]:::review
     T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
     T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
-    T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]
+    T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]:::done
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]
-    T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]
+    T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]:::done
 ```
 
 ---
@@ -493,6 +493,121 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
+### ✅ T-PTG-075 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_backfill_article_topics.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_backfill_article_topics.php. Purpose: Web trigger (built this session) for the article_index_topics backfill -- reads the precomputed corpus/article_topics_map.json since the raw corpus/articles/*.md files never deploy.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_backfill_article_topics.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_backfill_article_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_backfill_article_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_backfill_article_topics.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_backfill_article_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-079 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_external_evaluations.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_external_evaluations.php. Purpose: Viewer comparing external LLM evaluation results against JournalGPT's own classification/human labels.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_external_evaluations.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_external_evaluations.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_external_evaluations.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_external_evaluations.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_external_evaluations.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-080 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_import_article_index.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_import_article_index.php. Purpose: Web trigger for the article-index CSV import (the ~4,120-row historical index).
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_import_article_index.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_import_article_index.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_import_article_index.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_import_article_index.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_import_article_index.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-081 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_migrate.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_migrate.php. Purpose: Web trigger for database migrations -- the original template this session's admin_backfill_*.php pages copied their structure from.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_migrate.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_migrate.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_migrate.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_migrate.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_migrate.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-078 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_external_evaluation_batches.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_external_evaluation_batches.php. Purpose: Viewer for external LLM evaluation batch-level findings (systematic errors, taxonomy recommendations, product clusters).
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_external_evaluation_batches.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_external_evaluation_batches.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_external_evaluation_batches.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_external_evaluation_batches.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_external_evaluation_batches.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
 ### ✅ T-PTG-062 · P2 · frontend · DONE
 **Feature: Advanced Prompt Builder Grid UI**
 **Owner:** Worker-Agent
@@ -502,6 +617,29 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-074 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_backfill_article_index_has_content.php. Purpose: Web trigger (built this session) for the article_index.has_content backfill -- one of the two backfills the Coverage Atlas radar needs to show real data.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_backfill_article_index_has_content.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_backfill_article_index_has_content.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_backfill_article_index_has_content.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_backfill_article_index_has_content.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_backfill_article_index_has_content.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
 ### ✅ T-PTG-058 · P2 · Frontend · DONE
@@ -515,6 +653,98 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
+### ✅ T-PTG-077 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_conversation_weights.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_conversation_weights.php. Purpose: Admin tooling for conversation topic-weight computation/backfill.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_conversation_weights.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_conversation_weights.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_conversation_weights.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_conversation_weights.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_conversation_weights.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-082 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_reply.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_reply.php. Purpose: Lets an authenticated admin post a manual reply message into an existing member conversation.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_reply.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_reply.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_reply.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_reply.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_reply.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-083 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_topic_diagnostics.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_topic_diagnostics.php. Purpose: Topic classification diagnostics page.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_topic_diagnostics.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_topic_diagnostics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_topic_diagnostics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_topic_diagnostics.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_topic_diagnostics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-076 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_classify_topics.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_classify_topics.php. Purpose: Web trigger for the LLM-driven article-topic classification backfill (the OLDER issue-level article_topics table, sibling to but distinct from article_index_topics).
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_classify_topics.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_classify_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_classify_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_classify_topics.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_classify_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
 ### ✅ T-PTG-060 · P2 · frontend · DONE
 **Extend Admin Reply Mechanism for 'In Progress' Status**
 **Owner:** Worker-Agent
@@ -524,6 +754,75 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 **Definition of Done:**
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
+
+---
+### ✅ T-PTG-084 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_topic_matrix.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_topic_matrix.php. Purpose: Read-only visual article x topic matrix, complementing admin_article_topics.php's text-based counts.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_topic_matrix.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_topic_matrix.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_topic_matrix.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_topic_matrix.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_topic_matrix.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-089 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: external_evaluation_workbench.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/external_evaluation_workbench.php. Purpose: Copy/paste workbench: export a batch for an external LLM, paste its JSON response back in, see the round-trip import result.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/external_evaluation_workbench.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/external_evaluation_workbench.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/external_evaluation_workbench.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/external_evaluation_workbench.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/external_evaluation_workbench.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+---
+### ✅ T-PTG-085 · P2 · ANY · DONE
+**Full impeccable UI/UX pass: admin_tours.php**
+**Owner:** None
+
+**Scope:**
+- Page: journalgpt/admin_tours.php. Purpose: Curator admin page for Coverage Atlas tours/threads: list, create, and edit stop sequences of has_content=1 articles.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/admin_tours.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/admin_tours.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/admin_tours.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/admin_tours.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/admin_tours.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
 ### ⏳ T-PTG-073 · P2 · ANY · HUMAN_REVIEW
@@ -816,29 +1115,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
-### 📋 T-PTG-075 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_backfill_article_topics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_backfill_article_topics.php. Purpose: Web trigger (built this session) for the article_index_topics backfill -- reads the precomputed corpus/article_topics_map.json since the raw corpus/articles/*.md files never deploy.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_backfill_article_topics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_backfill_article_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_backfill_article_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_backfill_article_topics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_backfill_article_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
 ### 📋 T-PTG-096 · P2 · ANY · OPEN
 **Full impeccable UI/UX pass: quiz.php**
 **Owner:** None
@@ -852,144 +1128,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - D) /impeccable colorize journalgpt/quiz.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
 - E) /impeccable typeset journalgpt/quiz.php -- typography hierarchy per DESIGN.md's documented scale.
 - F) /impeccable harden journalgpt/quiz.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-079 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_external_evaluations.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_external_evaluations.php. Purpose: Viewer comparing external LLM evaluation results against JournalGPT's own classification/human labels.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_external_evaluations.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_external_evaluations.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_external_evaluations.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_external_evaluations.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_external_evaluations.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-080 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_import_article_index.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_import_article_index.php. Purpose: Web trigger for the article-index CSV import (the ~4,120-row historical index).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_import_article_index.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_import_article_index.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_import_article_index.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_import_article_index.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_import_article_index.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-081 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_migrate.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_migrate.php. Purpose: Web trigger for database migrations -- the original template this session's admin_backfill_*.php pages copied their structure from.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_migrate.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_migrate.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_migrate.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_migrate.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_migrate.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-078 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_external_evaluation_batches.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_external_evaluation_batches.php. Purpose: Viewer for external LLM evaluation batch-level findings (systematic errors, taxonomy recommendations, product clusters).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_external_evaluation_batches.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_external_evaluation_batches.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_external_evaluation_batches.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_external_evaluation_batches.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_external_evaluation_batches.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-074 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_backfill_article_index_has_content.php. Purpose: Web trigger (built this session) for the article_index.has_content backfill -- one of the two backfills the Coverage Atlas radar needs to show real data.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_backfill_article_index_has_content.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_backfill_article_index_has_content.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_backfill_article_index_has_content.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_backfill_article_index_has_content.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_backfill_article_index_has_content.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-077 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_conversation_weights.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_conversation_weights.php. Purpose: Admin tooling for conversation topic-weight computation/backfill.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_conversation_weights.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_conversation_weights.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_conversation_weights.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_conversation_weights.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_conversation_weights.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
 - Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
 
 **Definition of Done:**
@@ -1023,29 +1161,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
-### 📋 T-PTG-082 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_reply.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_reply.php. Purpose: Lets an authenticated admin post a manual reply message into an existing member conversation.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_reply.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_reply.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_reply.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_reply.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_reply.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
 ### 📋 T-PTG-094 · P2 · ANY · OPEN
 **Full impeccable UI/UX pass: login.php**
 **Owner:** None
@@ -1059,75 +1174,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - D) /impeccable colorize journalgpt/login.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
 - E) /impeccable typeset journalgpt/login.php -- typography hierarchy per DESIGN.md's documented scale.
 - F) /impeccable harden journalgpt/login.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-083 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_topic_diagnostics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_topic_diagnostics.php. Purpose: Topic classification diagnostics page.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_topic_diagnostics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_topic_diagnostics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_topic_diagnostics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_topic_diagnostics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_topic_diagnostics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-076 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_classify_topics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_classify_topics.php. Purpose: Web trigger for the LLM-driven article-topic classification backfill (the OLDER issue-level article_topics table, sibling to but distinct from article_index_topics).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_classify_topics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_classify_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_classify_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_classify_topics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_classify_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-084 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_topic_matrix.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_topic_matrix.php. Purpose: Read-only visual article x topic matrix, complementing admin_article_topics.php's text-based counts.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_topic_matrix.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_topic_matrix.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_topic_matrix.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_topic_matrix.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_topic_matrix.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
 - Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
 
 **Definition of Done:**
@@ -1161,29 +1207,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
-### 📋 T-PTG-089 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: external_evaluation_workbench.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/external_evaluation_workbench.php. Purpose: Copy/paste workbench: export a batch for an external LLM, paste its JSON response back in, see the round-trip import result.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/external_evaluation_workbench.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/external_evaluation_workbench.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/external_evaluation_workbench.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/external_evaluation_workbench.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/external_evaluation_workbench.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
 ### 📋 T-PTG-093 · P2 · ANY · OPEN
 **Full impeccable UI/UX pass: labs.php**
 **Owner:** None
@@ -1197,29 +1220,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - D) /impeccable colorize journalgpt/labs.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
 - E) /impeccable typeset journalgpt/labs.php -- typography hierarchy per DESIGN.md's documented scale.
 - F) /impeccable harden journalgpt/labs.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-085 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: admin_tours.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_tours.php. Purpose: Curator admin page for Coverage Atlas tours/threads: list, create, and edit stop sequences of has_content=1 articles.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_tours.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_tours.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_tours.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_tours.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_tours.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
 - Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
 
 **Definition of Done:**

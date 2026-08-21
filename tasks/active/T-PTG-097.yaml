@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: reader.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -39,7 +39,8 @@ definition_of_done:
 - php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php)
   passes with zero regressions.
 - 'No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.'
-verification_command: null
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
+  php journalgpt/tests/security_and_eval_suite.php
 human_review_required: true
 requires_doc_update: false
 events:
@@ -49,3 +50,17 @@ events:
   details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
     index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
     human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'
+- timestamp: '2026-08-21T07:49:27.922797-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Stages A-F completed. Reformatted the entire stylesheet from one minified line to readable
+    rules; fixed 4 hardcoded #2563eb links to the real --color-primary token; retokenized .reader-stage''s
+    theme-blind gray backdrop. .reader-page''s white background/shadow kept deliberately (scanned pages
+    are white paper regardless of app theme). Verification: php -l clean, detect.mjs run (11 advisories
+    remain, all fallback literals or already-reasoned exceptions), golden hammer suite 28/28.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T07:49:27.922797-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: b23486c1d0e9f942226326a6480b00210525b25e
+claimed_at: '2026-08-21T07:49:27.922797-06:00'
+last_transition: '2026-08-21T07:49:27.922797-06:00'

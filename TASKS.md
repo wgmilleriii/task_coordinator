@@ -47,7 +47,7 @@ graph TD
     T-PTG-079["T-PTG-079<br/>Full impeccable UI/UX pass: admin_external_evaluations.php"]
     T-PTG-080["T-PTG-080<br/>Full impeccable UI/UX pass: admin_import_article_index.php"]
     T-PTG-081["T-PTG-081<br/>Full impeccable UI/UX pass: admin_migrate.php"]
-    T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]
+    T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
     T-PTG-078["T-PTG-078<br/>Full impeccable UI/UX pass: admin_external_evaluation_batches.php"]
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
@@ -526,6 +526,31 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
+### ⏳ T-PTG-097 · P2 · ANY · HUMAN_REVIEW
+**Full impeccable UI/UX pass: reader.php**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Page: journalgpt/reader.php. Purpose: Journal Reader -- continuous-scroll rendered page-image viewer for cited articles. Falls back to source.php's text viewer for issues without rendered images yet (currently 86 of the corpus's known issues).
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/reader.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/reader.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/reader.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/reader.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/reader.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `b23486c1d0e9f942226326a6480b00210525b25e`
+
+---
 ### ⏳ T-PTG-099 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: source.php**
 **Owner:** Claude-Sonnet-Session
@@ -867,29 +892,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - D) /impeccable colorize journalgpt/admin_migrate.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
 - E) /impeccable typeset journalgpt/admin_migrate.php -- typography hierarchy per DESIGN.md's documented scale.
 - F) /impeccable harden journalgpt/admin_migrate.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-097 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: reader.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/reader.php. Purpose: Journal Reader -- continuous-scroll rendered page-image viewer for cited articles. Falls back to source.php's text viewer for issues without rendered images yet (currently 86 of the corpus's known issues).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/reader.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/reader.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/reader.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/reader.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/reader.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
 - Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
 
 **Definition of Done:**

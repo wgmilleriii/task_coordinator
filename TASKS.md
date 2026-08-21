@@ -16,7 +16,7 @@ graph TD
     classDef blocked fill:#f8d7da,stroke:#dc3545,color:#000;
     classDef review fill:#fff3cd,stroke:#ffc107,color:#000;
     classDef active fill:#cce5ff,stroke:#007bff,color:#000;
-    T-PTG-100["T-PTG-100<br/>Full impeccable UI/UX pass: verify_email.php"]
+    T-PTG-100["T-PTG-100<br/>Full impeccable UI/UX pass: verify_email.php"]:::review
     T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]:::review
     T-PTG-052 --> T-PTG-053
     T-PTG-090["T-PTG-090<br/>Full impeccable UI/UX pass: featured.php"]:::review
@@ -88,7 +88,7 @@ graph TD
     T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
     T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
     T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]:::done
-    T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]
+    T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
     T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]:::done
 ```
 
@@ -825,6 +825,31 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
+### ⏳ T-PTG-100 · P2 · ANY · HUMAN_REVIEW
+**Full impeccable UI/UX pass: verify_email.php**
+**Owner:** Claude-Sonnet-Session
+
+**Scope:**
+- Page: journalgpt/verify_email.php. Purpose: Email verification landing page.
+- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/verify_email.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/verify_email.php -- full refinement pass per craft-floor.md's verify/refuse lists.
+- D) /impeccable colorize journalgpt/verify_email.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
+- E) /impeccable typeset journalgpt/verify_email.php -- typography hierarchy per DESIGN.md's documented scale.
+- F) /impeccable harden journalgpt/verify_email.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
+
+**Definition of Done:**
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
+- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `363dbb0a0cbf8709d117e72932cb32fe39013553`
+
+---
 ### ⏳ T-PTG-090 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: featured.php**
 **Owner:** Claude-Sonnet-Session
@@ -927,7 +952,7 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 ---
 ### ⏳ T-PTG-087 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: changelog.php**
-**Owner:** None
+**Owner:** Claude-Sonnet-Session
 
 **Scope:**
 - Page: journalgpt/changelog.php. Purpose: Renders changelog.json's version history, linked from index.php's footer version number.
@@ -946,6 +971,8 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
 - php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
 
 ---
 ### ⏳ T-PTG-091 · P2 · ANY · HUMAN_REVIEW
@@ -1025,7 +1052,7 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 ---
 ### ⏳ T-PTG-098 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: register.php**
-**Owner:** None
+**Owner:** Claude-Sonnet-Session
 
 **Scope:**
 - Page: journalgpt/register.php. Purpose: Guest-to-member registration page ('keep your JournalGPT research').
@@ -1044,6 +1071,8 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
 - php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `363dbb0a0cbf8709d117e72932cb32fe39013553`
 
 ---
 ### ⏳ T-PTG-094 · P2 · ANY · HUMAN_REVIEW
@@ -1196,32 +1225,9 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `acdf276fa9f497fed6deee4408b461923d7c57d2`
 
 ---
-### 📋 T-PTG-100 · P2 · ANY · OPEN
-**Full impeccable UI/UX pass: verify_email.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/verify_email.php. Purpose: Email verification landing page.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/verify_email.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/verify_email.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/verify_email.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/verify_email.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/verify_email.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### 📋 T-PTG-093 · P2 · ANY · OPEN
+### ⏳ T-PTG-093 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: labs.php**
-**Owner:** None
+**Owner:** Claude-Sonnet-Session
 
 **Scope:**
 - Page: journalgpt/labs.php. Purpose: 'Labs' page explaining experimental/preview features, structured like help.php.
@@ -1240,6 +1246,8 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
 - php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
 - No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
+
+*Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
 
 ---
 ### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW

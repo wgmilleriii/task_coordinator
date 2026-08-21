@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: guest.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -48,3 +48,24 @@ events:
   details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
     index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
     human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'
+- timestamp: '2026-08-21T08:15:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Stage A: page earns its place -- it is not a separate visual page at all but a thin wrapper
+    that renders index.php''s exact member chat shell via output buffering and injects guest-specific
+    config/CSS/JS around it, so guests get the same experience as members with capability limits layered
+    on. No merge/rename/simplify needed; Stages B/C/D/E (layout/polish/colorize/typeset) are inherited
+    from index.php and guest-shared.css, out of scope for this file specifically. Stage F (harden): the
+    guest-state DB lookup (GuestAccess::state()) had no error handling -- a DB hiccup would have thrown
+    an uncaught exception before index.php even rendered, showing a raw fatal-error page instead of the
+    chat shell. Wrapped in try/catch with a safe zero-remaining fallback so the shell still renders and
+    degrades gracefully (guest sees 0 interactions/images remaining rather than a blank crash) if guest
+    state can''t load. Verification: php -l clean, detect.mjs run (no new findings introduced), golden
+    hammer suite 28/28 pass. Deployed: commit 363dbb0, both test and main FTP deploys confirmed successful
+    via gh run view.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T08:15:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 363dbb0a0cbf8709d117e72932cb32fe39013553
+claimed_at: '2026-08-21T08:15:00.000000-06:00'
+last_transition: '2026-08-21T08:15:00.000000-06:00'

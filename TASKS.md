@@ -82,7 +82,7 @@ graph TD
     T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]:::done
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
     T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
-    T-PTG-102["T-PTG-102<br/>Content decision: labs.php 'New' badge vs help.php's established-feature framing"]
+    T-PTG-102["T-PTG-102<br/>Content decision: labs.php 'New' badge vs help.php's established-feature framing"]:::done
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
     T-PTG-066 --> T-PTG-067
     T-PTG-088["T-PTG-088<br/>Full impeccable UI/UX pass: coverage.php"]:::review
@@ -2011,9 +2011,9 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### 📋 T-PTG-102 · P3 · ANY · OPEN
+### ✅ T-PTG-102 · P3 · ANY · DONE
 **Content decision: labs.php "New" badge vs help.php's established-feature framing**
-**Owner:** None
+**Owner:** Claude-Sonnet-Session
 
 **Scope:**
 - Flagged by the info/meta sweep subagent during T-PTG-093's Stage A review (2026-08-21): labs.php still badges Quiz Mode with a "New" pill (.labs-new-badge), while help.php documents Quiz Mode as an established, already-explained feature. This is a product-framing/content call, not a styling fix -- deliberately NOT acted on during the sweep.
@@ -2021,5 +2021,7 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 
 **Definition of Done:**
 - Chip''s decision recorded in this task''s events, then implemented (or explicitly closed as "leave as-is" with no code change) -- either outcome is a valid completion, but the decision must be written down, not left ambiguous.
+
+*Audited against SHA:* `40e3342f813e548606016a0f1e950c39d08aeb28`
 
 ---

@@ -3,7 +3,7 @@ title: 'Content decision: labs.php "New" badge vs help.php''s established-featur
 repo: newmexicoptg.org
 priority: P3
 lane: ANY
-status: OPEN
+status: DONE
 created_at: '2026-08-21T09:00:00-06:00'
 dependencies: []
 scope:
@@ -29,3 +29,20 @@ events:
     from the labs.php/help.php sweep (T-PTG-093/T-PTG-092) that was deliberately left unactioned
     pending his call. human_review_required=true since this is entirely a product decision, not
     a technical one.'
+- timestamp: '2026-08-21T10:00:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Chip''s decision (2026-08-21): option (b) -- remove the "New" badge from Quiz Mode, keep
+    the explainer section in Labs. Labs is currently a single-feature page (Quiz Mode is its ONLY
+    section, both it and Labs shipped the same day, 2026-08-13, 8 days before this decision) so option
+    (c)''s graduation was ruled out for now -- it would leave Labs empty with nothing to replace it.
+    Implemented: removed the .labs-new-badge span from the Quiz Mode heading and its now-unused CSS
+    rule. Verified no other references to labs-new-badge exist anywhere in the codebase. php -l clean,
+    golden hammer suite 28/28 pass, deployed to test and main (40e3342), both deploy runs confirmed
+    successful.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T10:00:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: 40e3342f813e548606016a0f1e950c39d08aeb28
+claimed_at: '2026-08-21T10:00:00.000000-06:00'
+last_transition: '2026-08-21T10:00:00.000000-06:00'

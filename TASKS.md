@@ -54,6 +54,8 @@ graph TD
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
+    T-PTG-107["T-PTG-107<br/>HTML article pages Phase 2: review/approve interface with mobile previews"]
+    T-PTG-105 --> T-PTG-107
     T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
     T-PTG-074["T-PTG-074<br/>Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php"]:::done
     T-PTG-058["T-PTG-058<br/>Conversation Sidebar: Minimal Weighted Topic Color Bar"]:::done
@@ -365,6 +367,25 @@ graph TD
 - New DESIGN.md section documents the drop-cap/pull-quote/reading typography choices made.
 
 *Audited against SHA:* `0583a419478f7fac3b9ae4d66776b1fab278a3f4`
+
+---
+### 📋 T-PTG-107 · P1 · ANY · OPEN
+**HTML article pages Phase 2: review/approve interface with mobile previews**
+**Owner:** None
+
+**Scope:**
+- Phase 2 of Chip's HTML-article-pages request (T-PTG-105 was Phase 1: pipeline + template). Full plan at /Users/willismiller/.claude/plans/delegated-moseying-pearl.md (Plan Mode session, 2026-08-21, researched via a fork pulling exact code from admin_tours.php/lib/TourService.php/api/tour_admin.php -- the closest structural precedent in the codebase for a list+detail admin SPA with a CSRF JSON action-dispatch API).
+- Decided with Chip during planning: (1) the 6 already-live pilot articles (csv_number 3722-3727) are grandfathered as approved via a one-time data migration, NOT re-reviewed through the new tool -- his current look at them via articles.php/article.php IS the review. (2) The reviewer allowlist is a committed, versioned config file (journalgpt/config/reviewers.json), not a gitignored secret like secrets.json -- reviewer emails aren't sensitive, and this avoids the slow manual-FTP edit cycle.
+- New schema: article_html_reviews (status pending/approved/changes_requested/rejected, keyed on csv_number not an article_index FK since a bundle can exist before any article_index row is guaranteed, paragraph_overrides_json/pull_quote_overrides_json for human edits, reviewed_by/reviewed_at as a genuine audit trail -- this codebase has NO existing precedent for that, confirmed by research; 022_tours.sql's tours table has only a bare status enum) and article_html_review_comments (general or per-paragraph/pull-quote targeted comments, resolvable).
+- article.php (built in T-PTG-105) needs gating added: ordinary members only see status=approved bundles; a reviewer (allowlist) can preview any status via ?preview=1, reusing the exact same template -- no separate preview-only page, avoiding template drift. Also needs to apply saved paragraph/pull-quote overrides on top of the bundle's own (untouched, regenerable) JSON content at render time.
+- New admin_article_review.php mirrors admin_tours.php's exact structure (server-rendered shell, JSON payload embedded, fully JS-rendered list+detail SPA, same .status-badge.* CSS pattern extended for the new status set). Must include a genuine mobile-preview pane (iframe at ~390px width, toggle vs desktop) -- Chip's explicit original ask, and confirmed nothing like it exists anywhere in the codebase yet.
+
+**Definition of Done:**
+- The 6 grandfathered pilot articles remain visible to an ordinary member immediately after the gating migration lands -- no accidental regression hiding already-shipped content.
+- A non-reviewer member is refused access to admin_article_review.php and api/article_html_review.php -- proven by a real test, not just manual spot-check.
+- A reviewer can approve/request-changes/reject an article, leave and resolve comments, and override paragraph text or swap pull-quote selections, all persisting correctly.
+- Mobile preview pane genuinely renders the article at a narrow viewport inside the review tool, verified visually (via the browse skill against a local session-faked render, same technique used for Phase 1, since no live login credentials are available).
+- Golden hammer suite passes with zero regressions; php -l clean.
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW

@@ -1,0 +1,50 @@
+id: T-PTG-096
+title: 'Full impeccable UI/UX pass: quiz.php'
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-20T21:29:28.345652-06:00'
+dependencies: []
+scope:
+- 'Page: journalgpt/quiz.php. Purpose: Quiz take/retake/share page, a dedicated route separate from the
+  chat flow.'
+- 'This task is one of a full-repo UI/UX sweep (Chip''s request, 2026-08-20/21) covering every member/admin-facing
+  page except index.php (already the most-iterated page and out of scope here). Six stages, in order --
+  do not skip ahead or skip stages the page ''looks fine'' without:'
+- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal
+  archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page
+  still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different
+  audience than it currently does? Write the conclusion down even if the answer is 'no change needed'
+  -- don't skip straight to visual work.
+- B) /impeccable layout journalgpt/quiz.php -- structure, spacing scale, grouping, responsive behavior.
+- C) /impeccable polish journalgpt/quiz.php -- full refinement pass per craft-floor.md's verify/refuse
+  lists.
+- 'D) /impeccable colorize journalgpt/quiz.php -- strategic, theme-token-driven color (all four themes:
+  light/dark/sepia/ptg, not just light).'
+- E) /impeccable typeset journalgpt/quiz.php -- typography hierarchy per DESIGN.md's documented scale.
+- 'F) /impeccable harden journalgpt/quiz.php -- production-ready: error/empty/loading states, permission
+  edge cases, i18n-safe copy.'
+- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth
+  this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute
+  for the visual/functional check.
+definition_of_done:
+- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not
+  skipped.
+- Stages B through F are each applied and each verified against the rendered page (or explicitly noted
+  as unverifiable without live browser auth, with the mechanical scan cited instead).
+- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css
+  tokens, not hardcoded colors.
+- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php)
+  passes with zero regressions.
+- 'No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.'
+verification_command: null
+human_review_required: true
+requires_doc_update: false
+events:
+- timestamp: '2026-08-20T21:29:28.345652-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
+    index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
+    human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'

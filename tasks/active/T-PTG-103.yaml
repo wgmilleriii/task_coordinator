@@ -59,3 +59,23 @@ events:
     fastcgi_finish_request() trick or a new cron-driven worker depending on hosting SAPI (not yet
     verified). human_review_required=true given the scope and hosting-environment uncertainty; do
     not proceed past the SAPI-verification step without Chip''s sign-off on the resulting design.'
+- timestamp: '2026-08-21T10:15:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'SAPI verified per Chip''s go-ahead (2026-08-21): deployed a one-shot token-gated diagnostic
+    file (journalgpt/_sapi_check.php, hardcoded random token, no DB access) to both test and main
+    (unavoidable together -- deploy.yml pushes both branches from the same pipeline and Claude has
+    no direct FTP access), curled it once, then deleted it immediately (confirmed removed via 404
+    on both domains). RESULT: php_sapi_name() = "litespeed" (LiteSpeed Web Server''s LSAPI), PHP 8.3.32
+    -- neither classic mod_php nor PHP-FPM as originally framed. fastcgi_finish_request() does NOT
+    exist under LSAPI, BUT litespeed_finish_request() DOES exist and is LiteSpeed''s own equivalent
+    (same "flush an instant response to the browser, keep executing after" trick). CONCLUSION: the
+    simpler fastcgi_finish_request()-style design from this task''s scope IS available here (via
+    litespeed_finish_request() instead) -- no cron-driven worker / cli/process_pending_questions.php
+    is needed. Design to build next: api/ask.php enqueues (validate, deduct quota, INSERT a pending
+    row, respond), calls litespeed_finish_request() to close the HTTP connection, then continues executing
+    the existing OpenAIClient.php/JournalAnswerService.php logic in the same script/process to completion.
+    Still needs: the pending-row schema, the client-side polling endpoint + resumable "thinking..."
+    UI state, and a real test proving a member can navigate away and still get their answer -- not
+    yet built. Awaiting Chip''s sign-off on this design before implementation begins (human_review_required
+    still applies).'

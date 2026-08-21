@@ -3,7 +3,7 @@ title: 'Investigate: has_content resync test may zero out other fixtures'' flags
 repo: newmexicoptg.org
 priority: P3
 lane: ANY
-status: OPEN
+status: DONE
 created_at: '2026-08-21T12:35:00-06:00'
 dependencies: []
 scope:
@@ -44,3 +44,22 @@ events:
     long as you can"). Low priority (P3) and human_review_required=false since this is purely internal
     test-infrastructure risk, not user-facing -- a future session (or this one, later) can pick it
     up without needing Chip''s input first.'
+- timestamp: '2026-08-21T12:40:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Investigated directly (not left as a theory). Two findings close this out: (1) In CI
+    (.github/workflows/test-ci.yml), "Article index has_content backfill" runs as its own separate
+    process at line 95, BEFORE "Golden Hammer" at line 125 -- meaning by the time CoverageRadarServiceTest
+    (which only runs inside the Golden Hammer step) seeds ITS OWN fixtures, any earlier global resync
+    has already happened and cannot retroactively affect rows inserted afterward. (2) More fundamentally,
+    CoverageRadarServiceTest''s own seedFixtures() explicitly sets has_content=1 on its fixture INSERT
+    statements every time it runs, fresh -- it never depends on has_content=1 already being true
+    from some earlier state. So even in a hypothetical run order where the backfill resync ran AFTER
+    CoverageRadarServiceTest''s fixtures existed, those specific rows are outside the backfill runner''s
+    tiny fixture metadata list and WOULD get zeroed by the resync -- this IS a real latent risk for
+    that specific ordering, but it does not occur in either the actual CI step order or the golden
+    hammer suite (which never requires/runs ArticleIndexHasContentBackfillRunnerTest.php at all --
+    confirmed via grep, it is absent from security_and_eval_suite.php''s require list). Closing as
+    DONE: not triggerable in the pipeline as it actually runs today. If ArticleIndexHasContentBackfillRunnerTest
+    is ever added to the golden hammer suite''s combined process, this reasoning should be re-checked
+    against whatever order it gets inserted at.'

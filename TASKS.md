@@ -62,7 +62,7 @@ graph TD
     T-INTY-018 --> T-INTY-019
     T-PTG-077["T-PTG-077<br/>Full impeccable UI/UX pass: admin_conversation_weights.php"]:::done
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
-    T-INTY-023["T-INTY-023<br/>Pianos in the News - print sheet generator (scripts + PHP page)"]:::review
+    T-INTY-023["T-INTY-023<br/>Pianos in the News - print sheet generator (scripts + PHP page)"]:::done
     T-PTG-082["T-PTG-082<br/>Full impeccable UI/UX pass: admin_reply.php"]:::done
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
@@ -70,6 +70,7 @@ graph TD
     T-PTG-052 --> T-PTG-057
     T-PTG-104["T-PTG-104<br/>Extend the async job pattern to Generate Quiz"]
     T-PTG-103 --> T-PTG-104
+    T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
@@ -199,7 +200,7 @@ graph TD
 *Audited against SHA:* `eb705b935fa81269373a7f68e9052242bebcae63`
 
 ---
-### ⏳ T-INTY-023 · P2 · claude · HUMAN_REVIEW
+### ✅ T-INTY-023 · P2 · claude · DONE
 **Pianos in the News - print sheet generator (scripts + PHP page)**
 **Owner:** Claude
 
@@ -340,6 +341,27 @@ graph TD
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-105 · P1 · ANY · OPEN
+**HTML article pages Phase 1: pipeline + rendering template (pilot batch)**
+**Owner:** None
+
+**Scope:**
+- Chip's request (2026-08-21): deliver Journal articles as standalone, strikingly beautiful HTML reading pages -- large drop-cap first letters, 2-4 pull-quote/callout blocks, clean navigation, consistent styling -- generated from journalgpt/corpus/articles/<ISSUE>/<slug>.md (592 real files, rich YAML frontmatter, csv_number joins to article_index.csv_number). No images this phase. Citations keep pointing at the secure reader.php image delivery as they do today; each article page additionally links out to "read this in the reader" for the scanned original.
+- Full plan at /Users/willismiller/.claude/plans/delegated-moseying-pearl.md (Plan Mode session, 2026-08-21): new cli/generate_article_html_bundles.php parses frontmatter + splits body into paragraphs + extracts [[page:N]] markers + runs an OCR cleanup heuristic + selects 2-4 pull-quote candidates, writing one committed JSON bundle per article to corpus/article_html/<csv_number>.json (deploy.yml excludes *.md at any depth, so this JSON-bundle-not-raw-md pattern is required, matching the established corpus/article_topics_map.json precedent). New article.php?slug=<issue>/<article-slug> renders it, PHP-per-request (matching this codebase's uniform convention), members-only auth, strict slug validation against path traversal.
+- Pilot batch: PTJ-2021-07 (6 articles) -- chosen because it was already sampled and read in full this session, so output quality can be verified directly against known-good source content.
+- Visual design must go through the /impeccable skill's design workflow (not ad hoc CSS) built on source.php's existing serif-for-reading precedent (.excerpt-box: Georgia/Times New Roman, line-height 1.8) and DESIGN.md's existing token system/Reading Corridor Rule (65-75ch cap) -- then documented as a new DESIGN.md section once validated.
+- Discoverability: add a conditional "Read the full article" link to profile.php's exposure list and explore.php's article list wherever a corpus/article_html/<csv_number>.json bundle exists for that article -- a cheap file-existence check, no new DB column needed for Phase 1.
+- EXPLICITLY OUT OF SCOPE for this task (Phase 2, to be filed separately once this lands): the full review/approve/suggest-changes interface with mobile-preview panes, a reviewer email-allowlist gate (decided during planning: no new role/migration/promotion tool, since the only promotion mechanism -- cli/promote_admin.php -- needs SSH Chip doesn't have), per-article comment/suggestion threads, images, and rolling out beyond the PTJ-2021-07 pilot batch to the full ~592-article corpus.
+
+**Definition of Done:**
+- Running the CLI script against PTJ-2021-07 produces 6 correct JSON bundles (verified against the known-good source .md content read this session).
+- article.php renders a real pilot article with drop cap, 2-4 pull-quotes, working navigation, and a correctly-resolved reader.php citation link, verified visually via the /browse skill at both desktop and a narrow mobile viewport.
+- A deliberately malformed ?slug= (containing ../ or similar) is rejected, not resolved to a filesystem path outside corpus/article_html/ -- proven by a real test.
+- New tests (frontmatter parsing, paragraph/page-marker splitting, slug validation) pass; golden hammer suite passes with zero regressions; php -l clean.
+- profile.php and explore.php show working "Read the full article" links for the 6 pilot articles.
+- New DESIGN.md section documents the drop-cap/pull-quote/reading typography choices made.
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW

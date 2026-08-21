@@ -1,0 +1,61 @@
+id: T-PTG-105
+title: 'HTML article pages Phase 1: pipeline + rendering template (pilot batch)'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: OPEN
+created_at: '2026-08-21T11:00:00-06:00'
+dependencies: []
+scope:
+- 'Chip''s request (2026-08-21): deliver Journal articles as standalone, strikingly beautiful HTML
+  reading pages -- large drop-cap first letters, 2-4 pull-quote/callout blocks, clean navigation,
+  consistent styling -- generated from journalgpt/corpus/articles/<ISSUE>/<slug>.md (592 real files,
+  rich YAML frontmatter, csv_number joins to article_index.csv_number). No images this phase.
+  Citations keep pointing at the secure reader.php image delivery as they do today; each article
+  page additionally links out to "read this in the reader" for the scanned original.'
+- 'Full plan at /Users/willismiller/.claude/plans/delegated-moseying-pearl.md (Plan Mode session,
+  2026-08-21): new cli/generate_article_html_bundles.php parses frontmatter + splits body into
+  paragraphs + extracts [[page:N]] markers + runs an OCR cleanup heuristic + selects 2-4 pull-quote
+  candidates, writing one committed JSON bundle per article to corpus/article_html/<csv_number>.json
+  (deploy.yml excludes *.md at any depth, so this JSON-bundle-not-raw-md pattern is required, matching
+  the established corpus/article_topics_map.json precedent). New article.php?slug=<issue>/<article-slug>
+  renders it, PHP-per-request (matching this codebase''s uniform convention), members-only auth,
+  strict slug validation against path traversal.'
+- 'Pilot batch: PTJ-2021-07 (6 articles) -- chosen because it was already sampled and read in full
+  this session, so output quality can be verified directly against known-good source content.'
+- 'Visual design must go through the /impeccable skill''s design workflow (not ad hoc CSS) built
+  on source.php''s existing serif-for-reading precedent (.excerpt-box: Georgia/Times New Roman,
+  line-height 1.8) and DESIGN.md''s existing token system/Reading Corridor Rule (65-75ch cap) --
+  then documented as a new DESIGN.md section once validated.'
+- 'Discoverability: add a conditional "Read the full article" link to profile.php''s exposure list
+  and explore.php''s article list wherever a corpus/article_html/<csv_number>.json bundle exists
+  for that article -- a cheap file-existence check, no new DB column needed for Phase 1.'
+- 'EXPLICITLY OUT OF SCOPE for this task (Phase 2, to be filed separately once this lands): the
+  full review/approve/suggest-changes interface with mobile-preview panes, a reviewer email-allowlist
+  gate (decided during planning: no new role/migration/promotion tool, since the only promotion
+  mechanism -- cli/promote_admin.php -- needs SSH Chip doesn''t have), per-article comment/suggestion
+  threads, images, and rolling out beyond the PTJ-2021-07 pilot batch to the full ~592-article corpus.'
+definition_of_done:
+- Running the CLI script against PTJ-2021-07 produces 6 correct JSON bundles (verified against
+  the known-good source .md content read this session).
+- article.php renders a real pilot article with drop cap, 2-4 pull-quotes, working navigation, and
+  a correctly-resolved reader.php citation link, verified visually via the /browse skill at both
+  desktop and a narrow mobile viewport.
+- A deliberately malformed ?slug= (containing ../ or similar) is rejected, not resolved to a filesystem
+  path outside corpus/article_html/ -- proven by a real test.
+- New tests (frontmatter parsing, paragraph/page-marker splitting, slug validation) pass; golden
+  hammer suite passes with zero regressions; php -l clean.
+- profile.php and explore.php show working "Read the full article" links for the 6 pilot articles.
+- New DESIGN.md section documents the drop-cap/pull-quote/reading typography choices made.
+verification_command: null
+human_review_required: true
+requires_doc_update: true
+events:
+- timestamp: '2026-08-21T11:00:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: 'Filed after a full Plan Mode session (research via 4 parallel Explore agents + 3 clarifying
+    AskUserQuestion rounds with Chip) covering corpus structure, DB join keys, deploy constraints,
+    existing design-system state, and the review/role landscape. human_review_required=true given
+    this is new user-facing visual design work Chip explicitly wants to review himself ("strikingly
+    beautiful" is a subjective bar only he can confirm), not just a mechanical scan.'

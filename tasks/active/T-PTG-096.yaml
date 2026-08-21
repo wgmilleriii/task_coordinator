@@ -3,7 +3,7 @@ title: 'Full impeccable UI/UX pass: quiz.php'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: OPEN
+status: HUMAN_REVIEW
 created_at: '2026-08-20T21:29:28.345652-06:00'
 dependencies: []
 scope:
@@ -48,3 +48,22 @@ events:
   details: 'Filed as part of Chip''s full-repo UI/UX sweep request (2026-08-20/21): every page except
     index.php gets a 6-stage task (A: reconsider function per product purpose, B-F: layout/polish/colorize/typeset/harden).
     human_review_required=true since visual design work needs Chip''s eyes, not just a mechanical scan.'
+- timestamp: '2026-08-21T08:30:00.000000-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: 'Stage A: page earns its place unchanged -- the dual public-share/authenticated-take-retake
+    routing is deliberately documented (Chip''s explicit routing decision) and is the sole mechanism
+    generating the quiz_passed_articles learning-evidence signal used by profile.php/coverage.php. No
+    merge/simplify/reframe. Stage D (colorize): retokenized the hardcoded dark hero-banner (linear-gradient
+    #0f172a->#1e293b, white text) and result/score-banner colors to var(--color-bg-surface)/var(--color-text-dark)/var(--color-success)/var(--color-danger)/var(--color-notice-*)
+    so the page renders correctly across all 4 themes instead of forcing a dark header regardless of
+    theme. Stage F (harden): already adequate -- the existing try/catch already prevents a raw fatal-error
+    page on DB failure (falls through to notFound). Verification: php -l clean, detect.mjs run (18 advisories,
+    all pre-reasoned stale-sidecar false positives -- var(...) fallback literals and off-ramp font-sizes
+    matching the pattern established across 7 prior swept pages), golden hammer suite 28/28 pass.'
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-21T08:30:00.000000-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session -- see note)
+audited_repo_sha: d81948ea11c7a28bec3d02793249d30e364c172f
+claimed_at: '2026-08-21T08:30:00.000000-06:00'
+last_transition: '2026-08-21T08:30:00.000000-06:00'

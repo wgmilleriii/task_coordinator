@@ -1,0 +1,49 @@
+id: T-MIN-030
+title: Run the 5-layer impeccable design pipeline on the Fool special-card page
+repo: minchiate_tarot
+priority: P2
+lane: ANY
+status: DONE
+owner: Claude
+created_at: '2026-08-23T00:00:00-06:00'
+dependencies: []
+scope:
+- "Target page \u2014 wiki/docs/Trumps/PERSONALITY_SPECIAL-FOOL_Fool.md \u2014 the\
+  \ one card outside the four suits and the numbered trumps, sort order 0 in the registry,\
+  \ the deck's odd-one-out."
+- "Run the impeccable skill's five-layer pipeline in order \u2014 audit, critique,\
+  \ polish, typeset, layout \u2014 against the built page, using detect.mjs plus manual\
+  \ review. This page rounds out coverage of every page archetype on the site (home,\
+  \ trump, pip, court, special) started by T-MIN-026..029."
+- Fix every finding in the polish pass; apply typeset and layout on top.
+- Verify in one batched round (desktop + mobile, light + dark), fix everything found,
+  confirm with at most one more round, then stop.
+- "Once all 5 tasks (T-MIN-026..030) are DONE, do a final full-site regression pass\
+  \ \u2014 rebuild the whole wiki and spot-check one page of each archetype to confirm\
+  \ the accumulated shared-CSS changes compose cleanly together."
+definition_of_done:
+- wiki/docs/stylesheets/grimoire.css updated with any shared-class fixes found.
+- A clean `mkdocs build --strict` from wiki/.
+- Before/after screenshots (light + dark, desktop + mobile) attached as evidence.
+- Final full-site regression screenshots across all 5 page archetypes attached.
+verification_command: cd wiki && source venv/bin/activate && mkdocs build --strict
+human_review_required: false
+audited_at: '2026-08-23T16:04:21.887330Z'
+audited_by: Claude
+audited_repo_sha: 88be2c6d6bb613160937391e5cce379728526a1e
+events:
+- timestamp: '2026-08-23T16:04:21.887532Z'
+  action: AUDIT
+  actor: Claude
+  details: Audited against 88be2c6d6bb613160937391e5cce379728526a1e
+- timestamp: '2026-08-23T16:20:18.957699Z'
+  action: CLAIM
+  actor: Claude
+- timestamp: '2026-08-23T16:24:36.682547Z'
+  action: SUBMIT
+  actor: Claude
+- timestamp: '2026-08-23T16:25:14.671691Z'
+  action: RECORD_REVIEW
+  actor: Claude
+  details: 'Verdict: PASS'
+claimed_at: '2026-08-23T16:20:18.957527Z'

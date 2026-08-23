@@ -1,0 +1,34 @@
+task_id: T-MIN-027
+reviewer_agent: Claude
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 0642fbaafe939cea164da00c6ab9979460d462d3
+verdict: PASS
+findings:
+- severity: INFO
+  description: Mechanical detector (detect.mjs) flagged one advisory-only
+    finding — em-dash-overuse (74 em-dashes in body text). Reviewed and
+    deliberately not actioned — this is consistent house style across
+    every one of the 97 card pages in the corpus (a prose convention set
+    by the original research authors), not a page-specific design defect.
+    Fixing it would mean rewriting substantive research prose, which risks
+    altering evidentiary content and is out of scope for a design-layer
+    pass. Flagging for awareness, not correction.
+- severity: INFO
+  description: Manual review across desktop (1280x900) and mobile (390x844),
+    light and dark, of wiki/docs/Trumps/PERSONALITY_TRUMP-13_Death.md — the
+    longest, most claims-table-dense page type on the site. Card image
+    renders correctly, drop cap and flourish dividers work, metadata block
+    and evidence-tag legend are legible in both themes, table of contents
+    scales to the page's many h2/h3 headings without breaking layout.
+- severity: INFO
+  description: Investigated the claims table's bounding-box width (565px)
+    against the 390px mobile viewport as a possible overflow bug — confirmed
+    false alarm. document.documentElement.scrollWidth equals window.innerWidth
+    (390 = 390), so the page itself never scrolls horizontally; the table
+    correctly scrolls within its own .md-typeset__table wrapper, which is
+    the intended responsive behavior.
+- severity: INFO
+  description: No page-specific fixes were needed. The velvet-mode search-box
+    contrast fix from T-MIN-026 (shared grimoire.css selector) already
+    applies here by construction, since every page loads the same stylesheet.
+reviewed_at: '2026-08-23T16:20:00.000000Z'

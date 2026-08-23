@@ -1,0 +1,25 @@
+task_id: T-MIN-028
+reviewer_agent: Claude
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 024756e09caafbf156bd47a2371f9941d0ae2ce2
+verdict: PASS
+findings:
+- severity: INFO
+  description: Mechanical detector (detect.mjs) ran clean on the built page
+    (0 hits).
+- severity: MINOR
+  description: Manual review against the impeccable craft floor found
+    .metadata-block's colored border-left at 2px, exceeding the documented
+    1px ceiling for colored borders on callout-style elements. This class
+    is shared across all 97 card pages, so this is the highest-leverage
+    single fix in the task set — reduced to 1px in grimoire.css.
+- severity: INFO
+  description: Confirmed visually before/after, light and dark — the thinner
+    rule still reads clearly as the intended "marginal note" device from
+    the manuscript aesthetic, not merely thinner-and-weaker.
+- severity: INFO
+  description: Full desktop/mobile x light/dark pass on
+    wiki/docs/Batons/STANDARD_SUIT-BATONS-01_Ace_of_Batons.md (the highest-
+    multiplier page type, 40 instances) found nothing else — image, evidence
+    tags, claims table, and responsive layout all held up.
+reviewed_at: '2026-08-23T16:30:00.000000Z'

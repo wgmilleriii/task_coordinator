@@ -1,0 +1,31 @@
+task_id: T-MIN-029
+reviewer_agent: Claude
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: e5a4edd0ea692097e606f0e606a8a7b98967c804
+verdict: PASS
+findings:
+- severity: INFO
+  description: Mechanical detector (detect.mjs) ran clean on the built page
+    (0 hits).
+- severity: MAJOR
+  description: Manual review of the task-scoped focus area (Form A vs Form B
+    visual separation) found a real correctness-adjacent bug, not just a
+    styling one — each form's "- Evidentiary basis / - Confidence / - Scope"
+    list was missing the blank line CommonMark requires before a list, so
+    it rendered as inline hyphenated prose instead of an actual bulleted
+    list. This directly undermined COURT_CARD_FORMAT_SPEC.md's "no
+    form-averaging, no silent preference" requirement — the two forms read
+    as one dense undifferentiated paragraph.
+- severity: INFO
+  description: Fix is purely mechanical (inserted the missing blank line in
+    the source draft, research/pilots/drafts/) and changes zero words of
+    the evidentiary content. Verified the fix renders as a proper bulleted
+    list on a fresh page load, light and dark, and confirmed the wiki
+    generation pipeline propagates it correctly end to end.
+- severity: INFO
+  description: Follow-up flagged for a separate task, not actioned here — a
+    corpus-wide grep found this same missing-blank-line-before-list pattern
+    ~332 times across 86 of the 97 card files. That's beyond this task's
+    scope (one card, the §4a focus area) and risks false positives if
+    bulk-fixed without individual review; recommend a dedicated sweep task.
+reviewed_at: '2026-08-23T16:45:00.000000Z'

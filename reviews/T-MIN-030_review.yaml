@@ -1,0 +1,32 @@
+task_id: T-MIN-030
+reviewer_agent: Claude
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 7ca66ed28f60ab2aee1f2783f0df37bc4e0c9e6a
+verdict: PASS
+findings:
+- severity: INFO
+  description: Mechanical detector (detect.mjs) flagged the same advisory-only
+    em-dash-overuse finding as T-MIN-027 (79 em-dashes). Same disposition —
+    consistent corpus house style, not a page defect, not actioned.
+- severity: MINOR
+  description: Found the same missing-blank-line-before-list bug T-MIN-029
+    fixed, on this page's own "Its regulation is groundlessness:" block.
+    Fixed identically (single blank-line insertion, zero content change).
+- severity: INFO
+  description: Re-ran T-MIN-029's corpus-wide scan with a corrected heuristic
+    (the original loose grep conflated wrapped continuation-lines-of-an-
+    already-open-list with the real bug, producing an inflated ~332/86
+    count). True count is 10 occurrences across 9 more files. Fixed all 9
+    in this pass since each is equally mechanical and low-risk — verified
+    via git diff --stat — 11 insertions, 0 deletions, 0 modified words,
+    across all 10 files combined. This is disclosed scope growth beyond
+    the task's named single page, justified by the task's own stated
+    final-regression-pass purpose.
+- severity: INFO
+  description: Full pipeline rerun end to end (generate_wiki.py ->
+    beautify_pages.py -> fix_classes.py -> insert_images.py), clean strict
+    build, still 97/97 cards illustrated. Spot-checked all 5 page
+    archetypes from T-MIN-026..030 (home, trump, pip, court, special) —
+    the accumulated CSS/markdown changes compose cleanly with no
+    regressions.
+reviewed_at: '2026-08-23T17:00:00.000000Z'

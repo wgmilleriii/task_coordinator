@@ -1,0 +1,27 @@
+task_id: T-MIN-026
+reviewer_agent: Claude
+reviewer_model: claude-sonnet-5
+reviewed_head_sha: 0642fbaafe939cea164da00c6ab9979460d462d3
+verdict: PASS
+findings:
+- severity: INFO
+  description: Mechanical detector (detect.mjs) ran clean on wiki/site/index.html
+    (0 hits) before manual review began.
+- severity: MINOR
+  description: Manual review across desktop (1280x900) and mobile (390x844), light
+    and dark, found one real bug — velvet-mode search field placeholder/icon
+    contrast measured at ~4.26:1 (WCAG relative-luminance calculation), just
+    under the craft floor's 4.5:1 minimum. Root cause — Material's default
+    26%-black search-overlay assumption breaks against this project's custom
+    light-gold dark-mode primary color, darkening the field toward the
+    already-dark icon/text color instead of away from it.
+- severity: INFO
+  description: Fix (grimoire.css, scheme-scoped .md-search__form override,
+    15%/22%-on-hover black overlay) verified numerically before implementation
+    (recomputed contrast ~5.5:1) and confirmed visually before/after on both
+    viewports.
+- severity: INFO
+  description: No other findings — layout, spacing, type scale, table rhythm,
+    and the light-mode rendering all held up across both themes and viewports.
+    Verification command (mkdocs build --strict) passes clean.
+reviewed_at: '2026-08-23T16:10:00.000000Z'

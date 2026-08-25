@@ -1,0 +1,69 @@
+id: T-PTG-113
+title: Cross-environment file-inventory comparison tool (test vs prod)
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: DONE
+created_at: '2026-08-25T13:35:00-06:00'
+dependencies: []
+scope:
+- 'Chip asked for a file-by-file comparison tool across environments (test vs prod, matching
+  the earlier commit-SHA-only comparison this session did via version.json). He recalled a
+  similar tool existing in a sibling project -- confirmed it does: PMTNM (resources_was_pmtnm
+  / blue.pmtnm.org) has scripts/compare_envs.sh -> scripts/compare_all_environments.php, which
+  hits an api/file_inventory.php endpoint on each environment (path/size/mtime/hash) and diffs
+  the merged inventories (match / size-or-hash mismatch / missing-from-N-envs).'
+- 'Port the same design to newmexicoptg.org/journalgpt, with one deliberate security correction:
+  PMTNM''s api/file_inventory.php has NO authentication at all (Access-Control-Allow-Origin:
+  *, publicly exposes file paths/sizes/mtimes/hashes to anyone). journalgpt/api/file_inventory.php
+  must be gated behind Authorization::requireRole(null) (this codebase''s existing "any authenticated
+  member" convention, same as admin_migrate.php and friends -- there is no separate staff/admin
+  role in this codebase to gate it more tightly than that, per T-PTG-025/033''s established
+  precedent).'
+- No local dev server serves journalgpt over HTTP in this environment (only local MySQL via
+  MAMP) -- default the comparison script to test.newmexicoptg.org + newmexicoptg.org (prod)
+  only, with the environment list easily extensible (array/CLI arg) if a local URL becomes
+  available later.
+- Keep the PMTNM tool's actual comparison semantics (quick_hash by default, --full for real
+  content MD5, match/mismatch/partial/missing_everywhere statuses, git commit shown per environment)
+  -- this is a good design, the only real change is adding the auth gate and dropping the
+  "environments" array down to what this project actually has.
+definition_of_done:
+- journalgpt/api/file_inventory.php exists, requires authentication (Authorization::requireRole(null)),
+  and returns the same shape of JSON inventory (path, size, mtime, quick_hash or full md5)
+  the PMTNM version does for its own repo.
+- journalgpt/scripts/compare_envs.sh (or equivalent local script) fetches from test.newmexicoptg.org
+  and newmexicoptg.org (using an authenticated session/cookie or token, since the endpoint
+  is no longer public), merges inventories, and reports per-file match/mismatch/missing status
+  plus a summary and git commit per environment -- same UX as PMTNM's --full/--dir/--file/--json/--missing-only
+  flags where practical.
+- A focused test proves the endpoint requires auth (401/redirect for an unauthenticated request)
+  and returns a correctly-shaped inventory for an authenticated one.
+- Golden hammer suite passes with zero regressions; deployed to test only per this session's
+  working agreement (Chip decides separately if/when this also goes to prod).
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T13:35:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed at Chip's explicit request ('involve the task_coordinator') before starting
+    implementation, after confirming the PMTNM reference tool's actual location/design (resources_was_pmtnm
+    and blue.pmtnm.org's scripts/compare_all_environments.php + api/file_inventory.php) and
+    flagging its auth gap as something to fix, not copy, in this port.
+- timestamp: '2026-08-25T18:30:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: Built and deployed same session -- journalgpt/api/file_inventory.php,
+    lib/FileInventoryScanner.php (with a path-traversal fix from automated security
+    review), tests/FileInventoryScannerTest.php, and task_coordinator/bin/compare_environments.py
+    all exist and are committed/deployed. Confirmed live (https://newmexicoptg.org/journalgpt/api/file_inventory.php
+    returns 401, correctly requiring auth). Status was left OPEN in this file by oversight
+    until this end-of-day reconciliation pass.
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-25T18:30:00-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session)
+audited_repo_sha: a5b1aad4
+claimed_at: '2026-08-25T18:30:00-06:00'
+last_transition: '2026-08-25T18:30:00-06:00'

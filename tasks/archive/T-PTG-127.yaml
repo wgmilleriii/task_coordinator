@@ -1,0 +1,52 @@
+id: T-PTG-127
+title: Fix "Continue with different articles" using physical page, not printed page
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-25T16:15:00-06:00'
+dependencies:
+- T-PTG-112
+scope:
+- 'Chip reported a live regression: "I clicked some buttons - the conversation worked
+  but it looks like it didn''t get all new articles?" on a real pinblock-material
+  question -- the regenerated answer still cited 3 of the original 6 articles at the
+  exact same pages.'
+- 'Root cause: resolveExcludedArticleIndexIds() (api/continue_with_different_articles.php)
+  read citations_json''s `page` field -- the PHYSICAL PDF page (index.php''s own citation
+  rendering calls it "physical: source.php lookup key") -- and passed it directly to
+  ArticleIndexResolver::resolve(), whose docblock explicitly requires the PRINTED
+  magazine page and warns about exactly this mistake (quoting the source.php bug it was
+  written to prevent). Off by each issue''s front-matter offset, this silently
+  mis-resolved or failed to resolve most citations, so exclusion no-opped for them.'
+- 'Confirmed via production debug_logs (conversation 128): every citation showed a
+  consistent physical-vs-printed offset of 2 (e.g. page 34 -> printed_page 32), and the
+  articles whose exclusion failed were exactly the ones with a valid, resolvable
+  article_id -- the resolver was silently landing on the wrong (or no) article_index row.'
+definition_of_done:
+- resolveExcludedArticleIndexIds() uses citations_json''s `printed_page` (already
+  computed server-side at citation time) instead of `page`, falling back to `page` only
+  for pre-existing rows saved before that field existed.
+- New regression test (testResolveExcludedIdsUsesPrintedPageNotPhysicalPage) reproduces
+  the exact bug shape -- RED confirmed against the pre-fix code, GREEN after.
+- Golden hammer suite passes with zero regressions.
+- 'Known separate limitation, NOT part of this fix: a citation with article_id=0
+  (unresolvable/unsynced article) can never be excluded since there is no article to
+  look up -- pre-existing, out of scope.'
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T16:15:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: Found via a real user bug report, root-caused via production debug_logs
+    (public, unauthenticated, read-only endpoint), fixed via TDD (RED confirmed before
+    the fix), full suite green. Committed 028a0c7a, deployed to test+prod same session
+    (confirmed live via terminal paste).
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-25T16:15:00-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session)
+audited_repo_sha: 028a0c7a
+claimed_at: '2026-08-25T16:15:00-06:00'
+last_transition: '2026-08-25T16:15:00-06:00'

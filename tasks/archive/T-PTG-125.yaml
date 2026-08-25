@@ -1,0 +1,49 @@
+id: T-PTG-125
+title: Fix session-lock freeze on continue-with-different-articles / launch-v4
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: DONE
+created_at: '2026-08-25T15:00:00-06:00'
+dependencies: []
+scope:
+- 'Chip reported clicking "Continue with different articles" froze the page, asking whether
+  it matched a prior documented freeze incident. Confirmed: same root cause class as the
+  quiz-generation freeze JobWorker.php''s docblock documents -- PHP''s session file lock
+  held for the whole request unless released.'
+- 'Both api/continue_with_different_articles.php and api/launch_v4_conversation.php made
+  a 15-40s synchronous JournalAnswerService::ask() call without ever releasing the session
+  file lock, blocking every other request on the same browser session (other tabs, the
+  main page itself) for the full duration.'
+- 'First fix attempt (session_write_close() in the HTTP wrapper, before calling the pure
+  handler) did NOT work -- live concurrency testing showed a concurrent request still
+  blocked ~18-22s. Root cause: the handler''s first line, Csrf::validate(), calls
+  Auth::startSession(), which sees PHP_SESSION_NONE (session_write_close()''s result)
+  and calls session_start() again, immediately re-acquiring the lock for the whole ask()
+  call.'
+definition_of_done:
+- session_write_close() moved inside each handler, immediately after CSRF validation
+  succeeds (matching api/ask.php''s own ordering) rather than in the HTTP wrapper before
+  the handler runs.
+- 'Live concurrency test (background slow request + concurrent fast request, timed):
+  a concurrent index.php request completes in the normal ~0.03-0.2s while the slow
+  endpoint is still running, instead of blocking for its full ~18-22s duration. Verified
+  using a multi-worker php -S server (PHP_CLI_SERVER_WORKERS=4) after discovering the
+  single-threaded default dev server masked the fix''s effect during testing.'
+- Golden hammer suite passes with zero regressions.
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T15:00:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: Filed retroactively during end-of-day task-board reconciliation -- built and
+    verified live same session, before this task existed as a YAML record. Committed
+    b3c3f52d, deployed to test+prod same session (confirmed live via terminal paste).
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-25T15:00:00-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session)
+audited_repo_sha: b3c3f52d
+claimed_at: '2026-08-25T15:00:00-06:00'
+last_transition: '2026-08-25T15:00:00-06:00'

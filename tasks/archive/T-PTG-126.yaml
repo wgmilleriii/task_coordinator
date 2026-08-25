@@ -1,0 +1,54 @@
+id: T-PTG-126
+title: Make v4_beta the default pipeline; move "Launch with v4" to bottom
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: DONE
+created_at: '2026-08-25T15:45:00-06:00'
+dependencies: []
+scope:
+- 'Chip: "let''s move the ''Launch with v4'' button from the top, to only the bottom of
+  v3 conversations, and make sure that v4 is the default from the beginning and that we
+  have the ''Continue with other articles'' option too."'
+- 'Confirmed with Chip and accepted the one real tradeoff: v4_beta has no clarifying-question
+  step (only v3_beta''s ResearchPlanner sets needs_clarification), so new questions no
+  longer get a clarifying follow-up even with Clarify:On.'
+- 'NOTE ON TASK ID: code comments in api/ask.php, index.php, and journal-chat.js reference
+  this work as "T-PTG-114" (chosen before this end-of-day reconciliation discovered
+  T-PTG-114 through T-PTG-124 were already claimed in-code by other concurrent agent work
+  with no matching task_coordinator YAML files). Filed here as T-PTG-126 to avoid a real
+  collision; the code comments were not retroactively edited (low value, not worth the
+  extra unplanned diff during sign-off).'
+definition_of_done:
+- api/ask.php''s preset resolution allows and defaults to v4_beta (was v3_beta) when no
+  preset is specified; journal-chat.js''s activePreset localStorage default and "classic
+  mode" toggle updated to match.
+- JournalAnswerService::ask()''s success response echoes back the preset actually used,
+  so the live-append path (appendAssistantMessage) can render "Continue with different
+  articles" immediately for a v4_beta answer, not only after a page reload.
+- '"Launch with v4" moved from the conversation header (shown unconditionally, top) to
+  the bottom of the messages list, gated on whether any message in the conversation
+  actually has preset=v4_beta (replacing the old title-suffix "(v4)" heuristic).'
+- 'Verified live: a fresh question with no preset specified landed as v4_beta in
+  debug_logs; a v4_beta conversation correctly shows "Continue with different articles"
+  and no "Launch with v4"; a v3_beta conversation shows "Launch with v4" at the bottom,
+  not the header.'
+- Golden hammer suite passes with zero regressions (5 new tests across AskEndpointTest,
+  JournalAnswerServiceTest, JournalChatRenderTest).
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T15:45:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: Filed retroactively during end-of-day task-board reconciliation. Built via TDD
+    (RED confirmed for each new test before implementation), full suite green (38/39,
+    one pre-existing unrelated fixture collision), verified live. Committed 89a41504,
+    deployed to test+prod same session (confirmed live via terminal paste).
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-25T15:45:00-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session)
+audited_repo_sha: 89a41504
+claimed_at: '2026-08-25T15:45:00-06:00'
+last_transition: '2026-08-25T15:45:00-06:00'

@@ -1,0 +1,48 @@
+id: T-PTG-110
+title: Sort conversation list By Date / By Name in JournalGPT sidebar
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: DONE
+created_at: '2026-08-25T11:15:00-06:00'
+dependencies: []
+scope:
+- 'Filed retroactively: Chip asked for a sort control on the conversation sidebar list, alongside
+  T-PTG-109''s v4-relaunch work.'
+- 'Sort dropdown ("By Date" / "By Name") added to index.php''s sidebar next to the existing
+  search box. Purely client-side in journal-chat.js: the server-rendered date-desc order is
+  snapshotted once at load into conversationItemsByDate, then "By Name" re-sorts a copy alphabetically
+  by conversation-title-text and re-appends the <li> nodes; "By Date" restores the original
+  snapshot order. No new API call, no schema change.'
+scoped_out:
+- Persisting the chosen sort preference across page loads (not requested).
+- Server-side sorting (unnecessary -- the full list is already in the DOM).
+definition_of_done:
+- Selecting "By Name" reorders the visible conversation list alphabetically; selecting "By
+  Date" restores the original most-recent-first order.
+- Sort interacts correctly with the existing search filter (search still hides/shows by substring
+  match regardless of sort order).
+- php -l and node --check clean; full golden hammer suite green with zero regressions; deployed
+  to and confirmed on test.newmexicoptg.org.
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T11:15:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed retroactively at Chip's request, same session as T-PTG-109, to give this
+    small addition a task_coordinator record before the concurrently open T-PTG-108 (quiz
+    wizard) starts touching the same sidebar files.
+- timestamp: '2026-08-25T11:15:00-06:00'
+  action: SELF_AUDIT_CLAIM_SUBMIT
+  actor: Claude-Sonnet-Session
+  details: Built, tested (33/33 golden hammer suite green), deployed to test via task_coordinator/bin/deploy.py.
+    No production deployment; no live browser verification performed for this specific change
+    (verified by test-suite pass and manual code review only).
+owner: Claude-Sonnet-Session
+audited_at: '2026-08-25T11:15:00-06:00'
+audited_by: Claude-Sonnet-Session (self-audited, solo session)
+audited_repo_sha: 7b1b370164444fc0c80a2691e650db1394cb26df
+claimed_at: '2026-08-25T11:15:00-06:00'
+last_transition: '2026-08-25T11:15:00-06:00'

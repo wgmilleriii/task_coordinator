@@ -1,0 +1,52 @@
+id: T-PTG-111
+title: Show real per-article citation titles for v4_beta answers
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-25T11:20:00-06:00'
+dependencies:
+- T-PTG-109
+scope:
+- 'Discovered while validating T-PTG-109 (v3-vs-v4 relaunch feature): running tests/CompareV3V4Retrieval.php
+  live showed that v4_beta''s citations display the SAME issue-level article_title ("Piano
+  Technicians Journal -- September 2025 Issue") as v3_beta, even though v4_beta actually retrieved
+  at article granularity internally (via EvidenceRetrieverV4 / article_index / corpus/articles/*.md).
+  The underlying retrieval improvement is real, but a member currently has no way to see it
+  -- the citation chip never shows "this came from the specific touchweight article," only
+  the issue.'
+- 'Root cause: JournalAnswerService::ask()''s citationsOutput formatting (around line 1121-1163,
+  the parsedCitations -> citationsOutput loop) resolves article_title/issue_label/pdf link
+  data against the issue-level `articles` MySQL table (via article_uid parsing) regardless
+  of preset -- there is no branch that prefers article_index''s real per-article title/page
+  data when the citation actually came from EvidenceRetrieverV4.'
+- 'Needs a preset-aware (or chunk-source-aware) citation resolution path: when a citation''s
+  underlying chunk came from EvidenceRetrieverV4/article_index, resolve article_title from
+  article_index''s real title instead of (or in addition to) the issue-level articles.title.
+  Must not break v3_beta''s existing citation resolution, the PDF page-link logic (pdf_url/source.php
+  proxy), or CitationVerificationTest/CitationLoggingTest''s existing assertions.'
+- Deployment is test-only for now, matching T-PTG-109/T-PTG-108's working agreement (shared
+  test/prod database).
+definition_of_done:
+- 'A v4_beta answer''s citation chips show the real article title (e.g. "Back-Weighting Upright
+  Keys: The Ultimate Improvement") rather than the generic issue title, for citations that
+  resolved through EvidenceRetrieverV4/article_index.'
+- v3_beta citation display and existing PDF-link behavior are unchanged (regression test proves
+  this).
+- A focused test proves the v4_beta citation path resolves to the real article_index title
+  when available, and degrades gracefully (falls back to issue-level title, not a broken/blank
+  citation) when it isn't.
+- Golden hammer suite passes with zero regressions; verified on test.newmexicoptg.org with
+  a real v4_beta relaunch (via T-PTG-109's "Launch with v4" button) showing the improved citation
+  title live.
+verification_command: null
+human_review_required: false
+requires_doc_update: false
+events:
+- timestamp: '2026-08-25T11:20:00-06:00'
+  action: SCOUT
+  actor: Claude-Sonnet-Session
+  details: Filed at Chip's request after this session's live tests/CompareV3V4Retrieval.php
+    run surfaced the display gap (see scope). Deliberately left unstarted this session --
+    flagged as its own bounded scope separate from T-PTG-109, since it touches shared citation-resolution
+    code used by both v3_beta and v4_beta.

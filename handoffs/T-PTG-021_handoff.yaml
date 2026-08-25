@@ -1,14 +1,14 @@
 task_id: T-PTG-021
-agent: Worker-PTG-021
-model: gemini
-status: PEER_REVIEW
+agent: Antigravity
+model: Antigravity
+status: VERIFIED_LOCALLY
 target_repo: newmexicoptg.org
-branch: test
+branch: test-T-PTG-065
 base_sha: ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c
-head_sha: 56177614f8b6d677b8e897d98b1212c1abc67e67
+head_sha: 17088853e4a6bb9fca7235c8ea39bccd5f2836a5
 evidence_output: "Exit code: 0\n\nSTDOUT:\n=======================================================\n\
   \ Journal AI Security & Evaluation Suite (PTJ-010)\n=======================================================\n\
-  \n>>> Executing [1/13] AuthAccessTest.php ...\n=== Running Journal AI Auth & Authorization\
+  \n>>> Executing [1/19] AuthAccessTest.php ...\n=== Running Journal AI Auth & Authorization\
   \ Tests ===\n[OK] Test database populated with seeded users and source article.\n\
   [TEST 1] Testing password hashing, verify, and user authentication...\n[OK] Password\
   \ hashing and credential verification functioning properly.\n[TEST 2] Testing session\
@@ -18,8 +18,8 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ role-based permission checks...\n[OK] Role enforcement and permissions verified.\n\
   [TEST 5] Testing protected source route access controls...\n[OK] Protected source\
   \ route access controls verified.\n=== ALL AUTH & AUTHORIZATION TESTS PASSED SUCCESSFULLY\
-  \ ===\n\n>>> Executing [2/13] CorpusIndexerTest.php ...\n=== ALL CORPUS INDEXER\
-  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [3/13] JournalAnswerServiceTest.php\
+  \ ===\n\n>>> Executing [2/19] CorpusIndexerTest.php ...\n=== ALL CORPUS INDEXER\
+  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [3/19] JournalAnswerServiceTest.php\
   \ ...\n=== Running JournalAnswerService Unit Tests ===\n[OK] Test database populated\
   \ for service tests.\n[TEST 9] Physical PDF page -> printed page mapping via per-issue\
   \ front-matter offset...\n[OK] Physical->printed page mapping verified.\n[TEST 11]\
@@ -59,44 +59,48 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ retrieval pipeline...\n[OK] Bulk-extraction refusal against multi-query retrieval\
   \ phrasing verified (v3_beta preset).\n[TEST 5] Refusal behavior on prompt injection\
   \ request...\n[OK] Prompt injection refusal verified.\n[TEST 6] Bounded conversation\
-  \ context loading...\n[OK] Bounded conversation context verified.\n=== ALL JOURNAL\
-  \ ANSWER SERVICE TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [4/13] AskEndpointTest.php\
+  \ context loading...\n[OK] Bounded conversation context verified.\n[TEST 20] debug_logs\
+  \ records clarification_mode even when not triggered...\n[OK] debug_logs records\
+  \ clarification_mode='auto', clarification_triggered=0.\n=== ALL JOURNAL ANSWER\
+  \ SERVICE TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [4/19] AskEndpointTest.php\
   \ ...\n=== Running api/ask.php Endpoint Tests ===\n[TEST 1] Testing anonymous access\
   \ denial (401/403)...\n[OK] Anonymous access denial check passed.\n[TEST 2] Testing\
   \ CSRF validation and missing token rejection...\n[OK] CSRF token validation & rejection\
   \ verified.\n[TEST 3] Testing valid JSON response format and secret leakage protection...\n\
-  [OK] JSON response structure & secret leakage protection verified.\n=== ALL ASK\
-  \ ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [5/13] UsagePolicyTest.php\
-  \ ...\n=== Running UsagePolicy & Quota Tests ===\n[TEST 1] Testing pre-invocation\
-  \ quota enforcement...\n[OK] Pre-invocation quota enforcement verified (3 allowed,\
-  \ 4th denied).\n[TEST 2] Testing administrator exemption from per-user question\
-  \ cap...\n[OK] Administrator quota exemption verified.\n[TEST 3] Testing organization\
-  \ monthly budget hard cap enforcement...\n[OK] Organization monthly budget hard\
-  \ cap enforcement verified.\n[TEST 4] Testing race-safe atomic transaction allowance\
-  \ check...\n[OK] Atomic transaction allowance check verified.\n[TEST 5] Testing\
-  \ detailed usage ledger recording & stats...\n[OK] Detailed usage ledger recording\
-  \ & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED SUCCESSFULLY\
-  \ ===\n\n>>> Executing [6/13] MigrationTest.php ...\n=== Running Journal AI Migration\
-  \ Tests ===\n[SKIP] Set JOURNALGPT_ALLOW_DESTRUCTIVE_TESTS=1 to permit destructive\
-  \ migration tests.\n\n>>> Executing [7/13] JournalChatRenderTest.php ...\n=== Running\
-  \ JournalChatRenderTest ===\n[TEST 1] Testing PHP syntax with php -l...\n[OK] All\
-  \ PHP files passed php -l syntax check.\n[TEST 2] Testing unauthenticated access\
-  \ redirection...\n[OK] Unauthenticated state verified. Redirect target: login.php\n\
+  [OK] JSON response structure & secret leakage protection verified.\n[TEST 4] Testing\
+  \ clarification_mode validation and fallback...\n[OK] Clarification mode validation\
+  \ and fallback verified.\n=== ALL ASK ENDPOINT TESTS PASSED SUCCESSFULLY ===\n\n\
+  >>> Executing [5/19] UsagePolicyTest.php ...\n=== Running UsagePolicy & Quota Tests\
+  \ ===\n[TEST 1] Testing pre-invocation quota enforcement...\n[OK] Pre-invocation\
+  \ quota enforcement verified (3 allowed, 4th denied).\n[TEST 2] Testing administrator\
+  \ exemption from per-user question cap...\n[OK] Administrator quota exemption verified.\n\
+  [TEST 3] Testing organization monthly budget hard cap enforcement...\n[OK] Organization\
+  \ monthly budget hard cap enforcement verified.\n[TEST 4] Testing race-safe atomic\
+  \ transaction allowance check...\n[OK] Atomic transaction allowance check verified.\n\
+  [TEST 5] Testing detailed usage ledger recording & stats...\n[OK] Detailed usage\
+  \ ledger recording & stats aggregation verified.\n=== ALL USAGE POLICY TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n>>> Executing [6/19] MigrationTest.php ...\n=== Running Journal\
+  \ AI Migration Tests ===\n[SKIP] Set JOURNALGPT_ALLOW_DESTRUCTIVE_TESTS=1 to permit\
+  \ destructive migration tests.\n\n>>> Executing [7/19] JournalChatRenderTest.php\
+  \ ...\n=== Running JournalChatRenderTest ===\n[TEST 1] Testing PHP syntax with php\
+  \ -l...\n[OK] All PHP files passed php -l syntax check.\n[TEST 2] Testing unauthenticated\
+  \ access redirection...\n[OK] Unauthenticated state verified. Redirect target: login.php\n\
   [TEST 3] Testing authenticated markup rendering & assets...\n[OK] Authenticated\
-  \ markup rendering, CSRF token, and asset links verified.\n[TEST 4] 'Generate Quiz'\
-  \ button renders on conversation reload (?c=) for a cited, not-yet-quizzed message...\n\
-  [OK] 'Generate Quiz' button renders on reload, wired to the correct message id.\n\
-  [TEST 5] 'View Quiz' button renders (linking to the correct quiz) for an already-quizzed\
-  \ message on reload...\n[OK] 'View Quiz' renders and links to quiz.php?id=118.\n\
-  === ALL JOURNAL CHAT RENDER TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [8/13]\
-  \ OperationsJobTest.php ...\n[PASS] testAuthenticatorFailsClosedForUnsetOrBadToken\n\
+  \ markup rendering, CSRF token, and asset links verified.\n[TEST] Testing engine-controls-bar\
+  \ includes clarificationModeSelect...\n[OK] testEngineControlsBarIncludesClarificationModeSelect\n\
+  [TEST 4] 'Generate Quiz' button renders on conversation reload (?c=) for a cited,\
+  \ not-yet-quizzed message...\n[OK] 'Generate Quiz' button renders on reload, wired\
+  \ to the correct message id.\n[TEST 5] 'View Quiz' button renders (linking to the\
+  \ correct quiz) for an already-quizzed message on reload...\n[OK] 'View Quiz' renders\
+  \ and links to quiz.php?id=174.\n=== ALL JOURNAL CHAT RENDER TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [8/19] OperationsJobTest.php ...\n[PASS] testAuthenticatorFailsClosedForUnsetOrBadToken\n\
   [PASS] testCreateRejectsUnapprovedTypeAndInvalidArguments\n[PASS] testCreatedAuditEventFailureRollsBackPendingJob\n\
   [PASS] testJobDoesNotDispatchUntilOneTimeConfirmation\n[PASS] testExpiredJobCannotBeConfirmed\n\
   [PASS] testRegisteredCallableIsRequiredForDispatch\n[PASS] testConfirmationCompareAndSetPreventsSecondServiceDispatch\n\
   [PASS] testSanitizesSecretLikeValuesAndExceptionMessagesInResultsAndEvents\n[PASS]\
   \ testOperationsApiRejectsBadBearerTokenWithoutLeakingDetails\n[PASS] testOperationsApiCreatesAndConfirmsNamedJob\n\
   [PASS] testLegacyIndexSpikeContainsOnlyTheFixedNotFoundResponse\n\n>>> Executing\
-  \ [9/13] V3PipelineEndToEndTest.php ...\n=== Running V3 Pipeline End-to-End Tests\
+  \ [9/19] V3PipelineEndToEndTest.php ...\n=== Running V3 Pipeline End-to-End Tests\
   \ ===\n[OK] Test database populated for v3 pipeline end-to-end tests.\n[TEST 1]\
   \ v3_beta pipeline completes every stage when getState() returns null (T-PTG-026\
   \ regression guard)...\n[OK] Null conversation state did not crash or silently truncate\
@@ -104,10 +108,10 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ pipeline completes every stage on a follow-up turn with persisted state...\n[OK]\
   \ Follow-up turn with real persisted conversation state completed every pipeline\
   \ stage.\n=== ALL V3 PIPELINE END-TO-END TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
-  \ [10/13] ConversationSidebarTest.php ...\n=== Running Conversation Sidebar Tests\
+  \ [10/19] ConversationSidebarTest.php ...\n=== Running Conversation Sidebar Tests\
   \ (T-PTG-033) ===\n[TEST 1] JournalAnswerService::ask() (storeMessage path) bumps\
   \ updated_at and sets has_unread on assistant message...\n[OK] updated_at advanced\
-  \ (2026-08-10 21:38:21 -> 2026-08-13 15:38:22) and has_unread=1.\n[TEST 2] A user-only\
+  \ (2026-08-14 22:34:06 -> 2026-08-17 16:34:07) and has_unread=1.\n[TEST 2] A user-only\
   \ message (no assistant reply yet) must not itself flip has_unread for the asking\
   \ member...\n[OK] has_unread stays 0 until an assistant message actually lands.\n\
   [TEST 3] admin_reply.php's raw INSERT path (via the shared touchConversationOnAssistantMessage()\
@@ -117,7 +121,7 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ sorted first.\n[TEST 5] Viewing a conversation (index.php's active-conversation\
   \ load path) clears has_unread...\n[OK] has_unread cleared after the owner viewed\
   \ the conversation.\n=== ALL CONVERSATION SIDEBAR TESTS PASSED SUCCESSFULLY ===\n\
-  \n>>> Executing [11/13] RenameConversationTest.php ...\n=== Running api/rename_conversation.php\
+  \n>>> Executing [11/19] RenameConversationTest.php ...\n=== Running api/rename_conversation.php\
   \ Endpoint Tests ===\n[TEST 1] Successful rename by the owning member...\n[OK] Owner\
   \ successfully renamed their own conversation.\n[TEST 2] Rename attempt by a non-owner\
   \ is rejected (403) and title is unchanged...\n[OK] Non-owner rename attempt rejected;\
@@ -125,7 +129,7 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ the true owner...\n[OK] Missing and invalid CSRF tokens both rejected with no\
   \ write performed.\n[TEST 4] Empty title and title over 255 chars are both rejected...\n\
   [OK] Empty and oversize titles both rejected with no write performed.\n=== ALL RENAME\
-  \ CONVERSATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [12/13] QuizTest.php\
+  \ CONVERSATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [12/19] QuizTest.php\
   \ ...\n=== Running T-PTG-034 Quiz Tests ===\n[TEST 1] QuizGenerator discards model\
   \ questions with no traceable evidence_index...\n[OK] Ungrounded/out-of-range/missing-evidence\
   \ questions discarded; only the traceable question survives.\n[TEST 2] No citations\
@@ -142,7 +146,26 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \ (?slug=) branch never selects protected/answer-key columns...\n[OK] Public quiz\
   \ view structurally cannot leak correct answers, article_id, citation text, or the\
   \ source.php PDF proxy.\n=== ALL QUIZ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
-  \ [13/13] Python Evaluation Runner (eval_runner.py) ...\n\n=======================================================\n\
+  \ [13/19] ClarifyingQuestionsTest.php ...\n[OK] testOffModeNeverClarifiesEvenWhenPlannerSaysTo\n\
+  [OK] testOnModeClarifiesFirstRoundEvenWhenPlannerSaysNotNeeded\n[OK] testAutoModeMatchesPlannerVerdict\n\
+  [OK] testSafetyBackstopForcesResearchAfterFiveRounds\n[OK] testClosingPhraseForcesResearchImmediately\n\
+  [OK] testClarificationTurnExcludedFromMonthlyQuestionQuota\n[OK] testDebugLogRecordsClarificationTriggeredTrue\n\
+  [OK] testOnModeFallsBackToPlannerJudgmentAfterFirstRound\n[OK] testOffModeDoesNotClarifyWhenNotNeeded\n\
+  [OK] testRoundIncrementsAcrossRealTurns\n=== ALL CLARIFYING QUESTIONS TESTS PASSED\
+  \ SUCCESSFULLY ===\n\n>>> Executing [14/19] MetadataIndexTest.php ...\nMetadata\
+  \ index built successfully. Generated 1 records in test_metadata_6a838c6126562.json.\n\
+  [OK] testBuildsIndexEntryPerManifestItem\n=== ALL METADATA INDEX TESTS PASSED SUCCESSFULLY\
+  \ ===\n\n>>> Executing [15/19] CitationVerificationTest.php ...\n[OK] testVerifiedCitationMarkedPageVerifiedTrue\n\
+  [OK] testInventedPageNotTrustedFromNewPath\n[OK] testClaimStrippedByClaimValidatorNotPageVerified\n\
+  === ALL CITATION VERIFICATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [16/19]\
+  \ CitationLoggingTest.php ...\n[OK] testCitationLoggedWithPage\n[OK] testCitationLoggedWithNullPageWhenPageUnresolved\n\
+  [OK] testAdminAnalyticsGateAllowsRegularAuthenticatedMember\n=== ALL CITATION LOGGING\
+  \ TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [17/19] ProfileRecommendationTest.php\
+  \ ...\n[OK] testSeenSetExcludesOnlySelfCitedArticles\n[OK] testPopularButUnreadOrderedAboveNeverCited\n\
+  === ALL PROFILE RECOMMENDATION TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing [18/19]\
+  \ BackfillArticleMetadataTest.php ...\n[OK] testSecondRunMakesNoApiCallsOnceBackfilled\n\
+  === ALL BACKFILL ARTICLE METADATA TESTS PASSED SUCCESSFULLY ===\n\n>>> Executing\
+  \ [19/19] Python Evaluation Runner (eval_runner.py) ...\n\n=======================================================\n\
   \ Journal AI Retrieval Evaluation Runner\n Dataset: /Users/willismiller/Documents/GitHub/newmexicoptg.org/journalgpt/tests/eval_dataset.sample.json\n\
   \ Test Cases: 7\n=======================================================\n\n[\u2713\
   ] TC-FACT-001 (factual_single_article): PASS - Score: 100.0/100\n    - Citation\
@@ -177,10 +200,24 @@ evidence_output: "Exit code: 0\n\nSTDOUT:\n=====================================
   \  JournalChatRenderTest          : PASS\n  OperationsJobTest              : PASS\n\
   \  V3PipelineEndToEndTest         : PASS\n  ConversationSidebarTest        : PASS\n\
   \  RenameConversationTest         : PASS\n  QuizTest                       : PASS\n\
+  \  ClarifyingQuestionsTest        : PASS\n  MetadataIndexTest              : PASS\n\
+  \  CitationVerificationTest       : PASS\n  CitationLoggingTest            : PASS\n\
+  \  ProfileRecommendationTest      : PASS\n  BackfillArticleMetadataTest    : PASS\n\
   \  PythonEvalRunner               : PASS\n-------------------------------------------------------\n\
-  \ Total Suites: 13 | Passed: 13 | Failed: 0\n=======================================================\n\
-  \nSTDERR:\nJournalAnswerService: withheld unattributable answer (user=1208, chunks=1,\
-  \ answer_len=158) \u2014 retrieval returned content but no citation could be resolved."
+  \ Total Suites: 19 | Passed: 19 | Failed: 0\n=======================================================\n\
+  \nSTDERR:\nCorpusIndexer: failed to check existing topics for article ART-APPROVED-01:\
+  \ SQLSTATE[HY000]: General error: 1 no such table: article_topics\nCorpusIndexer:\
+  \ failed to check existing topics for article ART-SAVE-DB-01: SQLSTATE[HY000]: General\
+  \ error: 1 no such table: article_topics\nCorpusIndexer: failed to check existing\
+  \ topics for article ART-MONTHLY-DATE-01: SQLSTATE[HY000]: General error: 1 no such\
+  \ table: article_topics\nCorpusIndexer: failed to check existing topics for article\
+  \ ART-IDEMPOTENT-01: SQLSTATE[HY000]: General error: 1 no such table: article_topics\n\
+  CorpusIndexer: failed to check existing topics for article ART-RETIRE-01: SQLSTATE[HY000]:\
+  \ General error: 1 no such table: article_topics\nCorpusIndexer: failed to check\
+  \ existing topics for article ART-ZERO-PAID-01: SQLSTATE[HY000]: General error:\
+  \ 1 no such table: article_topics\nJournalAnswerService: withheld unattributable\
+  \ answer (user=1733, chunks=1, answer_len=158) \u2014 retrieval returned content\
+  \ but no citation could be resolved."
 peer_review_notes: null
 human_action_required: null
 token_spend: null

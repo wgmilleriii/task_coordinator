@@ -1,0 +1,35 @@
+id: T-PTG-062
+title: 'Feature: Advanced Prompt Builder Grid UI'
+status: DONE
+priority: P2
+lane: frontend
+repo: newmexicoptg.org
+description: 'Enhance the new-conversation greeting (building on T-PTG-059) with an
+  interactive Prompt Builder. It should display a 4 x 3 grid of color-coded category
+  buttons (using pool ball styling/colors for up to 15 distinct categories). Clicking
+  a category should trigger follow-up selection steps that dynamically construct a
+  highly refined query in the chat text box for the user, rather than forcing them
+  to type from scratch.
+
+  '
+assignee: unassigned
+audited_at: '2026-08-17T17:12:13.367558Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+verification_command: php -l index.php
+events:
+- timestamp: '2026-08-17T17:12:13.367713Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T17:12:45.906724Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:16:22.345054Z'
+  action: SUBMIT
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:18:17.320696Z'
+  action: CLOSE
+  actor: Unknown
+owner: Worker-Agent
+claimed_at: '2026-08-17T17:12:45.906593Z'

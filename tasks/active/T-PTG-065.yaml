@@ -1,0 +1,39 @@
+id: T-PTG-065
+title: Webhook Sync for Localhost Conversations
+status: PEER_REVIEW
+priority: P2
+lane: ANY
+repo: newmexicoptg.org
+scope:
+- 'Implement a webhook to synchronize localhost conversations to the production database.
+
+  1. Create `journalgpt/api/sync_chat.php` to receive incoming conversation payloads.
+
+  2. Protect the endpoint with a shared secret key (e.g. SYNC_SECRET).
+
+  3. Modify `journalgpt/api/ask.php` (or wherever conversations are inserted) so that
+  if a SYNC_ENDPOINT environment variable is set, it fires a background curl POST
+  request with the conversation payload to the production server.
+
+  4. Ensure error handling so that local generation does not fail if the webhook is
+  unreachable.'
+audited_at: '2026-08-17T22:27:36.832895Z'
+audited_by: PM-Agent
+audited_repo_sha: 5a022d2b7d50146a26a014098ae372ab99a7d6d2
+verification_command: php -l journalgpt/api/ask.php
+events:
+- timestamp: '2026-08-17T22:27:36.833061Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 5a022d2b7d50146a26a014098ae372ab99a7d6d2
+- timestamp: '2026-08-17T22:28:01.718286Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-17T22:30:45.578515Z'
+  action: SUBMIT
+  actor: Unknown
+claimed_at: '2026-08-17T22:28:01.718089Z'
+owner: Unknown
+created_at: '2026-08-20T10:00:00-06:00'
+definition_of_done:
+- Pass review

@@ -3,25 +3,24 @@ title: Pin down Bernardi's verzicola boundary from the 1790 rules directly
 repo: minchiate_tarot
 priority: P2
 lane: ANY
-status: OPEN
-owner: null
+status: PEER_REVIEW
+owner: Antigravity
 created_at: '2026-08-10T18:08:00-06:00'
 dependencies: []
 scope:
-- Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola
-  combination example, replacing the Justice pilot's hedge ('I-V and beginning around
-  XXVIII', pilot line 92) with an exact list.
-- Thirteen committed studies currently lean on that hedge; the zodiac batch flags it
-  as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge
+- Open the RULE-1790 (Bernardi) source directly and transcribe every verzicola combination
+  example, replacing the Justice pilot's hedge ('I-V and beginning around XXVIII',
+  pilot line 92) with an exact list.
+- Thirteen committed studies currently lean on that hedge; the zodiac batch flags
+  it as acutely open at XXVII (one numeral below) and XXVIII (the numeral the hedge
   names), and the element batch left 'whether XX-XXIII can form a verzicola' as a
   standing open question in all four files.
-- Record whether the examples are exhaustive or exemplary in Bernardi's own text; do
-  not convert examples into rules - the deliverable is the transcription plus locators
+- Record whether the examples are exhaustive or exemplary in Bernardi's own text;
+  do not convert examples into rules - the deliverable is the transcription plus locators
   (chapter and printed page), not an interpretation.
-- If the boundary resolves, list the follow-up amendments needed (zodiac files
-  XXVII/XXVIII sections 2 and 4, element files' open questions, Justice pilot
-  cross-references) as a reconciliation queue; apply them only if the audit scopes
-  that in.
+- If the boundary resolves, list the follow-up amendments needed (zodiac files XXVII/XXVIII
+  sections 2 and 4, element files' open questions, Justice pilot cross-references)
+  as a reconciliation queue; apply them only if the audit scopes that in.
 definition_of_done:
 - A sourced note in research/02-source-audit/ or research/pilots/ transcribes the
   verzicola examples with exact locators and states what the record can and cannot
@@ -30,3 +29,18 @@ definition_of_done:
 - The hedge is superseded only by direct transcription, never by memory.
 verification_command: grep -rqi 'verzicola' research/02-source-audit/ research/pilots/
 human_review_required: false
+audited_at: '2026-08-17T22:28:48.568452Z'
+audited_by: Antigravity
+audited_repo_sha: 3556e682ee0493b832d0fe092b0f1d2e20e0a3d6
+events:
+- timestamp: '2026-08-17T22:28:48.568643Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against 3556e682ee0493b832d0fe092b0f1d2e20e0a3d6
+- timestamp: '2026-08-17T22:29:26.292760Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-17T22:30:54.722210Z'
+  action: SUBMIT
+  actor: Antigravity
+claimed_at: '2026-08-17T22:29:26.291448Z'

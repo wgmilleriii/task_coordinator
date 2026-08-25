@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+import json
+import os
+import glob
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import yaml
+
+PORT = 8085
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DASHBOARD_DIR = os.path.join(REPO_ROOT, "dashboard")
+TASKS_DIR = os.path.join(REPO_ROOT, "tasks", "active")
+
+class DashboardHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=DASHBOARD_DIR, **kwargs)
+
+    def do_GET(self):
+        if self.path == '/api/human-tasks':
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            
+            tasks = []
+            for yaml_file in glob.glob(os.path.join(TASKS_DIR, "*.yaml")):
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    try:
+                        task = yaml.safe_load(f)
+                        task_id = os.path.basename(yaml_file).replace('.yaml', '')
+                        task['id'] = task_id
+                        if task.get('status') in ['HUMAN_REVIEW', 'BLOCKED']:
+                            tasks.append(task)
+                    except Exception as e:
+                        print(f"Error loading {yaml_file}: {e}")
+            
+            tasks.sort(key=lambda x: (0 if x.get('status') == 'BLOCKED' else 1, x.get('id')))
+            self.wfile.write(json.dumps(tasks).encode('utf-8'))
+        else:
+            if self.path == '/':
+                self.path = '/index.html'
+            super().do_GET()
+
+if __name__ == '__main__':
+    os.makedirs(DASHBOARD_DIR, exist_ok=True)
+    server_address = ('', PORT)
+    httpd = HTTPServer(server_address, DashboardHandler)
+    print(f"Starting dashboard server on http://localhost:{PORT}")
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    print("\nShutting down...")
+    httpd.server_close()

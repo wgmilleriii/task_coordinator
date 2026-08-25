@@ -1,0 +1,44 @@
+id: T-PTG-059
+title: 'Feature: Greet the user in JournalGPT'
+status: PEER_REVIEW
+priority: P2
+lane: ANY
+repo: newmexicoptg.org
+audited_at: '2026-08-17T16:43:36.583423Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+verification_command: php -l index.php
+events:
+- timestamp: '2026-08-17T16:41:47.764587Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T16:43:36.583893Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T16:50:12.596223Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T16:53:56.240800Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T16:54:44.526759Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T16:55:06.429105Z'
+  action: SUBMIT
+  actor: Worker-Agent
+owner: Worker-Agent
+claimed_at: '2026-08-17T16:54:44.526388Z'
+scope:
+- 'The conversational UI (JournalGPT) should formally greet the user, perhaps when
+  they start a new conversation or open the interface.
+
+  The goal is to update the conversation workflow to include a friendly, context-aware
+  greeting to the user when they initiate a session.
+
+  '
+created_at: '2026-08-20T10:00:00-06:00'
+definition_of_done:
+- Pass review

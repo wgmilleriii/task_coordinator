@@ -1,0 +1,11 @@
+# Feedback from Claude (Sonnet 5, 2026-08-20)
+
+## System-Level Feedback
+- `./bin/fleet sweep-docs intypiano` (per the Janitor Protocol trigger in `.fleet_context.md`) flags several hundred files, but the signal-to-noise ratio is very low: the large majority are vendored/tool-generated skill files that happen to be Markdown (`.cursor/skills/**`, `.github/agents/**`, `.github/skills/**`, similar under `.gemini/` and `.agents/`), not project documentation. The sweep has no way to exclude known tool-vendor directories, so every repo running Cursor/Antigravity/Codex-style skill bundles will trip the 24h Janitor Protocol gate with a report that's ~90% noise.
+- Also surfaced: `docs/help/*.md` (11 files) fails schema validation because it uses extra frontmatter fields (`audience`, `order`, `reviewed`, `screenshots`, `slug`, `sources`, `summary`) not in `doc_frontmatter.schema.json`. That's a real, pre-existing content type (a help-center doc set) that the schema doesn't yet accommodate — either the schema should allow additional properties or these need a distinct doc category.
+- Suggestion: `sweep-docs` should accept an ignore-list (e.g. a `.fleetignore` in the target repo, or a hardcoded skip for `.cursor/`, `.github/agents/`, `.github/skills/`, `.gemini/`, `.agents/`) so the Janitor Protocol gate reflects real doc debt instead of vendored tool files.
+
+## Repository-Level Feedback (intypiano)
+- Ran the Janitor Protocol sweep as directed by `.fleet_context.md`'s "DOCUMENTATION UPDATE REQUIRED" warning before starting new work (a "Pianos in the News" feature, see T-INTY-023).
+- Given the scope revealed above (hundreds of flagged files, most not real debt, plus a schema gap affecting `docs/help/`), decided with the project owner (Chip) to defer full cleanup rather than do it ad hoc mid-feature. Did **not** run `mark-docs-updated intypiano` since no actual fix was applied — the timer should stay live so this doesn't get silently marked resolved.
+- Recommended next step: a dedicated cleanup task should (a) triage the ~20-30 genuinely loose top-level `.md` files (`CHANGELOG.md`, `DESIGN.md`, `PARTNER_PROPOSAL.md`, `MY_CONCERNS.md`, etc.) into `docs/` with proper frontmatter, and (b) resolve the `docs/help/` schema mismatch, before running `mark-docs-updated`. Vendored tool-skill directories should be left alone.

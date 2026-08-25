@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dollers Fleet Human Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: hsl(0, 0%, 98%);
+            --text-main: hsl(0, 0%, 10%);
+            --text-muted: hsl(0, 0%, 40%);
+            --card-bg: hsl(0, 0%, 100%);
+            --border-color: hsl(0, 0%, 90%);
+            --blocked-color: hsl(354, 70%, 54%);
+            --blocked-bg: hsl(354, 100%, 97%);
+            --review-color: hsl(38, 92%, 50%);
+            --review-bg: hsl(38, 100%, 97%);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px hsla(0, 0%, 0%, 0.04);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .task-id {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: hsl(0, 0%, 95%);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            letter-spacing: 0.05em;
+        }
+
+        .badge.blocked {
+            background-color: var(--blocked-bg);
+            color: var(--blocked-color);
+            border: 1px solid hsla(354, 70%, 54%, 0.2);
+        }
+
+        .badge.review {
+            background-color: var(--review-bg);
+            color: var(--review-color);
+            border: 1px solid hsla(38, 92%, 50%, 0.2);
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+        }
+
+        .task-meta {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .task-meta div {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .blocked-reason {
+            background-color: var(--blocked-bg);
+            border-left: 3px solid var(--blocked-color);
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .review-reason {
+            background-color: var(--review-bg);
+            border-left: 3px solid var(--review-color);
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .flex-spacer {
+            flex-grow: 1;
+        }
+
+        .cli-copy-btn {
+            background-color: hsl(0, 0%, 96%);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: monospace;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.2s ease;
+            position: relative;
+        }
+
+        .cli-copy-btn:hover {
+            background-color: hsl(0, 0%, 92%);
+        }
+        
+        .cli-copy-btn::after {
+            content: 'Copy';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-family);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .cli-copy-btn:hover::after {
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Dollers Fleet // Human Actions Required</h1>
+        <div id="stats" style="font-size: 0.875rem; color: var(--text-muted);">
+            Loading...
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="task-grid" class="task-grid">
+            <!-- Tasks will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        async function fetchTasks() {
+            try {
+                const response = await fetch('/api/human-tasks');
+                const tasks = await response.json();
+                renderTasks(tasks);
+            } catch (error) {
+                console.error("Failed to fetch tasks:", error);
+                document.getElementById('task-grid').innerHTML = `
+                    <div class="empty-state">
+                        <p>Error loading tasks. Is the server running?</p>
+                    </div>
+                `;
+            }
+        }
+
+        function copyCommand(command) {
+            navigator.clipboard.writeText(command).then(() => {
+                alert("Command copied to clipboard: " + command);
+            });
+        }
+
+        function renderTasks(tasks) {
+            const grid = document.getElementById('task-grid');
+            const stats = document.getElementById('stats');
+            
+            if (tasks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <h2>All clear!</h2>
+                        <p>No tasks currently require human intervention.</p>
+                    </div>
+                `;
+                stats.textContent = "0 pending actions";
+                return;
+            }
+
+            let blockedCount = tasks.filter(t => t.status === 'BLOCKED').length;
+            let reviewCount = tasks.filter(t => t.status === 'HUMAN_REVIEW').length;
+            stats.innerHTML = `<span style="color: var(--blocked-color); font-weight: 600;">${blockedCount} Blocked</span> &nbsp;/&nbsp; <span style="color: var(--review-color); font-weight: 600;">${reviewCount} Reviews</span>`;
+
+            grid.innerHTML = tasks.map(task => {
+                const isBlocked = task.status === 'BLOCKED';
+                const badgeClass = isBlocked ? 'blocked' : 'review';
+                const statusLabel = isBlocked ? 'Blocked' : 'Review';
+                
+                let reasonHtml = '';
+                if (isBlocked && task.blocked_reason) {
+                    reasonHtml = `<div class="blocked-reason"><strong>Reason:</strong> ${task.blocked_reason}</div>`;
+                } else if (!isBlocked) {
+                    reasonHtml = `<div class="review-reason">Ready for final human visual/strategic sign-off.</div>`;
+                }
+
+                const cmd = isBlocked 
+                    ? `./bin/fleet unblock ${task.id}` 
+                    : `./bin/fleet close ${task.id} --human <YourName>`;
+
+                return `
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">${task.id}</span>
+                            <span class="badge ${badgeClass}">${statusLabel}</span>
+                        </div>
+                        <h3 class="task-title">${task.title}</h3>
+                        <div class="task-meta">
+                            <div><strong>Repo:</strong> ${task.target_repo || 'unknown'}</div>
+                            <div><strong>Pri:</strong> ${task.priority || 'N/A'}</div>
+                        </div>
+                        ${reasonHtml}
+                        <div class="flex-spacer"></div>
+                        <button class="cli-copy-btn" onclick="copyCommand('${cmd}')" title="Click to copy CLI command">
+                            $ ${cmd}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Init
+        fetchTasks();
+    </script>
+</body>
+</html>

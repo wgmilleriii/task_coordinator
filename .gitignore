@@ -5,3 +5,7 @@ __pycache__/
 .fleet.lock
 logs/
 test.py
+
+# FTP + test-member credentials for bin/deploy.py and bin/run_test_migration.py
+.env
+.gstack/

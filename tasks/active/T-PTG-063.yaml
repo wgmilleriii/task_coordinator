@@ -1,0 +1,30 @@
+id: T-PTG-063
+title: 'Feature: Mobile-Optimized Minimalist UI'
+status: PEER_REVIEW
+priority: P2
+lane: ANY
+repo: newmexicoptg.org
+audited_at: '2026-08-17T20:49:50.672199Z'
+audited_by: PM-Agent
+audited_repo_sha: 5583f85ad5935f425c6f3a774052f742d581e69e
+verification_command: php -l index.php
+events:
+- timestamp: '2026-08-17T20:49:50.672651Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 5583f85ad5935f425c6f3a774052f742d581e69e
+- timestamp: '2026-08-17T20:51:38.553878Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T20:54:56.055935Z'
+  action: SUBMIT
+  actor: Worker-Agent
+owner: Worker-Agent
+claimed_at: '2026-08-17T20:51:38.553610Z'
+scope:
+- Optimize the front end for mobile. Hide previous conversations behind a hamburger
+  menu. Consolidate non-conversation links (labs, help, credits, profile, admin, etc.)
+  into a single link/dropdown. Ensure the interface is extremely minimalistic.
+created_at: '2026-08-20T10:00:00-06:00'
+definition_of_done:
+- Pass review

@@ -3,36 +3,36 @@ title: Lock in citation-numbering fix with a real-shape regression fixture
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: AUDITED
-owner: null
+status: PEER_REVIEW
+owner: Antigravity
 created_at: '2026-08-12T04:03:50Z'
 audited_at: '2026-08-12T04:03:50Z'
 audited_by: Claude-PM
 audited_repo_sha: 9e74d39c82a5980f488695fb4e4e5e1dd46bdb54
-dependencies:
-- T-PTG-001
-- T-PTG-002
 scope:
 - journalgpt/tests/JournalAnswerServiceTest.php
-- 'journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) — add a fixture reproducing
-  the actual reported ''Golden Hammer Award recipients'' case shape as closely as possible without shipping
-  real user data: a multi-paragraph answer with a handful of inline [n] markers, and a StubOpenAIClient
-  retrieved_chunks payload spanning many issues/pages (2019 through 2025) so the test exercises real cross-issue
-  volume, not just 2-3 chunks.'
-- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily synthetic/minimal;
-  this task's job is to add a second, independent test built directly from the bug report so the fix is
-  verified against the actual failure shape, not just a simplified version of it.
+- "journalgpt/tests/eval_dataset.sample.json (or a new sibling fixture file) \u2014\
+  \ add a fixture reproducing the actual reported 'Golden Hammer Award recipients'\
+  \ case shape as closely as possible without shipping real user data: a multi-paragraph\
+  \ answer with a handful of inline [n] markers, and a StubOpenAIClient retrieved_chunks\
+  \ payload spanning many issues/pages (2019 through 2025) so the test exercises real\
+  \ cross-issue volume, not just 2-3 chunks."
+- This task exists because T-PTG-001 and T-PTG-002's own regression tests are necessarily
+  synthetic/minimal; this task's job is to add a second, independent test built directly
+  from the bug report so the fix is verified against the actual failure shape, not
+  just a simplified version of it.
 definition_of_done:
-- New test method added asserting, end-to-end through JournalAnswerService::ask() (not just the internal
-  resolver methods), that the final answer string's footnote count equals its inline marker count, and
-  every footnote's citation_label refers to an article/page combination that genuinely appears in the
-  stubbed retrieved_chunks/annotations — no orphaned or fabricated footnote.
-- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out the prior revision
-  or reasoning through the diff) and passes after.
+- "New test method added asserting, end-to-end through JournalAnswerService::ask()\
+  \ (not just the internal resolver methods), that the final answer string's footnote\
+  \ count equals its inline marker count, and every footnote's citation_label refers\
+  \ to an article/page combination that genuinely appears in the stubbed retrieved_chunks/annotations\
+  \ \u2014 no orphaned or fabricated footnote."
+- Test fails against the pre-T-PTG-001/002 code (verify by temporarily checking out
+  the prior revision or reasoning through the diff) and passes after.
 - Full suite (tests/JournalAnswerServiceTest.php) passes.
 verification_command: cd journalgpt && php tests/JournalAnswerServiceTest.php
 human_review_required: false
-claimed_at: null
+claimed_at: '2026-08-17T22:29:33.402008Z'
 last_transition: null
 blocked_reason: null
 previous_status: null
@@ -41,16 +41,24 @@ events:
 - timestamp: '2026-08-12T04:03:50Z'
   action: AUDIT
   actor: Claude-PM
-  details: Verification-hardening follow-up so the T-PTG-001/002 fix is checked against the real bug report
-    shape, not only hand-built minimal fixtures.
+  details: Verification-hardening follow-up so the T-PTG-001/002 fix is checked against
+    the real bug report shape, not only hand-built minimal fixtures.
 - timestamp: '2026-08-12T04:20:00Z'
   action: NOTE
   actor: Claude-Worker
   details: 'DoD substantially satisfied by TEST 18c (testOnlyActuallyCitedChunksSurviveAndAdjacentPagesCollapse)
     added in commit 23eb6e0ab653ed3f96139cfed558011a098a6712: end-to-end through JournalAnswerService::ask()
-    (not just internal resolver methods), reproduces the real bug shape (many retrieved chunks across
-    several issues, only some actually annotated/cited), and asserts the surviving citation set matches
-    only what was genuinely cited plus correct page-range collapsing. Did not add a literal eval_dataset.sample.json
-    fixture reproducing the exact Golden Hammer Award wording, since the synthetic version already exercises
-    the same code path without embedding a real user question/answer transcript in the repo. Blocked from
-    formal claim by the T-PTG-001/002 DONE dependency gate pending human close.'
+    (not just internal resolver methods), reproduces the real bug shape (many retrieved
+    chunks across several issues, only some actually annotated/cited), and asserts
+    the surviving citation set matches only what was genuinely cited plus correct
+    page-range collapsing. Did not add a literal eval_dataset.sample.json fixture
+    reproducing the exact Golden Hammer Award wording, since the synthetic version
+    already exercises the same code path without embedding a real user question/answer
+    transcript in the repo. Blocked from formal claim by the T-PTG-001/002 DONE dependency
+    gate pending human close.'
+- timestamp: '2026-08-17T22:29:33.402183Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-17T22:31:41.251536Z'
+  action: SUBMIT
+  actor: Antigravity

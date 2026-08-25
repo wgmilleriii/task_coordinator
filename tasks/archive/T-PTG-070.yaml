@@ -3,7 +3,7 @@ title: Staged progress indicator while a conversation response is generating
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
-status: AUDITED
+status: CANCELLED
 created_at: '2026-08-18T23:15:00-06:00'
 dependencies: []
 scope:

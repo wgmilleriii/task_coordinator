@@ -32,73 +32,44 @@ graph TD
     T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]:::review
     T-PTG-066 --> T-PTG-068
     T-PTG-091["T-PTG-091<br/>Full impeccable UI/UX pass: guest.php"]:::review
-    T-PTG-052["T-PTG-052<br/>Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver"]:::done
-    T-PTG-051 --> T-PTG-052
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-PTG-101["T-PTG-101<br/>Explore-by-category: filtered article browsing action"]:::review
-    T-INTY-021["T-INTY-021<br/>Schedule Profiles Architecture"]:::done
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
-    T-PTG-075["T-PTG-075<br/>Full impeccable UI/UX pass: admin_backfill_article_topics.php"]:::done
     T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
-    T-PTG-106["T-PTG-106<br/>Investigate: has_content resync test may zero out other fixtures' flags cross-process"]:::done
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]:::review
     T-PTG-054 --> T-PTG-055
     T-PTG-096["T-PTG-096<br/>Full impeccable UI/UX pass: quiz.php"]:::review
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
-    T-PTG-079["T-PTG-079<br/>Full impeccable UI/UX pass: admin_external_evaluations.php"]:::done
-    T-PTG-080["T-PTG-080<br/>Full impeccable UI/UX pass: admin_import_article_index.php"]:::done
-    T-PTG-081["T-PTG-081<br/>Full impeccable UI/UX pass: admin_migrate.php"]:::done
     T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
-    T-PTG-078["T-PTG-078<br/>Full impeccable UI/UX pass: admin_external_evaluation_batches.php"]:::done
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
     T-PTG-107["T-PTG-107<br/>HTML article pages Phase 2: review/approve interface with mobile previews"]
     T-PTG-105 --> T-PTG-107
-    T-PTG-062["T-PTG-062<br/>Feature: Advanced Prompt Builder Grid UI"]:::done
-    T-PTG-074["T-PTG-074<br/>Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php"]:::done
-    T-PTG-058["T-PTG-058<br/>Conversation Sidebar: Minimal Weighted Topic Color Bar"]:::done
-    T-INTY-020["T-INTY-020<br/>Admin V2 Timeslot Management Interface"]:::done
-    T-PTG-061["T-PTG-061<br/>Dynamic Conversation Topic Weighting Engine"]:::done
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
-    T-PTG-077["T-PTG-077<br/>Full impeccable UI/UX pass: admin_conversation_weights.php"]:::done
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
-    T-INTY-023["T-INTY-023<br/>Pianos in the News - print sheet generator (scripts + PHP page)"]:::done
-    T-PTG-082["T-PTG-082<br/>Full impeccable UI/UX pass: admin_reply.php"]:::done
+    T-PTG-108["T-PTG-108<br/>Conversation-wide quiz creation wizard with citation-expanded grounding"]:::active
+    T-PTG-104 --> T-PTG-108
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
-    T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]
+    T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]:::review
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
-    T-PTG-104["T-PTG-104<br/>Extend the async job pattern to Generate Quiz"]:::review
-    T-PTG-103 --> T-PTG-104
     T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]:::review
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
     T-PTG-095["T-PTG-095<br/>Full impeccable UI/UX pass: profile.php"]:::review
-    T-PTG-083["T-PTG-083<br/>Full impeccable UI/UX pass: admin_topic_diagnostics.php"]:::done
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
-    T-INTY-022["T-INTY-022<br/>V2 Personnel Management Interface"]:::done
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
-    T-PTG-076["T-PTG-076<br/>Full impeccable UI/UX pass: admin_classify_topics.php"]:::done
     T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
-    T-PTG-060["T-PTG-060<br/>Extend Admin Reply Mechanism for 'In Progress' Status"]:::done
-    T-PTG-084["T-PTG-084<br/>Full impeccable UI/UX pass: admin_topic_matrix.php"]:::done
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
-    T-PTG-051["T-PTG-051<br/>Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live"]:::done
-    T-PTG-102["T-PTG-102<br/>Content decision: labs.php 'New' badge vs help.php's established-feature framing"]:::done
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
     T-PTG-066 --> T-PTG-067
     T-PTG-088["T-PTG-088<br/>Full impeccable UI/UX pass: coverage.php"]:::review
     T-PTG-071["T-PTG-071<br/>Full impeccable UI/UX pass: admin_analytics.php"]:::review
-    T-PTG-070["T-PTG-070<br/>Staged progress indicator while a conversation response is generating"]
-    T-PTG-066["T-PTG-066<br/>Compute Engine A topic weights live on message send (fix colorless new conversations)"]:::done
-    T-PTG-089["T-PTG-089<br/>Full impeccable UI/UX pass: external_evaluation_workbench.php"]:::done
-    T-PTG-103["T-PTG-103<br/>Async chat answers: let members keep using the site while a question is processing"]:::review
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
-    T-PTG-085["T-PTG-085<br/>Full impeccable UI/UX pass: admin_tours.php"]:::done
 ```
 
 ---
@@ -106,43 +77,6 @@ graph TD
 
 ## Repo: `intypiano`
 
-### ✅ T-INTY-021 · P1 · FEATURE · DONE
-**Schedule Profiles Architecture**
-**Owner:** Antigravity
-
-**Scope:**
-- Create schedule_profiles table via DDL.
-- Update timeslot, tuner_schedules, and availability exceptions to link to profile_id.
-- Build Admin UI in admin/v2/scheduling.php to manage profiles and assign them.
-- Refactor frontend js/schedule_tuning_red.js to use a new getTimeslotsJSON.php API.
-
-**Definition of Done:**
-- DDL runs successfully.
-- Admin UI allows creating profiles and assigning timeslots/exceptions/tuners to them.
-- Frontend fetches dynamic timeslots.
-- php -l passes for modified PHP files.
-
-*Audited against SHA:* `8a6ceaeb95d05d5bcc28c5d72d2f36ff59a7b516`
-
----
-### ✅ T-INTY-022 · P1 · FEATURE · DONE
-**V2 Personnel Management Interface**
-**Owner:** Antigravity
-
-**Scope:**
-- Create admin/v2/personnel.php to manage the unified users table natively in V2.
-- View all users (active and inactive).
-- Add new users (requires full_name, email, role).
-- Edit existing users (update role, email, is_active).
-- No JavaScript (standard V2 architecture).
-
-**Definition of Done:**
-- admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
-- Users can be created, edited, and toggled active/inactive natively in V2.
-
-*Audited against SHA:* `c9637f1919f7c2dede742416a975ab7ffd07998c`
-
----
 ### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
 **Piano Dossier Data Entry Interface (Modern EAV)**
 **Owner:** TaskForce
@@ -184,43 +118,6 @@ graph TD
 *Audited against SHA:* `6d955d9962a89d24af8a5d8052eb1d67b1ea0186`
 
 ---
-### ✅ T-INTY-020 · P2 · ANY · DONE
-**Admin V2 Timeslot Management Interface**
-**Owner:** Antigravity
-
-**Scope:**
-- Append a Timeslots management section to `admin/v2/scheduling.php`.
-- Provide an interface to view, add, and delete records from the `timeslot` table.
-- This allows administrators to manage scheduling timeslots (e.g. 6-8PM, 8-10AM) without using phpMyAdmin.
-- Ensure all actions use the existing CSRF protection tokens and admin gating in `admin/v2/scheduling.php`.
-
-**Definition of Done:**
-- A new section "Timeslots" is visible on `admin/v2/scheduling.php`.
-- Users can view existing timeslots, add new ones (specifying at minimum the display name), and delete them.
-- Deletion is protected by a safety check or at least standard CSRF token.
-- `php -l admin/v2/scheduling.php` passes without syntax errors.
-
-*Audited against SHA:* `eb705b935fa81269373a7f68e9052242bebcae63`
-
----
-### ✅ T-INTY-023 · P2 · claude · DONE
-**Pianos in the News - print sheet generator (scripts + PHP page)**
-**Owner:** Claude
-
-**Scope:**
-- Create piano_news/fetch_shortlist.py - scrapes worldpianonews.com's homepage/archive for recent article title, URL, date, and thumbnail; prints a numbered shortlist to the terminal for manual review. No image download or teaser writing at this stage.
-- Create piano_news/build_issue.py - takes a manually-supplied list of picked article URLs plus their teaser text (provided as input, not generated by this script) and downloads the article's main image into piano_news/images/, generates a QR code PNG into piano_news/qr/ for each article's source URL (reusing the qr/qrlib.php QRcode::png() pattern already used by qr_report_generator.php), and writes piano_news/issue_data.json with title, teaser, image path, qr path, and source url for each article.
-- Create piano_news_print.php at the repo root, following the print_labels_5162.php / qr_report_generator.php pattern - reads piano_news/issue_data.json and renders a single print-CSS page with 3-4 article cards (image, headline, teaser, QR code).
-- Article selection and teaser rewriting are explicitly out of scope for this task - those happen interactively between Chip and Claude in chat, and the resulting picks/teasers are what gets fed into build_issue.py as input.
-
-**Definition of Done:**
-- piano_news/fetch_shortlist.py runs and prints a numbered list of recent worldpianonews.com articles (title, url, date) to stdout without error.
-- piano_news/build_issue.py, given a sample list of 3-4 article URLs and teaser strings, produces piano_news/issue_data.json plus downloaded images and QR PNGs without error.
-- piano_news_print.php passes php -l and, when issue_data.json is present, renders a page with all picked articles' images, headlines, teasers, and QR codes that print-previews as a single page in a browser.
-
-*Audited against SHA:* `7ca1b0ca3748202c6afb3997cad8502ace5198d4`
-
----
 
 ## Repo: `minchiate_tarot`
 
@@ -245,23 +142,6 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
-### 📋 T-PTG-057 · P1 · ANY · AUDITED
-**Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index**
-**Owner:** None
-
-**Scope:**
-- Build a "v4 situation" for the conversation workflow, likely introducing `journalgpt/v4/` parallel to `v3`.
-- Migrate the search and RAG context gathering to take advantage of the new `article_index` and `article_index_topics` tables introduced in T-PTG-051/052, moving away from issue-level `articles` citations.
-- Run A/B tests or evaluations against Production for this v4 implementation to ensure search results remain high quality and improve the conversational experience.
-
-**Definition of Done:**
-- V4 conversation pipeline is established and uses the new article-based indexing system.
-- Search results and context are derived from `article_index` rather than issue-level PDFs.
-- Evaluation tests are run against Production data to validate the new v4 workflow without breaking the existing v3 production system.
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
 ### 📋 T-PTG-021 · P1 · ANY · AUDITED
 **Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)**
 **Owner:** None
@@ -280,70 +160,31 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### ✅ T-PTG-052 · P1 · ANY · DONE
-**Coverage Atlas Phase 1a: member_article_activity log + signal hooks + issue-to-article resolver**
-**Owner:** Worker-Agent
+### 🛠 T-PTG-108 · P1 · ANY · CLAIMED
+**Conversation-wide quiz creation wizard with citation-expanded grounding**
+**Owner:** Antigravity
 
 **Scope:**
-- Spec: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md section 3. New migration (019): member_article_activity (user_id, article_index_id, activity_type ENUM(read, quiz_passed, discussed), created_at; FK to article_index; append-only, no unique constraint -- repeat engagement is real signal for recency even though the radar aggregation deduplicates per (user, article, type)).
-- THE KEY TECHNICAL RISK, solve first: existing engagement signals are keyed to the ISSUE-LEVEL articles table (journalgpt_citation_logs.article_id, quiz_questions.article_id both FK to articles), but the radar needs PER-ARTICLE article_index rows. Build a resolver lib (e.g. lib/ArticleIndexResolver.php) mapping (issue-level article_id, page) -> article_index_id by joining articles.issue_date/volume/pdf_filename to article_index.issue_label (format like "Jan-79") and picking the article_index row whose page range contains the cited page (rows sorted by page within an issue; a row spans from its page to the next row's page - 1). Resolver returns null on no-match; log unresolved hits, never guess. TDD the resolver against real fixture rows before wiring any hooks.
-- Hooks, all thin: (1) read -- source.php PDF opens that carry an article_index context, and citation renders in answers count via (3); (2) quiz_passed -- in submit_quiz_attempt.php after scoring, for each correctly-answered question resolve its article_id+page and log; (3) discussed -- where journalgpt_citation_logs rows are written, resolve and log alongside. Hooks must be fail-open: a resolver miss or insert failure must never break the member-facing request.
+- Replace every JournalGPT chat "Create a quiz" action with a link to an authenticated quiz_create.php page keyed by conversation_id. The clicked answer remains usable as the compatibility anchor for existing quiz records and links, but quiz source selection is conversation-wide rather than limited to that single assistant answer.
+- The first state on quiz_create.php must preserve the existing JournalGPT shell, responsive reading-width layout, typography, and themes; show a Back to conversation link; ask exactly "How would you like this quiz to be generated?"; and present two large choices: "Only on material from this conversation" and "Use any material from the citations in this conversation".
+- Below the choices, list every unique citation found across the full conversation. Reuse the existing secure Reader URLs, retain useful article/page labels, deduplicate repeated citations, and open citation links in a new tab with safe target/rel attributes. A citation that cannot be resolved to a full article bundle remains listed and can contribute transcript context, but it must not be represented as loaded full-article evidence.
+- Conversation-only mode grounds quiz generation in the entire visible conversation transcript, including member questions and assistant answers, without loading full article bundles. Citation-expanded mode uses that same transcript plus the complete text of every uniquely cited article bundle that can be resolved through the existing article-index/bundle infrastructure; repeated citations must load a bundle only once. Preserve the existing requirement that every generated question maps to real citation evidence rather than weakening grounding.
+- Use a regular CSRF-protected form submission and Post/Redirect/Get flow to create the quiz queue job before any worker kick is issued. Only after the committed job exists may quiz_create.php start the worker and begin lightweight status polling, eliminating the current independent enqueue-beacon/worker-beacon ordering race. Refreshing or revisiting the progress URL must resume the same member-owned job rather than enqueueing a duplicate.
+- Keep chooser, progress, completion, and recoverable failure states on quiz_create.php. After a choice, show "Generating quiz" and "This may take up to a minute." (plus a truthful stage when available); on completion show "Your quiz is ready" with a prominent "Take your quiz now" link to the existing quiz.php experience; on failure or timeout show a plain explanation and a Try again path. If another heavy job is already running for the member, explain that it must finish before another quiz can begin.
+- Authorize every conversation and job lookup against the signed-in member, reject guessed or cross-member IDs without leaking data, retain CSRF validation on job creation, and ensure a job_id cannot be paired with a different conversation_id. Do not expose article-bundle files directly; keep citation access behind the established authenticated Reader/article delivery paths.
+- Do not add or alter database schema: test and production share the database. Carry the two-value source-scope selection as a validated internal token in an existing nullable job payload field (or an equivalently migration-free existing field), and reject all other values. Existing queued quiz jobs, legacy single-answer generation behavior/API compatibility, status polling, saved quiz lists, and quiz.php links must continue to work.
+- Deployment is test-only. Merge/push only to the test integration branch and verify the complete flow on the test site; do not deploy or push this task to main/production.
 
 **Definition of Done:**
-- Migration 019 applied to the local test DB via cli/migrate.php with no errors.
-- Resolver test proves correct mapping for a multi-article issue fixture (first, middle, last article by page) and returns null for an unmatchable page/issue.
-- Each of the three hooks writes a correct member_article_activity row in its existing test (extend QuizTest / CitationLoggingTest rather than new suites where natural), and a forced resolver failure does not change the endpoint''s response.
-- Golden hammer suite passes with zero regressions.
+- From a real conversation, every Create a quiz link opens the authenticated chooser for that conversation, and a member cannot view or start a quiz wizard for another member's conversation or job by changing either ID.
+- The chooser displays the exact approved prompt and two choices, plus a deduplicated conversation-wide citation list whose secure links open in a new tab; unresolved citations remain honestly identified without being treated as loaded article bundles.
+- A focused test proves transcript-only mode includes all visible member/assistant turns while excluding full bundle text, and citation-expanded mode includes that transcript plus each resolvable unique cited article bundle exactly once.
+- A focused queue-ordering test proves the job is committed before the worker kick, and browser-level verification proves chooser -> generating -> ready -> Take your quiz now works, refresh resumes the same job without duplication, and failure/timeout/already-running states are recoverable and clear.
+- Legacy quiz jobs and existing quiz.php/list/status behavior remain compatible, including at least one regression test for the pre-wizard single-answer job path.
+- PHP syntax checks, relevant focused JournalGPT tests, frontend syntax checks, and the full journalgpt/tests/security_and_eval_suite.php regression suite pass with zero regressions.
+- The change is deployed only to the test branch/test site and the authenticated live-test walkthrough confirms citation links, both generation modes, reload recovery, ownership rejection, and a usable completed quiz; no production deployment and no database migration occur.
 
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-061 · P1 · backend · DONE
-**Dynamic Conversation Topic Weighting Engine**
-**Owner:** Worker-Agent
-
-**Scope:**
-
-**Definition of Done:**
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-051 · P1 · ANY · DONE
-**Coverage Atlas foundation: run migration 018 + article-index import on the shared DB and verify the tagging matrix live**
-**Owner:** Worker-Agent
-
-**Scope:**
-- Background, read first: docs/superpowers/specs/2026-08-17-coverage-atlas-design.md (the Coverage Atlas spec this epic delivers; supersedes the 2026-08-16 learning-paths skill-tree spec). The code is ALREADY MERGED into test and pushed (commit a8f88e1 "feat: editable article-index x topic matrix"): migration journalgpt/migrations/018_article_index.sql, lib/ArticleIndexImporter.php, cli/import_article_index.php, data/article_index.csv (4,120 rows), admin_article_index_matrix.php, api/toggle_article_index_topic.php, tests/ArticleIndexMatrixTest.php (22 assertions, passing locally).
-- This task is ONLY the shared-database rollout: run migration 018 and cli/import_article_index.php against the deployed environment, then browser-verify admin_article_index_matrix.php on test.newmexicoptg.org (login, grid renders 4,120 articles, one checkbox toggle round-trips to article_index_topics and survives reload).
-- HARD CONSTRAINT (memory + fleet README): test.newmexicoptg.org SHARES the production database. Migration 018 is additive-only (two new tables, no ALTERs), but the DB write still requires Chip's explicit go at execution time. Do not run the migration or import without that confirmation recorded in this task's events.
-
-**Definition of Done:**
-- article_index and article_index_topics tables exist in the shared DB; SELECT COUNT(*) FROM article_index returns 4120.
-- Re-running cli/import_article_index.php a second time leaves the count at 4120 (idempotency verified in the real environment).
-- admin_article_index_matrix.php on test.newmexicoptg.org renders the grid for a logged-in member, one checkbox toggle persists across a reload, and no PHP errors appear in debug_logs.
-- Golden hammer suite still passes locally (DB_HOST=127.0.0.1 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root php journalgpt/tests/security_and_eval_suite.php).
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-066 · P1 · ANY · DONE
-**Compute Engine A topic weights live on message send (fix colorless new conversations)**
-**Owner:** Claude-Sonnet-Session
-
-**Scope:**
-- Bug found live: a brand-new conversation shows no topic-color-bar at all in the sidebar until someone manually runs a full admin_conversation_weights.php batch. Root cause confirmed: index.php:237 only renders the bar `if (!empty($conv['combined_weights_json']))`, and that column is exclusively written by ConversationTopicWeightRunner::run(), which only ever runs as a manual batch job (admin_conversation_weights.php) -- nothing computes weights at conversation-creation or per-message time.
-- Extract ConversationTopicWeightRunner::scoreEngineA() (journalgpt/lib/ConversationTopicWeightRunner.php) usage into a path that can run synchronously and cheaply after every message send (wherever messages are inserted -- likely journalgpt/api/ask.php or the conversation-creation handler). Engine A is pure local keyword scoring (no OpenAI call, no cost, no budget check needed) -- safe to run on every turn.
-- On each message send: recompute engine_a_weights_json for the conversation from all its messages so far, and write combined_weights_json using the SAME combine() logic ConversationTopicWeightRunner uses today (Engine A alone if Engine B has never run yet, otherwise Engine A + the last computed Engine B). Do NOT touch topic_weights_attempted_at or engine_b_weights_json here -- those stay exclusively owned by ConversationTopicWeightRunner's batch job (T-PTG-061/023/024's eligibility and retry-count machinery must not be disturbed by this live path).
-- A brand-new conversation must show SOME color bar in the sidebar after its first message, even before any admin batch has ever run.
-
-**Definition of Done:**
-- New test proves: creating a conversation and sending one message (with real piano-technology keywords) results in engine_a_weights_json and combined_weights_json being populated immediately, with no OpenAI/Engine B call involved.
-- Existing ConversationTopicWeightRunnerTest suite (7 tests) and the topicless/retry regression tests still pass unmodified -- this task must not touch batch eligibility logic (topic_weights_attempted_at, topic_weights_attempt_count).
-- The sidebar (index.php) renders a non-empty topic-color-bar for a freshly created, never-batch-processed conversation after its first message, verified via the browse skill against the local test-branch preview server.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+*Audited against SHA:* `50d6e82e43958f04146d2af42cbdb84866849e52`
 
 ---
 ### ⏳ T-PTG-105 · P1 · ANY · HUMAN_REVIEW
@@ -506,23 +347,21 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9e74d39c82a5980f488695fb4e4e5e1dd46bdb54`
 
 ---
-### 📋 T-PTG-070 · P2 · ANY · AUDITED
-**Staged progress indicator while a conversation response is generating**
-**Owner:** None
+### ⏳ T-PTG-057 · P1 · ANY · PEER_REVIEW
+**Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index**
+**Owner:** Antigravity
 
 **Scope:**
-- Chip's ask: a question can take a while to answer with no feedback beyond a spinner. Wants a status line under the conversation showing real stages as they happen (e.g. "Tagging conversation... researching articles... tying concepts together...") with a rough time expectation.
-- Investigated JournalAnswerService::ask() (v3_beta preset, the default path): it is NOT one OpenAI call, it is 4-6 SEQUENTIAL calls -- ResearchPlanner (1 call, decides search queries, may branch into a clarifying question instead), EvidenceRetriever (1 call PER search query the planner generated, usually 2-4), EvidenceRanker (1 call, filters/ranks retrieved chunks), AnswerSynthesizer (1 call, writes the final answer). ClaimValidator and citation resolution after that are local/instant. These are the real, honest stages to surface -- not decorative copy.
-- ARCHITECTURE DECISION NEEDED (why human_review_required): ask.php currently runs synchronously -- one HTTP request, one response, no way for the frontend to see intermediate progress mid-request. Two ways to get real stage updates to the member while waiting, pick one: (a) POLLING: JournalAnswerService writes its current stage to a lightweight per-request progress row (new table or reuse an existing one) as it reaches each stage; the frontend polls a small status endpoint every ~1s while ask() is in flight. Simpler, fits the existing synchronous-PHP-request architecture, no new infrastructure. (b) STREAMING (SSE or chunked response): ask.php pushes stage-transition events directly down the same connection as they happen. No polling overhead, but nothing in this codebase uses SSE/streaming today -- new infrastructure, more invasive change. Recommend (a) given the codebase's existing patterns, but this is Chip's call.
-- Time expectations: duration_ms is currently only logged as a single TOTAL per request (debug_logs.duration_ms, usage_events.request_duration_ms) -- there is no per-stage timing history to draw a real "usually takes N seconds" estimate from yet. Either (a) ship with a rough static estimate per stage for v1 and add per-stage timing logging alongside this feature so real historical estimates become possible later, or (b) add per-stage duration_ms columns/logging as part of this task itself if Chip wants real estimates from day one. Flag this choice for review too.
+- Build a "v4 situation" for the conversation workflow, likely introducing `journalgpt/v4/` parallel to `v3`.
+- Migrate the search and RAG context gathering to take advantage of the new `article_index` and `article_index_topics` tables introduced in T-PTG-051/052, moving away from issue-level `articles` citations.
+- Run A/B tests or evaluations against Production for this v4 implementation to ensure search results remain high quality and improve the conversational experience.
 
 **Definition of Done:**
-- A member watching a question generate sees the status line advance through real stages (not a generic spinner) matching what ask() is actually doing at that moment.
-- Test proves stage transitions are recorded/exposed correctly for both the v3_beta pipeline (4-6 stages) and the legacy/fallback path (fewer stages) -- the indicator must not lie about a stage that didn't actually run (e.g. no "ranking evidence" stage shown for a request that degraded to the legacy path per T-PTG-026's graceful-degradation catch).
-- No regression to actual answer latency -- the progress mechanism (polling or streaming) must not itself slow down ask()'s critical path.
-- Golden hammer suite passes with zero regressions; php -l clean.
+- V4 conversation pipeline is established and uses the new article-based indexing system.
+- Search results and context are derived from `article_index` rather than issue-level PDFs.
+- Evaluation tests are run against Production data to validate the new v4 workflow without breaking the existing v3 production system.
 
-*Audited against SHA:* `30d1985719a9b9935dbb77fdde540a87102a23b5`
+*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
 ### 🛑 T-PTG-056 · P2 · ANY · BLOCKED
@@ -542,338 +381,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
 - Progress derivation proven by test against member_article_activity fixtures.
 - Golden hammer suite passes with zero regressions; php -l clean.
-
----
-### ✅ T-PTG-075 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_backfill_article_topics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_backfill_article_topics.php. Purpose: Web trigger (built this session) for the article_index_topics backfill -- reads the precomputed corpus/article_topics_map.json since the raw corpus/articles/*.md files never deploy.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_backfill_article_topics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_backfill_article_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_backfill_article_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_backfill_article_topics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_backfill_article_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-079 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_external_evaluations.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_external_evaluations.php. Purpose: Viewer comparing external LLM evaluation results against JournalGPT's own classification/human labels.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_external_evaluations.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_external_evaluations.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_external_evaluations.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_external_evaluations.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_external_evaluations.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-080 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_import_article_index.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_import_article_index.php. Purpose: Web trigger for the article-index CSV import (the ~4,120-row historical index).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_import_article_index.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_import_article_index.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_import_article_index.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_import_article_index.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_import_article_index.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-081 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_migrate.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_migrate.php. Purpose: Web trigger for database migrations -- the original template this session's admin_backfill_*.php pages copied their structure from.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_migrate.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_migrate.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_migrate.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_migrate.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_migrate.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-078 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_external_evaluation_batches.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_external_evaluation_batches.php. Purpose: Viewer for external LLM evaluation batch-level findings (systematic errors, taxonomy recommendations, product clusters).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_external_evaluation_batches.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_external_evaluation_batches.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_external_evaluation_batches.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_external_evaluation_batches.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_external_evaluation_batches.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-062 · P2 · frontend · DONE
-**Feature: Advanced Prompt Builder Grid UI**
-**Owner:** Worker-Agent
-
-**Scope:**
-
-**Definition of Done:**
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-074 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_backfill_article_index_has_content.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_backfill_article_index_has_content.php. Purpose: Web trigger (built this session) for the article_index.has_content backfill -- one of the two backfills the Coverage Atlas radar needs to show real data.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_backfill_article_index_has_content.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_backfill_article_index_has_content.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_backfill_article_index_has_content.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_backfill_article_index_has_content.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_backfill_article_index_has_content.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-058 · P2 · Frontend · DONE
-**Conversation Sidebar: Minimal Weighted Topic Color Bar**
-**Owner:** Worker-Agent
-
-**Scope:**
-
-**Definition of Done:**
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-077 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_conversation_weights.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_conversation_weights.php. Purpose: Admin tooling for conversation topic-weight computation/backfill.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_conversation_weights.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_conversation_weights.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_conversation_weights.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_conversation_weights.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_conversation_weights.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-082 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_reply.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_reply.php. Purpose: Lets an authenticated admin post a manual reply message into an existing member conversation.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_reply.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_reply.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_reply.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_reply.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_reply.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-083 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_topic_diagnostics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_topic_diagnostics.php. Purpose: Topic classification diagnostics page.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_topic_diagnostics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_topic_diagnostics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_topic_diagnostics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_topic_diagnostics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_topic_diagnostics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-076 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_classify_topics.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_classify_topics.php. Purpose: Web trigger for the LLM-driven article-topic classification backfill (the OLDER issue-level article_topics table, sibling to but distinct from article_index_topics).
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_classify_topics.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_classify_topics.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_classify_topics.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_classify_topics.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_classify_topics.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-060 · P2 · frontend · DONE
-**Extend Admin Reply Mechanism for 'In Progress' Status**
-**Owner:** Worker-Agent
-
-**Scope:**
-
-**Definition of Done:**
-
-*Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
-
----
-### ✅ T-PTG-084 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_topic_matrix.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_topic_matrix.php. Purpose: Read-only visual article x topic matrix, complementing admin_article_topics.php's text-based counts.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_topic_matrix.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_topic_matrix.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_topic_matrix.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_topic_matrix.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_topic_matrix.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-089 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: external_evaluation_workbench.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/external_evaluation_workbench.php. Purpose: Copy/paste workbench: export a batch for an external LLM, paste its JSON response back in, see the round-trip import result.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/external_evaluation_workbench.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/external_evaluation_workbench.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/external_evaluation_workbench.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/external_evaluation_workbench.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/external_evaluation_workbench.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
-
----
-### ✅ T-PTG-085 · P2 · ANY · DONE
-**Full impeccable UI/UX pass: admin_tours.php**
-**Owner:** None
-
-**Scope:**
-- Page: journalgpt/admin_tours.php. Purpose: Curator admin page for Coverage Atlas tours/threads: list, create, and edit stop sequences of has_content=1 articles.
-- This task is one of a full-repo UI/UX sweep (Chip's request, 2026-08-20/21) covering every member/admin-facing page except index.php (already the most-iterated page and out of scope here). Six stages, in order -- do not skip ahead or skip stages the page 'looks fine' without:
-- A) Reconsider function in view of the product's purpose (expanding member knowledge of the PTG Journal archive -- see PRODUCT.md's Positioning and Product Principles, updated this session). Does this page still earn its place, is its function clear, should it be merged, renamed, simplified, or reach a different audience than it currently does? Write the conclusion down even if the answer is 'no change needed' -- don't skip straight to visual work.
-- B) /impeccable layout journalgpt/admin_tours.php -- structure, spacing scale, grouping, responsive behavior.
-- C) /impeccable polish journalgpt/admin_tours.php -- full refinement pass per craft-floor.md's verify/refuse lists.
-- D) /impeccable colorize journalgpt/admin_tours.php -- strategic, theme-token-driven color (all four themes: light/dark/sepia/ptg, not just light).
-- E) /impeccable typeset journalgpt/admin_tours.php -- typography hierarchy per DESIGN.md's documented scale.
-- F) /impeccable harden journalgpt/admin_tours.php -- production-ready: error/empty/loading states, permission edge cases, i18n-safe copy.
-- Every stage must be verified live (or via the mechanical detect.mjs scan when live rendering needs auth this session couldn't obtain) before moving to the next -- a clean detector scan alone does not substitute for the visual/functional check.
-
-**Definition of Done:**
-- Stage A's conclusion (keep/merge/simplify/reframe) is written into the task's completion notes, not skipped.
-- Stages B through F are each applied and each verified against the rendered page (or explicitly noted as unverifiable without live browser auth, with the mechanical scan cited instead).
-- The page renders correctly in all four themes (light, dark, sepia, ptg) via the shared journal-chat.css tokens, not hardcoded colors.
-- php -l clean on the touched file(s); golden hammer suite (journalgpt/tests/security_and_eval_suite.php) passes with zero regressions.
-- No accidental churn: unrelated files/lines untouched, no orphaned code or leftover debug output.
 
 ---
 ### ⏳ T-PTG-100 · P2 · ANY · HUMAN_REVIEW
@@ -1170,25 +677,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `363dbb0a0cbf8709d117e72932cb32fe39013553`
 
 ---
-### ⏳ T-PTG-104 · P2 · ANY · HUMAN_REVIEW
-**Extend the async job pattern to Generate Quiz**
-**Owner:** Claude-Sonnet-Session
-
-**Scope:**
-- Identified 2026-08-21 while shipping T-PTG-103 (async chat answers): api/generate_quiz.php ("Generate Quiz" button under a cited answer) has the exact same architectural problem T-PTG-103 just fixed for api/ask.php -- one blocking HTTP request holding the button disabled for the full OpenAI generation time (@set_time_limit(120)), and on success today the client does a full `window.location.href = 'quiz.php?id=...'` navigation. Navigating away mid-generation today loses the quiz entirely, same failure mode T-PTG-103 fixed for chat.
-- Reuse T-PTG-103's pattern directly: api/generate_quiz.php already IS structured as a pure *_LIBRARY_ONLY handler (handleGenerateQuizRequest() or similar, matching api/ask_job_status.php's own established shape) -- this makes wiring it into the accept+continue flow more mechanical than ask.php was, not less. Prefer GENERALIZING the existing `pending_ask_jobs` table (add a `job_type` ENUM('ask','quiz') column and a `quiz_id` nullable result column, or similar) over creating a second parallel `pending_quiz_jobs` table, unless a real reason to keep them separate turns up during implementation.
-- Real UX decision this task must make (NOT simply mirror ask.php's pattern): on completion, DO NOT auto-navigate the member to quiz.php via window.location.href -- if they've since navigated elsewhere (the whole point of this being async), a forced redirect away from wherever they are would be jarring and defeats the feature. Instead show a small, persistent notification/toast ("Your quiz is ready -- Open it") the member clicks through to quiz.php on their own schedule, not automatically.
-- Also fold in: journal-chat.js's existing CSRF-retry-on-403 logic (isCsrfError/refreshCsrfToken, already used by this exact generate-quiz flow at its current call site) needs to carry over correctly into the new accept-phase request -- confirm it still applies to the fast accept POST, not just a version of the flow that no longer exists after this change.
-
-**Definition of Done:**
-- Clicking Generate Quiz re-enables the button/UI almost immediately instead of staying disabled for the full generation time, matching T-PTG-103''s ask.php fix.
-- A member can navigate away entirely (different conversation, different page, close the tab) while a quiz is generating and still get a real, working notification once it''s ready, pointing to the correct quiz.php?id=... -- proven by a real test, not just manual spot-check.
-- No auto-navigation on completion -- verified the member stays wherever they currently are, with only a dismissible/clickable notification appearing.
-- Golden hammer suite passes with zero regressions; php -l clean.
-
-*Audited against SHA:* `532056743015db618be6cf3e3d94462736a8c7f2`
-
----
 ### ⏳ T-PTG-095 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: profile.php**
 **Owner:** Claude-Sonnet-Session
@@ -1314,25 +802,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `acdf276fa9f497fed6deee4408b461923d7c57d2`
 
 ---
-### ⏳ T-PTG-103 · P2 · ANY · HUMAN_REVIEW
-**Async chat answers: let members keep using the site while a question is processing**
-**Owner:** Claude-Sonnet-Session
-
-**Scope:**
-- Root cause traced 2026-08-21 (Chip asked why long answers block the tab): api/ask.php is fully synchronous -- one HTTP request holds open the whole pipeline (OpenAIClient.php's threads/runs poll loop, up to 100 x 1s sleeps for Deep-tier reasoning, then citation resolution, then the DB write). Nothing is persisted to `messages` until the very end (see JournalAnswerService.php's INSERT INTO messages) -- there is no "pending" row, so a request that dies early leaves no trace the question was ever asked. Client-side, journal-chat.js only disables the send button/input (setSubmittingState) -- it does NOT block navigation, but every sidebar conversation link is a plain `<a href>` full-page reload (no client-side routing), so navigating away mid-answer kills the in-flight fetch, and whether server-side PHP keeps running after that depends on ignore_user_abort, which is never set (coin flip on this host).
-- FIRST STEP -- verify, don't assume: determine whether production PHP runs as PHP-FPM (in which case fastcgi_finish_request() can flush an instant "accepted" response to the browser and keep processing the OpenAI call afterward in the SAME request -- no cron/queue infrastructure needed at all) or classic mod_php (in which case a real pending-queue + cPanel-cron-driven worker script is needed instead, following the same pattern already established by cli/migrate.php and the backfill runners). This determines which of the two designs below applies -- do not build both speculatively.
-- Design once SAPI is known: (1) api/ask.php becomes a fast enqueue -- validate, deduct quota, INSERT a pending message/job row, return immediately with an id. (2) The actual OpenAI thread-run/poll/citation-resolve/DB-write logic (already exists in OpenAIClient.php + JournalAnswerService.php -- reuse, do not rewrite) runs either post-fastcgi_finish_request() in the same script, or in a new cli/process_pending_questions.php worker invoked by cPanel cron. (3) Client-side: journal-chat.js polls a new lightweight status endpoint every few seconds instead of awaiting one long fetch; a "thinking..." placeholder in the message list resumes polling automatically on page reload/different tab if a question for that conversation is still pending, so the member can navigate freely, come back, and see the finished answer.
-- Explicitly OUT of scope for this task: full streaming/SSE token-by-token rendering (discussed as a separate, lower-priority improvement that does not by itself solve "keep using the site while it works" -- streaming still ties up one open connection that dies on navigation).
-
-**Definition of Done:**
-- SAPI mode confirmed and recorded in this task''s events before any design/implementation work begins.
-- A member can submit a question, immediately navigate to another conversation or another page (or close the tab and come back), and see the finished answer render correctly once ready -- proven by a real test, not just manual spot-check.
-- No regression to existing conversation history, citation resolution, quota deduction, or the golden hammer suite (journalgpt/tests/security_and_eval_suite.php, currently 28/28).
-- If a cron-based worker is required: a documented cPanel cron entry (Chip must add it manually -- no automated cron-provisioning access) and a locking/claim mechanism so overlapping cron firings never double-process the same pending question.
-
-*Audited against SHA:* `64e3a543e21b8cafd7d23521d547ee871d56ee3b`
-
----
 ### ⏳ T-PTG-093 · P2 · ANY · HUMAN_REVIEW
 **Full impeccable UI/UX pass: labs.php**
 **Owner:** Claude-Sonnet-Session
@@ -1376,590 +845,32 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### ⏳ T-PTG-065 · P2 · backend · PEER_REVIEW
+### ⏳ T-PTG-065 · P2 · ANY · PEER_REVIEW
 **Webhook Sync for Localhost Conversations**
-**Owner:** None
+**Owner:** Unknown
 
 **Scope:**
-- I
-- m
-- p
-- l
-- e
-- m
-- e
-- n
-- t
--  
-- a
--  
-- w
-- e
-- b
-- h
-- o
-- o
-- k
--  
-- t
-- o
--  
-- s
-- y
-- n
-- c
-- h
-- r
-- o
-- n
-- i
-- z
-- e
--  
-- l
-- o
-- c
-- a
-- l
-- h
-- o
-- s
-- t
--  
-- c
-- o
-- n
-- v
-- e
-- r
-- s
-- a
-- t
-- i
-- o
-- n
-- s
--  
-- t
-- o
--  
-- t
-- h
-- e
--  
-- p
-- r
-- o
-- d
-- u
-- c
-- t
-- i
-- o
-- n
--  
-- d
-- a
-- t
-- a
-- b
-- a
-- s
-- e
-- .
-- 
-
-- 1
-- .
--  
-- C
-- r
-- e
-- a
-- t
-- e
--  
-- `
-- j
-- o
-- u
-- r
-- n
-- a
-- l
-- g
-- p
-- t
-- /
-- a
-- p
-- i
-- /
-- s
-- y
-- n
-- c
-- _
-- c
-- h
-- a
-- t
-- .
-- p
-- h
-- p
-- `
--  
-- t
-- o
--  
-- r
-- e
-- c
-- e
-- i
-- v
-- e
--  
-- i
-- n
-- c
-- o
-- m
-- i
-- n
-- g
--  
-- c
-- o
-- n
-- v
-- e
-- r
-- s
-- a
-- t
-- i
-- o
-- n
--  
-- p
-- a
-- y
-- l
-- o
-- a
-- d
-- s
-- .
-- 
-
-- 2
-- .
--  
-- P
-- r
-- o
-- t
-- e
-- c
-- t
--  
-- t
-- h
-- e
--  
-- e
-- n
-- d
-- p
-- o
-- i
-- n
-- t
--  
-- w
-- i
-- t
-- h
--  
-- a
--  
-- s
-- h
-- a
-- r
-- e
-- d
--  
-- s
-- e
-- c
-- r
-- e
-- t
--  
-- k
-- e
-- y
--  
-- (
-- e
-- .
-- g
-- .
--  
-- S
-- Y
-- N
-- C
-- _
-- S
-- E
-- C
-- R
-- E
-- T
-- )
-- .
-- 
-
-- 3
-- .
--  
-- M
-- o
-- d
-- i
-- f
-- y
--  
-- `
-- j
-- o
-- u
-- r
-- n
-- a
-- l
-- g
-- p
-- t
-- /
-- a
-- p
-- i
-- /
-- a
-- s
-- k
-- .
-- p
-- h
-- p
-- `
--  
-- (
-- o
-- r
--  
-- w
-- h
-- e
-- r
-- e
-- v
-- e
-- r
--  
-- c
-- o
-- n
-- v
-- e
-- r
-- s
-- a
-- t
-- i
-- o
-- n
-- s
--  
-- a
-- r
-- e
--  
-- i
-- n
-- s
-- e
-- r
-- t
-- e
-- d
-- )
--  
-- s
-- o
--  
-- t
-- h
-- a
-- t
--  
-- i
-- f
--  
-- a
--  
-- S
-- Y
-- N
-- C
-- _
-- E
-- N
-- D
-- P
-- O
-- I
-- N
-- T
--  
-- e
-- n
-- v
-- i
-- r
-- o
-- n
-- m
-- e
-- n
-- t
--  
-- v
-- a
-- r
-- i
-- a
-- b
-- l
-- e
--  
-- i
-- s
--  
-- s
-- e
-- t
-- ,
--  
-- i
-- t
--  
-- f
-- i
-- r
-- e
-- s
--  
-- a
--  
-- b
-- a
-- c
-- k
-- g
-- r
-- o
-- u
-- n
-- d
--  
-- c
-- u
-- r
-- l
--  
-- P
-- O
-- S
-- T
--  
-- r
-- e
-- q
-- u
-- e
-- s
-- t
--  
-- w
-- i
-- t
-- h
--  
-- t
-- h
-- e
--  
-- c
-- o
-- n
-- v
-- e
-- r
-- s
-- a
-- t
-- i
-- o
-- n
--  
-- p
-- a
-- y
-- l
-- o
-- a
-- d
--  
-- t
-- o
--  
-- t
-- h
-- e
--  
-- p
-- r
-- o
-- d
-- u
-- c
-- t
-- i
-- o
-- n
--  
-- s
-- e
-- r
-- v
-- e
-- r
-- .
-- 
-
-- 4
-- .
--  
-- E
-- n
-- s
-- u
-- r
-- e
--  
-- e
-- r
-- r
-- o
-- r
--  
-- h
-- a
-- n
-- d
-- l
-- i
-- n
-- g
--  
-- s
-- o
--  
-- t
-- h
-- a
-- t
--  
-- l
-- o
-- c
-- a
-- l
--  
-- g
-- e
-- n
-- e
-- r
-- a
-- t
-- i
-- o
-- n
--  
-- d
-- o
-- e
-- s
--  
-- n
-- o
-- t
--  
-- f
-- a
-- i
-- l
--  
-- i
-- f
--  
-- t
-- h
-- e
--  
-- w
-- e
-- b
-- h
-- o
-- o
-- k
--  
-- i
-- s
--  
-- u
-- n
-- r
-- e
-- a
-- c
-- h
-- a
-- b
-- l
-- e
-- .
+- Implement a webhook to synchronize localhost conversations to the production database.
+1. Create `journalgpt/api/sync_chat.php` to receive incoming conversation payloads.
+2. Protect the endpoint with a shared secret key (e.g. SYNC_SECRET).
+3. Modify `journalgpt/api/ask.php` (or wherever conversations are inserted) so that if a SYNC_ENDPOINT environment variable is set, it fires a background curl POST request with the conversation payload to the production server.
+4. Ensure error handling so that local generation does not fail if the webhook is unreachable.
 
 **Definition of Done:**
+- Pass review
 
 *Audited against SHA:* `5a022d2b7d50146a26a014098ae372ab99a7d6d2`
 
 ---
-### ⏳ T-PTG-064 · P2 · frontend · PEER_REVIEW
+### ⏳ T-PTG-064 · P2 · ANY · PEER_REVIEW
 **Feature: Pool Ball Triangle Layout**
 **Owner:** Antigravity
 
 **Scope:**
+- Refactor the prompt builder to look like a game of pool. Arrange the 15 categories into a 5-row triangle rack (1-2-3-4-5). Change the shapes back to circles. Ensure the colors map accurately to standard pool balls (1-8 solid, 9-15 striped). Text inside must be white with a thin black shadow. Change the greeting to "Choose your path". Drop the 16th mystery ball.
 
 **Definition of Done:**
+- Pass review
 
 *Audited against SHA:* `278031af013b6aa2ba22d638534c78bff4319f51`
 
@@ -1983,24 +894,30 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### ⏳ T-PTG-059 · P2 · frontend · PEER_REVIEW
+### ⏳ T-PTG-059 · P2 · ANY · PEER_REVIEW
 **Feature: Greet the user in JournalGPT**
 **Owner:** Worker-Agent
 
 **Scope:**
+- The conversational UI (JournalGPT) should formally greet the user, perhaps when they start a new conversation or open the interface.
+The goal is to update the conversation workflow to include a friendly, context-aware greeting to the user when they initiate a session.
+
 
 **Definition of Done:**
+- Pass review
 
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
-### ⏳ T-PTG-063 · P2 · frontend · PEER_REVIEW
+### ⏳ T-PTG-063 · P2 · ANY · PEER_REVIEW
 **Feature: Mobile-Optimized Minimalist UI**
 **Owner:** Worker-Agent
 
 **Scope:**
+- Optimize the front end for mobile. Hide previous conversations behind a hamburger menu. Consolidate non-conversation links (labs, help, credits, profile, admin, etc.) into a single link/dropdown. Ensure the interface is extremely minimalistic.
 
 **Definition of Done:**
+- Pass review
 
 *Audited against SHA:* `5583f85ad5935f425c6f3a774052f742d581e69e`
 
@@ -2078,32 +995,5 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
-
----
-### ✅ T-PTG-106 · P3 · ANY · DONE
-**Investigate: has_content resync test may zero out other fixtures' flags cross-process**
-**Owner:** None
-
-**Scope:**
-- Flagged during a 2026-08-21 audit fork dispatched after fixing a confirmed flaky test (ConversationTopicWeightRunnerTest.php, see that file's git history same day) -- the audit checked every other test file for the SAME bug class (absolute global-count assertion against an unscoped query) and found none, but surfaced a DIFFERENT, unconfirmed risk worth a real look.
-- journalgpt/tests/ArticleIndexHasContentBackfillRunnerTest.php's testUnflagsCsvNumbersNoLongerInMetadata exercises ArticleIndexHasContentBackfillRunner::run(), which by design does an exact resync: it sets has_content=0 for every article_index row NOT in its small fixture metadata list -- a deliberate, correct GLOBAL WRITE against the whole shared MySQL test database (confirmed via the runner's own docblock: "resync must be exact, not additive"). The test's own assertions are fine (scoped to the csv_numbers it controls), but if this test runs in the same golden-hammer-suite process as another file whose fixtures depend on has_content=1 persisting on article_index rows THEY seeded (e.g. CoverageRadarServiceTest.php), this resync could silently zero those out depending on execution order.
-- This is UNCONFIRMED -- the audit fork read the code and reasoned about the risk but did not reproduce an actual failure (unlike the ConversationTopicWeightRunnerTest bug, which WAS reproduced via 8 repeated runs before being called a real bug). Do not "fix" anything based on the theory alone -- first try to actually reproduce a failure (e.g. run the full golden hammer suite repeatedly, or construct a targeted repro running ArticleIndexHasContentBackfillRunnerTest.php followed immediately by CoverageRadarServiceTest.php in the same process/DB state) before concluding this is real.
-
-**Definition of Done:**
-- Either a real, reproduced failure is found and fixed (test isolation, not the runner -- the runner''s exact-resync behavior is correct production behavior per its own docblock), or the investigation concludes it is not actually triggerable in practice (e.g. golden_hammer_suite.php''s own fixed test order never actually places them adjacently in a way that collides) and this task is closed with that reasoning recorded.
-
----
-### ✅ T-PTG-102 · P3 · ANY · DONE
-**Content decision: labs.php "New" badge vs help.php's established-feature framing**
-**Owner:** Claude-Sonnet-Session
-
-**Scope:**
-- Flagged by the info/meta sweep subagent during T-PTG-093's Stage A review (2026-08-21): labs.php still badges Quiz Mode with a "New" pill (.labs-new-badge), while help.php documents Quiz Mode as an established, already-explained feature. This is a product-framing/content call, not a styling fix -- deliberately NOT acted on during the sweep.
-- Chip decides: (a) leave as-is (Labs badges genuinely-new-to-most-members features regardless of how long they've existed in code), (b) remove the "New" badge from Quiz Mode specifically since it's now documented as standard, or (c) graduate Quiz Mode out of Labs entirely into the main product surface, with labs.php trimmed accordingly.
-
-**Definition of Done:**
-- Chip''s decision recorded in this task''s events, then implemented (or explicitly closed as "leave as-is" with no code change) -- either outcome is a valid completion, but the decision must be written down, not left ambiguous.
-
-*Audited against SHA:* `40e3342f813e548606016a0f1e950c39d08aeb28`
 
 ---

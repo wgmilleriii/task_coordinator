@@ -1,0 +1,53 @@
+id: T-PTG-057
+title: 'Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based
+  index'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: PEER_REVIEW
+created_at: '2026-08-17T09:45:00-06:00'
+dependencies:
+- T-PTG-051
+- T-PTG-052
+scope:
+- Build a "v4 situation" for the conversation workflow, likely introducing `journalgpt/v4/`
+  parallel to `v3`.
+- Migrate the search and RAG context gathering to take advantage of the new `article_index`
+  and `article_index_topics` tables introduced in T-PTG-051/052, moving away from
+  issue-level `articles` citations.
+- Run A/B tests or evaluations against Production for this v4 implementation to ensure
+  search results remain high quality and improve the conversational experience.
+definition_of_done:
+- V4 conversation pipeline is established and uses the new article-based indexing
+  system.
+- Search results and context are derived from `article_index` rather than issue-level
+  PDFs.
+- Evaluation tests are run against Production data to validate the new v4 workflow
+  without breaking the existing v3 production system.
+verification_command: php journalgpt/tests/security_and_eval_suite.php
+human_review_required: true
+requires_doc_update: true
+events:
+- timestamp: '2026-08-17T09:45:00-06:00'
+  action: SCOUT
+  actor: Claude-Fable-Session
+  details: Filed based on Chip's feature direction to build a v4 conversation workflow
+    using the new article-based system and test it against Production.
+- timestamp: '2026-08-17T15:43:25.634688Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T22:30:32.515655Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-23T15:37:49.958886Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-23T16:00:41.514465Z'
+  action: SUBMIT
+  actor: Antigravity
+audited_at: '2026-08-17T15:43:25.634544Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+owner: Antigravity
+claimed_at: '2026-08-23T15:37:49.958475Z'

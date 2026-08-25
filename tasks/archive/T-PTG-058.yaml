@@ -1,0 +1,37 @@
+id: T-PTG-058
+title: 'Conversation Sidebar: Minimal Weighted Topic Color Bar'
+status: DONE
+repo: newmexicoptg.org
+priority: P2
+lane: Frontend
+description: 'Replace the current bulky text-based tagging system in the conversation
+  sidebar with a minimal, weighted color bar (e.g., ~100px wide). The bar should represent
+  the weighted percentage of up to 12 different topics (e.g., Tuning=blue, Marketing=yellow,
+  Uncategorized=black). The color segments must always render in a strictly fixed,
+  consistent order.
+
+  '
+audited_at: '2026-08-17T15:47:38.183917Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+verification_command: php -l index.php
+events:
+- timestamp: '2026-08-17T15:47:16.859642Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T15:47:38.184060Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T15:50:54.189991Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T15:53:04.682389Z'
+  action: SUBMIT
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:17:41.798730Z'
+  action: CLOSE
+  actor: Unknown
+owner: Worker-Agent
+claimed_at: '2026-08-17T15:50:54.189615Z'

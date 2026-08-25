@@ -1,0 +1,12 @@
+# Feedback from Claude (Sonnet 5, 2026-08-20) - T-INTY-023
+
+## System-Level Feedback
+- The `audit`/`claim`/`verify`/`submit`/`start-review`/`record-review` chain worked exactly as documented and caught a real mistake: the auto-generated handoff YAML defaulted `branch: master` (read from the primary clone's checked-out branch) instead of the actual worktree branch (`test-T-INTY-023`). The schema doesn't validate branch-vs-worktree consistency, so this would silently record wrong provenance if an agent didn't check. Worth having `fleet verify` derive `branch` from the worktree it's told to verify against, rather than the primary clone's current checkout.
+- `--model` is required on both `verify` and `start-review` with no default and no mention in `--help`, matching the same gap a previous agent flagged for `verify` alone - confirming this is a stable rough edge, not a one-off.
+
+## Repository-Level Feedback (intypiano, T-INTY-023)
+- Built the "Pianos in the News" print-sheet generator: `piano_news/fetch_shortlist.py` (scrapes worldpianonews.com), `piano_news/build_issue.py` (takes manually-picked articles + teasers, downloads images, generates QR codes via the existing `qr/qrlib.php` pattern), and `piano_news_print.php` (renders a print-ready sheet, styled after `qr_report_generator.php`/`print_labels_5162.php`).
+- Notable finding: worldpianonews.com's WAF returns 403 for a realistic Chrome User-Agent string but allows a bare `"Mozilla/5.0"` - almost certainly a TLS-fingerprint-vs-UA-string consistency check. Both scripts use the bare string; if scraping starts failing later, this is the first thing to check.
+- Scope was deliberately kept to the mechanical/buildable half of the feature. Article selection and teaser rewriting happen interactively between Chip and Claude in chat (not automatable from a static task spec) and feed into `build_issue.py` as input - this was an explicit scoping decision made during brainstorming, not an oversight.
+- Ran the Janitor Protocol sweep for `intypiano` before starting (per `.fleet_context.md`); see the earlier feedback file from this session for that finding - it surfaced a large pre-existing doc-debt backlog that was deliberately deferred rather than fixed ad hoc.
+- Next step: Chip needs to review `test-T-INTY-023` (currently only in the `intypiano-T-INTY-023` worktree, not yet merged) and run `./bin/fleet close T-INTY-023` if satisfied.

@@ -8,52 +8,59 @@ created_at: '2026-08-17T10:30:00-06:00'
 dependencies:
 - T-PTG-052
 scope:
-- 'Spec: sections 3 and 5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. Member-facing
-  radar page (extend profile.php or new coverage.php following its pattern -- T-PTG-049 established
-  profile.php as the member-dashboard precedent): one axis per article_topic_categories row,
-  member score per axis = weighted distinct engagement over that territory''s tagged articles
-  (read=1, discussed=2, quiz_passed=3, deduped per (article, type)), normalized against the
-  territory''s total tagged-article count so big territories don''t dominate.'
-- 'Rendering: no charting framework -- inline SVG polygon radar in the page, same no-build-step
-  convention as admin_topic_matrix.php. Must render sanely at 0 activity (empty radar, inviting
-  copy) and with sparse taxonomy tagging.'
-- 'The nudge: below the radar, the member''s 3 weakest axes each list up to 3 suggested articles
-  from that territory the member has NOT engaged, ranked by cross-member popularity (reuse T-PTG-049''s
-  popular-but-unread query shape, re-targeted through article_index_topics).'
+- 'Spec: sections 3 and 5 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md.
+  Member-facing radar page (extend profile.php or new coverage.php following its pattern
+  -- T-PTG-049 established profile.php as the member-dashboard precedent): one axis
+  per article_topic_categories row, member score per axis = weighted distinct engagement
+  over that territory''s tagged articles (read=1, discussed=2, quiz_passed=3, deduped
+  per (article, type)), normalized against the territory''s total tagged-article count
+  so big territories don''t dominate.'
+- 'Rendering: no charting framework -- inline SVG polygon radar in the page, same
+  no-build-step convention as admin_topic_matrix.php. Must render sanely at 0 activity
+  (empty radar, inviting copy) and with sparse taxonomy tagging.'
+- 'The nudge: below the radar, the member''s 3 weakest axes each list up to 3 suggested
+  articles from that territory the member has NOT engaged, ranked by cross-member
+  popularity (reuse T-PTG-049''s popular-but-unread query shape, re-targeted through
+  article_index_topics).'
 - 'HONEST-DATA GUARD: radar quality depends on human tagging coverage in admin_article_index_matrix.php
-  (a separate, ongoing human effort). The page must surface tagging coverage ("N of 4,120 articles
-  tagged so far") rather than presenting a thin-tag radar as truth.'
+  (a separate, ongoing human effort). The page must surface tagging coverage ("N of
+  4,120 articles tagged so far") rather than presenting a thin-tag radar as truth.'
 definition_of_done:
-- Radar page renders for a member with zero activity, partial activity, and for a territory
-  with zero tagged articles, without errors.
-- Axis scoring proven by test - a member with one quiz_passed on a tagged article scores exactly
-  3 on that territory and 0 elsewhere; dedup proven (two reads of the same article count once).
-- Nudge query proven by test - suggests only untagged-by-member articles from weak territories,
-  popularity-ordered.
+- Radar page renders for a member with zero activity, partial activity, and for a
+  territory with zero tagged articles, without errors.
+- Axis scoring proven by test - a member with one quiz_passed on a tagged article
+  scores exactly 3 on that territory and 0 elsewhere; dedup proven (two reads of the
+  same article count once).
+- Nudge query proven by test - suggests only untagged-by-member articles from weak
+  territories, popularity-ordered.
 - Tagging-coverage line shows the true tagged/total counts.
 - Golden hammer suite passes with zero regressions; php -l clean.
-verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
-  php journalgpt/tests/security_and_eval_suite.php
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
 human_review_required: true
 requires_doc_update: false
 events:
 - timestamp: '2026-08-17T10:30:00-06:00'
   action: SCOUT
   actor: Claude-Fable-Session
-  details: Filed from the Coverage Atlas design session. human_review_required for visual sign-off
-    on the radar rendering.
+  details: Filed from the Coverage Atlas design session. human_review_required for
+    visual sign-off on the radar rendering.
 - timestamp: '2026-08-17T18:45:00-06:00'
   action: CLAIM
   actor: Claude-Fable-Session
 - timestamp: '2026-08-18T01:20:47.867Z'
   action: SUBMIT
   actor: Claude-Fable-Session
-  details: Landed on test at newmexicoptg.org a31417d. New coverage.php (radar over article_index/article_index_topics/member_article_activity),
-    lib/CoverageRadarService.php (TDD'd, 7/7 assertions), migration 021 + backfill script for
-    the has_content honesty guard (radar/nudges only ever reference the 592 real extracted articles,
-    never the ~4,120-row CSV stub import). Registered as suite 19/20 in security_and_eval_suite.php
-    -- golden hammer 20/20 PASS. Browser-verified all three required render states; found and
-    fixed a real SVG label-clipping bug during that pass. verification_command below is real
-    (not a stub).
+  details: Landed on test at newmexicoptg.org a31417d. New coverage.php (radar over
+    article_index/article_index_topics/member_article_activity), lib/CoverageRadarService.php
+    (TDD'd, 7/7 assertions), migration 021 + backfill script for the has_content honesty
+    guard (radar/nudges only ever reference the 592 real extracted articles, never
+    the ~4,120-row CSV stub import). Registered as suite 19/20 in security_and_eval_suite.php
+    -- golden hammer 20/20 PASS. Browser-verified all three required render states;
+    found and fixed a real SVG label-clipping bug during that pass. verification_command
+    below is real (not a stub).
 owner: Claude-Fable-Session
 claimed_at: '2026-08-17T18:45:00-06:00'
+audited_at: null
+audited_by: null
+audited_repo_sha: null

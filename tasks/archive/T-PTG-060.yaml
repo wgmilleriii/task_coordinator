@@ -1,0 +1,35 @@
+id: T-PTG-060
+title: Extend Admin Reply Mechanism for 'In Progress' Status
+description: 'Extend the existing feedback/admin reply mechanism to include a quick-action
+  "In Progress / Working On It" status notification. This can be sent to users when
+  their feature requests are accepted into the pipeline (e.g., "That''s a great idea.
+  We''re working on it and will let you know when it has been implemented.").
+
+  '
+status: DONE
+repo: newmexicoptg.org
+priority: P2
+lane: frontend
+labels:
+- enhancement
+- feedback
+audited_at: '2026-08-17T16:49:04.666819Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+verification_command: php -l journalgpt/admin_reply.php
+events:
+- timestamp: '2026-08-17T16:49:04.667217Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T16:50:39.171537Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T16:52:34.614824Z'
+  action: SUBMIT
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:17:54.470945Z'
+  action: CLOSE
+  actor: Unknown
+owner: Worker-Agent
+claimed_at: '2026-08-17T16:50:39.171398Z'

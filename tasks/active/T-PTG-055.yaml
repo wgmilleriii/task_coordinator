@@ -1,6 +1,6 @@
 id: T-PTG-055
-title: 'Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator
-  disposes)'
+title: 'Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes,
+  curator disposes)'
 repo: newmexicoptg.org
 priority: P2
 lane: ANY
@@ -9,29 +9,30 @@ created_at: '2026-08-17T10:30:00-06:00'
 dependencies:
 - T-PTG-054
 scope:
-- 'Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md. CLI (cli/propose_tours.php)
-  that drafts candidate tours/threads as status=draft rows for curator review in admin_tours.php.
-  Inputs: article_index summary_keywords + core_skills + issue chronology (+ article_index_topics
-  tags where present). One LLM pass per proposal via OpenAIClient (mock-mode testable, same
-  as QuizGenerator), cost-capped: --limit N proposals per run, estimated cost logged, UsageLedger
-  conventions respected.'
-- 'Proposal shapes: (a) tour -- 5-8 articles sharing a theme with a one-line blurb and per-stop
-  connective notes; (b) thread -- chronological sequence on one narrow question spanning 10+
-  years (the spec''s "watch the craft argue with itself" shape; e.g. humidity-control advice
-  over time). The model must only reference real article_index ids fed to it -- reject any proposal
-  citing an id not in the candidate set (mirror QuizGenerator''s grounding-enforcement discipline:
-  discard, never repair).'
-- 'NEVER auto-publish: CLI writes drafts only. Duplicate-guard: skip proposing a tour whose
-  title case-insensitively matches an existing tour.'
+- 'Spec: section 4 of docs/superpowers/specs/2026-08-17-coverage-atlas-design.md.
+  CLI (cli/propose_tours.php) that drafts candidate tours/threads as status=draft
+  rows for curator review in admin_tours.php. Inputs: article_index summary_keywords
+  + core_skills + issue chronology (+ article_index_topics tags where present). One
+  LLM pass per proposal via OpenAIClient (mock-mode testable, same as QuizGenerator),
+  cost-capped: --limit N proposals per run, estimated cost logged, UsageLedger conventions
+  respected.'
+- 'Proposal shapes: (a) tour -- 5-8 articles sharing a theme with a one-line blurb
+  and per-stop connective notes; (b) thread -- chronological sequence on one narrow
+  question spanning 10+ years (the spec''s "watch the craft argue with itself" shape;
+  e.g. humidity-control advice over time). The model must only reference real article_index
+  ids fed to it -- reject any proposal citing an id not in the candidate set (mirror
+  QuizGenerator''s grounding-enforcement discipline: discard, never repair).'
+- 'NEVER auto-publish: CLI writes drafts only. Duplicate-guard: skip proposing a tour
+  whose title case-insensitively matches an existing tour.'
 definition_of_done:
-- With a mocked OpenAIClient response, the CLI writes a valid draft tour with ordered stops
-  and connective notes; a response citing a fabricated article id is discarded with a logged
-  warning and writes nothing.
+- With a mocked OpenAIClient response, the CLI writes a valid draft tour with ordered
+  stops and connective notes; a response citing a fabricated article id is discarded
+  with a logged warning and writes nothing.
 - Drafts appear in admin_tours.php for curation; nothing member-visible changes.
 - Duplicate-title guard proven by test.
 - Golden hammer suite passes with zero regressions.
-verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root DB_PASS=root
-  php journalgpt/tests/security_and_eval_suite.php
+verification_command: DB_HOST=127.0.0.1 DB_PORT=8889 DB_NAME=journal_ai_test DB_USER=root
+  DB_PASS=root php journalgpt/tests/security_and_eval_suite.php
 human_review_required: false
 requires_doc_update: false
 events:
@@ -47,11 +48,15 @@ events:
   actor: Claude-Fable-Session
   details: 'Landed on test at newmexicoptg.org bab67f9. lib/TourProposer.php + cli/propose_tours.php:
     one LLM call per proposed tour/thread, mirroring QuizGenerator.php''s numbered-candidate
-    grounding discipline -- any proposal referencing an out-of-range candidate_index, wrong
-    stop count, or bad kind is discarded whole (TDD''d, 9/9 assertions). Case-insensitive duplicate-title
-    guard. Cost tracked via UsageLedger even on discarded proposals. --user-id required (not
-    defaulted). Manually dry-ran the CLI end-to-end in forced mock mode against a real curator
-    user -- clean exit, correct discard-and-log with no mock queued, cost still tracked. Registered
-    as suite 22/23; golden hammer 23/23 PASS.'
+    grounding discipline -- any proposal referencing an out-of-range candidate_index,
+    wrong stop count, or bad kind is discarded whole (TDD''d, 9/9 assertions). Case-insensitive
+    duplicate-title guard. Cost tracked via UsageLedger even on discarded proposals.
+    --user-id required (not defaulted). Manually dry-ran the CLI end-to-end in forced
+    mock mode against a real curator user -- clean exit, correct discard-and-log with
+    no mock queued, cost still tracked. Registered as suite 22/23; golden hammer 23/23
+    PASS.'
 owner: Claude-Fable-Session
 claimed_at: '2026-08-18T11:55:26.206Z'
+audited_at: null
+audited_by: null
+audited_repo_sha: null

@@ -1,0 +1,35 @@
+id: T-PTG-061
+title: Dynamic Conversation Topic Weighting Engine
+project: newmexicoptg.org
+repo: newmexicoptg.org
+status: DONE
+priority: P1
+lane: backend
+description: "Build an asynchronous PHP service that dynamically updates conversation\
+  \ topic weights. \nIt must calculate and store the weights using *two* separate\
+  \ engines independently:\n\n- **Engine A**: A classic, fast keyword-based Dictionary\
+  \ script.\n- **Engine B**: An LLM contextual analyzer (like GPT-4o-mini).\n\nThe\
+  \ database should store the results of both engines separately. The UI (like the\
+  \ color bar) will then consume an average of the two engines to display the final\
+  \ weighted tags. This dual-track data storage will allow us to continuously analyze\
+  \ and refine the Dictionary engine against the LLM's \"ground truth.\"\n"
+audited_at: '2026-08-17T16:56:14.939872Z'
+audited_by: PM-Agent
+audited_repo_sha: 148499984456a86f1d1be55b74387639df92ddce
+verification_command: php -l index.php
+events:
+- timestamp: '2026-08-17T16:56:14.940626Z'
+  action: AUDIT
+  actor: PM-Agent
+  details: Audited against 148499984456a86f1d1be55b74387639df92ddce
+- timestamp: '2026-08-17T16:57:36.268480Z'
+  action: CLAIM
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:00:30.834171Z'
+  action: SUBMIT
+  actor: Worker-Agent
+- timestamp: '2026-08-17T17:18:06.553465Z'
+  action: CLOSE
+  actor: Unknown
+owner: Worker-Agent
+claimed_at: '2026-08-17T16:57:36.268194Z'

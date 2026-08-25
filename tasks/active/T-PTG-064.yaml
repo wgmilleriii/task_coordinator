@@ -1,0 +1,32 @@
+id: T-PTG-064
+title: 'Feature: Pool Ball Triangle Layout'
+status: PEER_REVIEW
+priority: P2
+lane: ANY
+repo: newmexicoptg.org
+audited_at: '2026-08-17T21:11:45.233542Z'
+audited_by: Antigravity
+audited_repo_sha: 278031af013b6aa2ba22d638534c78bff4319f51
+verification_command: php -l ../newmexicoptg.org/journalgpt/index.php
+events:
+- timestamp: '2026-08-17T21:11:45.233844Z'
+  action: AUDIT
+  actor: Antigravity
+  details: Audited against 278031af013b6aa2ba22d638534c78bff4319f51
+- timestamp: '2026-08-17T21:11:50.369323Z'
+  action: CLAIM
+  actor: Antigravity
+- timestamp: '2026-08-17T21:14:35.112599Z'
+  action: SUBMIT
+  actor: Antigravity
+owner: Antigravity
+claimed_at: '2026-08-17T21:11:50.369151Z'
+scope:
+- Refactor the prompt builder to look like a game of pool. Arrange the 15 categories
+  into a 5-row triangle rack (1-2-3-4-5). Change the shapes back to circles. Ensure
+  the colors map accurately to standard pool balls (1-8 solid, 9-15 striped). Text
+  inside must be white with a thin black shadow. Change the greeting to "Choose your
+  path". Drop the 16th mystery ball.
+created_at: '2026-08-20T10:00:00-06:00'
+definition_of_done:
+- Pass review

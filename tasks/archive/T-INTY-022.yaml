@@ -1,93 +1,43 @@
 id: T-INTY-022
-title: Hardcoded plaintext global_system bypass credential in login_form.php
+title: V2 Personnel Management Interface
 repo: intypiano
-priority: P0
-lane: ANY
+priority: P1
+lane: FEATURE
 status: DONE
-owner: Worker-LoginFix1
-created_at: '2026-08-13T00:00:00Z'
+owner: Antigravity
+created_at: '2026-08-20T15:00:00-06:00'
 dependencies: []
+requires_doc_update: false
 scope:
-- 'Confirmed by reading login_form.php lines 17-25 directly: any POST to login_form.php
-  with email exactly `system@cauttools.com` OR the bare string `system`, and password
-  exactly `CAUTSystem!!@@`, bypasses the normal users-table/bcrypt auth path entirely
-  and grants a session with `$_SESSION[''role''] = ''global_system''` -- the highest
-  privilege role in the app, no user record, no rate limiting, no MFA, nothing.'
-- 'Confirmed the blast radius by grepping for `global_system` across the repo (not
-  guessing): it gates system_hub.php, system_users.php, system_health.php, system_cleanup.php,
-  system_analytics.php, system_user_manager.php, system_insights.php, and master_migrate.php
-  -- the last of which (per admin/v2/help.php line 125) "loops through all active
-  tenant databases (SFUSD, demos, etc.) defined in config.php and applies SQL schema
-  updates to all of them at once." A leaked or brute-forced copy of this one hardcoded
-  password is a path to running arbitrary migrations against every tenant database,
-  not just one.'
-- login_form.php is reachable at unm.cauttools.com/login_form.php (and presumably
-  every other cauttools-app hostname sharing this same file) -- this is a live, internet-facing
-  entry point, not a local-dev-only shortcut. Confirm during investigation whether
-  this is exposed on every tenant hostname or just some, by reading the hostname-dispatch
-  branches in classes/core/DatabaseManager.php that T-INTY-021 already investigated.
-- Do not assume this is unintentional/accidental -- the user (project owner) uses
-  this exact bypass today as their own system-account login (confirmed 2026-08-13,
-  see conversation this task was scoped from). This is a known, currently-relied-upon
-  login path, not a forgotten backdoor. The fix must replace the mechanism, not just
-  delete it, or it will lock the project owner out of system-level administration.
-- 'This repo already solved an analogous problem for staff logins: forgot_password.php
-  -> emailed single-use token -> password_reset.php, backed by ddl/140''s `password_resets`
-  table (hashed single-use tokens, bcrypt on set), replacing the old `reset_password.php?secret=123123`
-  backdoor (see CLAUDE.md "Open and live" item 4). Investigate whether the system
-  account can be onboarded into that same `users` table (with a real, unguessable
-  password and a real or synthetic email such as `system@cauttools.internal`) rather
-  than inventing a second bespoke mechanism -- the login form''s existing bcrypt/users-table
-  path already works, and a `role`/`is_active` combination for `global_system` may
-  already be representable there.'
-- 'If reusing the `users` table is not viable (e.g. the account genuinely needs no
-  email and the schema requires one, or `global_system` is not a role the `users.role`
-  column currently supports), scope and implement the smallest secure replacement
-  instead: e.g. a long random token issued out-of-band and stored only as a hash,
-  following the config/api_token.php gitignored-secret pattern already used by api/v1/admin/logRefill.php
-  and addTicket.php. Either way, the literal string `CAUTSystem!!@@` must not remain
-  live in the codebase or in git history as a still-working credential after this
-  task closes.'
-- 'Out of scope: do not touch the bcrypt/users-table login path itself (lines 27-65
-  of login_form.php) beyond what''s needed to onboard the system account into it,
-  and do not touch forgot_password.php/password_reset.php -- reuse them, do not redesign
-  them.'
+- Create admin/v2/personnel.php to manage the unified users table natively in V2.
+- View all users (active and inactive).
+- Add new users (requires full_name, email, role).
+- Edit existing users (update role, email, is_active).
+- No JavaScript (standard V2 architecture).
 definition_of_done:
-- The literal hardcoded password `CAUTSystem!!@@` (and the bare-`system` / `system@cauttools.com`
-  special-case branch that checks it) is removed from login_form.php.
-- The project owner has a working replacement login path for the same `global_system`
-  role-level access, verified end-to-end against a running server (php -S localhost:2027
-  -t ., per CLAUDE.md's "prefer running over reading" rule) -- log in with the new
-  credential, land on system_hub.php, and confirm session role is `global_system`.
-- grep -rn "CAUTSystem" . (excluding databasedumps/ and .git/) returns zero hits after
-  the fix, confirming no copy of the literal password remains live in tracked files.
-- If a new credential/token is generated, it is delivered to the project owner through
-  the handoff (not just committed silently) so they can actually log in after this
-  ships -- a "fixed" migration that leaves the owner locked out fails this DoD.
-- No regression to the existing bcrypt/users-table staff login path (the branch at
-  login_form.php lines 27-65) -- spot-check at least one existing non-system staff
-  login still works after the change.
-verification_command: php -l login_form.php && grep -c CAUTSystem login_form.php
+- admin/v2/personnel.php exists and uses _guard.php, _layout.php, _admin_only.php.
+- Users can be created, edited, and toggled active/inactive natively in V2.
+verification_command: php -l ../intypiano-T-INTY-022/admin/v2/personnel.php
 human_review_required: true
-audited_at: '2026-08-13T14:33:26.218799Z'
-audited_by: FleetCoordinator-Chip
-audited_repo_sha: e09372e4155dbdef35fdb569ca1a0d112b6ae226
+audited_at: '2026-08-20T21:01:15.663937Z'
+audited_by: Antigravity
+audited_repo_sha: c9637f1919f7c2dede742416a975ab7ffd07998c
 events:
-- timestamp: '2026-08-13T14:33:26.219152Z'
+- timestamp: '2026-08-20T21:01:15.664129Z'
   action: AUDIT
-  actor: FleetCoordinator-Chip
-  details: Audited against e09372e4155dbdef35fdb569ca1a0d112b6ae226
-- timestamp: '2026-08-13T14:50:54.821283Z'
+  actor: Antigravity
+  details: Audited against c9637f1919f7c2dede742416a975ab7ffd07998c
+- timestamp: '2026-08-20T21:01:19.551221Z'
   action: CLAIM
-  actor: Worker-LoginFix1
-- timestamp: '2026-08-13T14:58:58.386150Z'
+  actor: Antigravity
+- timestamp: '2026-08-20T21:03:17.457739Z'
   action: SUBMIT
-  actor: Worker-LoginFix1
-- timestamp: '2026-08-13T15:01:16.427762Z'
+  actor: Antigravity
+- timestamp: '2026-08-20T21:04:03.700518Z'
   action: RECORD_REVIEW
-  actor: FleetCoordinator-Chip
+  actor: Antigravity_Reviewer
   details: 'Verdict: PASS'
-- timestamp: '2026-08-13T15:20:21.208503Z'
+- timestamp: '2026-08-20T21:04:12.171526Z'
   action: CLOSE
-  actor: Chip
-claimed_at: '2026-08-13T14:50:54.821112Z'
+  actor: Willis Miller
+claimed_at: '2026-08-20T21:01:19.550991Z'

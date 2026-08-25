@@ -3,7 +3,7 @@ title: Conversation-wide quiz creation wizard with citation-expanded grounding
 repo: newmexicoptg.org
 priority: P1
 lane: ANY
-status: CLAIMED
+status: DONE
 created_at: '2026-08-25T10:38:36-06:00'
 dependencies:
 - T-PTG-104

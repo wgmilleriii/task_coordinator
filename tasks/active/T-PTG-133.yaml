@@ -1,0 +1,21 @@
+id: T-PTG-133
+title: Triage 29 stale unmerged branches (last activity 2026-08-19 to 08-22)
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+scope:
+- 'Context: as of 2026-08-26, 29 remote branches have commits not on main, all last touched 2026-08-19 through
+  08-22 (before the quiz-focused work in this session), none reviewed by the fleet process. Most look like
+  abandoned CI-validation scaffolding (agent/*-validation, agent/*-validation-current/final, single commits
+  each). One, agent/profile-referenced-articles-redesign (5 commits, 2026-08-19), is real, self-contained
+  feature code (new profile_referenced_articles.php endpoint + assets) that was never reviewed or landed.'
+- 'For each branch, a PM should decide: delete (abandoned scaffolding), or write a proper task + review pass
+  before merging (real, unreviewed feature work like profile-referenced-articles-redesign).'
+- 'Full branch list and commit counts are in this session''s transcript (2026-08-26); re-run "git log --oneline
+  origin/main..<branch>" per branch to reconfirm before acting, since branches may have changed since.'
+definition_of_done:
+- Every one of the 29 branches identified is either deleted (with a one-line reason logged here or in ARCHIVES.md)
+  or has a real fleet task tracking its review/merge.
+human_review_required: true

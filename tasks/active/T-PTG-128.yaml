@@ -1,0 +1,26 @@
+id: T-PTG-128
+title: Drive the article-driven Custom GPT pipeline to full starter-question coverage
+repo: newmexicoptg.org
+priority: P1
+lane: HUMAN
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+scope:
+- 'Context: api/gpt_action_get_pending_starter.php and api/gpt_action_submit_starter.php (shipped 2026-08-26)
+  loop over every imported article not yet mined for starter questions, serve its real extracted text, and
+  let a ChatGPT Custom GPT propose grounded question/answer/quiz entries per article -- the article-driven
+  sibling of the existing quiz-curation action pair (api/gpt_action_get_pending.php / gpt_action_submit.php),
+  same auth (X-GPT-Auth / GPT_ACTION_SECRET).'
+- This requires a human to add the two new operations (getPendingStarterArticle, submitStarterEntries) to
+  the existing Custom GPT's Action config in the ChatGPT UI (re-import api/openapi.yaml) and then drive it
+  conversationally ("fetch the next article... now do five... keep going"), the same way the quiz-curation
+  action was originally run -- an agent cannot do this step itself (no ChatGPT session access).
+- Run it until api/gpt_action_get_pending_starter.php returns "No pending articles remain." (60 imported issues,
+  407 individual real articles currently available to mine).
+definition_of_done:
+- Every currently-imported article (article_index.has_content=1, resolvable) has been offered to the pipeline
+  at least once (journalgpt/data/pregen_processed_articles.json covers all of them).
+- pre_generated_questions.json contains a meaningful number of new, real-article-grounded entries with resolvable
+  citations (spot-check via api/pregen_citation_audit.php).
+dependencies: []
+human_review_required: true

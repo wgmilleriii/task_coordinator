@@ -1,0 +1,31 @@
+id: T-PTG-129
+title: Retire the remaining fabricated/unresolved pre_generated_questions.json entries
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+dependencies:
+  - T-PTG-128
+scope:
+- 'Context: the original pre_generated_questions.json (T-JOURNALGPT-001/002/003) was built by prompting an
+  LLM against article_index.csv metadata only, never real article text. 96 of its 110 entries cite real
+  Dec-94/Jan-95 articles that are not yet imported (article_index resolution fails); 14 entries (article_pointer.article_id
+  5678 and 9101) cite articles that do not exist in article_index.csv at all -- pure fabrication that no
+  future import will fix.'
+- 'A new article-driven regeneration pipeline (api/gpt_action_get_pending_starter.php + gpt_action_submit_starter.php,
+  shipped 2026-08-26) writes NEW entries with newly-authored original_category_question text -- it does not
+  overwrite the old broken entries, since it has no way to know which old entry (if any) an old fixed UI button
+  corresponds to.'
+- Once T-PTG-128 (drive the new pipeline) has produced enough real coverage, audit pre_generated_questions.json
+  and remove every entry whose article_pointer.article_id does not resolve via the same join query ask.php
+  uses (api/pregen_citation_audit.php already reports this -- 0/110 currently resolve).
+- Do not remove an old entry until a real, grounded replacement exists for a reasonably equivalent question/topic,
+  or removing it just means that colored-box slot falls through to live RAG (already correctly grounded,
+  just slower) -- confirm with a human before deleting anything that would leave a category/subcategory
+  visibly empty.
+definition_of_done:
+- api/pregen_citation_audit.php reports 0 unresolved and 0 fabricated entries remaining in pre_generated_questions.json.
+- No colored-box category is left with zero real, grounded starter questions after cleanup (verify against
+  the coverage table T-PTG-128 produces).
+human_review_required: true

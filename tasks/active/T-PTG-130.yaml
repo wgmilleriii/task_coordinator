@@ -1,0 +1,29 @@
+id: T-PTG-130
+title: Regenerate the colored-box UI button text from real, mined starter questions
+repo: newmexicoptg.org
+priority: P2
+lane: ANY
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+dependencies:
+  - T-PTG-128
+scope:
+- 'Context: journal-chat.js''s PROMPT_CATEGORIES array hardcodes the exact question text shown on each colored-box
+  button, and api/ask.php''s pre-generated-answer short-circuit matches on that exact text. The new article-driven
+  pipeline (T-PTG-128) writes NEW, freshly-authored question text per real article -- it never touches the
+  old hardcoded button text, so newly-mined real entries are not reachable by clicking a colored box, only
+  by a member typing the exact new question (unlikely).'
+- Write a small script (or admin tool) that reads pre_generated_questions.json''s real, resolvable entries,
+  groups them by category, and regenerates PROMPT_CATEGORIES'' sub/q arrays in journal-chat.js from the best
+  available real entries per category (cap at 3 per subcategory bucket to match current UI density, fewer
+  where real coverage is thin -- do not pad).
+- Decide subcategory labels for article-driven entries, which currently only carry a top-level category (Tuning,
+  Regulation, etc.), not one of the old subcategory names (Pitch Raising, False Beats, etc.) -- either introduce
+  new subcategory groupings from the real content itself, or drop the subcategory drill-down UI step for categories
+  whose real coverage doesn''t naturally cluster into 3 clean subtopics.
+definition_of_done:
+- Every colored-box button a member can click matches a real, resolvable pre_generated_questions.json entry
+  (0 unresolved when cross-checked against api/pregen_citation_audit.php).
+- No category is left with fewer real buttons than it has real supporting content for (verify against T-PTG-128's
+  coverage).
+human_review_required: true

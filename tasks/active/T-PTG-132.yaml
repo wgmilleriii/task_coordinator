@@ -1,0 +1,23 @@
+id: T-PTG-132
+title: Restore GitHub Actions billing so CI/deploy work again without manual FTP
+repo: newmexicoptg.org
+priority: P1
+lane: HUMAN
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+scope:
+- 'Context: every GitHub Actions run on this repo (both "Test CI" and "Deploy to FTP") currently fails before
+  any job starts, with the annotation: "The job was not started because recent account payments have failed
+  or your spending limit needs to be increased." Confirmed live via `gh run view` on 2026-08-26 -- this has
+  been broken across many recent commits, not just today''s.'
+- 'This is a GitHub account billing issue, not something fixable in code -- requires a human to check the
+  "Billing & plans" section of the GitHub account/org settings and resolve the failed payment or raise the
+  spending limit.'
+- 'Until fixed, every deploy to test/prod requires manually running task_coordinator/bin/deploy.py from a local
+  clone (as done throughout the 2026-08-26 session) -- this works but has no safety net if a human forgets
+  to run it, and test/main can silently drift apart in the meantime (as they had, before this session synced
+  them).'
+definition_of_done:
+- A push to main or test triggers a normal, successful GitHub Actions run (Test CI + Deploy to FTP) without
+  the billing annotation.
+human_review_required: true

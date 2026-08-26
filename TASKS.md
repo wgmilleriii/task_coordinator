@@ -19,6 +19,8 @@ graph TD
     T-PTG-100["T-PTG-100<br/>Full impeccable UI/UX pass: verify_email.php"]:::review
     T-PTG-053["T-PTG-053<br/>Coverage Atlas Phase 1b: coverage radar dashboard + empty-wedge nudge"]:::review
     T-PTG-052 --> T-PTG-053
+    T-PTG-116["T-PTG-116<br/>In-Line 'Knowledge Checks' in V3 Article Reader"]
+    T-PTG-113 --> T-PTG-116
     T-PTG-090["T-PTG-090<br/>Full impeccable UI/UX pass: featured.php"]:::review
     T-PTG-086["T-PTG-086<br/>Full impeccable UI/UX pass: all_quizzes.php"]:::review
     T-PTG-069["T-PTG-069<br/>Profile page: link 'My Research' article citations to their source PDFs (HigherLogic issue_url)"]:::review
@@ -32,16 +34,21 @@ graph TD
     T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]:::review
     T-PTG-066 --> T-PTG-068
     T-PTG-091["T-PTG-091<br/>Full impeccable UI/UX pass: guest.php"]:::review
+    T-JOURNALGPT-001["T-JOURNALGPT-001<br/>Data Generation for Specific Pre-Generated Questions"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-PTG-101["T-PTG-101<br/>Explore-by-category: filtered article browsing action"]:::review
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
+    T-PTG-130["T-PTG-130<br/>Regenerate the colored-box UI button text from real, mined starter questions"]
+    T-PTG-128 --> T-PTG-130
     T-PTG-063["T-PTG-063<br/>Feature: Mobile-Optimized Minimalist UI"]:::review
     T-PTG-014["T-PTG-014<br/>Add an admin 'reply to conversation' tool, then use it to notify conversation 51 that color schemes shipped"]:::review
     T-PTG-055["T-PTG-055<br/>Coverage Atlas Phase 2b: LLM tour/thread draft-proposal CLI (machine proposes, curator disposes)"]:::review
     T-PTG-054 --> T-PTG-055
+    T-JOURNALGPT-006["T-JOURNALGPT-006<br/>Frontend: Render 'Dive Deeper' Recommendation Cards"]
     T-PTG-096["T-PTG-096<br/>Full impeccable UI/UX pass: quiz.php"]:::review
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
     T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
+    T-JOURNALGPT-007["T-JOURNALGPT-007<br/>Seed pre-2019 PDFs for JournalGPT"]
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
     T-PTG-051 --> T-PTG-054
     T-PTG-111["T-PTG-111<br/>Show real per-article citation titles for v4_beta answers"]
@@ -49,35 +56,652 @@ graph TD
     T-PTG-003["T-PTG-003<br/>Lock in citation-numbering fix with a real-shape regression fixture"]:::review
     T-PTG-107["T-PTG-107<br/>HTML article pages Phase 2: review/approve interface with mobile previews"]
     T-PTG-105 --> T-PTG-107
+    T-PTG-131["T-PTG-131<br/>Delete the 4 test-artifact quizzes corrupted by the ask.php article_id fallback bug"]
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
+    T-PTG-132["T-PTG-132<br/>Restore GitHub Actions billing so CI/deploy work again without manual FTP"]
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
     T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::done
-    T-PTG-108["T-PTG-108<br/>Conversation-wide quiz creation wizard with citation-expanded grounding"]:::done
-    T-PTG-104 --> T-PTG-108
+    T-PTG-128["T-PTG-128<br/>Drive the article-driven Custom GPT pipeline to full starter-question coverage"]
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
-    T-PTG-112["T-PTG-112<br/>'Continue this conversation with different articles' regeneration action"]
+    T-JOURNALGPT-004["T-JOURNALGPT-004<br/>Implement guided topic recommendation flow for JournalGPT"]
+    T-PTG-112["T-PTG-112<br/>Create Quiz Curation Admin Dashboard"]:::done
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]:::review
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
     T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]:::review
+    T-PTG-113["T-PTG-113<br/>Automate Quiz Curation with ChatGPT Custom Action"]:::done
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
+    T-JOURNALGPT-005["T-JOURNALGPT-005<br/>Backend: Metadata & Relevance Aggregation for JournalGPT"]
     T-PTG-095["T-PTG-095<br/>Full impeccable UI/UX pass: profile.php"]:::review
+    T-PTG-129["T-PTG-129<br/>Retire the remaining fabricated/unresolved pre_generated_questions.json entries"]
+    T-PTG-128 --> T-PTG-129
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
+    T-PTG-133["T-PTG-133<br/>Triage 29 stale unmerged branches (last activity 2026-08-19 to 08-22)"]
     T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
+    T-JOURNALGPT-002["T-JOURNALGPT-002<br/>Frontend/Backend Integration for Specific Questions"]:::done
+    T-JOURNALGPT-001 --> T-JOURNALGPT-002
+    T-PTG-114["T-PTG-114<br/>Re-imagine V3 Homepage with 'Technician Stumper of the Day'"]
+    T-PTG-113 --> T-PTG-114
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
     T-PTG-066 --> T-PTG-067
     T-PTG-088["T-PTG-088<br/>Full impeccable UI/UX pass: coverage.php"]:::review
     T-PTG-071["T-PTG-071<br/>Full impeccable UI/UX pass: admin_analytics.php"]:::review
+    T-PTG-134["T-PTG-134<br/>all_quizzes.php: most quizzes show a generic 'Journal Quiz' title, hard to scan the list"]
+    T-PTG-115["T-PTG-115<br/>The Knowledge Graph (Gamified Progression)"]
+    T-PTG-114 --> T-PTG-115
+    T-JOURNALGPT-003["T-JOURNALGPT-003<br/>Whitepaper on Pre-Generated Specific Starter Questions"]:::done
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
 ```
 
 ---
 
+#### 🏷️ Epic: General
+
+### 📋 T-PTG-116 · MEDIUM · FEATURE · OPEN
+**In-Line "Knowledge Checks" in V3 Article Reader**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- A
+- r
+- t
+- i
+- c
+- l
+- e
+- s
+-  
+- o
+- v
+- e
+- r
+-  
+- 3
+-  
+- p
+- a
+- g
+- e
+- s
+-  
+- h
+- a
+- v
+- e
+-  
+- a
+- t
+-  
+- l
+- e
+- a
+- s
+- t
+-  
+- o
+- n
+- e
+-  
+- i
+- n
+- l
+- i
+- n
+- e
+-  
+- k
+- n
+- o
+- w
+- l
+- e
+- d
+- g
+- e
+-  
+- c
+- h
+- e
+- c
+- k
+- .
+- 
+
+- -
+-  
+- A
+- n
+- s
+- w
+- e
+- r
+- s
+-  
+- a
+- r
+- e
+-  
+- s
+- u
+- b
+- m
+- i
+- t
+- t
+- e
+- d
+-  
+- a
+- s
+- y
+- n
+- c
+- h
+- r
+- o
+- n
+- o
+- u
+- s
+- l
+- y
+- .
+- 
+
+- -
+-  
+- U
+- I
+-  
+- i
+- s
+-  
+- g
+- l
+- a
+- s
+- s
+- m
+- o
+- r
+- p
+- h
+- i
+- c
+-  
+- a
+- n
+- d
+-  
+- m
+- a
+- t
+- c
+- h
+- e
+- s
+-  
+- V
+- e
+- s
+- p
+- e
+- r
+- '
+- s
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+-  
+- s
+- y
+- s
+- t
+- e
+- m
+- .
+- 
+
+
+---
+### 📋 T-PTG-114 · HIGH · FEATURE · OPEN
+**Re-imagine V3 Homepage with "Technician Stumper of the Day"**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- A
+-  
+- r
+- a
+- n
+- d
+- o
+- m
+-  
+- c
+- u
+- r
+- a
+- t
+- e
+- d
+-  
+- q
+- u
+- i
+- z
+-  
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- i
+- s
+-  
+- f
+- e
+- t
+- c
+- h
+- e
+- d
+-  
+- e
+- f
+- f
+- i
+- c
+- i
+- e
+- n
+- t
+- l
+- y
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+- -
+-  
+- T
+- h
+- e
+-  
+- U
+- I
+-  
+- p
+- r
+- e
+- s
+- e
+- n
+- t
+- s
+-  
+- t
+- h
+- e
+-  
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- a
+- n
+- d
+-  
+- o
+- p
+- t
+- i
+- o
+- n
+- s
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- h
+- o
+- m
+- e
+- p
+- a
+- g
+- e
+- .
+- 
+
+- -
+-  
+- S
+- e
+- l
+- e
+- c
+- t
+- i
+- n
+- g
+-  
+- a
+- n
+-  
+- o
+- p
+- t
+- i
+- o
+- n
+-  
+- r
+- e
+- v
+- e
+- a
+- l
+- s
+-  
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+- /
+- i
+- n
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+-  
+- a
+- n
+- d
+-  
+- s
+- h
+- o
+- w
+- s
+-  
+- t
+- h
+- e
+-  
+- C
+- T
+- A
+-  
+- l
+- i
+- n
+- k
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- .
+- 
+
+- -
+-  
+- P
+- a
+- s
+- s
+- e
+- s
+-  
+- V
+- 3
+-  
+- U
+- I
+- /
+- U
+- X
+-  
+- s
+- t
+- a
+- n
+- d
+- a
+- r
+- d
+- s
+- .
+- 
+
+
+---
+### 📋 T-PTG-115 · MEDIUM · FEATURE · OPEN
+**The Knowledge Graph (Gamified Progression)**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- U
+- s
+- e
+- r
+- s
+-  
+- c
+- a
+- n
+-  
+- v
+- i
+- e
+- w
+-  
+- t
+- h
+- e
+- i
+- r
+-  
+- s
+- k
+- i
+- l
+- l
+-  
+- t
+- r
+- e
+- e
+- .
+- 
+
+- -
+-  
+- C
+- o
+- m
+- p
+- l
+- e
+- t
+- i
+- n
+- g
+-  
+- q
+- u
+- i
+- z
+- z
+- e
+- s
+-  
+- i
+- n
+- c
+- r
+- e
+- m
+- e
+- n
+- t
+- s
+-  
+- t
+- h
+- e
+- i
+- r
+-  
+- l
+- e
+- v
+- e
+- l
+-  
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- a
+- s
+- s
+- o
+- c
+- i
+- a
+- t
+- e
+- d
+-  
+- s
+- k
+- i
+- l
+- l
+-  
+- n
+- o
+- d
+- e
+- .
+- 
+
+- -
+-  
+- T
+- h
+- e
+-  
+- U
+- I
+-  
+- s
+- u
+- g
+- g
+- e
+- s
+- t
+- s
+-  
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- s
+-  
+- t
+- o
+-  
+- l
+- e
+- v
+- e
+- l
+-  
+- u
+- p
+- .
+- 
+
+
+---
 
 ## Repo: `intypiano`
 
@@ -170,31 +794,79 @@ graph TD
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
 
 ---
-### ✅ T-PTG-108 · P1 · ANY · DONE
-**Conversation-wide quiz creation wizard with citation-expanded grounding**
-**Owner:** Antigravity
+### ✅ T-JOURNALGPT-001 · P1 · ANY · DONE
+**Data Generation for Specific Pre-Generated Questions**
+**Owner:** Worker-1
 
 **Scope:**
-- Replace every JournalGPT chat "Create a quiz" action with a link to an authenticated quiz_create.php page keyed by conversation_id. The clicked answer remains usable as the compatibility anchor for existing quiz records and links, but quiz source selection is conversation-wide rather than limited to that single assistant answer.
-- The first state on quiz_create.php must preserve the existing JournalGPT shell, responsive reading-width layout, typography, and themes; show a Back to conversation link; ask exactly "How would you like this quiz to be generated?"; and present two large choices: "Only on material from this conversation" and "Use any material from the citations in this conversation".
-- Below the choices, list every unique citation found across the full conversation. Reuse the existing secure Reader URLs, retain useful article/page labels, deduplicate repeated citations, and open citation links in a new tab with safe target/rel attributes. A citation that cannot be resolved to a full article bundle remains listed and can contribute transcript context, but it must not be represented as loaded full-article evidence.
-- Conversation-only mode grounds quiz generation in the entire visible conversation transcript, including member questions and assistant answers, without loading full article bundles. Citation-expanded mode uses that same transcript plus the complete text of every uniquely cited article bundle that can be resolved through the existing article-index/bundle infrastructure; repeated citations must load a bundle only once. Preserve the existing requirement that every generated question maps to real citation evidence rather than weakening grounding.
-- Use a regular CSRF-protected form submission and Post/Redirect/Get flow to create the quiz queue job before any worker kick is issued. Only after the committed job exists may quiz_create.php start the worker and begin lightweight status polling, eliminating the current independent enqueue-beacon/worker-beacon ordering race. Refreshing or revisiting the progress URL must resume the same member-owned job rather than enqueueing a duplicate.
-- Keep chooser, progress, completion, and recoverable failure states on quiz_create.php. After a choice, show "Generating quiz" and "This may take up to a minute." (plus a truthful stage when available); on completion show "Your quiz is ready" with a prominent "Take your quiz now" link to the existing quiz.php experience; on failure or timeout show a plain explanation and a Try again path. If another heavy job is already running for the member, explain that it must finish before another quiz can begin.
-- Authorize every conversation and job lookup against the signed-in member, reject guessed or cross-member IDs without leaking data, retain CSRF validation on job creation, and ensure a job_id cannot be paired with a different conversation_id. Do not expose article-bundle files directly; keep citation access behind the established authenticated Reader/article delivery paths.
-- Do not add or alter database schema: test and production share the database. Carry the two-value source-scope selection as a validated internal token in an existing nullable job payload field (or an equivalently migration-free existing field), and reject all other values. Existing queued quiz jobs, legacy single-answer generation behavior/API compatibility, status polling, saved quiz lists, and quiz.php links must continue to work.
-- Deployment is test-only. Merge/push only to the test integration branch and verify the complete flow on the test site; do not deploy or push this task to main/production.
+- Identify one high-quality article for each of the 45 subcategories defined in assets/journal-chat.js PROMPT_CATEGORIES.
+- Read each article and formulate 2-3 specific, long, human-sounding questions tied directly to the article content.
+- For each question, draft a pre-generated intelligent answer, a pointer to the source article, and a pre-generated quiz.
+- Store this data in a structured format (e.g., JSON file or database table) for the frontend to consume.
 
 **Definition of Done:**
-- From a real conversation, every Create a quiz link opens the authenticated chooser for that conversation, and a member cannot view or start a quiz wizard for another member's conversation or job by changing either ID.
-- The chooser displays the exact approved prompt and two choices, plus a deduplicated conversation-wide citation list whose secure links open in a new tab; unresolved citations remain honestly identified without being treated as loaded article bundles.
-- A focused test proves transcript-only mode includes all visible member/assistant turns while excluding full bundle text, and citation-expanded mode includes that transcript plus each resolvable unique cited article bundle exactly once.
-- A focused queue-ordering test proves the job is committed before the worker kick, and browser-level verification proves chooser -> generating -> ready -> Take your quiz now works, refresh resumes the same job without duplication, and failure/timeout/already-running states are recoverable and clear.
-- Legacy quiz jobs and existing quiz.php/list/status behavior remain compatible, including at least one regression test for the pre-wizard single-answer job path.
-- PHP syntax checks, relevant focused JournalGPT tests, frontend syntax checks, and the full journalgpt/tests/security_and_eval_suite.php regression suite pass with zero regressions.
-- The change is deployed only to the test branch/test site and the authenticated live-test walkthrough confirms citation links, both generation modes, reload recovery, ownership rejection, and a usable completed quiz; no production deployment and no database migration occur.
+- A dataset is created covering all 45 subcategories.
+- Each subcategory has 2-3 specific questions tied to an article.
+- Each question has an associated intelligent answer, article pointer, and quiz.
 
-*Audited against SHA:* `50d6e82e43958f04146d2af42cbdb84866849e52`
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
+### ✅ T-PTG-112 · P1 · ANY · DONE
+**Create Quiz Curation Admin Dashboard**
+**Owner:** Worker-1
+
+**Scope:**
+- Create `journalgpt/admin_curate_quizzes.php` providing a copy/paste workbench for quiz curation.
+- Display a list of articles that currently lack quizzes.
+- Add an 'Export Prompt' button per article that copies the article's text alongside a strict JSON schema prompt for generating a multiple-choice quiz.
+- Add a textarea for admins to paste the JSON response from an external LLM.
+- Create an endpoint (e.g. `api/import_curated_quiz.php`) to parse the pasted JSON and insert it into `quizzes` and `quiz_questions`.
+- Resolve the constraint that `quizzes` currently requires `conversation_id` and `source_message_id` (either by modifying the schema to allow NULLs for admin-curated quizzes, or by using a dedicated system conversation).
+
+**Definition of Done:**
+- Admins can view a list of articles missing quizzes.
+- Admins can copy an LLM prompt containing the article text and JSON schema instructions.
+- Admins can paste the resulting JSON back into the dashboard.
+- The imported quiz is successfully saved to `quizzes` and `quiz_questions` tables.
+- The application gracefully handles the database constraints on `quizzes`.
+
+*Audited against SHA:* `3e9720189eeaab0df656794af16bde85c173ee07`
+
+---
+### ✅ T-PTG-113 · P1 · ANY · DONE
+**Automate Quiz Curation with ChatGPT Custom Action**
+**Owner:** Worker-1
+
+**Scope:**
+- Create api/gpt_action_get_pending.php as a GET endpoint returning the text of an article needing a quiz, plus the JSON schema instructions. If the article is part of a series (e.g., 'Part 1', 'Part II' in the title), group all articles in that series into a single payload so the AI can generate one cohesive quiz for the whole series (fulfilling FR Conv 135). Also, explicitly instruct the LLM to format answers with bullet points, summaries, and a CTA encouraging reading (fulfilling FR Conv 130).
+- Create api/gpt_action_submit.php as a POST endpoint accepting the completed JSON quiz from ChatGPT and inserting it into the database.
+- Create api/openapi.yaml (an OpenAPI/Swagger spec file) so the user can plug these endpoints into their Custom GPT's configuration.
+- Implement a simple Bearer token check (e.g. GPT_ACTION_SECRET) so the endpoints aren't completely open to the public.
+
+**Definition of Done:**
+- api/gpt_action_get_pending.php returns an article needing a quiz with instructions.
+- api/gpt_action_submit.php accepts POSTed JSON and inserts the quiz correctly.
+- api/openapi.yaml correctly describes both endpoints.
+- Both endpoints enforce a Bearer token check using GPT_ACTION_SECRET.
+
+*Audited against SHA:* `966da79d84ad511ba5de428d2ff9ab6ff030e579`
+
+---
+### ✅ T-JOURNALGPT-002 · P1 · ANY · DONE
+**Frontend/Backend Integration for Specific Questions**
+**Owner:** Worker-2
+
+**Scope:**
+- Modify assets/journal-chat.js and relevant backend PHP to load the new specific pre-generated questions instead of the vague PROMPT_CATEGORIES.
+- Implement logic to instantly return the pre-generated intelligent answer, article pointer, and quiz option when one of these specific questions is submitted exactly as-is.
+
+**Definition of Done:**
+- The UI (colored boxes) displays the new specific, long questions.
+- Submitting a pre-generated question instantly returns the pre-generated answer and article pointer without LLM latency.
+- The quiz option is successfully presented for these pre-generated answers.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
 
 ---
 ### ⏳ T-PTG-105 · P1 · ANY · HUMAN_REVIEW
@@ -220,6 +892,22 @@ graph TD
 *Audited against SHA:* `0583a419478f7fac3b9ae4d66776b1fab278a3f4`
 
 ---
+### 📋 T-JOURNALGPT-007 · P1 · ANY · OPEN
+**Seed pre-2019 PDFs for JournalGPT**
+**Owner:** None
+
+**Scope:**
+- Extract the pre-2019 PDF archive using the MinerU extraction pipeline.
+- Append the newly extracted article records into the current manifest.json.
+- Run seed_from_manifest.php to seed the production database with these new articles.
+
+**Definition of Done:**
+- All pre-2019 articles from article_index.csv are processed through MinerU.
+- manifest.json correctly contains the pre-2019 articles alongside the existing 2019-present articles.
+- seed_from_manifest.php completes without errors and the database contains the pre-2019 entries.
+- LLM pre-generated questions can successfully link to the pre-2019 articles.
+
+---
 ### 📋 T-PTG-107 · P1 · ANY · OPEN
 **HTML article pages Phase 2: review/approve interface with mobile previews**
 **Owner:** None
@@ -237,6 +925,48 @@ graph TD
 - A reviewer can approve/request-changes/reject an article, leave and resolve comments, and override paragraph text or swap pull-quote selections, all persisting correctly.
 - Mobile preview pane genuinely renders the article at a narrow viewport inside the review tool, verified visually (via the browse skill against a local session-faked render, same technique used for Phase 1, since no live login credentials are available).
 - Golden hammer suite passes with zero regressions; php -l clean.
+
+---
+### 📋 T-PTG-132 · P1 · HUMAN · OPEN
+**Restore GitHub Actions billing so CI/deploy work again without manual FTP**
+**Owner:** None
+
+**Scope:**
+- Context: every GitHub Actions run on this repo (both "Test CI" and "Deploy to FTP") currently fails before any job starts, with the annotation: "The job was not started because recent account payments have failed or your spending limit needs to be increased." Confirmed live via `gh run view` on 2026-08-26 -- this has been broken across many recent commits, not just today's.
+- This is a GitHub account billing issue, not something fixable in code -- requires a human to check the "Billing & plans" section of the GitHub account/org settings and resolve the failed payment or raise the spending limit.
+- Until fixed, every deploy to test/prod requires manually running task_coordinator/bin/deploy.py from a local clone (as done throughout the 2026-08-26 session) -- this works but has no safety net if a human forgets to run it, and test/main can silently drift apart in the meantime (as they had, before this session synced them).
+
+**Definition of Done:**
+- A push to main or test triggers a normal, successful GitHub Actions run (Test CI + Deploy to FTP) without the billing annotation.
+
+---
+### 📋 T-PTG-128 · P1 · HUMAN · OPEN
+**Drive the article-driven Custom GPT pipeline to full starter-question coverage**
+**Owner:** None
+
+**Scope:**
+- Context: api/gpt_action_get_pending_starter.php and api/gpt_action_submit_starter.php (shipped 2026-08-26) loop over every imported article not yet mined for starter questions, serve its real extracted text, and let a ChatGPT Custom GPT propose grounded question/answer/quiz entries per article -- the article-driven sibling of the existing quiz-curation action pair (api/gpt_action_get_pending.php / gpt_action_submit.php), same auth (X-GPT-Auth / GPT_ACTION_SECRET).
+- This requires a human to add the two new operations (getPendingStarterArticle, submitStarterEntries) to the existing Custom GPT's Action config in the ChatGPT UI (re-import api/openapi.yaml) and then drive it conversationally ("fetch the next article... now do five... keep going"), the same way the quiz-curation action was originally run -- an agent cannot do this step itself (no ChatGPT session access).
+- Run it until api/gpt_action_get_pending_starter.php returns "No pending articles remain." (60 imported issues, 407 individual real articles currently available to mine).
+
+**Definition of Done:**
+- Every currently-imported article (article_index.has_content=1, resolvable) has been offered to the pipeline at least once (journalgpt/data/pregen_processed_articles.json covers all of them).
+- pre_generated_questions.json contains a meaningful number of new, real-article-grounded entries with resolvable citations (spot-check via api/pregen_citation_audit.php).
+
+---
+### 📋 T-PTG-129 · P1 · ANY · OPEN
+**Retire the remaining fabricated/unresolved pre_generated_questions.json entries**
+**Owner:** None
+
+**Scope:**
+- Context: the original pre_generated_questions.json (T-JOURNALGPT-001/002/003) was built by prompting an LLM against article_index.csv metadata only, never real article text. 96 of its 110 entries cite real Dec-94/Jan-95 articles that are not yet imported (article_index resolution fails); 14 entries (article_pointer.article_id 5678 and 9101) cite articles that do not exist in article_index.csv at all -- pure fabrication that no future import will fix.
+- A new article-driven regeneration pipeline (api/gpt_action_get_pending_starter.php + gpt_action_submit_starter.php, shipped 2026-08-26) writes NEW entries with newly-authored original_category_question text -- it does not overwrite the old broken entries, since it has no way to know which old entry (if any) an old fixed UI button corresponds to.
+- Once T-PTG-128 (drive the new pipeline) has produced enough real coverage, audit pre_generated_questions.json and remove every entry whose article_pointer.article_id does not resolve via the same join query ask.php uses (api/pregen_citation_audit.php already reports this -- 0/110 currently resolve).
+- Do not remove an old entry until a real, grounded replacement exists for a reasonably equivalent question/topic, or removing it just means that colored-box slot falls through to live RAG (already correctly grounded, just slower) -- confirm with a human before deleting anything that would leave a category/subcategory visibly empty.
+
+**Definition of Done:**
+- api/pregen_citation_audit.php reports 0 unresolved and 0 fabricated entries remaining in pre_generated_questions.json.
+- No colored-box category is left with zero real, grounded starter questions after cleanup (verify against the coverage table T-PTG-128 produces).
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW
@@ -374,6 +1104,44 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
+### 📋 T-JOURNALGPT-004 · P2 · ANY · AUDITED
+**Implement guided topic recommendation flow for JournalGPT**
+**Owner:** None
+
+**Scope:**
+- Update JournalGPT's system prompt or dialogue handling to support a structured topic recommendation response.
+- When a user asks about a broad topic (e.g., 'tuning stability'), the AI should respond with a specific pedagogical structure.
+- 1. Acknowledge the topic and state the total number of related articles vs. the subset that specifically focus on the core concept.
+- 2. List the main principles (e.g., top 3 points) of the topic.
+- 3. Recommend a curated 'dive deeper' list of 3 specific articles or series, providing author context, format, and key takeaways.
+- 4. Close with an invitation for feedback ('Let me know if this is what you are looking for...').
+- Ensure the AI logic can query and synthesize actual Journal index metadata to populate these responses.
+
+**Definition of Done:**
+- JournalGPT's behavior is updated to format responses with the requested pedagogical structure (acknowledge, quantify, list principles, recommend top 3, conversational closing).
+- The AI correctly synthesizes article counts and principles based on the Journal index.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
+### 📋 T-JOURNALGPT-005 · P2 · ANY · AUDITED
+**Backend: Metadata & Relevance Aggregation for JournalGPT**
+**Owner:** None
+
+**Scope:**
+- Update the retrieval backend to support the new Dynamic Topic Recommendation Flow.
+- When the LLM is queried for a broad topic, the backend must fetch and aggregate metadata before generation.
+- 1. Calculate the total number of articles that loosely match the broad topic.
+- 2. Identify the subset of 'core' articles that specifically focus on the core concept.
+- 3. Expose this aggregated metadata (counts, top 3 specific article recommendations, authors, and series info) as a structured payload to the LLM context.
+
+**Definition of Done:**
+- Backend successfully executes a two-pass or aggregated query to determine 'total' vs 'core' article counts.
+- The structured payload is injected into the LLM's context window without breaking existing RAG functionality.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
 ### 🛑 T-PTG-056 · P2 · ANY · BLOCKED
 **Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration**
 > 🛑 **BLOCKED REASON:** Interrupted mid-implementation by an unrelated homepage redesign task in the same session. Uncommitted work (TourQuizService.php, generate_tour_quiz.php, 3 tests -- one referencing TourProgressService which was never written) stashed on branch test-T-PTG-056 in worktree ../newmexicoptg.org-tourpages (git stash list). Blocking to release the repo lock for P1 work (T-PTG-066); resume by popping the stash and continuing from TourProgressService.
@@ -391,6 +1159,22 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
 - Progress derivation proven by test against member_article_activity fixtures.
 - Golden hammer suite passes with zero regressions; php -l clean.
+
+---
+### ✅ T-JOURNALGPT-003 · P2 · ANY · DONE
+**Whitepaper on Pre-Generated Specific Starter Questions**
+**Owner:** Worker-3
+
+**Scope:**
+- Draft a whitepaper in the journalgpt/whitepapers/ directory.
+- Detail the architecture and motivation of using highly-specific, article-tied, pre-generated question-answer-quiz bundles as conversation starters.
+- Explain how this guarantees high-quality initial engagement and circumvents LLM latency for the first interaction.
+
+**Definition of Done:**
+- Whitepaper HTML or Markdown document is created in the whitepapers/ directory.
+- The document clearly articulates the goal of quality over quantity using specific article-tied questions.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
 
 ---
 ### ⏳ T-PTG-100 · P2 · ANY · HUMAN_REVIEW
@@ -837,6 +1621,20 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
 
 ---
+### 📋 T-PTG-130 · P2 · ANY · OPEN
+**Regenerate the colored-box UI button text from real, mined starter questions**
+**Owner:** None
+
+**Scope:**
+- Context: journal-chat.js's PROMPT_CATEGORIES array hardcodes the exact question text shown on each colored-box button, and api/ask.php's pre-generated-answer short-circuit matches on that exact text. The new article-driven pipeline (T-PTG-128) writes NEW, freshly-authored question text per real article -- it never touches the old hardcoded button text, so newly-mined real entries are not reachable by clicking a colored box, only by a member typing the exact new question (unlikely).
+- Write a small script (or admin tool) that reads pre_generated_questions.json''s real, resolvable entries, groups them by category, and regenerates PROMPT_CATEGORIES'' sub/q arrays in journal-chat.js from the best available real entries per category (cap at 3 per subcategory bucket to match current UI density, fewer where real coverage is thin -- do not pad).
+- Decide subcategory labels for article-driven entries, which currently only carry a top-level category (Tuning, Regulation, etc.), not one of the old subcategory names (Pitch Raising, False Beats, etc.) -- either introduce new subcategory groupings from the real content itself, or drop the subcategory drill-down UI step for categories whose real coverage doesn''t naturally cluster into 3 clean subtopics.
+
+**Definition of Done:**
+- Every colored-box button a member can click matches a real, resolvable pre_generated_questions.json entry (0 unresolved when cross-checked against api/pregen_citation_audit.php).
+- No category is left with fewer real buttons than it has real supporting content for (verify against T-PTG-128's coverage).
+
+---
 ### 📋 T-PTG-111 · P2 · ANY · OPEN
 **Show real per-article citation titles for v4_beta answers**
 **Owner:** None
@@ -1024,17 +1822,62 @@ The goal is to update the conversation workflow to include a friendly, context-a
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### 📋 T-PTG-112 · P3 · ANY · OPEN
-**"Continue this conversation with different articles" regeneration action**
+### 📋 T-JOURNALGPT-006 · P3 · ANY · AUDITED
+**Frontend: Render 'Dive Deeper' Recommendation Cards**
 **Owner:** None
 
 **Scope:**
-- Chip requested: after an assistant answer is given, add a button/action "Continue this conversation with different articles" that regenerates a response to the same question, but grounded in different source articles than the ones just cited -- i.e. explicitly excluding the article(s)/chunk(s) already used for that answer, so a member who feels the first answer missed the mark (or wants a second perspective) can ask the system to look elsewhere in the corpus.
-- Needs design before implementation (NOT started this session): where the exclusion list lives (per-message? per-conversation running exclusion list across multiple "different articles" clicks?), how it plugs into EvidenceRetriever (v3_beta, issue-level, OpenAI vector store file_search -- excluding a specific chunk/file from an OpenAI-hosted vector store search may need query-level phrasing tricks rather than a hard exclude) versus EvidenceRetrieverV4 (v4_beta, article-level, article_index-backed -- an actual article_id exclusion list is straightforward here), and whether this becomes a new message in the SAME conversation (most natural per the request's framing) or spins off a new conversation the way T-PTG-109's v4-relaunch does.
-- Open design question worth resolving with Chip before scoping further: does this apply to both v3_beta and v4_beta, or is it v4_beta-only given the article-level-exclusion mechanism is far more natural there than in v3_beta's vector-store search.
+- Update the JournalGPT Chat UI to handle structured pedagogical responses.
+- If the AI returns a 'dive deeper' recommendation list, the UI should parse it and render it engagingly.
+- Instead of a flat markdown wall of text, the 3 recommended articles/series should be rendered as distinct UI cards or styled blocks.
+- Each card should clearly display the Author, Format (e.g., '3-part series'), and Key Takeaways.
 
 **Definition of Done:**
-- Not yet defined -- this task needs a brainstorming/design pass (bounded or architectural, TBD) before definition_of_done can be written concretely.
+- The Chat interface successfully parses recommendation lists from the LLM.
+- Recommendations are rendered as styled, clickable cards that link directly to the source articles.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
+### 📋 T-PTG-131 · P3 · ANY · OPEN
+**Delete the 4 test-artifact quizzes corrupted by the ask.php article_id fallback bug**
+**Owner:** None
+
+**Scope:**
+- Context: ask.php's pre-generated-question path used to fall back to the raw, unresolved csv_number as article_id instead of 0 (fixed 2026-08-26, commit 71ac0336). Before the fix, quizzes generated from a pre-gen answer whose citation never resolved got silently mis-attributed to an unrelated real articles row.
+- api/article_import_stats.php's gpt_curated_quiz_flow.quizzes_pointing_at_placeholder_stub_articles confirmed exactly 4 affected quizzes: ids 220, 221, 222, 223 (20 quiz_questions total), all attributed to articles.id=1 (an empty 2026 placeholder stub row). All 4 are from this session's own verification testing on production (member@ptg.org and a guest session), not real member data.
+- Delete quizzes 220-223 (quiz_questions cascades via the existing FK) from the production database. Re-run api/article_import_stats.php afterward to confirm quizzes_pointing_at_placeholder_stub_articles is empty.
+
+**Definition of Done:**
+- Quizzes 220, 221, 222, 223 and their questions no longer exist in the database.
+- api/article_import_stats.php's quizzes_pointing_at_placeholder_stub_articles list is empty.
+
+---
+### 📋 T-PTG-133 · P3 · ANY · OPEN
+**Triage 29 stale unmerged branches (last activity 2026-08-19 to 08-22)**
+**Owner:** None
+
+**Scope:**
+- Context: as of 2026-08-26, 29 remote branches have commits not on main, all last touched 2026-08-19 through 08-22 (before the quiz-focused work in this session), none reviewed by the fleet process. Most look like abandoned CI-validation scaffolding (agent/*-validation, agent/*-validation-current/final, single commits each). One, agent/profile-referenced-articles-redesign (5 commits, 2026-08-19), is real, self-contained feature code (new profile_referenced_articles.php endpoint + assets) that was never reviewed or landed.
+- For each branch, a PM should decide: delete (abandoned scaffolding), or write a proper task + review pass before merging (real, unreviewed feature work like profile-referenced-articles-redesign).
+- Full branch list and commit counts are in this session's transcript (2026-08-26); re-run "git log --oneline origin/main..<branch>" per branch to reconfirm before acting, since branches may have changed since.
+
+**Definition of Done:**
+- Every one of the 29 branches identified is either deleted (with a one-line reason logged here or in ARCHIVES.md) or has a real fleet task tracking its review/merge.
+
+---
+### 📋 T-PTG-134 · P3 · ANY · OPEN
+**all_quizzes.php: most quizzes show a generic "Journal Quiz" title, hard to scan the list**
+**Owner:** None
+
+**Scope:**
+- Observed 2026-08-26 while spot-checking all_quizzes.php: of the ~223 GPT-curated quizzes (T-PTG-112/113), the vast majority show as a generic "Journal Quiz" card with no distinguishing title, generated by "Test PTG Member" -- because api/gpt_action_submit.php inserts `title` from the GPT's payload, and most submissions apparently didn't set a meaningful one. A handful of quizzes (the ones generated via the chat "Create a quiz based on this conversation" button) do show a real, specific title (the source question).
+- With ~223+ quizzes accumulating and more coming from T-PTG-128''s article-driven pipeline, a long list of identical "Journal Quiz" cards makes the page unusable for finding a specific quiz.
+- Fix at the source: api/gpt_action_get_pending.php already returns the real article title in its payload (`title` field) -- gpt_action_submit.php should default to that / the citation_label rather than accepting an unlabeled "Curated Quiz" fallback silently. Consider a one-time backfill for existing null-titled quizzes using their first question's citation_label.
+
+**Definition of Done:**
+- New quizzes generated via the GPT action flow have a real, distinguishing title by default, not a generic placeholder.
+- Existing generic-titled quizzes are backfilled with their citation_label (or an equivalent meaningful title) where derivable.
 
 ---
 

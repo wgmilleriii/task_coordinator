@@ -1,0 +1,21 @@
+id: T-PTG-131
+title: Delete the 4 test-artifact quizzes corrupted by the ask.php article_id fallback bug
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+scope:
+- 'Context: ask.php''s pre-generated-question path used to fall back to the raw, unresolved csv_number as
+  article_id instead of 0 (fixed 2026-08-26, commit 71ac0336). Before the fix, quizzes generated from a pre-gen
+  answer whose citation never resolved got silently mis-attributed to an unrelated real articles row.'
+- 'api/article_import_stats.php''s gpt_curated_quiz_flow.quizzes_pointing_at_placeholder_stub_articles confirmed
+  exactly 4 affected quizzes: ids 220, 221, 222, 223 (20 quiz_questions total), all attributed to articles.id=1
+  (an empty 2026 placeholder stub row). All 4 are from this session''s own verification testing on production
+  (member@ptg.org and a guest session), not real member data.'
+- Delete quizzes 220-223 (quiz_questions cascades via the existing FK) from the production database. Re-run
+  api/article_import_stats.php afterward to confirm quizzes_pointing_at_placeholder_stub_articles is empty.
+definition_of_done:
+- Quizzes 220, 221, 222, 223 and their questions no longer exist in the database.
+- api/article_import_stats.php's quizzes_pointing_at_placeholder_stub_articles list is empty.
+human_review_required: true

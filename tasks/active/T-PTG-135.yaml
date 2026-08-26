@@ -1,0 +1,21 @@
+id: T-PTG-135
+title: Extract the article_index resolution join into a shared helper
+repo: newmexicoptg.org
+priority: P3
+lane: ANY
+status: OPEN
+created_at: '2026-08-26T00:00:00Z'
+scope:
+- 'Found by code review 2026-08-26: the same csv_number -> real articles.id resolution query (JOIN article_index
+  ON issue_label matched against DATE_FORMAT(issue_date), volume, or pdf_filename) is now duplicated verbatim
+  in three places -- journalgpt/api/ask.php''s inline $realIdStmt, api/gpt_action_get_pending_starter.php,
+  and api/gpt_action_submit_starter.php.'
+- A future fix to this resolution logic (this exact class of bug has already needed one fix, 2026-08-26,
+  commit 71ac0336) has to be applied in all three places by hand; missing one silently reintroduces the
+  bug in just that spot.
+- Extract to a small shared function (e.g. journalgpt/lib/ArticleIndexResolver.php or similar) and have all
+  three call sites use it.
+definition_of_done:
+- One shared function implements the resolution query; ask.php, gpt_action_get_pending_starter.php, and
+  gpt_action_submit_starter.php all call it instead of each having their own copy.
+- Existing test suite (journalgpt/tests/security_and_eval_suite.php) still passes after the refactor.

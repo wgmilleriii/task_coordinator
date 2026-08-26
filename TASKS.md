@@ -92,6 +92,7 @@ graph TD
     T-PTG-088["T-PTG-088<br/>Full impeccable UI/UX pass: coverage.php"]:::review
     T-PTG-071["T-PTG-071<br/>Full impeccable UI/UX pass: admin_analytics.php"]:::review
     T-PTG-134["T-PTG-134<br/>all_quizzes.php: most quizzes show a generic 'Journal Quiz' title, hard to scan the list"]
+    T-PTG-135["T-PTG-135<br/>Extract the article_index resolution join into a shared helper"]
     T-PTG-115["T-PTG-115<br/>The Knowledge Graph (Gamified Progression)"]
     T-PTG-114 --> T-PTG-115
     T-JOURNALGPT-003["T-JOURNALGPT-003<br/>Whitepaper on Pre-Generated Specific Starter Questions"]:::done
@@ -1878,6 +1879,20 @@ The goal is to update the conversation workflow to include a friendly, context-a
 **Definition of Done:**
 - New quizzes generated via the GPT action flow have a real, distinguishing title by default, not a generic placeholder.
 - Existing generic-titled quizzes are backfilled with their citation_label (or an equivalent meaningful title) where derivable.
+
+---
+### 📋 T-PTG-135 · P3 · ANY · OPEN
+**Extract the article_index resolution join into a shared helper**
+**Owner:** None
+
+**Scope:**
+- Found by code review 2026-08-26: the same csv_number -> real articles.id resolution query (JOIN article_index ON issue_label matched against DATE_FORMAT(issue_date), volume, or pdf_filename) is now duplicated verbatim in three places -- journalgpt/api/ask.php's inline $realIdStmt, api/gpt_action_get_pending_starter.php, and api/gpt_action_submit_starter.php.
+- A future fix to this resolution logic (this exact class of bug has already needed one fix, 2026-08-26, commit 71ac0336) has to be applied in all three places by hand; missing one silently reintroduces the bug in just that spot.
+- Extract to a small shared function (e.g. journalgpt/lib/ArticleIndexResolver.php or similar) and have all three call sites use it.
+
+**Definition of Done:**
+- One shared function implements the resolution query; ask.php, gpt_action_get_pending_starter.php, and gpt_action_submit_starter.php all call it instead of each having their own copy.
+- Existing test suite (journalgpt/tests/security_and_eval_suite.php) still passes after the refactor.
 
 ---
 

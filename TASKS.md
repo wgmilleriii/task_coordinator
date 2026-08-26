@@ -52,7 +52,11 @@ graph TD
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
+    T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::active
+    T-PTG-108["T-PTG-108<br/>Conversation-wide quiz creation wizard with citation-expanded grounding"]:::done
+    T-PTG-104 --> T-PTG-108
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
+    T-PTG-112["T-PTG-112<br/>'Continue this conversation with different articles' regeneration action"]
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]:::review
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
@@ -76,6 +80,8 @@ graph TD
 
 
 ## Repo: `intypiano`
+
+#### 🏷️ Epic: General
 
 ### ⏳ T-INTY-017 · P1 · ANY · PEER_REVIEW
 **Piano Dossier Data Entry Interface (Modern EAV)**
@@ -121,6 +127,8 @@ graph TD
 
 ## Repo: `minchiate_tarot`
 
+#### 🏷️ Epic: General
+
 ### ⏳ T-MIN-008 · P2 · ANY · PEER_REVIEW
 **Pin down Bernardi's verzicola boundary from the 1790 rules directly**
 **Owner:** Antigravity
@@ -142,6 +150,8 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
+#### 🏷️ Epic: General
+
 ### 📋 T-PTG-021 · P1 · ANY · AUDITED
 **Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)**
 **Owner:** None
@@ -158,6 +168,33 @@ graph TD
 - php -l passes on journalgpt/tests/JournalChatRenderTest.php.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
+
+---
+### ✅ T-PTG-108 · P1 · ANY · DONE
+**Conversation-wide quiz creation wizard with citation-expanded grounding**
+**Owner:** Antigravity
+
+**Scope:**
+- Replace every JournalGPT chat "Create a quiz" action with a link to an authenticated quiz_create.php page keyed by conversation_id. The clicked answer remains usable as the compatibility anchor for existing quiz records and links, but quiz source selection is conversation-wide rather than limited to that single assistant answer.
+- The first state on quiz_create.php must preserve the existing JournalGPT shell, responsive reading-width layout, typography, and themes; show a Back to conversation link; ask exactly "How would you like this quiz to be generated?"; and present two large choices: "Only on material from this conversation" and "Use any material from the citations in this conversation".
+- Below the choices, list every unique citation found across the full conversation. Reuse the existing secure Reader URLs, retain useful article/page labels, deduplicate repeated citations, and open citation links in a new tab with safe target/rel attributes. A citation that cannot be resolved to a full article bundle remains listed and can contribute transcript context, but it must not be represented as loaded full-article evidence.
+- Conversation-only mode grounds quiz generation in the entire visible conversation transcript, including member questions and assistant answers, without loading full article bundles. Citation-expanded mode uses that same transcript plus the complete text of every uniquely cited article bundle that can be resolved through the existing article-index/bundle infrastructure; repeated citations must load a bundle only once. Preserve the existing requirement that every generated question maps to real citation evidence rather than weakening grounding.
+- Use a regular CSRF-protected form submission and Post/Redirect/Get flow to create the quiz queue job before any worker kick is issued. Only after the committed job exists may quiz_create.php start the worker and begin lightweight status polling, eliminating the current independent enqueue-beacon/worker-beacon ordering race. Refreshing or revisiting the progress URL must resume the same member-owned job rather than enqueueing a duplicate.
+- Keep chooser, progress, completion, and recoverable failure states on quiz_create.php. After a choice, show "Generating quiz" and "This may take up to a minute." (plus a truthful stage when available); on completion show "Your quiz is ready" with a prominent "Take your quiz now" link to the existing quiz.php experience; on failure or timeout show a plain explanation and a Try again path. If another heavy job is already running for the member, explain that it must finish before another quiz can begin.
+- Authorize every conversation and job lookup against the signed-in member, reject guessed or cross-member IDs without leaking data, retain CSRF validation on job creation, and ensure a job_id cannot be paired with a different conversation_id. Do not expose article-bundle files directly; keep citation access behind the established authenticated Reader/article delivery paths.
+- Do not add or alter database schema: test and production share the database. Carry the two-value source-scope selection as a validated internal token in an existing nullable job payload field (or an equivalently migration-free existing field), and reject all other values. Existing queued quiz jobs, legacy single-answer generation behavior/API compatibility, status polling, saved quiz lists, and quiz.php links must continue to work.
+- Deployment is test-only. Merge/push only to the test integration branch and verify the complete flow on the test site; do not deploy or push this task to main/production.
+
+**Definition of Done:**
+- From a real conversation, every Create a quiz link opens the authenticated chooser for that conversation, and a member cannot view or start a quiz wizard for another member's conversation or job by changing either ID.
+- The chooser displays the exact approved prompt and two choices, plus a deduplicated conversation-wide citation list whose secure links open in a new tab; unresolved citations remain honestly identified without being treated as loaded article bundles.
+- A focused test proves transcript-only mode includes all visible member/assistant turns while excluding full bundle text, and citation-expanded mode includes that transcript plus each resolvable unique cited article bundle exactly once.
+- A focused queue-ordering test proves the job is committed before the worker kick, and browser-level verification proves chooser -> generating -> ready -> Take your quiz now works, refresh resumes the same job without duplication, and failure/timeout/already-running states are recoverable and clear.
+- Legacy quiz jobs and existing quiz.php/list/status behavior remain compatible, including at least one regression test for the pre-wizard single-answer job path.
+- PHP syntax checks, relevant focused JournalGPT tests, frontend syntax checks, and the full journalgpt/tests/security_and_eval_suite.php regression suite pass with zero regressions.
+- The change is deployed only to the test branch/test site and the authenticated live-test walkthrough confirms citation links, both generation modes, reload recovery, ownership rejection, and a usable completed quiz; no production deployment and no database migration occur.
+
+*Audited against SHA:* `50d6e82e43958f04146d2af42cbdb84866849e52`
 
 ---
 ### ⏳ T-PTG-105 · P1 · ANY · HUMAN_REVIEW
@@ -985,5 +1022,42 @@ The goal is to update the conversation workflow to include a friendly, context-a
 - Golden hammer suite passes with zero regressions; php -l clean.
 
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
+
+---
+### 📋 T-PTG-112 · P3 · ANY · OPEN
+**"Continue this conversation with different articles" regeneration action**
+**Owner:** None
+
+**Scope:**
+- Chip requested: after an assistant answer is given, add a button/action "Continue this conversation with different articles" that regenerates a response to the same question, but grounded in different source articles than the ones just cited -- i.e. explicitly excluding the article(s)/chunk(s) already used for that answer, so a member who feels the first answer missed the mark (or wants a second perspective) can ask the system to look elsewhere in the corpus.
+- Needs design before implementation (NOT started this session): where the exclusion list lives (per-message? per-conversation running exclusion list across multiple "different articles" clicks?), how it plugs into EvidenceRetriever (v3_beta, issue-level, OpenAI vector store file_search -- excluding a specific chunk/file from an OpenAI-hosted vector store search may need query-level phrasing tricks rather than a hard exclude) versus EvidenceRetrieverV4 (v4_beta, article-level, article_index-backed -- an actual article_id exclusion list is straightforward here), and whether this becomes a new message in the SAME conversation (most natural per the request's framing) or spins off a new conversation the way T-PTG-109's v4-relaunch does.
+- Open design question worth resolving with Chip before scoping further: does this apply to both v3_beta and v4_beta, or is it v4_beta-only given the article-level-exclusion mechanism is far more natural there than in v3_beta's vector-store search.
+
+**Definition of Done:**
+- Not yet defined -- this task needs a brainstorming/design pass (bounded or architectural, TBD) before definition_of_done can be written concretely.
+
+---
+
+## Repo: `task_coordinator`
+
+#### 🏷️ Epic: Fleet Infrastructure
+
+### 🛠 T-FLEET-001 · P2 · ANY · CLAIMED
+**Add 'Epic' grouping support to Fleet Coordinator**
+**Owner:** Antigravity
+
+**Scope:**
+- Update 'schemas/task.schema.json' to include an optional 'epic' string field (e.g., 'epic': { 'type': 'string' }).
+- Modify the 'fleet render' logic (likely inside bin/fleet or its python source) so that when generating TASKS.md, tasks are grouped by their 'epic' within their repository lanes.
+- Ensure tasks without an epic fall gracefully into a 'General' or uncategorized block under their repo.
+- Update the Flask dashboard UI (if applicable, in web/ or bin/dashboard) to visually group or support filtering by epic.
+- Add 'epic' to the task creation instructions/examples in the README.md.
+
+**Definition of Done:**
+- The JSON schema allows the 'epic' field and 'fleet lint' passes on tasks that use it.
+- 'fleet render' successfully outputs a TASKS.md showing Epic sub-headers inside the repo lanes.
+- Documentation is updated.
+
+*Audited against SHA:* `5bac526e97f5d79bb91f5c41234edcd7c9ef0365`
 
 ---

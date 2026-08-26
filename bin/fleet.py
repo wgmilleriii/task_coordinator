@@ -225,13 +225,25 @@ def cmd_render(args):
         
         # Render lanes
         priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
-        tasks_list.sort(key=lambda x: (x.get('repo', ''), priority_order.get(x.get('priority', 'P3')), x.get('status', '')))
+        tasks_list.sort(key=lambda x: (
+            x.get('repo', ''),
+            x.get('epic') or 'ZZZ_General',
+            priority_order.get(x.get('priority', 'P3')),
+            x.get('status', '')
+        ))
         
         current_repo = None
+        current_epic = None
         for task in tasks_list:
             if task.get('repo') != current_repo:
                 current_repo = task.get('repo')
                 f.write(f"\n## Repo: `{current_repo}`\n\n")
+                current_epic = None
+                
+            task_epic = task.get('epic') or 'General'
+            if task_epic != current_epic:
+                current_epic = task_epic
+                f.write(f"#### 🏷️ Epic: {current_epic}\n\n")
                 
             status_emoji = "✅" if task['status'] == "DONE" else "🛑" if task['status'] == "BLOCKED" else "⏳" if task['status'] in ["HUMAN_REVIEW", "PEER_REVIEW"] else "🛠" if task['status'] in ["CLAIMED", "IN_PROGRESS"] else "📋"
             f.write(f"### {status_emoji} {task['id']} · {task['priority']} · {task['lane']} · {task['status']}\n")

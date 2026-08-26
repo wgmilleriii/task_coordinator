@@ -232,7 +232,7 @@ This document MUST contain:
 ### Creating a New Task
 Create a new file named for the task ID (e.g., `tasks/active/T-NEW-001.yaml`). Any existing task file works as a template — `tasks/archive/T-MIN-001.yaml` is the original.
 
-Required fields are `id`, `title`, `repo`, `priority`, `lane`, `status`, `created_at`, `scope`, and `definition_of_done`; `schemas/task.schema.json` is the authority. `repo` must match a sibling directory name, and `definition_of_done` is what the reviewer will check the work against, so make it concrete. Run `./bin/fleet lint` when you're done.
+Required fields are `id`, `title`, `repo`, `priority`, `lane`, `status`, `created_at`, `scope`, and `definition_of_done`; `schemas/task.schema.json` is the authority. `repo` must match a sibling directory name. You can optionally include an `epic` (string) to group related tasks together on the board. The `definition_of_done` is what the reviewer will check the work against, so make it concrete. Run `./bin/fleet lint` when you're done.
 
 ### Auditing a Task
 Before an agent can work, you must change the task's status from `OPEN` to `AUDITED` using the CLI. 

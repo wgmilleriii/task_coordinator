@@ -39,11 +39,13 @@ function renderList(containerId, badgeId, tasks, emptyMessage) {
         
         const priorityStr = task.priority || 'P3';
         const ownerStr = task.owner ? ` • ${task.owner}` : '';
+        const epicHTML = task.epic ? `<span class="task-epic" style="background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; margin-left: 6px;">🏷️ ${escapeHTML(task.epic)}</span>` : '';
         
         card.innerHTML = `
             <div class="task-header">
                 <span class="task-id">${task.id}</span>
                 <span class="priority priority-${priorityStr}">${priorityStr}</span>
+                ${epicHTML}
             </div>
             <h3 class="task-title">${escapeHTML(task.title)}</h3>
             <div class="task-meta">

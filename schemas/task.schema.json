@@ -9,6 +9,7 @@
     "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
     "lane": { "type": "string", "enum": ["ANY", "gemini", "claude", "codex", "HUMAN", "AUDITOR"] },
     "status": { "type": "string", "enum": ["DRAFT", "OPEN", "AUDITED", "CLAIMED", "IN_PROGRESS", "BLOCKED", "PEER_REVIEW", "HUMAN_REVIEW", "DONE", "DEFERRED", "CANCELLED"] },
+    "epic": { "type": ["string", "null"] },
     "owner": { "type": ["string", "null"] },
     "created_at": { "type": "string", "format": "date-time" },
     "audited_at": { "type": ["string", "null"], "format": "date-time" },

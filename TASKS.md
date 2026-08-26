@@ -52,7 +52,7 @@ graph TD
     T-INTY-019["T-INTY-019<br/>'Open in Gazelle' deep-link button on the Piano Dossier page"]
     T-INTY-018 --> T-INTY-019
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
-    T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::active
+    T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::done
     T-PTG-108["T-PTG-108<br/>Conversation-wide quiz creation wizard with citation-expanded grounding"]:::done
     T-PTG-104 --> T-PTG-108
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
@@ -1042,7 +1042,7 @@ The goal is to update the conversation workflow to include a friendly, context-a
 
 #### 🏷️ Epic: Fleet Infrastructure
 
-### 🛠 T-FLEET-001 · P2 · ANY · CLAIMED
+### ✅ T-FLEET-001 · P2 · ANY · DONE
 **Add 'Epic' grouping support to Fleet Coordinator**
 **Owner:** Antigravity
 

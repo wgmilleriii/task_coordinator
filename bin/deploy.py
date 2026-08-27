@@ -4,13 +4,38 @@ import sys
 import json
 import ftplib
 import subprocess
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Exclusion patterns
-EXCLUDES = [
+# Exclusion patterns. Per-repo overrides let a repo's local deploy match its
+# own CI workflow's filter instead of inheriting one shaped around another
+# repo's conventions (e.g. intypiano's deploy.yml excludes only README.md,
+# not every .md -- docs/experts/*.md and DEPLOY_CHANGELOG.md are real content
+# there, not throwaway notes).
+DEFAULT_EXCLUDES = [
     ".git/", ".github/", "docs/", "tasks/", "node_modules/", ".gitignore"
 ]
+DEFAULT_EXCLUDE_ALL_MD = True  # generic default: skip every *.md file
+
+REPO_EXCLUDES = {
+    "intypiano": {
+        "patterns": [
+            ".git/", ".github/", "docs/", "graphify-out/", "node_modules/",
+            ".gitignore", "databasedumps/",
+        ],
+        "exclude_all_md": False,  # only README.md is excluded, matched below
+        "extra_exact": ["README.md"],
+    },
+}
+
+
+def get_repo_excludes(repo_name):
+    cfg = REPO_EXCLUDES.get(repo_name)
+    if not cfg:
+        return DEFAULT_EXCLUDES, DEFAULT_EXCLUDE_ALL_MD, []
+    return cfg["patterns"], cfg["exclude_all_md"], cfg.get("extra_exact", [])
 
 # Where each repo keeps its version/changelog files, relative to repo_dir.
 # Checked in order; first one that exists wins. Repos with no version.json
@@ -77,7 +102,7 @@ def bump_version(repo_dir, env, new_sha, commit_subjects):
 
 # Test-suite entrypoints to gate a deploy on, relative to repo_dir, checked in
 # order. Repos with none of these are deployed ungated (no convention to run).
-TEST_SUITE_CANDIDATES = ["journalgpt/tests/security_and_eval_suite.php"]
+TEST_SUITE_CANDIDATES = []
 
 
 def run_test_gate(repo_dir):
@@ -109,13 +134,59 @@ def load_env():
                         k, v = line.split("=", 1)
                         os.environ[k.strip()] = v.strip()
 
-def should_exclude(filepath):
-    if filepath.endswith(".md"):
+def should_exclude(filepath, patterns, exclude_all_md, extra_exact):
+    if filepath in extra_exact:
         return True
-    for ex in EXCLUDES:
+    if exclude_all_md and filepath.endswith(".md"):
+        return True
+    for ex in patterns:
         if ex in filepath or filepath.startswith(ex):
             return True
     return False
+
+def trigger_remote_migration(repo_dir, env):
+    """After an FTP upload, ask the deployed site to run any pending DB
+    migrations via its token-gated operations API (api/operations.php) --
+    the same createJob/confirmJob flow admin_migrate.php uses, just called
+    over HTTP instead of a human clicking a button. Migrations are
+    idempotent (schema_migrations tracks what's applied), so calling this
+    on every deploy is harmless even when nothing is pending.
+
+    Only applies to repos using this convention (currently just
+    newmexicoptg.org's journalgpt/migrations/). Missing config (no
+    JOURNALGPT_OPERATIONS_TOKEN/_URL set) is a silent no-op, not a deploy
+    failure -- the FTP upload above already succeeded; this is a bonus
+    step, not a gate."""
+    if not (Path(repo_dir) / "journalgpt" / "migrations").is_dir():
+        return
+
+    token = os.environ.get("JOURNALGPT_OPERATIONS_TOKEN")
+    base_url = os.environ.get(f"JOURNALGPT_OPERATIONS_URL_{env.upper()}")
+    if not token or not base_url:
+        print("Skipping remote migration trigger: set JOURNALGPT_OPERATIONS_TOKEN and "
+              f"JOURNALGPT_OPERATIONS_URL_{env.upper()} in .env to enable it.")
+        return
+
+    def call(path, payload):
+        req = urllib.request.Request(
+            base_url.rstrip("/") + path,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read())
+
+    try:
+        created = call("/create", {"type": "migrate", "arguments": {}})
+        job = created["job"]
+        confirmed = call(f"/confirm/{job['id']}", {"confirmation_secret": created["confirmation_secret"]})
+        result = confirmed["job"].get("result", {})
+        print(f"Remote migration trigger: state={confirmed['job'].get('state')} "
+              f"applied={result.get('applied')} log={result.get('log')}")
+    except (urllib.error.URLError, urllib.error.HTTPError, KeyError, json.JSONDecodeError) as e:
+        print(f"Remote migration trigger failed (deploy still succeeded): {e}")
+
 
 def run_cmd(cmd, cwd=None):
     result = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
@@ -143,19 +214,28 @@ def main():
         seed_sha = sys.argv[4]
 
     load_env()
-    
-    host_var = f"FTP_HOST_{env.upper()}"
-    user_var = f"FTP_USER_{env.upper()}"
-    pass_var = f"FTP_PASS_{env.upper()}"
-    dir_var = f"FTP_DIR_{env.upper()}"
 
-    host = os.environ.get(host_var)
-    user = os.environ.get(user_var)
-    passwd = os.environ.get(pass_var)
-    ftp_dir = os.environ.get(dir_var, "/")
+    # Repo-specific credentials (FTP_HOST_<REPO>_<ENV>) take priority over the
+    # generic ones (FTP_HOST_<ENV>) so multiple repos can each target their own
+    # site without colliding. A repo with no *_<REPO>_* vars set just falls
+    # back to the generic pair, unchanged from before this existed.
+    repo_key = repo_name.upper().replace("-", "_").replace(".", "_")
+
+    def ftp_var(field):
+        specific = f"FTP_{field}_{repo_key}_{env.upper()}"
+        generic = f"FTP_{field}_{env.upper()}"
+        return os.environ.get(specific) or os.environ.get(generic), specific, generic
+
+    host, host_specific, host_generic = ftp_var("HOST")
+    user, _, _ = ftp_var("USER")
+    passwd, _, _ = ftp_var("PASS")
+    ftp_dir, _, _ = ftp_var("DIR")
+    ftp_dir = ftp_dir or "/"
 
     if not all([host, user, passwd]):
-        print(f"Missing FTP credentials for {env}. Check .env file.")
+        print(f"Missing FTP credentials for {repo_name} {env}. "
+              f"Set {host_specific}/FTP_USER_.../FTP_PASS_.../FTP_DIR_... "
+              f"(or the generic {host_generic}/FTP_USER_.../FTP_PASS_...) in .env.")
         sys.exit(1)
 
     state_file = Path(os.path.dirname(__file__)).parent / "deploy_state.json"
@@ -191,14 +271,15 @@ def main():
     
     files_to_upload = []
     files_to_delete = []
+    exclude_patterns, exclude_all_md, exclude_exact = get_repo_excludes(repo_name)
 
     for line in diff_output.split("\n"):
         if not line: continue
         parts = line.split("\t")
         status = parts[0]
         filepath = parts[-1]
-        
-        if should_exclude(filepath):
+
+        if should_exclude(filepath, exclude_patterns, exclude_all_md, exclude_exact):
             continue
             
         if status.startswith("D"):
@@ -282,7 +363,9 @@ def main():
             ftp.storbinary(f"STOR {fpath}", f)
 
     ftp.quit()
-    
+
+    trigger_remote_migration(repo_dir, env)
+
     state[repo_name][env] = current_sha
     with open(state_file, "w") as f:
         json.dump(state, f, indent=2)

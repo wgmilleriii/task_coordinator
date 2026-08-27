@@ -15,7 +15,7 @@ from pathlib import Path
 # not every .md -- docs/experts/*.md and DEPLOY_CHANGELOG.md are real content
 # there, not throwaway notes).
 DEFAULT_EXCLUDES = [
-    ".git/", ".github/", "docs/", "tasks/", "node_modules/", ".gitignore"
+    ".git/", ".github/", "docs/", "tasks/", ".fleet/", "node_modules/", ".gitignore"
 ]
 DEFAULT_EXCLUDE_ALL_MD = True  # generic default: skip every *.md file
 
@@ -23,7 +23,7 @@ REPO_EXCLUDES = {
     "intypiano": {
         "patterns": [
             ".git/", ".github/", "docs/", "graphify-out/", "node_modules/",
-            ".gitignore", "databasedumps/",
+            ".gitignore", "databasedumps/", ".fleet/",
         ],
         "exclude_all_md": False,  # only README.md is excluded, matched below
         "extra_exact": ["README.md"],

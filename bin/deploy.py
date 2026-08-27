@@ -17,6 +17,7 @@ from pathlib import Path
 DEFAULT_EXCLUDES = [
     ".git/", ".github/", "docs/", "tasks/", ".fleet/", "node_modules/", ".gitignore",
     "graphify-out/", "scratch/",
+    "protected_assets/article_images/", "journalgpt/corpus/article_html/",
 ]
 DEFAULT_EXCLUDE_ALL_MD = True  # generic default: skip every *.md file
 

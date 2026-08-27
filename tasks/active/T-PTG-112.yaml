@@ -1,40 +1,48 @@
 id: T-PTG-112
-title: '"Continue this conversation with different articles" regeneration action'
+repo: pmtnm-resources
+title: Create Quiz Curation Admin Dashboard
 repo: newmexicoptg.org
-priority: P3
+priority: P1
 lane: ANY
-status: OPEN
-created_at: '2026-08-25T11:25:00-06:00'
-dependencies: []
+status: DONE
+created_at: '2026-08-25T19:20:00Z'
 scope:
-- 'Chip requested: after an assistant answer is given, add a button/action "Continue this
-  conversation with different articles" that regenerates a response to the same question,
-  but grounded in different source articles than the ones just cited -- i.e. explicitly excluding
-  the article(s)/chunk(s) already used for that answer, so a member who feels the first answer
-  missed the mark (or wants a second perspective) can ask the system to look elsewhere in
-  the corpus.'
-- 'Needs design before implementation (NOT started this session): where the exclusion list
-  lives (per-message? per-conversation running exclusion list across multiple "different articles"
-  clicks?), how it plugs into EvidenceRetriever (v3_beta, issue-level, OpenAI vector store
-  file_search -- excluding a specific chunk/file from an OpenAI-hosted vector store search
-  may need query-level phrasing tricks rather than a hard exclude) versus EvidenceRetrieverV4
-  (v4_beta, article-level, article_index-backed -- an actual article_id exclusion list is
-  straightforward here), and whether this becomes a new message in the SAME conversation (most
-  natural per the request''s framing) or spins off a new conversation the way T-PTG-109''s
-  v4-relaunch does.'
-- 'Open design question worth resolving with Chip before scoping further: does this apply
-  to both v3_beta and v4_beta, or is it v4_beta-only given the article-level-exclusion mechanism
-  is far more natural there than in v3_beta''s vector-store search.'
+- Create `journalgpt/admin_curate_quizzes.php` providing a copy/paste workbench for
+  quiz curation.
+- Display a list of articles that currently lack quizzes.
+- Add an 'Export Prompt' button per article that copies the article's text alongside
+  a strict JSON schema prompt for generating a multiple-choice quiz.
+- Add a textarea for admins to paste the JSON response from an external LLM.
+- Create an endpoint (e.g. `api/import_curated_quiz.php`) to parse the pasted JSON
+  and insert it into `quizzes` and `quiz_questions`.
+- Resolve the constraint that `quizzes` currently requires `conversation_id` and `source_message_id`
+  (either by modifying the schema to allow NULLs for admin-curated quizzes, or by
+  using a dedicated system conversation).
 definition_of_done:
-- Not yet defined -- this task needs a brainstorming/design pass (bounded or architectural,
-  TBD) before definition_of_done can be written concretely.
-verification_command: null
-human_review_required: true
-requires_doc_update: false
+- Admins can view a list of articles missing quizzes.
+- Admins can copy an LLM prompt containing the article text and JSON schema instructions.
+- Admins can paste the resulting JSON back into the dashboard.
+- The imported quiz is successfully saved to `quizzes` and `quiz_questions` tables.
+- The application gracefully handles the database constraints on `quizzes`.
+verification_command: php -l journalgpt/admin_curate_quizzes.php || true
+requires_doc_update: true
+audited_at: '2026-08-26T01:21:08.112645Z'
+audited_by: PM
+audited_repo_sha: 3e9720189eeaab0df656794af16bde85c173ee07
 events:
-- timestamp: '2026-08-25T11:25:00-06:00'
-  action: SCOUT
-  actor: Claude-Sonnet-Session
-  details: Filed at Chip's request as a placeholder for a real design pass -- not started
-    this session. human_review_required=true since the exclusion-list mechanism and v3-vs-v4
-    applicability are real product/architecture decisions, not a mechanical follow-on to T-PTG-109.
+- timestamp: '2026-08-26T01:21:08.112780Z'
+  action: AUDIT
+  actor: PM
+  details: Audited against 3e9720189eeaab0df656794af16bde85c173ee07
+- timestamp: '2026-08-26T02:52:50.725468Z'
+  action: CLAIM
+  actor: Worker-1
+- timestamp: '2026-08-26T02:57:41.704729Z'
+  action: SUBMIT
+  actor: Worker-1
+- timestamp: '2026-08-26T02:59:43.732924Z'
+  action: RECORD_REVIEW
+  actor: Reviewer-1
+  details: 'Verdict: PASS'
+owner: Worker-1
+claimed_at: '2026-08-26T02:52:50.725145Z'

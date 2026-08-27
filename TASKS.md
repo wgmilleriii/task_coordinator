@@ -24,9 +24,11 @@ graph TD
     T-PTG-090["T-PTG-090<br/>Full impeccable UI/UX pass: featured.php"]:::review
     T-PTG-086["T-PTG-086<br/>Full impeccable UI/UX pass: all_quizzes.php"]:::review
     T-PTG-069["T-PTG-069<br/>Profile page: link 'My Research' article citations to their source PDFs (HigherLogic issue_url)"]:::review
+    T-PTG-136["T-PTG-136<br/>Create Narrative Changelog Page (Software History & Email Context)"]
     T-PTG-073["T-PTG-073<br/>Full impeccable UI/UX pass: admin_article_topics.php"]:::review
     T-PTG-065["T-PTG-065<br/>Webhook Sync for Localhost Conversations"]:::review
     T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
+    T-PTG-137["T-PTG-137<br/>Setup Local and Test Databases with Production Sync"]:::review
     T-PTG-072["T-PTG-072<br/>Full impeccable UI/UX pass: admin_article_index_matrix.php"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
     T-PTG-047 --> T-PTG-048
@@ -47,6 +49,8 @@ graph TD
     T-JOURNALGPT-006["T-JOURNALGPT-006<br/>Frontend: Render 'Dive Deeper' Recommendation Cards"]
     T-PTG-096["T-PTG-096<br/>Full impeccable UI/UX pass: quiz.php"]:::review
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
+    T-JOURNALGPT-010["T-JOURNALGPT-010<br/>Extract All Article Images from PDFs"]
+    T-JOURNALGPT-011["T-JOURNALGPT-011<br/>Generate HTML Bundles for Article Review Queue"]
     T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
     T-JOURNALGPT-007["T-JOURNALGPT-007<br/>Seed pre-2019 PDFs for JournalGPT"]
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
@@ -62,6 +66,7 @@ graph TD
     T-PTG-132["T-PTG-132<br/>Restore GitHub Actions billing so CI/deploy work again without manual FTP"]
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
     T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::done
+    T-JOURNALGPT-008["T-JOURNALGPT-008<br/>Execute Full Text Extraction Pipeline for Complete Dataset"]:::review
     T-PTG-128["T-PTG-128<br/>Drive the article-driven Custom GPT pipeline to full starter-question coverage"]
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
     T-JOURNALGPT-004["T-JOURNALGPT-004<br/>Implement guided topic recommendation flow for JournalGPT"]
@@ -80,6 +85,7 @@ graph TD
     T-PTG-128 --> T-PTG-129
     T-MIN-008["T-MIN-008<br/>Pin down Bernardi's verzicola boundary from the 1790 rules directly"]:::review
     T-PTG-021["T-PTG-021<br/>Fix stale JournalChatRenderTest assertion breaking the golden hammer suite (pre-existing, not caused by today's tasks)"]
+    T-JOURNALGPT-009["T-JOURNALGPT-009<br/>Enhance Article Tagging with CSV Core Skills"]:::review
     T-PTG-133["T-PTG-133<br/>Triage 29 stale unmerged branches (last activity 2026-08-19 to 08-22)"]
     T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
@@ -101,608 +107,6 @@ graph TD
 
 ---
 
-#### 🏷️ Epic: General
-
-### 📋 T-PTG-116 · MEDIUM · FEATURE · OPEN
-**In-Line "Knowledge Checks" in V3 Article Reader**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- A
-- r
-- t
-- i
-- c
-- l
-- e
-- s
--  
-- o
-- v
-- e
-- r
--  
-- 3
--  
-- p
-- a
-- g
-- e
-- s
--  
-- h
-- a
-- v
-- e
--  
-- a
-- t
--  
-- l
-- e
-- a
-- s
-- t
--  
-- o
-- n
-- e
--  
-- i
-- n
-- l
-- i
-- n
-- e
--  
-- k
-- n
-- o
-- w
-- l
-- e
-- d
-- g
-- e
--  
-- c
-- h
-- e
-- c
-- k
-- .
-- 
-
-- -
--  
-- A
-- n
-- s
-- w
-- e
-- r
-- s
--  
-- a
-- r
-- e
--  
-- s
-- u
-- b
-- m
-- i
-- t
-- t
-- e
-- d
--  
-- a
-- s
-- y
-- n
-- c
-- h
-- r
-- o
-- n
-- o
-- u
-- s
-- l
-- y
-- .
-- 
-
-- -
--  
-- U
-- I
--  
-- i
-- s
--  
-- g
-- l
-- a
-- s
-- s
-- m
-- o
-- r
-- p
-- h
-- i
-- c
--  
-- a
-- n
-- d
--  
-- m
-- a
-- t
-- c
-- h
-- e
-- s
--  
-- V
-- e
-- s
-- p
-- e
-- r
-- '
-- s
--  
-- d
-- e
-- s
-- i
-- g
-- n
--  
-- s
-- y
-- s
-- t
-- e
-- m
-- .
-- 
-
-
----
-### 📋 T-PTG-114 · HIGH · FEATURE · OPEN
-**Re-imagine V3 Homepage with "Technician Stumper of the Day"**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- A
--  
-- r
-- a
-- n
-- d
-- o
-- m
--  
-- c
-- u
-- r
-- a
-- t
-- e
-- d
--  
-- q
-- u
-- i
-- z
--  
-- q
-- u
-- e
-- s
-- t
-- i
-- o
-- n
--  
-- i
-- s
--  
-- f
-- e
-- t
-- c
-- h
-- e
-- d
--  
-- e
-- f
-- f
-- i
-- c
-- i
-- e
-- n
-- t
-- l
-- y
--  
-- f
-- r
-- o
-- m
--  
-- t
-- h
-- e
--  
-- d
-- a
-- t
-- a
-- b
-- a
-- s
-- e
-- .
-- 
-
-- -
--  
-- T
-- h
-- e
--  
-- U
-- I
--  
-- p
-- r
-- e
-- s
-- e
-- n
-- t
-- s
--  
-- t
-- h
-- e
--  
-- q
-- u
-- e
-- s
-- t
-- i
-- o
-- n
--  
-- a
-- n
-- d
--  
-- o
-- p
-- t
-- i
-- o
-- n
-- s
--  
-- o
-- n
--  
-- t
-- h
-- e
--  
-- h
-- o
-- m
-- e
-- p
-- a
-- g
-- e
-- .
-- 
-
-- -
--  
-- S
-- e
-- l
-- e
-- c
-- t
-- i
-- n
-- g
--  
-- a
-- n
--  
-- o
-- p
-- t
-- i
-- o
-- n
--  
-- r
-- e
-- v
-- e
-- a
-- l
-- s
--  
-- c
-- o
-- r
-- r
-- e
-- c
-- t
-- /
-- i
-- n
-- c
-- o
-- r
-- r
-- e
-- c
-- t
--  
-- a
-- n
-- d
--  
-- s
-- h
-- o
-- w
-- s
--  
-- t
-- h
-- e
--  
-- C
-- T
-- A
--  
-- l
-- i
-- n
-- k
--  
-- t
-- o
--  
-- t
-- h
-- e
--  
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- .
-- 
-
-- -
--  
-- P
-- a
-- s
-- s
-- e
-- s
--  
-- V
-- 3
--  
-- U
-- I
-- /
-- U
-- X
--  
-- s
-- t
-- a
-- n
-- d
-- a
-- r
-- d
-- s
-- .
-- 
-
-
----
-### 📋 T-PTG-115 · MEDIUM · FEATURE · OPEN
-**The Knowledge Graph (Gamified Progression)**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- U
-- s
-- e
-- r
-- s
--  
-- c
-- a
-- n
--  
-- v
-- i
-- e
-- w
--  
-- t
-- h
-- e
-- i
-- r
--  
-- s
-- k
-- i
-- l
-- l
--  
-- t
-- r
-- e
-- e
-- .
-- 
-
-- -
--  
-- C
-- o
-- m
-- p
-- l
-- e
-- t
-- i
-- n
-- g
--  
-- q
-- u
-- i
-- z
-- z
-- e
-- s
--  
-- i
-- n
-- c
-- r
-- e
-- m
-- e
-- n
-- t
-- s
--  
-- t
-- h
-- e
-- i
-- r
--  
-- l
-- e
-- v
-- e
-- l
--  
-- i
-- n
--  
-- t
-- h
-- e
--  
-- a
-- s
-- s
-- o
-- c
-- i
-- a
-- t
-- e
-- d
--  
-- s
-- k
-- i
-- l
-- l
--  
-- n
-- o
-- d
-- e
-- .
-- 
-
-- -
--  
-- T
-- h
-- e
--  
-- U
-- I
--  
-- s
-- u
-- g
-- g
-- e
-- s
-- t
-- s
--  
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- s
--  
-- t
-- o
--  
-- l
-- e
-- v
-- e
-- l
--  
-- u
-- p
-- .
-- 
-
-
----
 
 ## Repo: `intypiano`
 
@@ -775,6 +179,87 @@ graph TD
 
 ## Repo: `newmexicoptg.org`
 
+#### 🏷️ Epic: JOURNAL-COMPLETE-DATA-LOAD
+
+### 📋 T-JOURNALGPT-011 · P1 · ANY · OPEN
+**Generate HTML Bundles for Article Review Queue**
+**Owner:** None
+
+**Scope:**
+- Run journalgpt/cli/generate_article_html_bundles.php on the newly extracted complete dataset.
+- Ensure the articles are correctly converted to HTML and inserted into the article_html_reviews database table.
+- Verify that the HTML review queue UI reflects the new articles.
+
+**Definition of Done:**
+- All extracted articles have HTML bundles generated.
+- Articles successfully appear in the article_html_reviews table ready for human review.
+
+---
+### ⏳ T-JOURNALGPT-008 · P1 · ANY · PEER_REVIEW
+**Execute Full Text Extraction Pipeline for Complete Dataset**
+**Owner:** Antigravity
+
+**Scope:**
+- Run journalgpt/corpus/audit_corpus.py on all PDFs in journalgpt/pdfs/ to ensure no errors.
+- Run journalgpt/corpus/extract_corpus.py to generate the base manifest.json and extracted text files.
+- Address any flagged issues (e.g., blank pages) before proceeding.
+
+**Definition of Done:**
+- Audit script passes with acceptable warnings on the full dataset.
+- extract_corpus.py successfully produces manifest.json and text files for all PDFs.
+
+*Audited against SHA:* `HEAD`
+
+---
+### ⏳ T-JOURNALGPT-009 · P1 · ANY · PEER_REVIEW
+**Enhance Article Tagging with CSV Core Skills**
+**Owner:** Antigravity
+
+**Scope:**
+- Modify journalgpt/corpus/merge_metadata.py or related scripts to read journalgpt/pdfs/CompleteList-Sortable-Grid view.csv.
+- Extract the 'Core skills' column for each article and map it to the corresponding article in manifest.json.
+- Improve the tagging logic to ensure accurate assignment of these new skills as tags.
+
+**Definition of Done:**
+- Script successfully parses the CSV and updates manifest.json with Core skills tags for all relevant articles.
+- Unit tests or spot checks confirm the tags are correctly applied.
+
+*Audited against SHA:* `HEAD`
+
+---
+### 📋 T-JOURNALGPT-010 · P2 · ANY · OPEN
+**Extract All Article Images from PDFs**
+**Owner:** None
+
+**Scope:**
+- Execute journalgpt/cli/extract_article_images.py on the complete set of PDFs.
+- Ensure all extracted images are saved in the correct directory.
+- Verify that the image paths are correctly mapped to their respective articles in the database/manifest.
+
+**Definition of Done:**
+- Images are successfully extracted for the entire corpus.
+- Image paths correctly link to articles without errors.
+
+---
+#### 🏷️ Epic: Narrative Changelog
+
+### 📋 T-PTG-136 · P2 · ANY · OPEN
+**Create Narrative Changelog Page (Software History & Email Context)**
+**Owner:** None
+
+**Scope:**
+- The goal is to deliver a 'Narrative Changelog' web page that transcends a simple git commit log, weaving major software milestones with human-led decisions, feature requests, and email discussions.
+- The raw data (emails, old markdown exports) will be provided manually into 'changelog/gathered_documents/' by the project owner.
+- The Fleet (Scouts and Writers like Fleming) must ingest these documents alongside git history to synthesize a single 'narrative.txt' file.
+- The PHP renderer engine ('changelog/index.php') is already built and handles the markdown-to-HTML conversion on the fly to bypass deploy constraints.
+
+**Definition of Done:**
+- A cohesive, interpretive history is written and saved as 'changelog/narrative.txt'.
+- The narrative successfully contextualizes the technical commits with the human 'why' derived from the gathered emails.
+- The rendered page at '/changelog/index.php' successfully displays this content in the browser.
+- The 'changelog/gathered_documents/' folder remains fully gitignored to prevent sensitive emails from reaching production.
+
+---
 #### 🏷️ Epic: General
 
 ### 📋 T-PTG-021 · P1 · ANY · AUDITED
@@ -1701,6 +1186,23 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `278031af013b6aa2ba22d638534c78bff4319f51`
 
 ---
+### ⏳ T-PTG-137 · P2 · ANY · PEER_REVIEW
+**Setup Local and Test Databases with Production Sync**
+**Owner:** Worker-1
+
+**Scope:**
+- Establish distinct local and test database environments.
+- Create a synchronization script (e.g., bin/sync_db.sh) to refresh local and test databases from production.
+- Ensure Database.php or related config routing correctly connects to the appropriate database based on the environment (local, test, production).
+
+**Definition of Done:**
+- Local and test environments can successfully connect to their respective distinct databases.
+- A functional and executable synchronization script exists at bin/sync_db.sh.
+- Documentation for the sync script and database environments is added to the docs/ folder.
+
+*Audited against SHA:* `739c73b93b0903687dea4aef2efffeb6588a08f8`
+
+---
 ### ⏳ T-PTG-068 · P2 · ANY · PEER_REVIEW
 **Profile page: link to conversations, grouped by dominant topic**
 **Owner:** Claude-Sonnet-Session
@@ -1893,6 +1395,611 @@ The goal is to update the conversation workflow to include a friendly, context-a
 **Definition of Done:**
 - One shared function implements the resolution query; ask.php, gpt_action_get_pending_starter.php, and gpt_action_submit_starter.php all call it instead of each having their own copy.
 - Existing test suite (journalgpt/tests/security_and_eval_suite.php) still passes after the refactor.
+
+---
+
+## Repo: `pmtnm-resources`
+
+#### 🏷️ Epic: General
+
+### 📋 T-PTG-116 · MEDIUM · FEATURE · OPEN
+**In-Line "Knowledge Checks" in V3 Article Reader**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- A
+- r
+- t
+- i
+- c
+- l
+- e
+- s
+-  
+- o
+- v
+- e
+- r
+-  
+- 3
+-  
+- p
+- a
+- g
+- e
+- s
+-  
+- h
+- a
+- v
+- e
+-  
+- a
+- t
+-  
+- l
+- e
+- a
+- s
+- t
+-  
+- o
+- n
+- e
+-  
+- i
+- n
+- l
+- i
+- n
+- e
+-  
+- k
+- n
+- o
+- w
+- l
+- e
+- d
+- g
+- e
+-  
+- c
+- h
+- e
+- c
+- k
+- .
+- 
+
+- -
+-  
+- A
+- n
+- s
+- w
+- e
+- r
+- s
+-  
+- a
+- r
+- e
+-  
+- s
+- u
+- b
+- m
+- i
+- t
+- t
+- e
+- d
+-  
+- a
+- s
+- y
+- n
+- c
+- h
+- r
+- o
+- n
+- o
+- u
+- s
+- l
+- y
+- .
+- 
+
+- -
+-  
+- U
+- I
+-  
+- i
+- s
+-  
+- g
+- l
+- a
+- s
+- s
+- m
+- o
+- r
+- p
+- h
+- i
+- c
+-  
+- a
+- n
+- d
+-  
+- m
+- a
+- t
+- c
+- h
+- e
+- s
+-  
+- V
+- e
+- s
+- p
+- e
+- r
+- '
+- s
+-  
+- d
+- e
+- s
+- i
+- g
+- n
+-  
+- s
+- y
+- s
+- t
+- e
+- m
+- .
+- 
+
+
+---
+### 📋 T-PTG-114 · HIGH · FEATURE · OPEN
+**Re-imagine V3 Homepage with "Technician Stumper of the Day"**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- A
+-  
+- r
+- a
+- n
+- d
+- o
+- m
+-  
+- c
+- u
+- r
+- a
+- t
+- e
+- d
+-  
+- q
+- u
+- i
+- z
+-  
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- i
+- s
+-  
+- f
+- e
+- t
+- c
+- h
+- e
+- d
+-  
+- e
+- f
+- f
+- i
+- c
+- i
+- e
+- n
+- t
+- l
+- y
+-  
+- f
+- r
+- o
+- m
+-  
+- t
+- h
+- e
+-  
+- d
+- a
+- t
+- a
+- b
+- a
+- s
+- e
+- .
+- 
+
+- -
+-  
+- T
+- h
+- e
+-  
+- U
+- I
+-  
+- p
+- r
+- e
+- s
+- e
+- n
+- t
+- s
+-  
+- t
+- h
+- e
+-  
+- q
+- u
+- e
+- s
+- t
+- i
+- o
+- n
+-  
+- a
+- n
+- d
+-  
+- o
+- p
+- t
+- i
+- o
+- n
+- s
+-  
+- o
+- n
+-  
+- t
+- h
+- e
+-  
+- h
+- o
+- m
+- e
+- p
+- a
+- g
+- e
+- .
+- 
+
+- -
+-  
+- S
+- e
+- l
+- e
+- c
+- t
+- i
+- n
+- g
+-  
+- a
+- n
+-  
+- o
+- p
+- t
+- i
+- o
+- n
+-  
+- r
+- e
+- v
+- e
+- a
+- l
+- s
+-  
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+- /
+- i
+- n
+- c
+- o
+- r
+- r
+- e
+- c
+- t
+-  
+- a
+- n
+- d
+-  
+- s
+- h
+- o
+- w
+- s
+-  
+- t
+- h
+- e
+-  
+- C
+- T
+- A
+-  
+- l
+- i
+- n
+- k
+-  
+- t
+- o
+-  
+- t
+- h
+- e
+-  
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- .
+- 
+
+- -
+-  
+- P
+- a
+- s
+- s
+- e
+- s
+-  
+- V
+- 3
+-  
+- U
+- I
+- /
+- U
+- X
+-  
+- s
+- t
+- a
+- n
+- d
+- a
+- r
+- d
+- s
+- .
+- 
+
+
+---
+### 📋 T-PTG-115 · MEDIUM · FEATURE · OPEN
+**The Knowledge Graph (Gamified Progression)**
+**Owner:** None
+
+**Scope:**
+
+**Definition of Done:**
+- -
+-  
+- U
+- s
+- e
+- r
+- s
+-  
+- c
+- a
+- n
+-  
+- v
+- i
+- e
+- w
+-  
+- t
+- h
+- e
+- i
+- r
+-  
+- s
+- k
+- i
+- l
+- l
+-  
+- t
+- r
+- e
+- e
+- .
+- 
+
+- -
+-  
+- C
+- o
+- m
+- p
+- l
+- e
+- t
+- i
+- n
+- g
+-  
+- q
+- u
+- i
+- z
+- z
+- e
+- s
+-  
+- i
+- n
+- c
+- r
+- e
+- m
+- e
+- n
+- t
+- s
+-  
+- t
+- h
+- e
+- i
+- r
+-  
+- l
+- e
+- v
+- e
+- l
+-  
+- i
+- n
+-  
+- t
+- h
+- e
+-  
+- a
+- s
+- s
+- o
+- c
+- i
+- a
+- t
+- e
+- d
+-  
+- s
+- k
+- i
+- l
+- l
+-  
+- n
+- o
+- d
+- e
+- .
+- 
+
+- -
+-  
+- T
+- h
+- e
+-  
+- U
+- I
+-  
+- s
+- u
+- g
+- g
+- e
+- s
+- t
+- s
+-  
+- a
+- r
+- t
+- i
+- c
+- l
+- e
+- s
+-  
+- t
+- o
+-  
+- l
+- e
+- v
+- e
+- l
+-  
+- u
+- p
+- .
+- 
+
 
 ---
 

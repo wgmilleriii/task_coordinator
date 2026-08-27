@@ -1,0 +1,38 @@
+id: T-PTG-124
+title: 'Single heavy AI job UX: browse freely, persistent completion banner'
+repo: newmexicoptg.org
+priority: P1
+lane: ANY
+status: AUDITED
+created_at: '2026-08-22T16:30:00-06:00'
+dependencies:
+- T-PTG-103
+- T-PTG-104
+scope:
+- 'Product invariant approved by Chip on 2026-08-22: a member may have exactly one heavy AI-generation operation (question or quiz) in progress at a time. This is intentional UX, not an emergency concurrency workaround.'
+- 'Normal navigation and reading must remain usable while the heavy job runs. The question textarea may remain editable for drafting, but Send, Generate Quiz, and future controls explicitly marked as heavy AI actions must be disabled until the current job settles.'
+- 'The existing cross-page job tray becomes the canonical bottom status banner. While running it narrates the current stage and explicitly says the member may keep browsing. On completion it must persist as Answer Ready / Quiz Ready with a link to the conversation or quiz; failures must likewise persist until dismissed.'
+- 'Server state in pending_ask_jobs remains authoritative. Ask and quiz share one heavy-work slot. Client disabling is UX only; server admission remains the security/correctness backstop.'
+- 'Do not build a new cron/worker architecture as part of this task. Preserve the current LiteSpeed continuation model and simplify around the one-at-a-time product contract.'
+definition_of_done:
+- Starting an ask disables every heavy AI launch control but leaves ordinary site navigation and reading usable.
+- Starting a quiz produces the same global busy state.
+- The member can navigate across JournalGPT pages and continue seeing the running banner without relying on page-local job IDs.
+- A completed answer changes the banner to a persistent View conversation action; a completed quiz changes it to a persistent Open quiz action; neither completion is lost merely because the member navigated away.
+- Heavy controls re-enable when the active job settles.
+- Server admission treats ask and quiz as one member-level heavy-work slot and refuses races/bypasses cleanly.
+- Existing async regression/golden-hammer tests pass and new tests cover the one-heavy-job invariant and settled target URLs.
+verification_command: 'cd journalgpt && php tests/AsyncAskJobTest.php && php tests/GoldenHammerTest.php'
+human_review_required: true
+requires_doc_update: true
+audited_at: '2026-08-22T16:30:00-06:00'
+audited_by: 'GPT-5.6 Sol with Chip product sign-off'
+audited_repo_sha: 'd6e5f8449de0ec554ee27463c894728158dc7ff8'
+owner: 'GPT-5.6 Sol'
+claimed_at: '2026-08-22T16:30:00-06:00'
+last_transition: '2026-08-22T16:30:00-06:00'
+events:
+- timestamp: '2026-08-22T16:30:00-06:00'
+  action: PRODUCT_DECISION
+  actor: Chip
+  details: 'Approved one-heavy-job-at-a-time UX: submit one question or quiz, browse freely while it runs, receive a persistent bottom completion banner, and keep all other heavy AI launch buttons disabled until it finishes.'

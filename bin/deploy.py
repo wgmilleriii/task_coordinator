@@ -30,14 +30,32 @@ REPO_EXCLUDES = {
         "exclude_all_md": False,  # only README.md is excluded, matched below
         "extra_exact": ["README.md"],
     },
+    "newmexicoptg.org": {
+        # Keeps the generic exclude-all-.md default (this repo has ~90 planning/
+        # doc .md files under docs/, journalgpt/docs/, root, etc. that must never
+        # ship) but carves out journalgpt/corpus/articles/ -- the ONLY .md path
+        # that is real site content, not documentation. Found the hard way: a
+        # 1533-file corpus re-extraction (T-PTG-152 follow-up, 2026-08-27) FTP'd
+        # only extraction_report.json and the two .py scripts -- every single
+        # regenerated/new corpus/articles/*.md file was silently dropped by the
+        # blanket .md exclusion, so the "deployed successfully" fix never
+        # actually reached prod/test until this override was added.
+        "patterns": DEFAULT_EXCLUDES,
+        "exclude_all_md": True,
+        "extra_exact": [],
+        "md_allow_prefixes": ["journalgpt/corpus/articles/"],
+    },
 }
 
 
 def get_repo_excludes(repo_name):
     cfg = REPO_EXCLUDES.get(repo_name)
     if not cfg:
-        return DEFAULT_EXCLUDES, DEFAULT_EXCLUDE_ALL_MD, []
-    return cfg["patterns"], cfg["exclude_all_md"], cfg.get("extra_exact", [])
+        return DEFAULT_EXCLUDES, DEFAULT_EXCLUDE_ALL_MD, [], []
+    return (
+        cfg["patterns"], cfg["exclude_all_md"], cfg.get("extra_exact", []),
+        cfg.get("md_allow_prefixes", []),
+    )
 
 # Where each repo keeps its version/changelog files, relative to repo_dir.
 # Checked in order; first one that exists wins. Repos with no version.json
@@ -136,11 +154,12 @@ def load_env():
                         k, v = line.split("=", 1)
                         os.environ[k.strip()] = v.strip()
 
-def should_exclude(filepath, patterns, exclude_all_md, extra_exact):
+def should_exclude(filepath, patterns, exclude_all_md, extra_exact, md_allow_prefixes=()):
     if filepath in extra_exact:
         return True
     if exclude_all_md and filepath.endswith(".md"):
-        return True
+        if not any(filepath.startswith(p) for p in md_allow_prefixes):
+            return True
     for ex in patterns:
         if ex in filepath or filepath.startswith(ex):
             return True
@@ -273,7 +292,7 @@ def main():
     
     files_to_upload = []
     files_to_delete = []
-    exclude_patterns, exclude_all_md, exclude_exact = get_repo_excludes(repo_name)
+    exclude_patterns, exclude_all_md, exclude_exact, md_allow_prefixes = get_repo_excludes(repo_name)
 
     for line in diff_output.split("\n"):
         if not line: continue
@@ -281,7 +300,7 @@ def main():
         status = parts[0]
         filepath = parts[-1]
 
-        if should_exclude(filepath, exclude_patterns, exclude_all_md, exclude_exact):
+        if should_exclude(filepath, exclude_patterns, exclude_all_md, exclude_exact, md_allow_prefixes):
             continue
             
         if status.startswith("D"):

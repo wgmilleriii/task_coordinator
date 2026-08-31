@@ -69,7 +69,24 @@ REPO_EXCLUDES = {
         # regenerated/new corpus/articles/*.md file was silently dropped by the
         # blanket .md exclusion, so the "deployed successfully" fix never
         # actually reached prod/test until this override was added.
-        "patterns": DEFAULT_EXCLUDES,
+        # research_workspace/ is agents' committed working state (drafts,
+        # phase notes), never site content. Project dirs are all named
+        # NNN-slug, so excluding the digit-prefixed paths keeps the content
+        # out while letting the directory's deny .htaccess itself deploy --
+        # the deny rule must reach the server precisely because earlier
+        # deploys already shipped files there.
+        "patterns": DEFAULT_EXCLUDES + [
+            "journalgpt/research_workspace/0",
+            "journalgpt/research_workspace/1",
+            "journalgpt/research_workspace/2",
+            "journalgpt/research_workspace/3",
+            "journalgpt/research_workspace/4",
+            "journalgpt/research_workspace/5",
+            "journalgpt/research_workspace/6",
+            "journalgpt/research_workspace/7",
+            "journalgpt/research_workspace/8",
+            "journalgpt/research_workspace/9",
+        ],
         "exclude_all_md": True,
         "extra_exact": [],
         "md_allow_prefixes": ["journalgpt/corpus/articles/"],

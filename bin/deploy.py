@@ -177,7 +177,14 @@ def bump_version(repo_dir, env, new_sha, commit_subjects):
 
 # Test-suite entrypoints to gate a deploy on, relative to repo_dir, checked in
 # order. Repos with none of these are deployed ungated (no convention to run).
-TEST_SUITE_CANDIDATES = []
+#
+# run_suite.php (Westerby, 2026-08-31) is the CI replacement: GitHub Actions
+# has not executed a job since Aug 23 (account billing), so this local gate is
+# the ONLY gate that actually runs. Exit 0 = clean or unchanged known
+# failures; exit 1 = NEW failure; exit 2 = the run itself is untrustworthy
+# (DB unreachable / silent SQLite fallback / baseline missing). Both nonzero
+# codes block the deploy -- they mean different things, but neither is a pass.
+TEST_SUITE_CANDIDATES = ["journalgpt/tests/run_suite.php"]
 
 
 def run_test_gate(repo_dir):

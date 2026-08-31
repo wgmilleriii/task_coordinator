@@ -347,6 +347,25 @@ def main():
     current_sha = run_cmd("git rev-parse HEAD", cwd=repo_dir)
     
     if last_sha == current_sha:
+        # "Up to date" is a claim about the DATABASE as well as the files. If
+        # the last deploy's migration trigger failed, its exit 2 was loud --
+        # but a re-run "to check it's fine" used to land here and print a
+        # cheerful banner while the migration was still unapplied (Prideaux,
+        # 2026-08-31). So retry the migration before being reassuring.
+        if state[repo_name].get(f"{env}_migrations_pending"):
+            print("Files are up to date, but the LAST deploy's migration trigger "
+                  "failed and is still pending. Retrying it now...")
+            verdict = trigger_remote_migration(repo_dir, env)
+            if verdict in ("succeeded", "not_applicable"):
+                state[repo_name].pop(f"{env}_migrations_pending", None)
+                with open(state_file, "w") as f:
+                    json.dump(state, f, indent=2)
+                print("Everything is up to date (pending migration now applied)!")
+                sys.exit(0)
+            print("Migration trigger still failing. Run admin_migrate.php in a "
+                  f"browser on {env} and confirm; this flag clears on the next "
+                  "successful trigger.")
+            sys.exit(2)
         print("Everything is up to date!")
         sys.exit(0)
 
@@ -584,10 +603,15 @@ def main():
     # decides the BANNER and the exit code instead -- the two things a human
     # or a calling script actually reads.
     state[repo_name][env] = current_sha
+    if migration_verdict in ("succeeded", "not_applicable"):
+        state[repo_name].pop(f"{env}_migrations_pending", None)
     with open(state_file, "w") as f:
         json.dump(state, f, indent=2)
 
     if migration_verdict == "failed":
+        state[repo_name][f"{env}_migrations_pending"] = True
+        with open(state_file, "w") as f:
+            json.dump(state, f, indent=2)
         print("")
         print(f"DEPLOY INCOMPLETE on {env}: files uploaded and verified, but the "
               f"migration trigger FAILED. Any pending migration in "

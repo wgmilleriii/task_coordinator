@@ -629,6 +629,45 @@ def main():
     print(f"Verified {len(uploaded)} uploaded file(s): sizes match, "
           f"{len(checked_deps)} dependencies present on server.")
 
+    # MIGRATIONS COMPLETENESS GUARD (2026-09-03, Tarr's proposal after TEST
+    # drifted 21 migration files behind across four agents). The diff-based
+    # upload only carries files in THIS deploy's commit range; a deploy that
+    # failed mid-way (or advanced deploy_state past a commit without
+    # uploading) silently strands migration files forever, and the remote
+    # runner's Pending list cannot see a file that is not on disk. So after
+    # every upload, list the server's migrations directory and diff it
+    # against git's. Extra remote files are reported, not fatal (drafts and
+    # collisions have their own rules); MISSING files fail the deploy loudly.
+    try:
+        migdir_local = os.path.join(repo_dir, "journalgpt", "migrations")
+        if os.path.isdir(migdir_local):
+            local_migs = {f for f in os.listdir(migdir_local) if f.endswith(".sql")}
+            remote_migs = set()
+            for entry in ftp.nlst("journalgpt/migrations"):
+                base = entry.rsplit("/", 1)[-1]
+                if base.endswith(".sql"):
+                    remote_migs.add(base)
+            missing_remote = sorted(local_migs - remote_migs)
+            extra_remote = sorted(remote_migs - local_migs)
+            if extra_remote:
+                print(f"NOTE: {len(extra_remote)} migration file(s) on server but not in git: "
+                      + ", ".join(extra_remote))
+            if missing_remote:
+                print("")
+                print(f"MIGRATIONS GUARD FAILED on {env}: {len(missing_remote)} migration "
+                      "file(s) exist in git but NOT on the server (stranded by an earlier "
+                      "partial deploy):")
+                for m in missing_remote:
+                    print(f"  - {m}")
+                print("Upload them (they are outside this deploy's diff) and re-run. "
+                      "deploy_state.json was NOT updated.")
+                sys.exit(1)
+            print(f"Migrations guard: {len(local_migs)} local == {len(remote_migs & local_migs)} present on server.")
+    except ftplib.all_errors as e:
+        print(f"MIGRATIONS GUARD could not list the server directory ({e}) -- treating as FAILURE, "
+              "not success: a guard that cannot read its input must not pass.")
+        sys.exit(1)
+
     migration_verdict = trigger_remote_migration(repo_dir, env)
 
     # State is written regardless of the migration verdict: the FILES are on

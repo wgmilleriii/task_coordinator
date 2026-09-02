@@ -639,11 +639,18 @@ def main():
     # against git's. Extra remote files are reported, not fatal (drafts and
     # collisions have their own rules); MISSING files fail the deploy loudly.
     try:
+        # The upload/verify phase may have closed the original control
+        # connection; the guards use their OWN connection so a stale socket
+        # cannot crash them (AttributeError on a closed sock escaped the
+        # ftplib.all_errors net on 2026-09-03 and killed four deploys).
+        gftp = ftplib.FTP(host)
+        gftp.login(user, passwd)
+        gftp.cwd(ftp_dir)
         migdir_local = os.path.join(repo_dir, "journalgpt", "migrations")
         if os.path.isdir(migdir_local):
             local_migs = {f for f in os.listdir(migdir_local) if f.endswith(".sql")}
             remote_migs = set()
-            for entry in ftp.nlst("journalgpt/migrations"):
+            for entry in gftp.nlst("journalgpt/migrations"):
                 base = entry.rsplit("/", 1)[-1]
                 if base.endswith(".sql"):
                     remote_migs.add(base)
@@ -682,7 +689,7 @@ def main():
                            if f.endswith(".php") and os.path.isfile(os.path.join(local_dir, f))}
             remote_sizes = {}
             try:
-                for line in ftp.mlsd(sub):
+                for line in gftp.mlsd(sub):
                     name, facts = line
                     if name.endswith(".php") and facts.get("type") == "file":
                         remote_sizes[name] = int(facts.get("size", -1))
@@ -691,7 +698,7 @@ def main():
                 try:
                     for name in local_sizes:
                         try:
-                            remote_sizes[name] = ftp.size(f"{sub}/{name}")
+                            remote_sizes[name] = gftp.size(f"{sub}/{name}")
                         except ftplib.all_errors:
                             remote_sizes[name] = None
                 except ftplib.all_errors as e:
@@ -712,10 +719,15 @@ def main():
                   "deploy). Upload them and re-run. deploy_state.json was NOT updated.")
             sys.exit(1)
         print("Code-file guard: journalgpt/ and lib/ php files match server sizes.")
-    except ftplib.all_errors as e:
+    except (ftplib.all_errors, AttributeError) as e:
         print(f"MIGRATIONS GUARD could not list the server directory ({e}) -- treating as FAILURE, "
               "not success: a guard that cannot read its input must not pass.")
         sys.exit(1)
+    else:
+        try:
+            gftp.quit()
+        except Exception:
+            pass
 
     migration_verdict = trigger_remote_migration(repo_dir, env)
 

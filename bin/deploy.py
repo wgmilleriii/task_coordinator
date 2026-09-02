@@ -655,6 +655,21 @@ def main():
                 if base.endswith(".sql"):
                     remote_migs.add(base)
             missing_remote = sorted(local_migs - remote_migs)
+            if missing_remote:
+                # A shared-host NLST occasionally returns a short listing; a
+                # "missing" file that reappears on an immediate re-list was
+                # never stranded. Twice (2026-09-02) the guard failed a deploy
+                # whose retry then passed with no intervening upload.
+                relisted = set()
+                for entry in gftp.nlst("journalgpt/migrations"):
+                    base = entry.rsplit("/", 1)[-1]
+                    if base.endswith(".sql"):
+                        relisted.add(base)
+                if relisted - remote_migs:
+                    print(f"NOTE: first listing was short by {len(relisted - remote_migs)} "
+                          "file(s); trusting the re-list.")
+                remote_migs |= relisted
+                missing_remote = sorted(local_migs - remote_migs)
             extra_remote = sorted(remote_migs - local_migs)
             if extra_remote:
                 print(f"NOTE: {len(extra_remote)} migration file(s) on server but not in git: "
@@ -663,9 +678,7 @@ def main():
                 print("")
                 print(f"MIGRATIONS GUARD FAILED on {env}: {len(missing_remote)} migration "
                       "file(s) exist in git but NOT on the server (stranded by an earlier "
-                      "partial deploy):")
-                for m in missing_remote:
-                    print(f"  - {m}")
+                      "partial deploy): " + ", ".join(missing_remote))
                 print("Upload them (they are outside this deploy's diff) and re-run. "
                       "deploy_state.json was NOT updated.")
                 sys.exit(1)

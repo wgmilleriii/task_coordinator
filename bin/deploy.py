@@ -663,6 +663,55 @@ def main():
                       "deploy_state.json was NOT updated.")
                 sys.exit(1)
             print(f"Migrations guard: {len(local_migs)} local == {len(remote_migs & local_migs)} present on server.")
+
+        # CODE-FILE STALENESS GUARD (2026-09-03, after source.php sat stale on
+        # prod for days while its read-backs "passed" through a different code
+        # path). Compare file SIZES for the top-level journalgpt/*.php and
+        # journalgpt/lib/*.php against the server listing. A size mismatch means
+        # a stranded or stale file; a file size-equal-but-content-different can
+        # still slip this (stated limit -- hashes would need a server helper),
+        # but every stranding found so far changed the size. Missing files fail;
+        # size mismatches fail; extra remote files are reported only.
+        code_problems = []
+        for sub in ("journalgpt", "journalgpt/lib"):
+            local_dir = os.path.join(repo_dir, sub)
+            if not os.path.isdir(local_dir):
+                continue
+            local_sizes = {f: os.path.getsize(os.path.join(local_dir, f))
+                           for f in os.listdir(local_dir)
+                           if f.endswith(".php") and os.path.isfile(os.path.join(local_dir, f))}
+            remote_sizes = {}
+            try:
+                for line in ftp.mlsd(sub):
+                    name, facts = line
+                    if name.endswith(".php") and facts.get("type") == "file":
+                        remote_sizes[name] = int(facts.get("size", -1))
+            except ftplib.all_errors:
+                # MLSD unsupported -- fall back to SIZE per file (slower but rare)
+                try:
+                    for name in local_sizes:
+                        try:
+                            remote_sizes[name] = ftp.size(f"{sub}/{name}")
+                        except ftplib.all_errors:
+                            remote_sizes[name] = None
+                except ftplib.all_errors as e:
+                    print(f"CODE GUARD could not read {sub} ({e}) -- treating as FAILURE.")
+                    sys.exit(1)
+            for name, lsize in sorted(local_sizes.items()):
+                rsize = remote_sizes.get(name)
+                if rsize is None:
+                    code_problems.append(f"{sub}/{name}: MISSING on server")
+                elif rsize != lsize:
+                    code_problems.append(f"{sub}/{name}: size {rsize} on server vs {lsize} in git (STALE)")
+        if code_problems:
+            print("")
+            print(f"CODE-FILE GUARD FAILED on {env}: {len(code_problems)} file(s) stale or missing:")
+            for p in code_problems:
+                print(f"  - {p}")
+            print("These are outside this deploy's diff (stranded by an earlier partial "
+                  "deploy). Upload them and re-run. deploy_state.json was NOT updated.")
+            sys.exit(1)
+        print("Code-file guard: journalgpt/ and lib/ php files match server sizes.")
     except ftplib.all_errors as e:
         print(f"MIGRATIONS GUARD could not list the server directory ({e}) -- treating as FAILURE, "
               "not success: a guard that cannot read its input must not pass.")

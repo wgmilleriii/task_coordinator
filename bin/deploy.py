@@ -719,7 +719,7 @@ def main():
                   "deploy). Upload them and re-run. deploy_state.json was NOT updated.")
             sys.exit(1)
         print("Code-file guard: journalgpt/ and lib/ php files match server sizes.")
-    except (ftplib.all_errors, AttributeError) as e:
+    except ftplib.all_errors + (AttributeError,) as e:
         print(f"MIGRATIONS GUARD could not list the server directory ({e}) -- treating as FAILURE, "
               "not success: a guard that cannot read its input must not pass.")
         sys.exit(1)

@@ -89,7 +89,16 @@ REPO_EXCLUDES = {
         ],
         "exclude_all_md": True,
         "extra_exact": [],
-        "md_allow_prefixes": ["journalgpt/corpus/articles/"],
+        "md_allow_prefixes": [
+            "journalgpt/corpus/articles/",
+            # T-PTG-302 translations are site content exactly like the
+            # articles they translate. Added 2026-09-01 after the SAME silent
+            # drop the comment above warns about: 20 translation .md files
+            # "deployed successfully" while zero reached prod (caught by FTP
+            # read-back, not by the deploy's own verify -- it verifies only
+            # what it chose to upload).
+            "journalgpt/corpus/translations/",
+        ],
     },
 }
 

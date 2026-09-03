@@ -98,6 +98,16 @@ REPO_EXCLUDES = {
             # read-back, not by the deploy's own verify -- it verifies only
             # what it chose to upload).
             "journalgpt/corpus/translations/",
+            # journalgpt/specs/ is MEMBER-FACING: doc.php's allow-list serves
+            # these paths to logged-in members, so a spec that does not deploy
+            # is a page that 404s for a reader. Added 2026-09-03 after the
+            # THIRD instance of the silent drop the two comments above warn
+            # about: a member-facing explainer of the answer engine was written
+            # to docs/, linked from help.php, and deployed "successfully" while
+            # the file itself was excluded twice over -- shipping a live link
+            # to a 404. If doc.php can serve it, deploy.py must be able to ship
+            # it; those two lists have to agree.
+            "journalgpt/specs/",
         ],
     },
 }

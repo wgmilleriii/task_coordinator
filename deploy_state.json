@@ -1,13 +1,13 @@
 {
   "newmexicoptg.org": {
-    "test": "da9f1ec02efa8aaae3ab9de494a875dcd3a85f3b",
-    "prod": "cc3be3838b9d29b5335f1a21a5d1487f03355365"
+    "test": "f2017a0ad3dd30f332173c78e03097adad3d6c98",
+    "prod": "45f665c350bf7f5b2591cc06d6d89d3d7c29bd84"
   },
   "intypiano": {
     "prod": "a91ed604074ac3760750bd2da393bf2c17acc383"
   },
   "resources_was_pmtnm": {
-    "test": "9f8bb54ff5581d0615e4adbf95efe975b554334f",
-    "prod": "9f8bb54ff5581d0615e4adbf95efe975b554334f"
+    "test": "087a4430f3be587f627caf3fd6cfdd821c74336c",
+    "prod": "087a4430f3be587f627caf3fd6cfdd821c74336c"
   }
 }

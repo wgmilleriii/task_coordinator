@@ -28,7 +28,6 @@ graph TD
     T-PTG-073["T-PTG-073<br/>Full impeccable UI/UX pass: admin_article_topics.php"]:::review
     T-PTG-065["T-PTG-065<br/>Webhook Sync for Localhost Conversations"]:::review
     T-PTG-064["T-PTG-064<br/>Feature: Pool Ball Triangle Layout"]:::review
-    T-PTG-137["T-PTG-137<br/>Setup Local and Test Databases with Production Sync"]:::review
     T-PTG-072["T-PTG-072<br/>Full impeccable UI/UX pass: admin_article_index_matrix.php"]:::review
     T-PTG-048["T-PTG-048<br/>Article/editorial completeness QC pass beyond page-coverage checking, ground-truthed against PTJ-2020-02's own table of contents"]:::review
     T-PTG-047 --> T-PTG-048
@@ -36,7 +35,6 @@ graph TD
     T-PTG-068["T-PTG-068<br/>Profile page: link to conversations, grouped by dominant topic"]:::review
     T-PTG-066 --> T-PTG-068
     T-PTG-091["T-PTG-091<br/>Full impeccable UI/UX pass: guest.php"]:::review
-    T-JOURNALGPT-001["T-JOURNALGPT-001<br/>Data Generation for Specific Pre-Generated Questions"]:::done
     T-PTG-005["T-PTG-005<br/>Voicing-technique continuity + citation-format test matrix (all preset x tier combos)"]:::review
     T-PTG-101["T-PTG-101<br/>Explore-by-category: filtered article browsing action"]:::review
     T-PTG-059["T-PTG-059<br/>Feature: Greet the user in JournalGPT"]:::review
@@ -49,8 +47,8 @@ graph TD
     T-JOURNALGPT-006["T-JOURNALGPT-006<br/>Frontend: Render 'Dive Deeper' Recommendation Cards"]
     T-PTG-096["T-PTG-096<br/>Full impeccable UI/UX pass: quiz.php"]:::review
     T-INTY-017["T-INTY-017<br/>Piano Dossier Data Entry Interface (Modern EAV)"]:::review
-    T-JOURNALGPT-010["T-JOURNALGPT-010<br/>Extract All Article Images from PDFs"]
-    T-JOURNALGPT-011["T-JOURNALGPT-011<br/>Generate HTML Bundles for Article Review Queue"]
+    T-JOURNALGPT-010["T-JOURNALGPT-010<br/>Extract All Article Images from PDFs"]:::review
+    T-JOURNALGPT-011["T-JOURNALGPT-011<br/>Generate HTML Bundles for Article Review Queue"]:::review
     T-PTG-097["T-PTG-097<br/>Full impeccable UI/UX pass: reader.php"]:::review
     T-JOURNALGPT-007["T-JOURNALGPT-007<br/>Seed pre-2019 PDFs for JournalGPT"]
     T-PTG-054["T-PTG-054<br/>Coverage Atlas Phase 2a: tours/threads schema + curator admin page"]:::review
@@ -65,17 +63,15 @@ graph TD
     T-INTY-018 --> T-INTY-019
     T-PTG-132["T-PTG-132<br/>Restore GitHub Actions billing so CI/deploy work again without manual FTP"]
     T-PTG-098["T-PTG-098<br/>Full impeccable UI/UX pass: register.php"]:::review
-    T-FLEET-001["T-FLEET-001<br/>Add 'Epic' grouping support to Fleet Coordinator"]:::done
     T-JOURNALGPT-008["T-JOURNALGPT-008<br/>Execute Full Text Extraction Pipeline for Complete Dataset"]:::review
+    T-JOURNALGPT-012["T-JOURNALGPT-012<br/>Implement v5 Evidence Retriever for Article-Level Metadata"]:::review
     T-PTG-128["T-PTG-128<br/>Drive the article-driven Custom GPT pipeline to full starter-question coverage"]
     T-PTG-094["T-PTG-094<br/>Full impeccable UI/UX pass: login.php"]:::review
     T-JOURNALGPT-004["T-JOURNALGPT-004<br/>Implement guided topic recommendation flow for JournalGPT"]
-    T-PTG-112["T-PTG-112<br/>Create Quiz Curation Admin Dashboard"]:::done
     T-PTG-057["T-PTG-057<br/>Coverage Atlas Phase 2: Create v4 conversation workflow leveraging new article-based index"]:::review
     T-PTG-051 --> T-PTG-057
     T-PTG-052 --> T-PTG-057
     T-PTG-105["T-PTG-105<br/>HTML article pages Phase 1: pipeline + rendering template (pilot batch)"]:::review
-    T-PTG-113["T-PTG-113<br/>Automate Quiz Curation with ChatGPT Custom Action"]:::done
     T-PTG-056["T-PTG-056<br/>Coverage Atlas Phase 2c: member-facing tour pages with closing quiz + radar integration"]:::blocked
     T-PTG-054 --> T-PTG-056
     T-PTG-052 --> T-PTG-056
@@ -89,8 +85,7 @@ graph TD
     T-PTG-133["T-PTG-133<br/>Triage 29 stale unmerged branches (last activity 2026-08-19 to 08-22)"]
     T-PTG-099["T-PTG-099<br/>Full impeccable UI/UX pass: source.php"]:::review
     T-PTG-092["T-PTG-092<br/>Full impeccable UI/UX pass: help.php"]:::review
-    T-JOURNALGPT-002["T-JOURNALGPT-002<br/>Frontend/Backend Integration for Specific Questions"]:::done
-    T-JOURNALGPT-001 --> T-JOURNALGPT-002
+    T-PTG-138["T-PTG-138<br/>Create secure database dump download script"]:::review
     T-PTG-114["T-PTG-114<br/>Re-imagine V3 Homepage with 'Technician Stumper of the Day'"]
     T-PTG-113 --> T-PTG-114
     T-PTG-067["T-PTG-067<br/>Live Engine B refresh on a cooldown, so the conversation color bar evolves as the chat continues"]:::review
@@ -101,7 +96,6 @@ graph TD
     T-PTG-135["T-PTG-135<br/>Extract the article_index resolution join into a shared helper"]
     T-PTG-115["T-PTG-115<br/>The Knowledge Graph (Gamified Progression)"]
     T-PTG-114 --> T-PTG-115
-    T-JOURNALGPT-003["T-JOURNALGPT-003<br/>Whitepaper on Pre-Generated Specific Starter Questions"]:::done
     T-PTG-093["T-PTG-093<br/>Full impeccable UI/UX pass: labs.php"]:::review
 ```
 
@@ -181,9 +175,9 @@ graph TD
 
 #### 🏷️ Epic: JOURNAL-COMPLETE-DATA-LOAD
 
-### 📋 T-JOURNALGPT-011 · P1 · ANY · OPEN
+### ⏳ T-JOURNALGPT-011 · P1 · ANY · PEER_REVIEW
 **Generate HTML Bundles for Article Review Queue**
-**Owner:** None
+**Owner:** Antigravity
 
 **Scope:**
 - Run journalgpt/cli/generate_article_html_bundles.php on the newly extracted complete dataset.
@@ -193,6 +187,8 @@ graph TD
 **Definition of Done:**
 - All extracted articles have HTML bundles generated.
 - Articles successfully appear in the article_html_reviews table ready for human review.
+
+*Audited against SHA:* `HEAD`
 
 ---
 ### ⏳ T-JOURNALGPT-008 · P1 · ANY · PEER_REVIEW
@@ -207,6 +203,22 @@ graph TD
 **Definition of Done:**
 - Audit script passes with acceptable warnings on the full dataset.
 - extract_corpus.py successfully produces manifest.json and text files for all PDFs.
+
+*Audited against SHA:* `HEAD`
+
+---
+### ⏳ T-JOURNALGPT-012 · P1 · ANY · PEER_REVIEW
+**Implement v5 Evidence Retriever for Article-Level Metadata**
+**Owner:** Antigravity
+
+**Scope:**
+- Create EvidenceRetrieverV5.php based on EvidenceRetrieverV4.
+- Update prompt/logic to understand article-level chunking and the new 'core_skills' metadata.
+- Wire up v5 into the API/testing frameworks (e.g. multi_version_conversations.php).
+
+**Definition of Done:**
+- EvidenceRetrieverV5.php exists and correctly retrieves newly processed articles.
+- v5 is accessible via A/B testing harnesses.
 
 *Audited against SHA:* `HEAD`
 
@@ -227,9 +239,9 @@ graph TD
 *Audited against SHA:* `HEAD`
 
 ---
-### 📋 T-JOURNALGPT-010 · P2 · ANY · OPEN
+### ⏳ T-JOURNALGPT-010 · P2 · ANY · PEER_REVIEW
 **Extract All Article Images from PDFs**
-**Owner:** None
+**Owner:** Antigravity
 
 **Scope:**
 - Execute journalgpt/cli/extract_article_images.py on the complete set of PDFs.
@@ -239,6 +251,65 @@ graph TD
 **Definition of Done:**
 - Images are successfully extracted for the entire corpus.
 - Image paths correctly link to articles without errors.
+
+*Audited against SHA:* `HEAD`
+
+---
+#### 🏷️ Epic: JournalGPT Topic Recommendations
+
+### 📋 T-JOURNALGPT-004 · P2 · ANY · AUDITED
+**Implement guided topic recommendation flow for JournalGPT**
+**Owner:** None
+
+**Scope:**
+- Update JournalGPT's system prompt or dialogue handling to support a structured topic recommendation response.
+- When a user asks about a broad topic (e.g., 'tuning stability'), the AI should respond with a specific pedagogical structure.
+- 1. Acknowledge the topic and state the total number of related articles vs. the subset that specifically focus on the core concept.
+- 2. List the main principles (e.g., top 3 points) of the topic.
+- 3. Recommend a curated 'dive deeper' list of 3 specific articles or series, providing author context, format, and key takeaways.
+- 4. Close with an invitation for feedback ('Let me know if this is what you are looking for...').
+- Ensure the AI logic can query and synthesize actual Journal index metadata to populate these responses.
+
+**Definition of Done:**
+- JournalGPT's behavior is updated to format responses with the requested pedagogical structure (acknowledge, quantify, list principles, recommend top 3, conversational closing).
+- The AI correctly synthesizes article counts and principles based on the Journal index.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
+### 📋 T-JOURNALGPT-005 · P2 · ANY · AUDITED
+**Backend: Metadata & Relevance Aggregation for JournalGPT**
+**Owner:** None
+
+**Scope:**
+- Update the retrieval backend to support the new Dynamic Topic Recommendation Flow.
+- When the LLM is queried for a broad topic, the backend must fetch and aggregate metadata before generation.
+- 1. Calculate the total number of articles that loosely match the broad topic.
+- 2. Identify the subset of 'core' articles that specifically focus on the core concept.
+- 3. Expose this aggregated metadata (counts, top 3 specific article recommendations, authors, and series info) as a structured payload to the LLM context.
+
+**Definition of Done:**
+- Backend successfully executes a two-pass or aggregated query to determine 'total' vs 'core' article counts.
+- The structured payload is injected into the LLM's context window without breaking existing RAG functionality.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+
+---
+### 📋 T-JOURNALGPT-006 · P3 · ANY · AUDITED
+**Frontend: Render 'Dive Deeper' Recommendation Cards**
+**Owner:** None
+
+**Scope:**
+- Update the JournalGPT Chat UI to handle structured pedagogical responses.
+- If the AI returns a 'dive deeper' recommendation list, the UI should parse it and render it engagingly.
+- Instead of a flat markdown wall of text, the 3 recommended articles/series should be rendered as distinct UI cards or styled blocks.
+- Each card should clearly display the Author, Format (e.g., '3-part series'), and Key Takeaways.
+
+**Definition of Done:**
+- The Chat interface successfully parses recommendation lists from the LLM.
+- Recommendations are rendered as styled, clickable cards that link directly to the source articles.
+
+*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
 
 ---
 #### 🏷️ Epic: Narrative Changelog
@@ -278,81 +349,6 @@ graph TD
 - php -l passes on journalgpt/tests/JournalChatRenderTest.php.
 
 *Audited against SHA:* `ebf93f751dbe07c86f8e3c296bbe7c9e3c88465c`
-
----
-### ✅ T-JOURNALGPT-001 · P1 · ANY · DONE
-**Data Generation for Specific Pre-Generated Questions**
-**Owner:** Worker-1
-
-**Scope:**
-- Identify one high-quality article for each of the 45 subcategories defined in assets/journal-chat.js PROMPT_CATEGORIES.
-- Read each article and formulate 2-3 specific, long, human-sounding questions tied directly to the article content.
-- For each question, draft a pre-generated intelligent answer, a pointer to the source article, and a pre-generated quiz.
-- Store this data in a structured format (e.g., JSON file or database table) for the frontend to consume.
-
-**Definition of Done:**
-- A dataset is created covering all 45 subcategories.
-- Each subcategory has 2-3 specific questions tied to an article.
-- Each question has an associated intelligent answer, article pointer, and quiz.
-
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
-
----
-### ✅ T-PTG-112 · P1 · ANY · DONE
-**Create Quiz Curation Admin Dashboard**
-**Owner:** Worker-1
-
-**Scope:**
-- Create `journalgpt/admin_curate_quizzes.php` providing a copy/paste workbench for quiz curation.
-- Display a list of articles that currently lack quizzes.
-- Add an 'Export Prompt' button per article that copies the article's text alongside a strict JSON schema prompt for generating a multiple-choice quiz.
-- Add a textarea for admins to paste the JSON response from an external LLM.
-- Create an endpoint (e.g. `api/import_curated_quiz.php`) to parse the pasted JSON and insert it into `quizzes` and `quiz_questions`.
-- Resolve the constraint that `quizzes` currently requires `conversation_id` and `source_message_id` (either by modifying the schema to allow NULLs for admin-curated quizzes, or by using a dedicated system conversation).
-
-**Definition of Done:**
-- Admins can view a list of articles missing quizzes.
-- Admins can copy an LLM prompt containing the article text and JSON schema instructions.
-- Admins can paste the resulting JSON back into the dashboard.
-- The imported quiz is successfully saved to `quizzes` and `quiz_questions` tables.
-- The application gracefully handles the database constraints on `quizzes`.
-
-*Audited against SHA:* `3e9720189eeaab0df656794af16bde85c173ee07`
-
----
-### ✅ T-PTG-113 · P1 · ANY · DONE
-**Automate Quiz Curation with ChatGPT Custom Action**
-**Owner:** Worker-1
-
-**Scope:**
-- Create api/gpt_action_get_pending.php as a GET endpoint returning the text of an article needing a quiz, plus the JSON schema instructions. If the article is part of a series (e.g., 'Part 1', 'Part II' in the title), group all articles in that series into a single payload so the AI can generate one cohesive quiz for the whole series (fulfilling FR Conv 135). Also, explicitly instruct the LLM to format answers with bullet points, summaries, and a CTA encouraging reading (fulfilling FR Conv 130).
-- Create api/gpt_action_submit.php as a POST endpoint accepting the completed JSON quiz from ChatGPT and inserting it into the database.
-- Create api/openapi.yaml (an OpenAPI/Swagger spec file) so the user can plug these endpoints into their Custom GPT's configuration.
-- Implement a simple Bearer token check (e.g. GPT_ACTION_SECRET) so the endpoints aren't completely open to the public.
-
-**Definition of Done:**
-- api/gpt_action_get_pending.php returns an article needing a quiz with instructions.
-- api/gpt_action_submit.php accepts POSTed JSON and inserts the quiz correctly.
-- api/openapi.yaml correctly describes both endpoints.
-- Both endpoints enforce a Bearer token check using GPT_ACTION_SECRET.
-
-*Audited against SHA:* `966da79d84ad511ba5de428d2ff9ab6ff030e579`
-
----
-### ✅ T-JOURNALGPT-002 · P1 · ANY · DONE
-**Frontend/Backend Integration for Specific Questions**
-**Owner:** Worker-2
-
-**Scope:**
-- Modify assets/journal-chat.js and relevant backend PHP to load the new specific pre-generated questions instead of the vague PROMPT_CATEGORIES.
-- Implement logic to instantly return the pre-generated intelligent answer, article pointer, and quiz option when one of these specific questions is submitted exactly as-is.
-
-**Definition of Done:**
-- The UI (colored boxes) displays the new specific, long questions.
-- Submitting a pre-generated question instantly returns the pre-generated answer and article pointer without LLM latency.
-- The quiz option is successfully presented for these pre-generated answers.
-
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
 
 ---
 ### ⏳ T-PTG-105 · P1 · ANY · HUMAN_REVIEW
@@ -453,6 +449,26 @@ graph TD
 **Definition of Done:**
 - api/pregen_citation_audit.php reports 0 unresolved and 0 fabricated entries remaining in pre_generated_questions.json.
 - No colored-box category is left with zero real, grounded starter questions after cleanup (verify against the coverage table T-PTG-128 produces).
+
+---
+### 📋 T-PTG-114 · P1 · ANY · OPEN
+**Re-imagine V3 Homepage with "Technician Stumper of the Day"**
+**Owner:** None
+
+**Scope:**
+- As part of our strategic UI/UX pivot (Moneypenny/Goldfinger vision), we want to make the dashboard heavily quiz-first to drive engagement with the archives.
+- We will add a "Technician Stumper of the Day" to the top of the V3 homepage (`journalgpt/dashboard.php` or similar).
+- Requirements:
+- 1. Fetch a random curated quiz question from the `quiz_questions` table.
+- 2. Display the question prominently on the dashboard with multiple-choice buttons.
+- 3. When the user clicks an answer, immediately show if they were right/wrong, and reveal a bold CTA: "Read the full article to understand why: [Link to article]".
+- 4. Use glassmorphic design and tailwind classes matching the V3 design system (Vesper).
+
+**Definition of Done:**
+- A random curated quiz question is fetched efficiently from the database.
+- The UI presents the question and options on the homepage.
+- Selecting an option reveals correct/incorrect and shows the CTA link to the article.
+- Passes V3 UI/UX standards.
 
 ---
 ### ⏳ T-PTG-053 · P1 · ANY · PEER_REVIEW
@@ -590,42 +606,21 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `148499984456a86f1d1be55b74387639df92ddce`
 
 ---
-### 📋 T-JOURNALGPT-004 · P2 · ANY · AUDITED
-**Implement guided topic recommendation flow for JournalGPT**
-**Owner:** None
+### ⏳ T-PTG-138 · P1 · ANY · PEER_REVIEW
+**Create secure database dump download script**
+**Owner:** Worker-1
 
 **Scope:**
-- Update JournalGPT's system prompt or dialogue handling to support a structured topic recommendation response.
-- When a user asks about a broad topic (e.g., 'tuning stability'), the AI should respond with a specific pedagogical structure.
-- 1. Acknowledge the topic and state the total number of related articles vs. the subset that specifically focus on the core concept.
-- 2. List the main principles (e.g., top 3 points) of the topic.
-- 3. Recommend a curated 'dive deeper' list of 3 specific articles or series, providing author context, format, and key takeaways.
-- 4. Close with an invitation for feedback ('Let me know if this is what you are looking for...').
-- Ensure the AI logic can query and synthesize actual Journal index metadata to populate these responses.
+- Write a secure PHP script (e.g. `journalgpt/api/db_dump_secure.php`) to dump and download the production database over HTTP.
+- Must use an authentication token mechanism (similar to `gpt_action_get_pending.php`) to allow an admin to download a `.sql` dump.
+- Goal: allow user to grab the production DB without needing SSH access.
 
 **Definition of Done:**
-- JournalGPT's behavior is updated to format responses with the requested pedagogical structure (acknowledge, quantify, list principles, recommend top 3, conversational closing).
-- The AI correctly synthesizes article counts and principles based on the Journal index.
+- Script is present in the codebase at `journalgpt/api/db_dump_secure.php`.
+- Script securely validates an authentication token.
+- Script outputs a `.sql` dump of the database when provided a valid token.
 
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
-
----
-### 📋 T-JOURNALGPT-005 · P2 · ANY · AUDITED
-**Backend: Metadata & Relevance Aggregation for JournalGPT**
-**Owner:** None
-
-**Scope:**
-- Update the retrieval backend to support the new Dynamic Topic Recommendation Flow.
-- When the LLM is queried for a broad topic, the backend must fetch and aggregate metadata before generation.
-- 1. Calculate the total number of articles that loosely match the broad topic.
-- 2. Identify the subset of 'core' articles that specifically focus on the core concept.
-- 3. Expose this aggregated metadata (counts, top 3 specific article recommendations, authors, and series info) as a structured payload to the LLM context.
-
-**Definition of Done:**
-- Backend successfully executes a two-pass or aggregated query to determine 'total' vs 'core' article counts.
-- The structured payload is injected into the LLM's context window without breaking existing RAG functionality.
-
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
+*Audited against SHA:* `e181f1237711ee907c726a76df8e55e106f7d20f`
 
 ---
 ### 🛑 T-PTG-056 · P2 · ANY · BLOCKED
@@ -645,22 +640,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Completing a tour (engage all stops + pass quiz) measurably moves the member''s radar axis in T-PTG-053''s scoring test harness.
 - Progress derivation proven by test against member_article_activity fixtures.
 - Golden hammer suite passes with zero regressions; php -l clean.
-
----
-### ✅ T-JOURNALGPT-003 · P2 · ANY · DONE
-**Whitepaper on Pre-Generated Specific Starter Questions**
-**Owner:** Worker-3
-
-**Scope:**
-- Draft a whitepaper in the journalgpt/whitepapers/ directory.
-- Detail the architecture and motivation of using highly-specific, article-tied, pre-generated question-answer-quiz bundles as conversation starters.
-- Explain how this guarantees high-quality initial engagement and circumvents LLM latency for the first interaction.
-
-**Definition of Done:**
-- Whitepaper HTML or Markdown document is created in the whitepapers/ directory.
-- The document clearly articulates the goal of quality over quantity using specific article-tied questions.
-
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
 
 ---
 ### ⏳ T-PTG-100 · P2 · ANY · HUMAN_REVIEW
@@ -1107,6 +1086,23 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 *Audited against SHA:* `d81948ea11c7a28bec3d02793249d30e364c172f`
 
 ---
+### 📋 T-PTG-116 · P2 · ANY · OPEN
+**In-Line "Knowledge Checks" in V3 Article Reader**
+**Owner:** None
+
+**Scope:**
+- Seamlessly inject a beautiful, glassmorphic "Knowledge Check" card right between paragraphs inside long articles.
+- Requirements:
+- 1. Modify the `ArticleHtmlBundleBuilder` to look for injection points (e.g. end of page 2, or middle of article).
+- 2. Render an inline multiple choice question specifically tied to the current article.
+- 3. Clicking an answer provides immediate feedback without navigating away from the article.
+
+**Definition of Done:**
+- Articles over 3 pages have at least one inline knowledge check.
+- Answers are submitted asynchronously.
+- UI is glassmorphic and matches Vesper's design system.
+
+---
 ### 📋 T-PTG-130 · P2 · ANY · OPEN
 **Regenerate the colored-box UI button text from real, mined starter questions**
 **Owner:** None
@@ -1136,6 +1132,25 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - v3_beta citation display and existing PDF-link behavior are unchanged (regression test proves this).
 - A focused test proves the v4_beta citation path resolves to the real article_index title when available, and degrades gracefully (falls back to issue-level title, not a broken/blank citation) when it isn't.
 - Golden hammer suite passes with zero regressions; verified on test.newmexicoptg.org with a real v4_beta relaunch (via T-PTG-109's "Launch with v4" button) showing the improved citation title live.
+
+---
+### 📋 T-PTG-115 · P2 · ANY · OPEN
+**The Knowledge Graph (Gamified Progression)**
+**Owner:** None
+
+**Scope:**
+- Replace standard user profiles with a visual "Skill Tree" or Knowledge Graph.
+- As users read articles and pass the associated quizzes, the nodes on their tree light up and level up.
+- Requirements:
+- 1. Map quiz topics/tags to specific skills (e.g. Tuning, Action Regulation, Voicing).
+- 2. Create a visual skill tree component using Tailwind/D3/Canvas on the profile page.
+- 3. Create an algorithm that determines level based on successful quizzes.
+- 4. Display recommendations to level up weak skills.
+
+**Definition of Done:**
+- Users can view their skill tree.
+- Completing quizzes increments their level in the associated skill node.
+- The UI suggests articles to level up.
 
 ---
 ### ⏳ T-PTG-069 · P2 · ANY · PEER_REVIEW
@@ -1184,23 +1199,6 @@ This table specifically stresses SHORT columns/editorials (Editorial Perspective
 - Pass review
 
 *Audited against SHA:* `278031af013b6aa2ba22d638534c78bff4319f51`
-
----
-### ⏳ T-PTG-137 · P2 · ANY · PEER_REVIEW
-**Setup Local and Test Databases with Production Sync**
-**Owner:** Worker-1
-
-**Scope:**
-- Establish distinct local and test database environments.
-- Create a synchronization script (e.g., bin/sync_db.sh) to refresh local and test databases from production.
-- Ensure Database.php or related config routing correctly connects to the appropriate database based on the environment (local, test, production).
-
-**Definition of Done:**
-- Local and test environments can successfully connect to their respective distinct databases.
-- A functional and executable synchronization script exists at bin/sync_db.sh.
-- Documentation for the sync script and database environments is added to the docs/ folder.
-
-*Audited against SHA:* `739c73b93b0903687dea4aef2efffeb6588a08f8`
 
 ---
 ### ⏳ T-PTG-068 · P2 · ANY · PEER_REVIEW
@@ -1325,23 +1323,6 @@ The goal is to update the conversation workflow to include a friendly, context-a
 *Audited against SHA:* `9cce8a8c2d1b09c2b6ee30b991ea3ffad59bc6a5`
 
 ---
-### 📋 T-JOURNALGPT-006 · P3 · ANY · AUDITED
-**Frontend: Render 'Dive Deeper' Recommendation Cards**
-**Owner:** None
-
-**Scope:**
-- Update the JournalGPT Chat UI to handle structured pedagogical responses.
-- If the AI returns a 'dive deeper' recommendation list, the UI should parse it and render it engagingly.
-- Instead of a flat markdown wall of text, the 3 recommended articles/series should be rendered as distinct UI cards or styled blocks.
-- Each card should clearly display the Author, Format (e.g., '3-part series'), and Key Takeaways.
-
-**Definition of Done:**
-- The Chat interface successfully parses recommendation lists from the LLM.
-- Recommendations are rendered as styled, clickable cards that link directly to the source articles.
-
-*Audited against SHA:* `028a0c7a9fd2433e5d167a6a09f23ca94d50a1db`
-
----
 ### 📋 T-PTG-131 · P3 · ANY · OPEN
 **Delete the 4 test-artifact quizzes corrupted by the ask.php article_id fallback bug**
 **Owner:** None
@@ -1395,634 +1376,5 @@ The goal is to update the conversation workflow to include a friendly, context-a
 **Definition of Done:**
 - One shared function implements the resolution query; ask.php, gpt_action_get_pending_starter.php, and gpt_action_submit_starter.php all call it instead of each having their own copy.
 - Existing test suite (journalgpt/tests/security_and_eval_suite.php) still passes after the refactor.
-
----
-
-## Repo: `pmtnm-resources`
-
-#### 🏷️ Epic: General
-
-### 📋 T-PTG-116 · MEDIUM · FEATURE · OPEN
-**In-Line "Knowledge Checks" in V3 Article Reader**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- A
-- r
-- t
-- i
-- c
-- l
-- e
-- s
--  
-- o
-- v
-- e
-- r
--  
-- 3
--  
-- p
-- a
-- g
-- e
-- s
--  
-- h
-- a
-- v
-- e
--  
-- a
-- t
--  
-- l
-- e
-- a
-- s
-- t
--  
-- o
-- n
-- e
--  
-- i
-- n
-- l
-- i
-- n
-- e
--  
-- k
-- n
-- o
-- w
-- l
-- e
-- d
-- g
-- e
--  
-- c
-- h
-- e
-- c
-- k
-- .
-- 
-
-- -
--  
-- A
-- n
-- s
-- w
-- e
-- r
-- s
--  
-- a
-- r
-- e
--  
-- s
-- u
-- b
-- m
-- i
-- t
-- t
-- e
-- d
--  
-- a
-- s
-- y
-- n
-- c
-- h
-- r
-- o
-- n
-- o
-- u
-- s
-- l
-- y
-- .
-- 
-
-- -
--  
-- U
-- I
--  
-- i
-- s
--  
-- g
-- l
-- a
-- s
-- s
-- m
-- o
-- r
-- p
-- h
-- i
-- c
--  
-- a
-- n
-- d
--  
-- m
-- a
-- t
-- c
-- h
-- e
-- s
--  
-- V
-- e
-- s
-- p
-- e
-- r
-- '
-- s
--  
-- d
-- e
-- s
-- i
-- g
-- n
--  
-- s
-- y
-- s
-- t
-- e
-- m
-- .
-- 
-
-
----
-### 📋 T-PTG-114 · HIGH · FEATURE · OPEN
-**Re-imagine V3 Homepage with "Technician Stumper of the Day"**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- A
--  
-- r
-- a
-- n
-- d
-- o
-- m
--  
-- c
-- u
-- r
-- a
-- t
-- e
-- d
--  
-- q
-- u
-- i
-- z
--  
-- q
-- u
-- e
-- s
-- t
-- i
-- o
-- n
--  
-- i
-- s
--  
-- f
-- e
-- t
-- c
-- h
-- e
-- d
--  
-- e
-- f
-- f
-- i
-- c
-- i
-- e
-- n
-- t
-- l
-- y
--  
-- f
-- r
-- o
-- m
--  
-- t
-- h
-- e
--  
-- d
-- a
-- t
-- a
-- b
-- a
-- s
-- e
-- .
-- 
-
-- -
--  
-- T
-- h
-- e
--  
-- U
-- I
--  
-- p
-- r
-- e
-- s
-- e
-- n
-- t
-- s
--  
-- t
-- h
-- e
--  
-- q
-- u
-- e
-- s
-- t
-- i
-- o
-- n
--  
-- a
-- n
-- d
--  
-- o
-- p
-- t
-- i
-- o
-- n
-- s
--  
-- o
-- n
--  
-- t
-- h
-- e
--  
-- h
-- o
-- m
-- e
-- p
-- a
-- g
-- e
-- .
-- 
-
-- -
--  
-- S
-- e
-- l
-- e
-- c
-- t
-- i
-- n
-- g
--  
-- a
-- n
--  
-- o
-- p
-- t
-- i
-- o
-- n
--  
-- r
-- e
-- v
-- e
-- a
-- l
-- s
--  
-- c
-- o
-- r
-- r
-- e
-- c
-- t
-- /
-- i
-- n
-- c
-- o
-- r
-- r
-- e
-- c
-- t
--  
-- a
-- n
-- d
--  
-- s
-- h
-- o
-- w
-- s
--  
-- t
-- h
-- e
--  
-- C
-- T
-- A
--  
-- l
-- i
-- n
-- k
--  
-- t
-- o
--  
-- t
-- h
-- e
--  
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- .
-- 
-
-- -
--  
-- P
-- a
-- s
-- s
-- e
-- s
--  
-- V
-- 3
--  
-- U
-- I
-- /
-- U
-- X
--  
-- s
-- t
-- a
-- n
-- d
-- a
-- r
-- d
-- s
-- .
-- 
-
-
----
-### 📋 T-PTG-115 · MEDIUM · FEATURE · OPEN
-**The Knowledge Graph (Gamified Progression)**
-**Owner:** None
-
-**Scope:**
-
-**Definition of Done:**
-- -
--  
-- U
-- s
-- e
-- r
-- s
--  
-- c
-- a
-- n
--  
-- v
-- i
-- e
-- w
--  
-- t
-- h
-- e
-- i
-- r
--  
-- s
-- k
-- i
-- l
-- l
--  
-- t
-- r
-- e
-- e
-- .
-- 
-
-- -
--  
-- C
-- o
-- m
-- p
-- l
-- e
-- t
-- i
-- n
-- g
--  
-- q
-- u
-- i
-- z
-- z
-- e
-- s
--  
-- i
-- n
-- c
-- r
-- e
-- m
-- e
-- n
-- t
-- s
--  
-- t
-- h
-- e
-- i
-- r
--  
-- l
-- e
-- v
-- e
-- l
--  
-- i
-- n
--  
-- t
-- h
-- e
--  
-- a
-- s
-- s
-- o
-- c
-- i
-- a
-- t
-- e
-- d
--  
-- s
-- k
-- i
-- l
-- l
--  
-- n
-- o
-- d
-- e
-- .
-- 
-
-- -
--  
-- T
-- h
-- e
--  
-- U
-- I
--  
-- s
-- u
-- g
-- g
-- e
-- s
-- t
-- s
--  
-- a
-- r
-- t
-- i
-- c
-- l
-- e
-- s
--  
-- t
-- o
--  
-- l
-- e
-- v
-- e
-- l
--  
-- u
-- p
-- .
-- 
-
-
----
-
-## Repo: `task_coordinator`
-
-#### 🏷️ Epic: Fleet Infrastructure
-
-### ✅ T-FLEET-001 · P2 · ANY · DONE
-**Add 'Epic' grouping support to Fleet Coordinator**
-**Owner:** Antigravity
-
-**Scope:**
-- Update 'schemas/task.schema.json' to include an optional 'epic' string field (e.g., 'epic': { 'type': 'string' }).
-- Modify the 'fleet render' logic (likely inside bin/fleet or its python source) so that when generating TASKS.md, tasks are grouped by their 'epic' within their repository lanes.
-- Ensure tasks without an epic fall gracefully into a 'General' or uncategorized block under their repo.
-- Update the Flask dashboard UI (if applicable, in web/ or bin/dashboard) to visually group or support filtering by epic.
-- Add 'epic' to the task creation instructions/examples in the README.md.
-
-**Definition of Done:**
-- The JSON schema allows the 'epic' field and 'fleet lint' passes on tasks that use it.
-- 'fleet render' successfully outputs a TASKS.md showing Epic sub-headers inside the repo lanes.
-- Documentation is updated.
-
-*Audited against SHA:* `5bac526e97f5d79bb91f5c41234edcd7c9ef0365`
 
 ---

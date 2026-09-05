@@ -86,11 +86,16 @@ REPO_EXCLUDES = {
             "journalgpt/research_workspace/7",
             "journalgpt/research_workspace/8",
             "journalgpt/research_workspace/9",
+            # Agent working state for the article-cleanup pipeline (diffs,
+            # ledgers, verdicts). 613 such files were pending on 2026-09-05.
+            "journalgpt/corpus/qc_staging/",
         ],
         "exclude_all_md": True,
         "extra_exact": [],
         "md_allow_prefixes": [
-            "journalgpt/corpus/articles/",
+            # journalgpt/corpus/articles/ was allowed here 2026-08-27..2026-09-05.
+            # Chip, 2026-09-05: corpus .md is excluded from deploys; article
+            # conversion is handled manually from now on.
             # T-PTG-302 translations are site content exactly like the
             # articles they translate. Added 2026-09-01 after the SAME silent
             # drop the comment above warns about: 20 translation .md files

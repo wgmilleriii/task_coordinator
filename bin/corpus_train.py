@@ -67,6 +67,8 @@ from pathlib import Path
 
 CORPUS_PREFIX = "journalgpt/corpus/articles/"
 STATE_FILE_NAME = "corpus_deploy_state.json"
+STATE_FILE_NAME_TEST = "corpus_deploy_state_test.json"
+ENV = "prod"  # set from --env; "test" uses FTP_*_TEST and its own ledger, no review gate
 REPO_KEY = "NEWMEXICOPTG_ORG"  # this tool only ever targets newmexicoptg.org's corpus
 
 
@@ -119,7 +121,8 @@ def run_cmd(cmd, cwd=None):
 
 
 def state_file_path():
-    return Path(os.path.dirname(__file__)).parent / STATE_FILE_NAME
+    name = STATE_FILE_NAME_TEST if ENV == "test" else STATE_FILE_NAME
+    return Path(os.path.dirname(__file__)).parent / name
 
 
 def load_state():
@@ -364,9 +367,10 @@ def connect_ftp(host, user, passwd, ftp_dir):
 
 
 def ftp_credentials():
+    suffix = ENV.upper()
     def var(field):
-        specific = f"FTP_{field}_{REPO_KEY}_PROD"
-        generic = f"FTP_{field}_PROD"
+        specific = f"FTP_{field}_{REPO_KEY}_{suffix}"
+        generic = f"FTP_{field}_{suffix}"
         return os.environ.get(specific) or os.environ.get(generic)
     return var("HOST"), var("USER"), var("PASS"), (var("DIR") or "/")
 
@@ -388,11 +392,19 @@ def main():
     parser.add_argument("--execute", action="store_true",
                          help="Actually upload/delete. Default is dry-run: "
                               "print the manifest and exit 0, no FTP writes.")
+    parser.add_argument("--env", choices=["prod", "test"], default="prod",
+                        help="Target server. 'test' (test.newmexicoptg.org) uses the "
+                             "FTP_*_TEST credentials and corpus_deploy_state_test.json "
+                             "and needs no --reviewed-by: it exists so humans can judge "
+                             "re-cut files on the test review page before a prod train. "
+                             "'prod' (default) keeps the three-reviewer gate.")
     parser.add_argument("--seed-sha",
                          help="Record this sha as corpus_deploy_state.json's "
                               "base with no upload, so the next bare-ref run "
                               "has something to diff against.")
     args = parser.parse_args()
+    global ENV
+    ENV = args.env
 
     repo_dir = os.path.abspath(args.repo_dir)
 
@@ -420,7 +432,7 @@ def main():
     load_env()
     host, user, passwd, ftp_dir = ftp_credentials()
     if not all([host, user, passwd]):
-        print(f"Missing FTP_*_{REPO_KEY}_PROD (or generic FTP_*_PROD) credentials in .env.")
+        print(f"Missing FTP_*_{REPO_KEY}_{ENV.upper()} (or generic FTP_*_{ENV.upper()}) credentials in .env.")
         sys.exit(1)
 
     ftp = connect_ftp(host, user, passwd, ftp_dir)
@@ -434,21 +446,25 @@ def main():
             return
 
         if not args.execute:
-            print(f"\nDRY RUN -- {len(actionable)} file(s) would change on prod "
-                  f"at target sha {target_sha}. Re-run with --reviewed-by <file> "
-                  f"--execute to apply.")
+            print(f"\nDRY RUN -- {len(actionable)} file(s) would change on {ENV} "
+                  f"at target sha {target_sha}. Re-run with "
+                  f"{'--execute' if ENV == 'test' else '--reviewed-by <file> --execute'} to apply.")
             return
 
-        if not args.reviewed_by:
+        if ENV == "test":
+            reviews = []
+            print("Target is TEST: no review gate (test corpus is for human judging, not members).")
+        elif not args.reviewed_by:
             print(f"--execute requires --reviewed-by <file> naming three APPROVE "
                   f"reviews on sha {target_sha}.")
             sys.exit(1)
-        reviews = load_reviews(args.reviewed_by)
-        ok, reason = validate_reviews(reviews, target_sha)
-        if not ok:
-            print(f"Review gate FAILED: {reason}")
-            sys.exit(1)
-        print(f"Review gate passed: {reason}")
+        else:
+            reviews = load_reviews(args.reviewed_by)
+            ok, reason = validate_reviews(reviews, target_sha)
+            if not ok:
+                print(f"Review gate FAILED: {reason}")
+                sys.exit(1)
+            print(f"Review gate passed: {reason}")
 
         uploaded, deleted, problems = execute(ftp, repo_dir, manifest)
         write_ledger(target_sha, manifest, reviews)
@@ -458,7 +474,7 @@ def main():
             for p in problems:
                 print(f"  {p}")
             sys.exit(1)
-        print(f"corpus_deploy_state.json updated: sha={target_sha}")
+        print(f"{state_file_path().name} updated: sha={target_sha}")
     finally:
         try:
             ftp.quit()

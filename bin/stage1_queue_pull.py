@@ -219,7 +219,13 @@ def main():
         log("nothing new")
     for env, site in SITES.items():
         try:
-            apply_batches(env, site, token, bodies.get(env))
+            # Part C consumes the OPEN mode (every batch with approved-but-unapplied
+            # proposals, regardless of id), not the append-only history stream.
+            try:
+                open_body = api(f"{site}/journalgpt/api/stage1_edit_proposals_export.php?open=1", token)
+            except urllib.error.HTTPError as e:
+                open_body = None if e.code == 404 else (_ for _ in ()).throw(e)
+            apply_batches(env, site, token, open_body)
         except Exception as e:
             log(f"{env}: apply step failed: {type(e).__name__}: {str(e)[:160]}")
     return 0

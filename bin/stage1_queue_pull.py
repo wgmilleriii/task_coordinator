@@ -104,9 +104,17 @@ def pull_verdicts(env, site, token, st):
             return recs, {"verdict_since_id": max(r["id"] for r in rows)}
     body = api(f"{site}/journalgpt/api/stage1_review_verdicts_export.php?since_id=0", token)
     rows = body.get("verdicts", [])
-    if rows and "id" in rows[0]:  # server supports since_id: adopt it, dedupe nothing (fresh stream)
+    if rows and "id" in rows[0]:
+        # Server supports since_id: adopt the cursor, but skip rows already captured
+        # under the legacy hash dedupe (same csv/verdict/note/reviewer/created_at).
         seen = set(st.get("verdict_hashes", []))
-        recs = [{"env": env, **r} for r in rows]
+        legacy_keys = {"csv_number", "verdict", "note", "reviewer_name", "reviewed_by_account", "file_sha1", "created_at"}
+        recs = []
+        for r in rows:
+            legacy = {"env": env, **{k: v for k, v in r.items() if k in legacy_keys}}
+            if rec_hash(legacy) in seen:
+                continue
+            recs.append({"env": env, **r})
         return recs, {"verdict_since_id": max(r["id"] for r in rows)}
     seen = set(st.get("verdict_hashes", []))
     fresh = []

@@ -282,6 +282,22 @@ def validate_reviews(reviews, expected_sha):
     return True, f"{len(reviewers)} distinct APPROVE reviewers on {expected_sha}: {sorted(reviewers)}"
 
 
+def ensure_remote_dirs(ftp, path):
+    """MKD every missing parent of a relative remote path (a new issue folder
+    such as PTJ-2026-09 on its first train). MKD on an existing directory
+    raises error_perm, which is the normal case and is ignored; the STOR that
+    follows is what reports a real failure. Never cwd()s, so the connection
+    stays rooted at ftp_dir. Also used by tests with a fake ftp exposing mkd()."""
+    parts = path.split("/")[:-1]
+    curr = ""
+    for d in parts:
+        curr = f"{curr}{d}" if not curr else f"{curr}/{d}"
+        try:
+            ftp.mkd(curr)
+        except Exception:
+            pass
+
+
 def execute(ftp, repo_dir, manifest):
     """STOR uploads, DELE deletions, size read-back for every touched file.
     Returns (uploaded, deleted, problems)."""
@@ -300,6 +316,7 @@ def execute(ftp, repo_dir, manifest):
             if not local_path.exists():
                 problems.append(f"{path}: missing locally, cannot upload")
                 continue
+            ensure_remote_dirs(ftp, path)
             with open(local_path, "rb") as f:
                 ftp.storbinary(f"STOR {path}", f)
             uploaded.append(path)

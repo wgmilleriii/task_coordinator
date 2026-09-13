@@ -33,6 +33,14 @@ class FakeFTP:
         self.stored = {}
         self.deleted = []
         self.voidcmds = []
+        self.mkds = []
+
+    def mkd(self, path):
+        # A real server raises error_perm when the directory exists; the
+        # fake records every attempt and raises on the second one for a path.
+        if path in self.mkds:
+            raise Exception("550 exists")
+        self.mkds.append(path)
 
     def voidcmd(self, cmd):
         self.voidcmds.append(cmd)
@@ -425,3 +433,14 @@ class TargetRefTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EnsureRemoteDirsTest(unittest.TestCase):
+    def test_mkd_every_parent_and_tolerates_existing(self):
+        ftp = FakeFTP()
+        ct.ensure_remote_dirs(ftp, "journalgpt/corpus/articles/PTJ-2026-09/a.md")
+        self.assertEqual(ftp.mkds, ["journalgpt", "journalgpt/corpus", "journalgpt/corpus/articles",
+                                    "journalgpt/corpus/articles/PTJ-2026-09"])
+        # second file in the same new folder: every MKD now raises, none escape
+        ct.ensure_remote_dirs(ftp, "journalgpt/corpus/articles/PTJ-2026-09/b.md")
+        self.assertEqual(len(ftp.mkds), 4)

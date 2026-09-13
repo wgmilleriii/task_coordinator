@@ -152,6 +152,58 @@ class BuildManifestTests(unittest.TestCase):
             ct.build_manifest(self.repo.dir, "HEAD",
                                [("M", "journalgpt/cli/some_script.py")], ftp, "/")
 
+    def test_traversal_path_raises(self):
+        ftp = FakeFTP()
+        with self.assertRaises(AssertionError):
+            ct.build_manifest(
+                self.repo.dir, "HEAD",
+                [("M", "journalgpt/corpus/articles/../../../etc/passwd.md")],
+                ftp, "/",
+            )
+
+
+class IsInScopeTests(unittest.TestCase):
+    """The hardening item from feat-corpus-train's safety review: a bare
+    startswith(CORPUS_PREFIX) is foolable by a '..' segment or an absolute
+    path; is_in_scope() must normalize first."""
+
+    def test_ordinary_corpus_md_path_is_in_scope(self):
+        self.assertTrue(ct.is_in_scope("journalgpt/corpus/articles/PTJ-1968-02/a.md"))
+
+    def test_harmless_internal_dotdot_still_in_scope(self):
+        # Normalizes back to a real in-scope path -- not every '..' is an
+        # escape attempt, only ones that survive normalization out of scope.
+        self.assertTrue(ct.is_in_scope(
+            "journalgpt/corpus/articles/PTJ-1968-02/../PTJ-1968-02/a.md"))
+
+    def test_traversal_above_corpus_root_rejected(self):
+        self.assertFalse(ct.is_in_scope(
+            "journalgpt/corpus/articles/../../../etc/passwd"))
+
+    def test_absolute_path_rejected(self):
+        self.assertFalse(ct.is_in_scope("/etc/passwd"))
+
+    def test_absolute_path_inside_the_prefix_string_still_rejected(self):
+        # An absolute path that happens to CONTAIN the prefix substring must
+        # not pass on a raw string match; is_in_scope requires a relative,
+        # normalized path that starts with the prefix.
+        self.assertFalse(ct.is_in_scope("/journalgpt/corpus/articles/a.md"))
+
+    def test_prefix_lookalike_directory_rejected(self):
+        # "articlesXX" starts with the same characters as "articles" but is
+        # a different, sibling directory -- must not pass a boundary-blind
+        # substring check.
+        self.assertFalse(ct.is_in_scope("journalgpt/corpus/articlesXX/a.md"))
+
+    def test_non_md_file_rejected(self):
+        self.assertFalse(ct.is_in_scope("journalgpt/corpus/articles/PTJ-1968-02/a.txt"))
+
+    def test_unrelated_path_rejected(self):
+        self.assertFalse(ct.is_in_scope("journalgpt/cli/some_script.py"))
+
+    def test_dotdot_alone_rejected(self):
+        self.assertFalse(ct.is_in_scope("journalgpt/corpus/articles/.."))
+
 
 class ChangedCorpusFilesTests(unittest.TestCase):
     def setUp(self):
@@ -306,6 +358,13 @@ class ExecuteTests(unittest.TestCase):
 
     def test_scope_violation_raises(self):
         manifest = [{"path": "journalgpt/cli/some_script.py", "action": "upload"}]
+        ftp = FakeFTP()
+        with self.assertRaises(AssertionError):
+            ct.execute(ftp, self.repo.dir, manifest)
+
+    def test_traversal_path_raises(self):
+        manifest = [{"path": "journalgpt/corpus/articles/../../../etc/passwd.md",
+                     "action": "upload"}]
         ftp = FakeFTP()
         with self.assertRaises(AssertionError):
             ct.execute(ftp, self.repo.dir, manifest)

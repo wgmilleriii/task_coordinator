@@ -70,6 +70,34 @@ STATE_FILE_NAME = "corpus_deploy_state.json"
 REPO_KEY = "NEWMEXICOPTG_ORG"  # this tool only ever targets newmexicoptg.org's corpus
 
 
+def is_in_scope(path):
+    """True only for a genuine journalgpt/corpus/articles/*.md path.
+
+    A plain `path.startswith(CORPUS_PREFIX)` string check (what every call
+    site used before this) is foolable by a traversal segment BEFORE the
+    prefix reasserts itself, e.g. "journalgpt/corpus/articles/../../../etc/passwd"
+    or an absolute path that happens to contain the prefix substring
+    somewhere in the middle. Normalize first (os.path.normpath collapses
+    '..' and '.' segments and is what actually gets handed to STOR/DELE/
+    open() downstream), then re-check both the prefix and that no '..'
+    segment or absolute form survived normalization -- a path that still
+    escapes after normalizing was never in scope to begin with. This is
+    the hardening item from feat-corpus-train's safety review (Mostyn +
+    independent reader, 2026-09-12): everywhere else in this file already
+    asserts against CORPUS_PREFIX, but a raw startswith() alone is not
+    sufficient once a caller (a hand-edited --reviewed-by file cannot
+    inject paths, but a future caller of build_manifest/execute directly
+    could) hands in something adversarial."""
+    normalized = os.path.normpath(path)
+    if os.path.isabs(normalized):
+        return False
+    if normalized == ".." or normalized.startswith(f"..{os.sep}"):
+        return False
+    if f"{os.sep}..{os.sep}" in normalized or normalized.endswith(f"{os.sep}.."):
+        return False
+    return normalized.startswith(CORPUS_PREFIX) and normalized.endswith(".md")
+
+
 def load_env():
     env_path = Path(os.path.dirname(__file__)).parent / ".env"
     if env_path.exists():
@@ -140,13 +168,13 @@ def changed_corpus_files(repo_dir, git_range):
         status = parts[0]
         if status[0] in ("R", "C") and len(parts) >= 3:
             old_path, new_path = parts[1], parts[2]
-            if old_path.startswith(CORPUS_PREFIX) and old_path.endswith(".md"):
+            if is_in_scope(old_path):
                 changes.append(("D", old_path))
-            if new_path.startswith(CORPUS_PREFIX) and new_path.endswith(".md"):
+            if is_in_scope(new_path):
                 changes.append(("A", new_path))
             continue
         path = parts[-1]
-        if not path.startswith(CORPUS_PREFIX) or not path.endswith(".md"):
+        if not is_in_scope(path):
             continue
         changes.append((status[0], path))
     return changes
@@ -190,7 +218,7 @@ def build_manifest(repo_dir, ref, changes, ftp, ftp_dir):
     connection required to exercise this function."""
     manifest = []
     for status, path in changes:
-        assert path.startswith(CORPUS_PREFIX), f"scope violation: {path}"
+        assert is_in_scope(path), f"scope violation: {path}"
         remote_path = ftp_dir.rstrip("/") + "/" + path
         prod_size, prod_mdtm = ftp_stat(ftp, remote_path)
 
@@ -260,7 +288,7 @@ def execute(ftp, repo_dir, manifest):
     uploaded, deleted, problems = [], [], []
     for e in manifest:
         path = e["path"]
-        assert path.startswith(CORPUS_PREFIX), f"scope violation: {path}"
+        assert is_in_scope(path), f"scope violation: {path}"
         if e["action"] == "delete":
             try:
                 ftp.delete(path)

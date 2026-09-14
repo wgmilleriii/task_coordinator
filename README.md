@@ -261,6 +261,18 @@ If you manually edit YAML files to fix mistakes, always run the linter to ensure
 
 ---
 
+### Deploys and the shared test-DB gate lock
+
+`bin/deploy.py` runs journalgpt's `run_suite.php` against the shared local MAMP DB `journal_ai_test` before uploading. Two gates on that DB at once corrupt each other's fixture rows, so deploy.py takes one machine-wide flock (`~/.cache/newmexicoptg-gate.lock`) before the gate, for test AND prod deploys, and holds it through upload and remote migrate. A second deploy waits (default 60 min, since a prod deploy has taken ~50; `--gate-lock-timeout MINUTES`), printing who holds it, and exits 75 on timeout having done nothing. The gate child holds the lock as well, so if deploy.py is killed mid-gate the orphaned suite (and any background worker it spawned) keeps the lock until it exits. That delays the next gate but never lets two overlap; if `status` shows HELD with a NOT RUNNING pid, find the orphan with `lsof ~/.cache/newmexicoptg-gate.lock`.
+
+- "Is a gate running?" → `bin/gate_lock.py status` (a real lock probe; do not eyeball `ps` or the file text).
+- Running the suite by hand on the shared DB → `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
+- A deploy.py or sync.py started under `gate_lock.py run` reuses that lock (via `NEWMEXICOPTG_GATE_LOCK_HELD`, honoured only for a live ancestor whose inherited fd passes a non-blocking flock, i.e. provably holds the lock) instead of waiting on its own parent.
+- `bin/gate_lock.py` and `bin/deploy_common.py` are byte-identical with task_coordinator_v3's copies; edit both together. v3 `sync.py` imports nothing from `deploy.py`.
+- deploy.py now aborts before the gate if it cannot import v3 `sync.py` (no DeployLock, no manifest); `--allow-no-sync` overrides for one deploy.
+- Never delete the lock file. The OS releases it when the last holder (deploy or its gate child) exits; stale pid text is informational only.
+- `corpus_train.py` and `embed_prod_missing.py` do not run a gate or touch the local DB (FTP / operations API only), so they do not take this lock.
+
 ## 📖 Command Reference
 
 Every command is run as `./bin/fleet <command>` from the root of this repo.

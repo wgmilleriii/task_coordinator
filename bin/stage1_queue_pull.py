@@ -189,6 +189,31 @@ def apply_batches(env, site, token, body):
             log(f"{env}: batch {batch['id']} applied at {sha[:9]} but mark_applied_external failed: {type(e).__name__}; retried next run (idempotent)")
 
 
+def pull_decisions(env, site, token, st):
+    """T-PTG-672: Chip's Command Desk rulings (open + decided) as a third stream."""
+    since = st.get("decision_since_id", 0)
+    try:
+        body = api(f"{site}/journalgpt/api/decision_desk_export.php?since_id={since}", token)
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return [], {}
+        raise
+    rows = body.get("decisions", [])
+    recs = [{"env": env, **r} for r in rows]
+    adv = {"decision_since_id": max(r["id"] for r in rows)} if rows else {}
+    # decided rows change status after their id is past the cursor: re-pull decided rows
+    # whose decided_at is newer than the last seen, keyed by (id, decided_at)
+    seen = set(st.get("decision_decided_keys", []))
+    fresh = []
+    for r in recs:
+        key = f"{r.get('id')}|{r.get('status')}|{r.get('decided_at')}"
+        if key in seen:
+            continue
+        fresh.append(r); seen.add(key)
+    adv["decision_decided_keys"] = sorted(seen)[-2000:]
+    return fresh, adv
+
+
 def main():
     token = TOKEN_FILE.read_text().strip()
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
@@ -205,7 +230,15 @@ def main():
         except Exception as e:
             log(f"{env}: proposals pull failed: {type(e).__name__}: {str(e)[:120]}"); precs, padv, body = [], {}, None
         bodies[env] = body
-        log(f"{env}: {len(vrecs)} new verdict(s), {len(precs)} new proposal record(s)")
+        try:
+            # decisions: history mode via since_id=0 plus status changes, deduped by (id,status,decided_at)
+            drecs, dadv = pull_decisions(env, site, token, {**st, "decision_since_id": 0})
+        except Exception as e:
+            log(f"{env}: decisions pull failed: {type(e).__name__}: {str(e)[:120]}"); drecs, dadv = [], {}
+        log(f"{env}: {len(vrecs)} new verdict(s), {len(precs)} new proposal record(s), {len(drecs)} new decision record(s)")
+        if drecs:
+            append_jsonl(f"{OUT_PREFIX}/{env}/decisions.jsonl", drecs); touched.append(f"{OUT_PREFIX}/{env}/decisions.jsonl")
+        padv = {**padv, **{k: v for k, v in dadv.items() if k != "decision_since_id"}}
         if vrecs:
             append_jsonl(f"{OUT_PREFIX}/{env}/verdicts.jsonl", vrecs); touched.append(f"{OUT_PREFIX}/{env}/verdicts.jsonl")
         if precs:
@@ -215,7 +248,7 @@ def main():
         if DRY:
             log("dry-run: " + run(["git", "status", "--short", "--", OUT_PREFIX], cwd=WT).stdout.strip())
         else:
-            sha = commit_and_push(sorted(set(touched)), "human-review: pull verdicts/proposals\n\nPulled by stage1_queue_pull.py (T-PTG-663) from the site exports; append-only JSONL.")
+            sha = commit_and_push(sorted(set(touched)), "human-review: pull verdicts/proposals/decisions\n\nPulled by stage1_queue_pull.py (T-PTG-663) from the site exports; append-only JSONL.")
             if sha and sha != "nochange":
                 for env, adv in pending_adv.items():
                     state[env].update(adv); state[env]["last_push"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")

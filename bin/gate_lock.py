@@ -20,6 +20,16 @@ DESIGN
     text is simply overwritten by the next acquirer. Nobody should ever delete
     this file; deleting it would let a new process lock a different inode
     while the old holder still runs.
+  * The gate child is started with the lock fd passed through (pass_fds), so
+    the child holds the lock too. If the deploy process is SIGKILLed while its
+    gate is still running, the orphaned gate keeps the lock until it exits.
+    That is intended: the orphan is still writing to the shared DB. The fd is
+    forwarded by `sh -c` (deploy.py's shell=True path) to php as well. Any
+    background worker the suite spawns without closing fds also inherits it
+    and can hold the lock until that worker exits. That can only DELAY the
+    next gate, never let two overlap. `status` shows the recorded holder pid;
+    if it says NOT RUNNING while HELD, an orphaned gate child is the holder
+    (find it with `lsof <lockfile>`).
   * Waiters print the holder (marking a recorded pid that is no longer alive),
     poll, and give up after a timeout with a clear message and exit code 75.
 
@@ -44,7 +54,7 @@ from datetime import datetime
 from pathlib import Path
 
 DEFAULT_LOCK_PATH = Path.home() / ".cache" / "newmexicoptg-gate.lock"
-DEFAULT_TIMEOUT_MIN = 30
+DEFAULT_TIMEOUT_MIN = 60  # a prod deploy has been recorded at ~50 min
 TIMEOUT_EXIT_CODE = 75  # EX_TEMPFAIL: try again later, nothing was done
 
 
@@ -98,9 +108,11 @@ def describe_holder(rec):
     if not alive:
         # The flock is held by SOME live process (or we would have got it), so
         # the text is stale/racing: the new holder has not written its record
-        # yet, or a child inherited the descriptor. Keep waiting, never delete.
-        s += (" -- recorded pid is dead but the kernel lock is held, so the "
-              "text is stale; waiting on the real holder")
+        # yet, or an orphaned gate child (or a worker it spawned) still holds
+        # the passed-through descriptor. Keep waiting, never delete.
+        s += (" -- recorded pid is dead but the kernel lock is held: an orphaned "
+              "gate child (or its worker) still holds it, or a new holder has "
+              "not written its record yet; waiting on the real holder")
     return s
 
 
@@ -186,6 +198,12 @@ class GateLock:
         self._say(f"  gate lock acquired ({self.path}, waited {waited:.0f}s)")
         return self
 
+    def fileno(self):
+        """The held lock's fd. Pass it to the gate child via
+        subprocess pass_fds=(lock.fileno(),) so a SIGKILLed parent does not free
+        the lock while its gate is still running."""
+        return self.fh.fileno()
+
     def release(self):
         if self.fh is None:
             return
@@ -230,8 +248,10 @@ def main(argv=None):
         ap.error("run needs a command after --")
     try:
         with GateLock(args.env, os.getcwd(), "gate_lock.py run",
-                      timeout_s=args.timeout_min * 60):
-            return subprocess.run(command).returncode
+                      timeout_s=args.timeout_min * 60) as lock:
+            # The child holds the lock too, so killing this wrapper cannot free
+            # it while the command is still running against the shared DB.
+            return subprocess.run(command, pass_fds=(lock.fileno(),)).returncode
     except GateLockTimeout as e:
         print(str(e), file=sys.stderr)
         return TIMEOUT_EXIT_CODE

@@ -238,17 +238,25 @@ def find_test_suite(repo_dir):
     return None
 
 
-def run_test_gate(repo_dir):
+def run_test_gate(repo_dir, lock=None):
     """Run this repo's test suite before anything goes out over FTP. Returns
     (passed: bool, output: str, suite: str|None). A repo with no recognized
     suite returns (True, '', None) -- deploy proceeds ungated, same as before
-    this existed, rather than blocking on a convention it doesn't have."""
+    this existed, rather than blocking on a convention it doesn't have.
+
+    lock: the held gate_lock.GateLock. Its fd is passed into the gate child
+    (sh forwards it to php), so if deploy.py is SIGKILLed mid-gate the orphaned
+    suite keeps the machine-wide lock until it exits and the next gate cannot
+    start on top of it. Intended. Background workers the suite spawns inherit
+    it too and can hold the lock until they exit: a delay, never an overlap."""
     suite = find_test_suite(repo_dir)
     if not suite:
         return True, "", None
 
     cmd = f"php {suite}" if suite.endswith(".php") else f"python3 {suite}"
-    result = subprocess.run(cmd, shell=True, cwd=repo_dir, capture_output=True, text=True)
+    pass_fds = (lock.fileno(),) if lock is not None else ()
+    result = subprocess.run(cmd, shell=True, cwd=repo_dir, capture_output=True, text=True,
+                            pass_fds=pass_fds)
     return result.returncode == 0, result.stdout + result.stderr, suite
 
 
@@ -338,16 +346,19 @@ USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] 
 
   --seed <sha>                 record <sha> as the last deployed commit and exit
   --gate-lock-timeout MINUTES  how long to wait for the machine-wide gate lock
-                               (default 30). On timeout the deploy exits 75 having
-                               run and uploaded nothing.
+                               (default 60; a prod deploy has taken ~50). On
+                               timeout the deploy exits 75 having run and
+                               uploaded nothing.
 
 Gate lock: before the test gate runs, deploy.py takes ONE machine-wide flock
 (~/.cache/newmexicoptg-gate.lock, override $NEWMEXICOPTG_GATE_LOCK) shared by
 test AND prod deploys, because every gate uses the same local MAMP DB
 journal_ai_test. It is held through gate + upload + remote migrate. A waiting
-deploy prints the holder (pid, env, worktree, start time). The OS drops the
-lock when the holder dies, so stale pid text never blocks; never delete the
-file. Check it with `bin/gate_lock.py status`; run a suite by hand under it
+deploy prints the holder (pid, env, worktree, start time). The gate child
+holds the lock too, so if deploy.py is killed mid-gate the orphaned suite (and
+any worker it spawned) keeps the lock until it exits: a delay, never an
+overlap. The OS drops the lock when the last holder dies, so stale pid text
+never blocks; never delete the file. Check it with `bin/gate_lock.py status`; run a suite by hand under it
 with `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
 The per-repo+env deploy lock (sync.DeployLock) is still taken afterwards for
 the FTP session, as before."""
@@ -505,6 +516,7 @@ def main():
     # without one never touches the shared DB and should not queue behind it.
     # Never released explicitly: the OS drops the flock on any exit, including
     # every sys.exit below, so it cannot be stranded.
+    _gate_lock = None
     if find_test_suite(repo_dir):
         try:
             _gate_lock = gate_lock.GateLock(
@@ -516,7 +528,7 @@ def main():
             sys.exit(gate_lock.TIMEOUT_EXIT_CODE)
 
     print("Running test gate before deploy...")
-    tests_passed, test_output, suite = run_test_gate(repo_dir)
+    tests_passed, test_output, suite = run_test_gate(repo_dir, _gate_lock)
     if suite:
         print(f"({suite})")
     if not tests_passed:

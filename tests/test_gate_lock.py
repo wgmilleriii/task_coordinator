@@ -124,15 +124,67 @@ class GateLockTests(unittest.TestCase):
                                 out=self.devnull):
             pass
 
-    def test_dead_holder_releases_lock(self):
-        # A holder killed mid-gate (SIGKILL, no cleanup) must not strand the lock.
-        a = self.spawn("A", 30, "test")
+    def test_lock_held_while_orphaned_gate_child_lives(self):
+        # SIGKILL the gate_lock.py wrapper mid-gate. The fake gate child holds
+        # the passed-through fd, so the lock must stay held until the CHILD
+        # exits, then free on its own (no cleanup code runs).
+        a = self.spawn("A", 3, "test")
         self.wait_for(lambda: os.path.exists(self.log) and "A start" in Path(self.log).read_text())
-        self.assertTrue(gate_lock.probe(self.lock)[0])
         a.kill()
         a.wait()
         a.stdout.close()  # not communicate(): the orphaned fake gate keeps the pipe open
-        # Its sleep child may linger for a moment; the lock fd is not inherited.
+        self.assertNotIn(("A", "end"), self.events())
+        self.assertTrue(gate_lock.probe(self.lock)[0],
+                        "lock freed while the orphaned gate child is still running")
+        self.wait_for(lambda: ("A", "end") in self.events(), limit=10)
+        self.wait_for(lambda: not gate_lock.probe(self.lock)[0], limit=5)
+
+    def test_waiter_blocks_after_holder_sigkilled_mid_gate(self):
+        # Reader's adversarial case: kill -9 the holder while its gate sleeps,
+        # then start a second gate. It must wait for the orphan, not overlap it.
+        a = self.spawn("A", 3, "test")
+        self.wait_for(lambda: os.path.exists(self.log) and "A start" in Path(self.log).read_text())
+        a.kill()
+        a.wait()
+        a.stdout.close()
+        b = self.spawn("B", 0.2, "prod")
+        b_out, _ = b.communicate(timeout=30)
+        self.assertEqual(b.returncode, 0, b_out)
+        ev = self.events()
+        self.assertGreaterEqual(ev[("B", "start")], ev[("A", "end")],
+                                f"B's gate overlapped the orphaned A gate: {ev}")
+        self.assertIn("is HELD", b_out)
+        self.assertIn("NOT RUNNING", b_out)  # recorded pid is the dead wrapper
+
+    def test_deploy_shell_gate_holds_lock_after_deploy_sigkilled(self):
+        # deploy.run_test_gate uses shell=True (sh -c "python3 <suite>" here,
+        # "php <suite>" for real). Prove sh forwards the fd: kill -9 the
+        # process that took the lock and called run_test_gate; the lock must
+        # stay held until the suite exits.
+        repo = os.path.join(self.tmp.name, "repo")
+        os.makedirs(repo)
+        Path(repo, "fake_suite.py").write_text(
+            "import time\n"
+            f"open({self.log!r},'a').write(f'S start {{time.time()}}\\n')\n"
+            "time.sleep(3)\n"
+            f"open({self.log!r},'a').write(f'S end {{time.time()}}\\n')\n")
+        driver = (
+            "import sys\n"
+            f"sys.path.insert(0, {str(BIN)!r})\n"
+            "import deploy, gate_lock\n"
+            "deploy.TEST_SUITE_CANDIDATES = ['fake_suite.py']\n"
+            "lock = gate_lock.GateLock('prod', sys.argv[1], 'deploy.py', timeout_s=5).acquire()\n"
+            "deploy.run_test_gate(sys.argv[1], lock)\n"
+        )
+        d = subprocess.Popen([sys.executable, "-c", driver, repo], env=self.env,
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        self.wait_for(lambda: os.path.exists(self.log) and "S start" in Path(self.log).read_text())
+        d.kill()
+        d.wait()
+        self.assertNotIn(("S", "end"), self.events())
+        self.assertTrue(gate_lock.probe(self.lock)[0],
+                        "sh did not forward the lock fd: lock freed mid-suite")
+        self.wait_for(lambda: ("S", "end") in self.events(), limit=10)
         self.wait_for(lambda: not gate_lock.probe(self.lock)[0], limit=5)
 
     def test_status_cli(self):
@@ -152,7 +204,7 @@ class GateLockTests(unittest.TestCase):
     def test_deploy_cli_parses_gate_lock_timeout(self):
         import importlib
         deploy = importlib.import_module("deploy")
-        self.assertEqual(deploy.parse_args(["/r", "test"])[3], 30)
+        self.assertEqual(deploy.parse_args(["/r", "test"])[3], 60)
         self.assertEqual(deploy.parse_args(["/r", "prod", "--gate-lock-timeout", "5"]),
                          ("/r", "prod", None, 5.0))
         self.assertEqual(deploy.parse_args(["/r", "test", "--gate-lock-timeout=2", "--seed", "abc"]),

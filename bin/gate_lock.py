@@ -41,11 +41,12 @@ DESIGN
   * Re-entrant for descendants. The acquirer exports
     NEWMEXICOPTG_GATE_LOCK_HELD=<pid>:<fd>:<lock path>. acquire_gate_lock()
     in a descendant (e.g. deploy.py or sync.py launched under
-    `gate_lock.py run`) does not wait on its own ancestor: it proceeds when
-    the path matches, that pid is alive AND is one of its ancestors, and
-    passes the inherited fd on to its own gate child if the fd still refers to
-    the lock file. Anyone else (a sibling, a leaked env var, a dead pid) gets
-    no bypass and waits normally.
+    `gate_lock.py run`) does not wait on its own ancestor: it proceeds only
+    when the path matches, that pid is alive AND is one of its ancestors, AND
+    flock(LOCK_EX|LOCK_NB) succeeds on the inherited fd -- proof that this
+    descriptor is the one holding the lock. It then passes that fd on to its
+    own gate child. Anyone else (a sibling, a leaked env var, a dead pid, a
+    closed or open-but-unlocked fd) gets no bypass and waits normally.
   * Waiters print the holder (marking a recorded pid that is no longer alive),
     poll, and give up after a timeout with a clear message and exit code 75.
 
@@ -307,7 +308,7 @@ class InheritedGateLock:
         self.path = Path(path)
 
     def fileno(self):
-        """The inherited fd if it still refers to the lock file, else None."""
+        """The inherited fd, verified by flock to hold the lock. Never None."""
         return self.fd
 
     def abandon(self):
@@ -333,14 +334,22 @@ def held_by_ancestor(path=None):
         return None
     if not pid_alive(pid) or not is_ancestor(pid):
         return None
-    usable_fd = None
+    # PROOF, not inference (round-3 reader). Same dev/inode only proves the
+    # file is OPEN. flock(LOCK_EX|LOCK_NB) on the inherited descriptor succeeds
+    # only if this exact open file description already holds the lock (or the
+    # lock is free, in which case we now genuinely hold it through this fd).
+    # A closed fd, another file, or an open-but-unlocked copy while someone
+    # else holds the lock all fail here, and the caller acquires normally. No
+    # usable fd means no bypass, so a nested deploy never runs its gate child
+    # without the lock fd.
     try:
         a, b = os.fstat(fd), os.stat(path)
-        if (a.st_dev, a.st_ino) == (b.st_dev, b.st_ino):
-            usable_fd = fd
+        if (a.st_dev, a.st_ino) != (b.st_dev, b.st_ino):
+            return None
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except OSError:
-        pass
-    return InheritedGateLock(pid, usable_fd, path)
+        return None
+    return InheritedGateLock(pid, fd, path)
 
 
 def acquire_gate_lock(env, worktree, tool, timeout_min=DEFAULT_TIMEOUT_MIN, path=None, out=None):

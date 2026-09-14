@@ -274,6 +274,48 @@ class ReentrancyTests(Base):
         self.assertNotIn("already held by ancestor", r.stdout)
         self.assertIn("Timed out", r.stdout)
 
+    def _unrelated_holder(self, seconds=10):
+        """A real holder that is NOT an ancestor of the children we spawn."""
+        h = self.spawn("H", seconds, "test")
+        self.wait_for(self.started("H"))
+        return h
+
+    def _child_with_held_env(self, held_value, pass_fds=()):
+        env = dict(self.env)
+        env[gate_lock.HELD_ENV] = held_value
+        return subprocess.run([sys.executable, "-c", self.CHILD, str(BIN)], env=env,
+                              capture_output=True, text=True, timeout=60, pass_fds=pass_fds)
+
+    def assertWaitedNoBypass(self, r):
+        out = r.stdout + r.stderr
+        self.assertEqual(r.returncode, gate_lock.TIMEOUT_EXIT_CODE, out)
+        self.assertIn("is HELD", out)
+        self.assertNotIn("already held by ancestor", out)
+        self.assertNotIn("INHERITED", out)
+
+    def test_bypass3_case1_live_ancestor_closed_fd_waits(self):
+        # Reader's [1]: HELD names a LIVE ANCESTOR (this test process) but the
+        # fd is closed, while an unrelated process really holds the lock.
+        h = self._unrelated_holder()
+        closed_fd = 200
+        try:
+            os.close(closed_fd)
+        except OSError:
+            pass
+        r = self._child_with_held_env(f"{os.getpid()}:{closed_fd}:{self.lock}")
+        h.communicate(timeout=30)
+        self.assertWaitedNoBypass(r)
+
+    def test_bypass3_case2_live_ancestor_open_unlocked_fd_waits(self):
+        # Reader's [2]: same dev/inode, fd really open and inherited, but it is
+        # NOT the descriptor holding the lock. flock proves that; must wait.
+        h = self._unrelated_holder()
+        with open(self.lock, "a+") as unlocked:
+            fd = unlocked.fileno()
+            r = self._child_with_held_env(f"{os.getpid()}:{fd}:{self.lock}", pass_fds=(fd,))
+        h.communicate(timeout=30)
+        self.assertWaitedNoBypass(r)
+
     def test_dead_holder_pid_in_env_gives_no_bypass(self):
         dead = subprocess.Popen([sys.executable, "-c", "pass"])
         dead.wait()
@@ -286,6 +328,35 @@ class ReentrancyTests(Base):
 
 
 class DeployTests(Base):
+    def test_v1_loads_v3_style_sync_even_if_v3_deploy_py_is_broken(self):
+        # v1 deploy.py imports sync.py from SYNC_BIN. sync.py must reach the
+        # shared helpers via deploy_common, never via that checkout's deploy.py.
+        sync_bin = os.path.join(self.tmp.name, "v3bin")
+        os.makedirs(sync_bin)
+        for name in ("gate_lock.py", "deploy_common.py"):
+            Path(sync_bin, name).write_bytes((BIN / name).read_bytes())
+        Path(sync_bin, "deploy.py").write_text("raise RuntimeError('broken uncommitted deploy.py')\n")
+        Path(sync_bin, "sync.py").write_text(
+            "import sys\nfrom pathlib import Path\n"
+            "sys.path.insert(0, str(Path(__file__).resolve().parent))\n"
+            "from deploy_common import get_repo_excludes, should_exclude, run_test_gate\n"
+            "from gate_lock import acquire_gate_lock, find_test_suite\n"
+            "LOADED = True\n")
+        driver = (
+            "import sys\n"
+            f"sys.path.insert(0, {str(BIN)!r})\n"
+            "import deploy\n"
+            "deploy.SYNC_BIN = sys.argv[1]\n"
+            "s = deploy.require_sync(False)\n"
+            "print('SYNC_LOADED', getattr(s, 'LOADED', False), 'deploy' in sys.modules and "
+            "getattr(sys.modules['deploy'], '__file__', '').startswith(sys.argv[1]))\n"
+        )
+        r = subprocess.run([sys.executable, "-c", driver, sync_bin], env=self.env,
+                           capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("SYNC_LOADED True False", r.stdout)
+
+
     def test_deploy_cli_parses_flags(self):
         import deploy
         self.assertEqual(deploy.parse_args(["/r", "test"])[3], 60)

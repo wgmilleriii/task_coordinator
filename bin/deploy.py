@@ -130,6 +130,9 @@ import deploy_guard  # noqa: E402  -- shared with the v3 engine; see its docstri
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gate_lock  # noqa: E402  -- machine-wide gate lock, see bin/gate_lock.py
+# Gate runner shared (byte-identical) with v3, where sync.py also uses it. This
+# file keeps its OWN exclusion rules below; deploy_common's differ (v3's).
+import deploy_common  # noqa: E402
 
 
 def _load_sync():
@@ -263,16 +266,7 @@ def run_test_gate(repo_dir, lock=None):
     suite keeps the machine-wide lock until it exits and the next gate cannot
     start on top of it. Intended. Background workers the suite spawns inherit
     it too and can hold the lock until they exit: a delay, never an overlap."""
-    suite = find_test_suite(repo_dir)
-    if not suite:
-        return True, "", None
-
-    cmd = f"php {suite}" if suite.endswith(".php") else f"python3 {suite}"
-    fd = lock.fileno() if lock is not None else None
-    pass_fds = (fd,) if fd is not None else ()
-    result = subprocess.run(cmd, shell=True, cwd=repo_dir, capture_output=True, text=True,
-                            pass_fds=pass_fds)
-    return result.returncode == 0, result.stdout + result.stderr, suite
+    return deploy_common.run_test_gate(repo_dir, lock, TEST_SUITE_CANDIDATES)
 
 
 def load_env():

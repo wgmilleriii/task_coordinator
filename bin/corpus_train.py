@@ -120,6 +120,59 @@ def run_cmd(cmd, cwd=None):
     return result.stdout.strip()
 
 
+CSV_INDEX_PATH = "journalgpt/corpus/articles/csv_number_index.json"
+
+
+def csv_index_staleness(repo_dir, ref):
+    """T-PTG-678: compare csv_number_index.json AT ref with the csv_number
+    frontmatter of every journalgpt/corpus/articles/*/*.md AT ref (git
+    plumbing only, no working tree). Returns None when ref has no index,
+    else {"added": [...], "removed": [...], "repointed": [...]} of csv
+    numbers (strings). The index is not shipped by this tool (it is .json,
+    deploy.py carries it), but Stage 1 review, source.php and the quiz read
+    it, so a train that moves or mints articles without regenerating it
+    leaves those pages pointing at files that are no longer there."""
+    shown = subprocess.run(["git", "show", f"{ref}:{CSV_INDEX_PATH}"], cwd=repo_dir,
+                           capture_output=True, text=True)
+    if shown.returncode != 0:
+        return None
+    try:
+        index = {str(k): v for k, v in json.loads(shown.stdout).items()}
+    except (ValueError, AttributeError):
+        index = {}
+    grep = subprocess.run(
+        ["git", "grep", "-E", r"^csv_number:[[:space:]]*[0-9]+[[:space:]]*$", ref, "--",
+         "journalgpt/corpus/articles/*/*.md"],
+        cwd=repo_dir, capture_output=True, text=True)
+    truth = {}
+    prefix = f"{ref}:{CORPUS_PREFIX}"
+    for line in grep.stdout.splitlines():
+        if not line.startswith(prefix):
+            continue
+        path, _, value = line[len(prefix):].rpartition(":csv_number:")
+        truth[value.strip()] = path
+    return {
+        "added": sorted(set(truth) - set(index), key=int),
+        "removed": sorted((k for k in set(index) - set(truth)), key=lambda k: int(k) if k.isdigit() else -1),
+        "repointed": sorted((k for k in set(index) & set(truth) if index[k] != truth[k]), key=int),
+    }
+
+
+def warn_if_csv_index_stale(repo_dir, ref):
+    """Prints a WARNING (never blocks) when the train ref's index disagrees
+    with its own frontmatter. Returns True when a warning was printed."""
+    diff = csv_index_staleness(repo_dir, ref)
+    if diff is None or not any(diff.values()):
+        return False
+    print(f"WARNING: {CSV_INDEX_PATH} at {ref} is stale against corpus frontmatter: "
+          f"{len(diff['added'])} missing, {len(diff['removed'])} extra, "
+          f"{len(diff['repointed'])} repointed"
+          + (f" (e.g. csv {diff['repointed'][0]})" if diff["repointed"] else "") + ".")
+    print("  Regenerate on the train branch before shipping: "
+          "php journalgpt/cli/build_article_markdown_index.php, commit, deploy via deploy.py (T-PTG-678).")
+    return True
+
+
 def state_file_path():
     name = STATE_FILE_NAME_TEST if ENV == "test" else STATE_FILE_NAME
     return Path(os.path.dirname(__file__)).parent / name
@@ -423,6 +476,7 @@ def main():
     git_range = resolve_range(args.git_range, state)
     ref = target_ref(args.git_range)
     target_sha = run_cmd(f"git rev-parse {ref}", cwd=repo_dir)
+    warn_if_csv_index_stale(repo_dir, ref)
 
     changes = changed_corpus_files(repo_dir, git_range)
     if not changes:

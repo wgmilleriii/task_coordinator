@@ -444,3 +444,47 @@ class EnsureRemoteDirsTest(unittest.TestCase):
         # second file in the same new folder: every MKD now raises, none escape
         ct.ensure_remote_dirs(ftp, "journalgpt/corpus/articles/PTJ-2026-09/b.md")
         self.assertEqual(len(ftp.mkds), 4)
+
+
+class CsvIndexStalenessTest(unittest.TestCase):
+    """T-PTG-678: warn when csv_number_index.json at the train ref disagrees
+    with the ref's own corpus frontmatter."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.repo = self.tmp.name
+        run = lambda *a: subprocess.run(list(a), cwd=self.repo, check=True, capture_output=True)
+        run("git", "init", "-q")
+        run("git", "config", "user.email", "t@example.com")
+        run("git", "config", "user.name", "t")
+        base = Path(self.repo) / "journalgpt/corpus/articles"
+        (base / "PTJ-1971-04").mkdir(parents=True)
+        (base / "PTJ-1971-04/larry-s-corner.md").write_text("---\ncsv_number: 5218\n---\nbody\n")
+        (base / "PTJ-1971-04/new.md").write_text("---\ncsv_number: 5737\n---\nbody\n")
+        (base / "PTJ-1971-04/backmatter.md").write_text("---\ncsv_number: null\n---\nbody\n")
+        self.base, self.run = base, run
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def commit_index(self, index):
+        (self.base / "csv_number_index.json").write_text(json.dumps(index))
+        self.run("git", "add", "-A")
+        self.run("git", "commit", "-q", "-m", "c")
+
+    def test_stale_index_reports_repointed_added_removed_and_warns(self):
+        self.commit_index({"5218": "PTJ-1971-03/larry-s-corner.md", "4572": "PTJ-1978-11/editorial.md"})
+        diff = ct.csv_index_staleness(self.repo, "HEAD")
+        self.assertEqual(diff, {"added": ["5737"], "removed": ["4572"], "repointed": ["5218"]})
+        self.assertTrue(ct.warn_if_csv_index_stale(self.repo, "HEAD"))
+
+    def test_fresh_index_is_silent(self):
+        self.commit_index({"5218": "PTJ-1971-04/larry-s-corner.md", "5737": "PTJ-1971-04/new.md"})
+        self.assertEqual(ct.csv_index_staleness(self.repo, "HEAD"), {"added": [], "removed": [], "repointed": []})
+        self.assertFalse(ct.warn_if_csv_index_stale(self.repo, "HEAD"))
+
+    def test_ref_without_index_is_silent(self):
+        self.run("git", "add", "-A")
+        self.run("git", "commit", "-q", "-m", "c")
+        self.assertIsNone(ct.csv_index_staleness(self.repo, "HEAD"))
+        self.assertFalse(ct.warn_if_csv_index_stale(self.repo, "HEAD"))

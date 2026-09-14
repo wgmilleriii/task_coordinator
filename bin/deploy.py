@@ -128,6 +128,9 @@ SYNC_BIN = "/Users/willismiller/Documents/GitHub/task_coordinator_v3/bin"
 sys.path.insert(0, SYNC_BIN)
 import deploy_guard  # noqa: E402  -- shared with the v3 engine; see its docstring
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import gate_lock  # noqa: E402  -- machine-wide gate lock, see bin/gate_lock.py
+
 
 def _load_sync():
     """Returns the sync module, or None if unavailable. Deploy proceeds without
@@ -228,16 +231,19 @@ def bump_version(repo_dir, env, new_sha, commit_subjects):
 TEST_SUITE_CANDIDATES = ["journalgpt/tests/run_suite.php"]
 
 
+def find_test_suite(repo_dir):
+    for candidate in TEST_SUITE_CANDIDATES:
+        if (Path(repo_dir) / candidate).exists():
+            return candidate
+    return None
+
+
 def run_test_gate(repo_dir):
     """Run this repo's test suite before anything goes out over FTP. Returns
     (passed: bool, output: str, suite: str|None). A repo with no recognized
     suite returns (True, '', None) -- deploy proceeds ungated, same as before
     this existed, rather than blocking on a convention it doesn't have."""
-    suite = None
-    for candidate in TEST_SUITE_CANDIDATES:
-        if (Path(repo_dir) / candidate).exists():
-            suite = candidate
-            break
+    suite = find_test_suite(repo_dir)
     if not suite:
         return True, "", None
 
@@ -328,22 +334,66 @@ def run_cmd(cmd, cwd=None):
         sys.exit(1)
     return result.stdout.strip()
 
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>]")
-        sys.exit(1)
+USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] [--gate-lock-timeout MINUTES]
 
-    repo_dir = os.path.abspath(sys.argv[1])
+  --seed <sha>                 record <sha> as the last deployed commit and exit
+  --gate-lock-timeout MINUTES  how long to wait for the machine-wide gate lock
+                               (default 30). On timeout the deploy exits 75 having
+                               run and uploaded nothing.
+
+Gate lock: before the test gate runs, deploy.py takes ONE machine-wide flock
+(~/.cache/newmexicoptg-gate.lock, override $NEWMEXICOPTG_GATE_LOCK) shared by
+test AND prod deploys, because every gate uses the same local MAMP DB
+journal_ai_test. It is held through gate + upload + remote migrate. A waiting
+deploy prints the holder (pid, env, worktree, start time). The OS drops the
+lock when the holder dies, so stale pid text never blocks; never delete the
+file. Check it with `bin/gate_lock.py status`; run a suite by hand under it
+with `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
+The per-repo+env deploy lock (sync.DeployLock) is still taken afterwards for
+the FTP session, as before."""
+
+
+def parse_args(argv):
+    """Returns (repo_dir, env, seed_sha, gate_lock_timeout_min). Exits on bad input."""
+    args = list(argv)
+    if any(a in ("-h", "--help") for a in args):
+        print(USAGE)
+        sys.exit(0)
+    timeout_min = gate_lock.DEFAULT_TIMEOUT_MIN
+    for i, a in enumerate(args):
+        if a == "--gate-lock-timeout" or a.startswith("--gate-lock-timeout="):
+            if "=" in a:
+                val = a.split("=", 1)[1]
+                del args[i]
+            else:
+                if i + 1 >= len(args):
+                    print(USAGE)
+                    sys.exit(1)
+                val = args[i + 1]
+                del args[i:i + 2]
+            try:
+                timeout_min = float(val)
+            except ValueError:
+                print(f"--gate-lock-timeout needs a number of minutes, got {val!r}")
+                sys.exit(1)
+            break
+    if len(args) < 2:
+        print(USAGE)
+        sys.exit(1)
+    seed_sha = None
+    if len(args) == 4 and args[2] == "--seed":
+        seed_sha = args[3]
+    return os.path.abspath(args[0]), args[1], seed_sha, timeout_min
+
+
+def main():
+    repo_dir, env, seed_sha, gate_lock_timeout_min = parse_args(sys.argv[1:])
+
     repo_name = os.path.basename(repo_dir)
-    env = sys.argv[2]
-    
+
     if env not in ["test", "prod"]:
         print("Environment must be test or prod")
         sys.exit(1)
-        
-    seed_sha = None
-    if len(sys.argv) == 5 and sys.argv[3] == "--seed":
-        seed_sha = sys.argv[4]
 
     load_env()
 
@@ -445,6 +495,26 @@ def main():
             json.dump(state, f, indent=2)
         sys.exit(0)
 
+    # MACHINE-WIDE GATE LOCK (2026-09-14). Taken BEFORE the gate and held until
+    # this process exits, i.e. through gate + version bump + upload + guards +
+    # remote migrate. It used to be absent: the only lock came after the gate
+    # and was keyed per repo+env, so two deploys seconds apart ran run_suite.php
+    # concurrently on the shared MAMP DB journal_ai_test and corrupted each
+    # other's fixture rows. One path for test AND prod, because both gate on
+    # that same DB. Only repos that actually have a gate suite take it -- a repo
+    # without one never touches the shared DB and should not queue behind it.
+    # Never released explicitly: the OS drops the flock on any exit, including
+    # every sys.exit below, so it cannot be stranded.
+    if find_test_suite(repo_dir):
+        try:
+            _gate_lock = gate_lock.GateLock(
+                env=env, worktree=repo_dir, tool="deploy.py",
+                timeout_s=gate_lock_timeout_min * 60,
+            ).acquire()
+        except gate_lock.GateLockTimeout as e:
+            print(str(e))
+            sys.exit(gate_lock.TIMEOUT_EXIT_CODE)
+
     print("Running test gate before deploy...")
     tests_passed, test_output, suite = run_test_gate(repo_dir)
     if suite:
@@ -486,17 +556,19 @@ def main():
         # agent would have hard-exited with a bare timeout that reads like a
         # stuck lockfile, and the natural reaction to that is to delete a lock
         # that is working correctly. Waiting is right; timing out is not.
+        #
+        # Kept alongside the gate lock (not replaced): sync.py takes this same
+        # per-repo+env lock on its own, without deploy.py, so it is still what
+        # serializes a deploy's FTP session against a bare sync.py run. Order is
+        # always gate lock -> deploy lock, and sync.py never takes the gate lock,
+        # so the two cannot deadlock.
+        #
+        # The old unconditional "deploy lock currently held -> pid=..." print
+        # that stood here read the lock FILE, not the lock: sync.py never clears
+        # its text on release, so it named a long-dead holder (pid 30323 on
+        # 2026-09-14) on every deploy. DeployLock.__enter__ already prints the
+        # holder when -- and only when -- it is genuinely blocked.
         _deploy_lock = sync.DeployLock(repo_name, env, 3600)
-        # Say WHO holds it before blocking. sync.py writes pid= and since= into
-        # the lockfile on acquire, so "is this stale?" is answerable from the
-        # file instead of guessed at.
-        try:
-            if _deploy_lock.path.exists():
-                held = _deploy_lock.path.read_text().strip()
-                if held:
-                    print(f"  deploy lock currently held -> {held}")
-        except Exception:
-            pass
         _deploy_lock.__enter__()
 
     print("Connecting to FTP...")

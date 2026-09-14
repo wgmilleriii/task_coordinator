@@ -261,6 +261,15 @@ If you manually edit YAML files to fix mistakes, always run the linter to ensure
 
 ---
 
+### Deploys and the shared test-DB gate lock
+
+`bin/deploy.py` runs journalgpt's `run_suite.php` against the shared local MAMP DB `journal_ai_test` before uploading. Two gates on that DB at once corrupt each other's fixture rows, so deploy.py takes one machine-wide flock (`~/.cache/newmexicoptg-gate.lock`) before the gate, for test AND prod deploys, and holds it through upload and remote migrate. A second deploy waits (default 30 min, `--gate-lock-timeout MINUTES`), printing who holds it, and exits 75 on timeout having done nothing.
+
+- "Is a gate running?" → `bin/gate_lock.py status` (a real lock probe; do not eyeball `ps` or the file text).
+- Running the suite by hand on the shared DB → `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
+- Never delete the lock file. The OS releases it when the holder dies; stale pid text is informational only.
+- `corpus_train.py` and `embed_prod_missing.py` do not run a gate or touch the local DB (FTP / operations API only), so they do not take this lock.
+
 ## 📖 Command Reference
 
 Every command is run as `./bin/fleet <command>` from the root of this repo.

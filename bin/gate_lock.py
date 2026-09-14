@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Machine-wide lock for the journalgpt test gate (shared MAMP DB journal_ai_test).
 
+This file is kept BYTE-IDENTICAL in task_coordinator/bin and
+task_coordinator_v3/bin. v1 deploy.py, v3 deploy.py and v3 sync.py all queue on
+the one lock it defines. Edit both copies together.
+
 WHY (2026-09-14): deploy.py ran run_suite.php BEFORE taking its per-env deploy
 lock, and that lock is keyed per repo+env anyway. Two deploys started seconds
 apart ran their gates concurrently against the one shared test DB. Tests such
@@ -11,15 +15,19 @@ running?" check came four seconds before the second gate started.
 
 DESIGN
   * One flock on a fixed path (default ~/.cache/newmexicoptg-gate.lock,
-    override with $NEWMEXICOPTG_GATE_LOCK). Same path for test AND prod
-    deploys: both gate against the same local DB.
+    override with $NEWMEXICOPTG_GATE_LOCK). Same path for test AND prod: both
+    gate against the same local DB.
   * The kernel lock is the ONLY thing that excludes. The JSON text in the file
     (pid, env, worktree, tool, started) is written by the holder after it
     acquires and is purely informational. flock is released by the OS when the
-    holding process dies, so a dead holder can never block anyone, and stale
-    text is simply overwritten by the next acquirer. Nobody should ever delete
-    this file; deleting it would let a new process lock a different inode
-    while the old holder still runs.
+    last descriptor copy closes, so a dead holder can never block anyone and
+    stale text is simply overwritten by the next acquirer. Nobody should ever
+    delete this file; deleting it would let a new process lock a different
+    inode while the old holder still runs.
+  * Callers never unlock. deploy.py, sync.py and `run` all hold the lock until
+    their process exits (or, for `run`, close their own descriptor WITHOUT
+    LOCK_UN). LOCK_UN would drop the lock for EVERY copy of the descriptor,
+    including a gate child or background worker still using the shared DB.
   * The gate child is started with the lock fd passed through (pass_fds), so
     the child holds the lock too. If the deploy process is SIGKILLed while its
     gate is still running, the orphaned gate keeps the lock until it exits.
@@ -30,6 +38,14 @@ DESIGN
     next gate, never let two overlap. `status` shows the recorded holder pid;
     if it says NOT RUNNING while HELD, an orphaned gate child is the holder
     (find it with `lsof <lockfile>`).
+  * Re-entrant for descendants. The acquirer exports
+    NEWMEXICOPTG_GATE_LOCK_HELD=<pid>:<fd>:<lock path>. acquire_gate_lock()
+    in a descendant (e.g. deploy.py or sync.py launched under
+    `gate_lock.py run`) does not wait on its own ancestor: it proceeds when
+    the path matches, that pid is alive AND is one of its ancestors, and
+    passes the inherited fd on to its own gate child if the fd still refers to
+    the lock file. Anyone else (a sibling, a leaked env var, a dead pid) gets
+    no bypass and waits normally.
   * Waiters print the holder (marking a recorded pid that is no longer alive),
     poll, and give up after a timeout with a clear message and exit code 75.
 
@@ -56,10 +72,26 @@ from pathlib import Path
 DEFAULT_LOCK_PATH = Path.home() / ".cache" / "newmexicoptg-gate.lock"
 DEFAULT_TIMEOUT_MIN = 60  # a prod deploy has been recorded at ~50 min
 TIMEOUT_EXIT_CODE = 75  # EX_TEMPFAIL: try again later, nothing was done
+HELD_ENV = "NEWMEXICOPTG_GATE_LOCK_HELD"
+
+# Suites that run against the shared local DB. Union of what v1 deploy.py and
+# v3 deploy.py gate on; taking the lock for a repo with either is always safe.
+SHARED_DB_SUITES = [
+    "journalgpt/tests/run_suite.php",
+    "journalgpt/tests/security_and_eval_suite.php",
+]
 
 
 def lock_path():
     return Path(os.environ.get("NEWMEXICOPTG_GATE_LOCK") or DEFAULT_LOCK_PATH)
+
+
+def find_test_suite(repo_dir, candidates=None):
+    """First candidate suite present under repo_dir, or None."""
+    for candidate in (SHARED_DB_SUITES if candidates is None else candidates):
+        if (Path(repo_dir) / candidate).exists():
+            return candidate
+    return None
 
 
 class GateLockTimeout(Exception):
@@ -76,6 +108,35 @@ def pid_alive(pid):
     except (ValueError, TypeError, OverflowError):
         return False
     return True
+
+
+def _parent_pid(pid):
+    if pid == os.getpid():
+        return os.getppid()
+    try:
+        out = subprocess.run(["ps", "-o", "ppid=", "-p", str(pid)],
+                             capture_output=True, text=True, timeout=5).stdout.strip()
+        return int(out) if out else None
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
+
+
+def is_ancestor(pid):
+    """True if pid is a (live) ancestor of this process."""
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return False
+    if pid <= 1 or pid == os.getpid():
+        return False
+    cur = os.getpid()
+    for _ in range(64):
+        cur = _parent_pid(cur)
+        if not cur or cur <= 1:
+            return False
+        if cur == pid:
+            return True
+    return False
 
 
 def read_holder(path):
@@ -107,9 +168,9 @@ def describe_holder(rec):
          f"started={rec.get('started')} host={rec.get('host')}")
     if not alive:
         # The flock is held by SOME live process (or we would have got it), so
-        # the text is stale/racing: the new holder has not written its record
-        # yet, or an orphaned gate child (or a worker it spawned) still holds
-        # the passed-through descriptor. Keep waiting, never delete.
+        # the text is stale/racing: an orphaned gate child (or a worker it
+        # spawned) still holds the passed-through descriptor, or a new holder
+        # has not written its record yet. Keep waiting, never delete.
         s += (" -- recorded pid is dead but the kernel lock is held: an orphaned "
               "gate child (or its worker) still holds it, or a new holder has "
               "not written its record yet; waiting on the real holder")
@@ -132,10 +193,13 @@ def probe(path=None):
 
 
 class GateLock:
-    """Context manager. Hold for gate + upload + remote migrate.
+    """The lock, really acquired. Hold for gate + upload + remote migrate.
 
-    Released by __exit__, or by the OS when the process exits for any reason.
+    Released by the OS when the process exits. release() (LOCK_UN) exists for
+    in-process tests; production callers use abandon() or just exit.
     """
+
+    inherited = False
 
     def __init__(self, env, worktree, tool, timeout_s=DEFAULT_TIMEOUT_MIN * 60,
                  path=None, poll_s=2.0, out=None):
@@ -194,6 +258,8 @@ class GateLock:
         self.fh.truncate()
         self.fh.write(json.dumps(rec) + "\n")
         self.fh.flush()
+        # Descendants inherit this and do not wait on us (see held_by_ancestor).
+        os.environ[HELD_ENV] = f"{os.getpid()}:{self.fh.fileno()}:{self.path}"
         waited = time.monotonic() - start
         self._say(f"  gate lock acquired ({self.path}, waited {waited:.0f}s)")
         return self
@@ -204,12 +270,18 @@ class GateLock:
         the lock while its gate is still running."""
         return self.fh.fileno()
 
+    def abandon(self):
+        """Close OUR descriptor without LOCK_UN. Any child or background worker
+        that inherited the fd keeps the lock until it exits too."""
+        if self.fh is not None:
+            self.fh.close()
+            self.fh = None
+
     def release(self):
+        """LOCK_UN: frees the lock for EVERY descriptor copy. Tests only."""
         if self.fh is None:
             return
         try:
-            # Leave the record in place (it names the LAST holder, useful when
-            # reading a failed run) but make it clear it is not live.
             self.fh.seek(0)
             self.fh.truncate()
             fcntl.flock(self.fh, fcntl.LOCK_UN)
@@ -222,6 +294,71 @@ class GateLock:
 
     def __exit__(self, *exc):
         self.release()
+
+
+class InheritedGateLock:
+    """An ancestor holds the lock for us. Never unlocks anything."""
+
+    inherited = True
+
+    def __init__(self, holder_pid, fd, path):
+        self.holder_pid = holder_pid
+        self.fd = fd
+        self.path = Path(path)
+
+    def fileno(self):
+        """The inherited fd if it still refers to the lock file, else None."""
+        return self.fd
+
+    def abandon(self):
+        pass
+
+    release = abandon
+
+
+def held_by_ancestor(path=None):
+    """InheritedGateLock if an ancestor of this process holds the gate lock
+    (per $NEWMEXICOPTG_GATE_LOCK_HELD), else None."""
+    raw = os.environ.get(HELD_ENV, "")
+    parts = raw.split(":", 2)
+    if len(parts) != 3:
+        return None
+    pid_s, fd_s, held_path = parts
+    path = Path(path or lock_path())
+    try:
+        if os.path.realpath(held_path) != os.path.realpath(path):
+            return None
+        pid, fd = int(pid_s), int(fd_s)
+    except (ValueError, OSError):
+        return None
+    if not pid_alive(pid) or not is_ancestor(pid):
+        return None
+    usable_fd = None
+    try:
+        a, b = os.fstat(fd), os.stat(path)
+        if (a.st_dev, a.st_ino) == (b.st_dev, b.st_ino):
+            usable_fd = fd
+    except OSError:
+        pass
+    return InheritedGateLock(pid, usable_fd, path)
+
+
+def acquire_gate_lock(env, worktree, tool, timeout_min=DEFAULT_TIMEOUT_MIN, path=None, out=None):
+    """Take the machine-wide gate lock, or reuse an ancestor's, or exit 75 on
+    timeout. Callers take it BEFORE any sync.DeployLock and never release it:
+    the OS drops it when the process (and every fd-inheriting child) exits."""
+    out = out or sys.stdout
+    inherited = held_by_ancestor(path)
+    if inherited is not None:
+        print(f"  gate lock already held by ancestor pid={inherited.holder_pid}; "
+              f"not waiting on our own parent", file=out, flush=True)
+        return inherited
+    try:
+        return GateLock(env=env, worktree=worktree, tool=tool,
+                        timeout_s=timeout_min * 60, path=path, out=out).acquire()
+    except GateLockTimeout as e:
+        print(str(e), file=out, flush=True)
+        sys.exit(TIMEOUT_EXIT_CODE)
 
 
 def main(argv=None):
@@ -246,15 +383,17 @@ def main(argv=None):
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command:
         ap.error("run needs a command after --")
+    lock = acquire_gate_lock(args.env, os.getcwd(), "gate_lock.py run",
+                             timeout_min=args.timeout_min)
+    fd = lock.fileno()
     try:
-        with GateLock(args.env, os.getcwd(), "gate_lock.py run",
-                      timeout_s=args.timeout_min * 60) as lock:
-            # The child holds the lock too, so killing this wrapper cannot free
-            # it while the command is still running against the shared DB.
-            return subprocess.run(command, pass_fds=(lock.fileno(),)).returncode
-    except GateLockTimeout as e:
-        print(str(e), file=sys.stderr)
-        return TIMEOUT_EXIT_CODE
+        # The child holds the lock too (and sees HELD_ENV, so a deploy.py or
+        # sync.py it launches does not wait on us).
+        return subprocess.run(command, pass_fds=(fd,) if fd is not None else ()).returncode
+    finally:
+        # Close without LOCK_UN: a background worker the command left running
+        # still holds its inherited copy and must keep the lock until it exits.
+        lock.abandon()
 
 
 if __name__ == "__main__":

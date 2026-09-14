@@ -133,18 +133,35 @@ import gate_lock  # noqa: E402  -- machine-wide gate lock, see bin/gate_lock.py
 
 
 def _load_sync():
-    """Returns the sync module, or None if unavailable. Deploy proceeds without
-    the manifest rather than refusing to ship -- but says so, loudly, because a
-    deploy that silently skips manifest maintenance leaves sync.py's next diff
-    asserting stale hashes."""
+    """Returns the sync module, or None if unavailable. See require_sync() for
+    what a deploy does about None."""
     try:
         if SYNC_BIN not in sys.path:
             sys.path.insert(0, SYNC_BIN)
         import sync
         return sync
     except Exception as e:
-        print(f"  ! sync.py unavailable ({e}); manifest will NOT be updated by this deploy")
+        print(f"  ! sync.py unavailable from {SYNC_BIN} ({type(e).__name__}: {e})")
         return None
+
+
+def require_sync(allow_no_sync):
+    """FAIL CLOSED (2026-09-14). sync.py supplies the per-repo+env DeployLock
+    and the manifest write. Without it this deploy would run its FTP session
+    unserialized against a concurrent sync.py and leave the manifest asserting
+    stale hashes -- this used to be a warning, and the deploy went ahead.
+    Now it aborts before the gate unless --allow-no-sync is given explicitly."""
+    sync = _load_sync()
+    if sync is None and not allow_no_sync:
+        print("REFUSING TO DEPLOY: could not import sync.py from the v3 checkout "
+              f"({SYNC_BIN}). Without it there is no per-env DeployLock (a concurrent "
+              "sync.py could interleave with this FTP session) and no manifest "
+              "update. Nothing was run or uploaded. Fix the v3 checkout, or re-run "
+              "with --allow-no-sync if you accept both risks for this one deploy.")
+        sys.exit(1)
+    if sync is None:
+        print("  ! --allow-no-sync: proceeding with NO DeployLock and NO manifest update")
+    return sync
 
 
 def get_repo_excludes(repo_name):
@@ -232,10 +249,7 @@ TEST_SUITE_CANDIDATES = ["journalgpt/tests/run_suite.php"]
 
 
 def find_test_suite(repo_dir):
-    for candidate in TEST_SUITE_CANDIDATES:
-        if (Path(repo_dir) / candidate).exists():
-            return candidate
-    return None
+    return gate_lock.find_test_suite(repo_dir, TEST_SUITE_CANDIDATES)
 
 
 def run_test_gate(repo_dir, lock=None):
@@ -254,7 +268,8 @@ def run_test_gate(repo_dir, lock=None):
         return True, "", None
 
     cmd = f"php {suite}" if suite.endswith(".php") else f"python3 {suite}"
-    pass_fds = (lock.fileno(),) if lock is not None else ()
+    fd = lock.fileno() if lock is not None else None
+    pass_fds = (fd,) if fd is not None else ()
     result = subprocess.run(cmd, shell=True, cwd=repo_dir, capture_output=True, text=True,
                             pass_fds=pass_fds)
     return result.returncode == 0, result.stdout + result.stderr, suite
@@ -342,7 +357,11 @@ def run_cmd(cmd, cwd=None):
         sys.exit(1)
     return result.stdout.strip()
 
-USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] [--gate-lock-timeout MINUTES]
+USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] [--gate-lock-timeout MINUTES] [--allow-no-sync]
+
+  --allow-no-sync              deploy even if sync.py cannot be imported from the
+                               v3 checkout (no DeployLock, no manifest update).
+                               Without it such a deploy aborts before the gate.
 
   --seed <sha>                 record <sha> as the last deployed commit and exit
   --gate-lock-timeout MINUTES  how long to wait for the machine-wide gate lock
@@ -358,18 +377,22 @@ deploy prints the holder (pid, env, worktree, start time). The gate child
 holds the lock too, so if deploy.py is killed mid-gate the orphaned suite (and
 any worker it spawned) keeps the lock until it exits: a delay, never an
 overlap. The OS drops the lock when the last holder dies, so stale pid text
-never blocks; never delete the file. Check it with `bin/gate_lock.py status`; run a suite by hand under it
+never blocks; never delete the file. A deploy.py launched under
+`gate_lock.py run` reuses its ancestor's lock instead of waiting on it. Check it with `bin/gate_lock.py status`; run a suite by hand under it
 with `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
 The per-repo+env deploy lock (sync.DeployLock) is still taken afterwards for
 the FTP session, as before."""
 
 
 def parse_args(argv):
-    """Returns (repo_dir, env, seed_sha, gate_lock_timeout_min). Exits on bad input."""
+    """Returns (repo_dir, env, seed_sha, gate_lock_timeout_min, allow_no_sync).
+    Exits on bad input."""
     args = list(argv)
     if any(a in ("-h", "--help") for a in args):
         print(USAGE)
         sys.exit(0)
+    allow_no_sync = "--allow-no-sync" in args
+    args = [a for a in args if a != "--allow-no-sync"]
     timeout_min = gate_lock.DEFAULT_TIMEOUT_MIN
     for i, a in enumerate(args):
         if a == "--gate-lock-timeout" or a.startswith("--gate-lock-timeout="):
@@ -394,11 +417,11 @@ def parse_args(argv):
     seed_sha = None
     if len(args) == 4 and args[2] == "--seed":
         seed_sha = args[3]
-    return os.path.abspath(args[0]), args[1], seed_sha, timeout_min
+    return os.path.abspath(args[0]), args[1], seed_sha, timeout_min, allow_no_sync
 
 
 def main():
-    repo_dir, env, seed_sha, gate_lock_timeout_min = parse_args(sys.argv[1:])
+    repo_dir, env, seed_sha, gate_lock_timeout_min, allow_no_sync = parse_args(sys.argv[1:])
 
     repo_name = os.path.basename(repo_dir)
 
@@ -516,16 +539,14 @@ def main():
     # without one never touches the shared DB and should not queue behind it.
     # Never released explicitly: the OS drops the flock on any exit, including
     # every sys.exit below, so it cannot be stranded.
+    # sync.py first (fail closed, before any gate time is spent), then the gate
+    # lock. acquire_gate_lock reuses an ancestor's lock (deploy.py under
+    # `gate_lock.py run`) instead of waiting on it, and exits 75 on timeout.
+    sync = require_sync(allow_no_sync)
     _gate_lock = None
     if find_test_suite(repo_dir):
-        try:
-            _gate_lock = gate_lock.GateLock(
-                env=env, worktree=repo_dir, tool="deploy.py",
-                timeout_s=gate_lock_timeout_min * 60,
-            ).acquire()
-        except gate_lock.GateLockTimeout as e:
-            print(str(e))
-            sys.exit(gate_lock.TIMEOUT_EXIT_CODE)
+        _gate_lock = gate_lock.acquire_gate_lock(env, repo_dir, "deploy.py",
+                                                 gate_lock_timeout_min)
 
     print("Running test gate before deploy...")
     tests_passed, test_output, suite = run_test_gate(repo_dir, _gate_lock)
@@ -560,7 +581,6 @@ def main():
     # write. Two deploys interleaved on 2026-08-29 and each believed it had the
     # host to itself. flock is released by the OS when this process exits, so an
     # abort or a sys.exit below cannot strand it.
-    sync = _load_sync()
     if sync is not None:
         # 3600s, not sync.py's 300s default. Once the lock covers the whole
         # session rather than just the manifest write, 300s is SHORTER THAN A
@@ -572,8 +592,8 @@ def main():
         # Kept alongside the gate lock (not replaced): sync.py takes this same
         # per-repo+env lock on its own, without deploy.py, so it is still what
         # serializes a deploy's FTP session against a bare sync.py run. Order is
-        # always gate lock -> deploy lock, and sync.py never takes the gate lock,
-        # so the two cannot deadlock.
+        # always gate lock -> deploy lock, here and in v3 sync.py (which takes
+        # the gate lock before its DeployLock), so the two cannot deadlock.
         #
         # The old unconditional "deploy lock currently held -> pid=..." print
         # that stood here read the lock FILE, not the lock: sync.py never clears

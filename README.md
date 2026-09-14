@@ -267,6 +267,8 @@ If you manually edit YAML files to fix mistakes, always run the linter to ensure
 
 - "Is a gate running?" → `bin/gate_lock.py status` (a real lock probe; do not eyeball `ps` or the file text).
 - Running the suite by hand on the shared DB → `bin/gate_lock.py run -- php journalgpt/tests/run_suite.php`.
+- A deploy.py or sync.py started under `gate_lock.py run` reuses that lock (via `NEWMEXICOPTG_GATE_LOCK_HELD`, honoured only for a live ancestor) instead of waiting on its own parent.
+- deploy.py now aborts before the gate if it cannot import v3 `sync.py` (no DeployLock, no manifest); `--allow-no-sync` overrides for one deploy.
 - Never delete the lock file. The OS releases it when the last holder (deploy or its gate child) exits; stale pid text is informational only.
 - `corpus_train.py` and `embed_prod_missing.py` do not run a gate or touch the local DB (FTP / operations API only), so they do not take this lock.
 

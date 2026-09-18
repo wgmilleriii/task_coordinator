@@ -67,6 +67,31 @@ def ensure_worktree():
     run(["git", "clean", "-qfd", OUT_PREFIX], cwd=WT)
 
 
+# T-PTG-684: never commit a reviewer's ACCOUNT identity. The exports used to emit
+# users.full_name (reviewed_by_account on verdicts, submitted_by on batches,
+# reviewed_by on proposals) beside the reviewer_name the reviewer typed, and the
+# decision desk emitted the session email as decided_by. The server-side fix drops
+# them; this strips them here too (an email-shaped decided_by becomes "reviewer"),
+# so an older server can't write them into git.
+ACCOUNT_FIELDS = ("reviewed_by_account", "submitted_by", "reviewed_by")
+
+
+def strip_account_fields(rec):
+    out = {k: v for k, v in rec.items() if k not in ACCOUNT_FIELDS}
+    if isinstance(out.get("decided_by"), str) and "@" in out["decided_by"]:
+        out["decided_by"] = "reviewer"
+    return out
+
+
+def batch_commit_reviewer(batch):
+    """Name for an applied batch's commit message: the typed reviewer_name only.
+    Never the account full_name (submitted_by) -- T-PTG-684."""
+    name = batch.get("reviewer_name")
+    if isinstance(name, str) and name.strip() and "@" not in name:
+        return name.strip()
+    return "reviewer"
+
+
 def rec_hash(rec):
     return hashlib.sha1(json.dumps(rec, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
@@ -76,7 +101,7 @@ def append_jsonl(rel, recs):
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "a") as f:
         for r in recs:
-            f.write(json.dumps(r, sort_keys=True) + "\n")
+            f.write(json.dumps(strip_account_fields(r), sort_keys=True) + "\n")
 
 
 def commit_and_push(rel_paths, msg):
@@ -176,7 +201,7 @@ def apply_batches(env, site, token, body):
         path = result.get("path")
         if not path:
             log(f"{env}: batch {batch['id']} applied nothing"); continue
-        who = batch.get("reviewer_name") or batch.get("submitted_by") or "reviewer"
+        who = batch_commit_reviewer(batch)
         msg = (f"stage1-edit: batch #{batch['id']} ({env}) csv {batch.get('csv_number')} applied via repository\n\n"
                f"Reviewer: {who}\nComment: {batch.get('comment', '')}\nApplied {result.get('applied')} approved proposal(s) by stage1_queue_pull.py (T-PTG-663).")
         sha = commit_and_push([path], msg)

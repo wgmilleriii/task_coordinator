@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import json
+import types
 import ftplib
 import subprocess
 import urllib.error
@@ -116,6 +117,277 @@ REPO_EXCLUDES = {
         ],
     },
 }
+
+
+# --------------------------------------------------------------------------
+# ANCESTRY GUARD (2026-09-25)
+#
+# deploy.py ships the DIFF between deploy_state's last sha and HEAD, and every
+# path the diff calls D becomes an FTP DELETE. So deploying a tree that does
+# not CONTAIN the environment's tip does not merely "skip" the missing
+# commits -- it actively deletes their files off the server. That has now been
+# caught by a human twice in two days: once as a branch that had never merged
+# the environment's tip, and once as a second deploy.py queued on the gate
+# lock behind a running one, whose tree predated the version-bump commit the
+# first deploy was about to make. Both were caught by eye, seconds before the
+# upload. This belongs in the tool.
+#
+# Per repo+env, the ref whose tip HEAD must contain, as (remote, branch):
+#   newmexicoptg.org     Chip's ruling Q-8a-8 (see the prod fast-forward at the
+#                        bottom of this file): main IS production, test is test.
+#   resources_was_pmtnm  .github/workflows/deploy.yml: a push to `test` deploys
+#                        the test site; production is a workflow_dispatch on
+#                        `main`.
+#   intypiano            .github/workflows/deploy.yml deploys on push to
+#                        `master` ONLY. The repo has an origin/test branch but
+#                        no configured test deploy, so no test mapping is
+#                        claimed here -- an unverified mapping would be worse
+#                        than none, because it would be enforced.
+# A repo/env absent from this table is NOT checked, and deploy.py says so
+# rather than implying it looked.
+TRACKING_REFS = {
+    "newmexicoptg.org": {"test": ("origin", "test"), "prod": ("origin", "main")},
+    "resources_was_pmtnm": {"test": ("origin", "test"), "prod": ("origin", "main")},
+    "intypiano": {"prod": ("origin", "master")},
+}
+
+ANCESTRY_EXIT_CODE = 3   # HEAD does not contain the environment's tip
+GATE_BUSY_EXIT_CODE = 4  # another deploy.py holds the gate lock
+
+
+def get_tracking_ref(repo_name, env):
+    """(remote, branch, 'remote/branch') for this repo+env, or None."""
+    entry = TRACKING_REFS.get(repo_name, {}).get(env)
+    if not entry:
+        return None
+    remote, branch = entry
+    return remote, branch, f"{remote}/{branch}"
+
+
+def _git(cmd, cwd):
+    """A git command that is ALLOWED to fail -- run_cmd() exits the process on
+    a nonzero status, which is wrong for a probe whose failure is the answer."""
+    return subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
+
+
+def fetch_tracking_ref(repo_dir, remote, branch, out=None):
+    """Refresh the remote-tracking ref. Returns True if the fetch succeeded.
+
+    A failed fetch is NOT fatal by itself -- the check then runs against the
+    local copy of the ref, which can only be older than the truth, so it can
+    still refuse and can still pass a tree that has since fallen behind. Said
+    out loud rather than swallowed."""
+    out = out or sys.stdout
+    r = _git(f"git fetch {remote} {branch}", repo_dir)
+    if r.returncode != 0:
+        print(f"  ! git fetch {remote} {branch} FAILED ({r.stderr.strip()[:200]}); "
+              f"comparing against the local copy of {remote}/{branch}, which may be "
+              f"stale -- a pass here is weaker than a fetched one", file=out, flush=True)
+        return False
+    return True
+
+
+def ancestry_status(repo_dir, ref, head="HEAD"):
+    """(resolved, is_ancestor, missing_count).
+
+    resolved False means the ref does not exist in this worktree, so NOTHING
+    was checked -- the caller must treat that as a refusal, not a pass."""
+    if _git(f"git rev-parse --verify --quiet {ref}^{{commit}}", repo_dir).returncode != 0:
+        return False, False, None
+    ok = _git(f"git merge-base --is-ancestor {ref} {head}", repo_dir).returncode == 0
+    if ok:
+        return True, True, 0
+    cnt = _git(f"git rev-list --count {head}..{ref}", repo_dir)
+    txt = cnt.stdout.strip()
+    return True, False, int(txt) if cnt.returncode == 0 and txt.isdigit() else None
+
+
+def check_ancestry(repo_dir, repo_name, env, allow_reason=None, fetch=True,
+                   enforce=True, out=None, when=""):
+    """Refuse a deploy from a tree that does not CONTAIN the environment's tip.
+
+    Returns (tracking_ref|None, verdict) where verdict is one of 'verified',
+    'overridden: <reason>', 'not_configured' or 'REFUSED'. With enforce=True a
+    refusal exits ANCESTRY_EXIT_CODE instead of returning it."""
+    out = out or sys.stdout
+    mapping = get_tracking_ref(repo_name, env)
+    if not mapping:
+        print(f"  no tracking ref configured for {repo_name}/{env}; ancestry not checked",
+              file=out, flush=True)
+        return None, "not_configured"
+    remote, branch, ref = mapping
+    if fetch:
+        fetch_tracking_ref(repo_dir, remote, branch, out)
+    resolved, ok, missing = ancestry_status(repo_dir, ref)
+    head = _git("git rev-parse --short HEAD", repo_dir).stdout.strip()
+
+    if resolved and ok:
+        print(f"  ancestry OK{when}: HEAD ({head}) contains {ref}.", file=out, flush=True)
+        return ref, "verified"
+
+    if not resolved:
+        problem = (f"{ref} does not resolve in this worktree, so whether HEAD contains "
+                   f"the {env} tip is UNKNOWN. An unknown is not a pass.")
+        missing_txt = "unknown"
+    else:
+        problem = (f"HEAD ({head}) does NOT contain {ref}: "
+                   f"{'an unknown number of' if missing is None else missing} commit(s) "
+                   f"on {ref} are missing from this tree.")
+        missing_txt = "unknown" if missing is None else str(missing)
+
+    if allow_reason:
+        print(f"  ! --allow-non-ancestor{when}: {problem}", file=out)
+        print(f"  ! proceeding on the stated reason, which is recorded in "
+              f"deploy_state.json: {allow_reason}", file=out, flush=True)
+        return ref, f"overridden: {allow_reason}"
+
+    print("", file=out)
+    print(f"REFUSING TO DEPLOY {repo_name} to {env}{when}.", file=out)
+    print(f"  {problem}", file=out)
+    print(f"  tracking ref: {ref}   commits missing from HEAD: {missing_txt}", file=out)
+    print("  deploy.py ships the DIFF between the last deployed sha and HEAD, and a file "
+          "those commits ADDED appears in that diff as a DELETION -- deploying this tree "
+          "would REMOVE their files from the server, not merely skip them.", file=out)
+    print(f"  Fix: `git fetch {remote} {branch} && git merge {ref}` (or rebase onto it), "
+          f"then re-run. Nothing was run, locked, bumped or uploaded.", file=out)
+    print('  Override, if you know why this tree is right: '
+          '--allow-non-ancestor "<reason>" (printed and recorded).', file=out, flush=True)
+    if enforce:
+        sys.exit(ANCESTRY_EXIT_CODE)
+    return ref, "REFUSED"
+
+
+def check_gate_not_queued(wait_for_gate, path=None, out=None):
+    """Refuse to QUEUE behind another deploy.py, instead of waiting on it.
+
+    Waiting behind a RUNNING DEPLOY is how a tree goes stale while it waits:
+    the running deploy bumps version.json and COMMITS, so the moment it
+    finishes, the waiting tree no longer contains the environment's tip and
+    its diff would delete the files just shipped. Caught by hand with seconds
+    to spare on 2026-09-24.
+
+    Waiting behind a SUITE (a gate held by run_suite.php, `gate_lock.py run`,
+    sync.py, ...) is still right: a suite does not move any ref, so the tree
+    that was correct before the wait is still correct after it. The holder
+    record's tool= field is what distinguishes the two; deploy.py writes
+    tool="deploy.py" when it takes the lock (see acquire_gate_lock below).
+    A holder whose record cannot be read is treated as a deploy -- an unknown
+    is not permission."""
+    out = out or sys.stdout
+    if gate_lock.held_by_ancestor(path) is not None:
+        return  # our own ancestor (deploy.py under `gate_lock.py run`) -- not a queue
+    held, rec = gate_lock.probe(path)
+    if not held:
+        return
+    desc = gate_lock.describe_holder(rec)
+    tool = rec.get("tool") if isinstance(rec, dict) else None
+    if tool and "deploy.py" not in tool:
+        print(f"  gate lock is HELD by a non-deploy tool (tool={tool}); it moves no refs, "
+              f"so waiting is safe -> {desc}", file=out, flush=True)
+        return
+    who = (f"another deploy.py (tool={tool})" if tool
+           else "an unidentified holder (no readable tool= in the record)")
+    if wait_for_gate:
+        print(f"  ! --wait-for-gate: gate lock HELD by {who}; waiting -> {desc}", file=out)
+        print("  ! ancestry will be RE-CHECKED after the lock is acquired -- the "
+              "environment can move while you wait.", file=out, flush=True)
+        return
+    print("", file=out)
+    print(f"REFUSING TO DEPLOY: the machine-wide gate lock is HELD by {who}.", file=out)
+    print(f"  holder: {desc}", file=out)
+    print("  Queuing behind a running deploy is how a tree goes stale WHILE IT WAITS: the "
+          "running deploy bumps the version and commits, and the queued tree -- which "
+          "does not contain that commit -- then DELETES the files it just shipped.", file=out)
+    print("  Let it finish, merge the environment's tip, and re-run. To queue deliberately, "
+          f"pass --wait-for-gate (ancestry is re-checked after the wait). Nothing was run, "
+          f"locked or uploaded.", file=out, flush=True)
+    sys.exit(GATE_BUSY_EXIT_CODE)
+
+
+def compute_deployable(repo_dir, repo_name, last_sha, current_sha):
+    """(uploads, deletes, entries) for last_sha..current_sha, after exclusion.
+
+    The ONE place the deployable set is computed: --list-only calls this and so
+    does the real run, so a preview that disagrees with the deploy is not
+    possible by construction. entries is [(A|M|D, path)] in diff order."""
+    diff_output = run_cmd(f"git diff --name-status {last_sha} {current_sha}", cwd=repo_dir)
+    patterns, exclude_all_md, exclude_exact, md_allow_prefixes = get_repo_excludes(repo_name)
+    uploads, deletes, entries = [], [], []
+    for line in diff_output.split("\n"):
+        if not line:
+            continue
+        parts = line.split("\t")
+        status = parts[0]
+        filepath = parts[-1]  # for R/C this is the DESTINATION path, as before
+        if should_exclude(filepath, patterns, exclude_all_md, exclude_exact, md_allow_prefixes):
+            continue
+        if status.startswith("D"):
+            deletes.append(filepath)
+            entries.append(("D", filepath))
+        else:
+            uploads.append(filepath)
+            entries.append(("A" if status[0] in "ARC" else "M", filepath))
+    return uploads, deletes, entries
+
+
+def differing_from_ref(repo_dir, ref, paths):
+    """Of `paths`, those whose content differs between `ref` and HEAD.
+
+    Answers the question builders keep answering by hand before a deploy:
+    'is my tree byte-identical to origin/test for the files I am shipping?'"""
+    if not paths:
+        return []
+    r = _git(f"git diff --name-only {ref} HEAD", repo_dir)
+    if r.returncode != 0:
+        return None
+    changed = {line for line in r.stdout.split("\n") if line}
+    return [p for p in paths if p in changed]
+
+
+def print_deployable_set(repo_dir, repo_name, env, last_sha, current_sha, out=None):
+    """--list-only. Prints exactly what the real run would compute, then stops.
+
+    Touches no FTP connection, no lock, no version file and no deploy_state."""
+    out = out or sys.stdout
+    uploads, deletes, entries = compute_deployable(repo_dir, repo_name, last_sha, current_sha)
+    print(f"--list-only: {repo_name} {env}   {last_sha[:8]}..{current_sha[:8]}", file=out)
+    for status, path in entries:
+        print(f"{status}\t{path}", file=out)
+    print(f"  {len(entries)} deployable path(s): {len(uploads)} upload, "
+          f"{len(deletes)} DELETE.", file=out)
+
+    mapping = get_tracking_ref(repo_name, env)
+    if not mapping:
+        print(f"  no tracking ref configured for {repo_name}/{env}; ancestry not checked",
+              file=out)
+    else:
+        _remote, _branch, ref = mapping
+        resolved, ok, missing = ancestry_status(repo_dir, ref)
+        if not resolved:
+            print(f"  tracking ref {ref}: does not resolve in this worktree -- ancestry "
+                  f"NOT checked and no content comparison possible.", file=out)
+        else:
+            if ok:
+                print(f"  tracking ref {ref}: HEAD contains it.", file=out)
+            else:
+                print(f"  tracking ref {ref}: HEAD does NOT contain it -- "
+                      f"{'unknown' if missing is None else missing} commit(s) missing. "
+                      f"A real run would REFUSE (exit {ANCESTRY_EXIT_CODE}).", file=out)
+            differing = differing_from_ref(repo_dir, ref, [p for _, p in entries])
+            if differing is None:
+                print(f"  could not diff against {ref}; content comparison skipped.", file=out)
+            else:
+                print(f"  {len(differing)} of {len(entries)} path(s) differ in content from "
+                      f"{ref} ({len(entries) - len(differing)} byte-identical to it).", file=out)
+    print("  Nothing was uploaded, locked, bumped or recorded. A real run would ALSO carry "
+          "the version.json/changelog.json it commits itself.", file=out, flush=True)
+    return entries
+
+
+def record_ancestry(state, repo_name, env, tracking_ref, ancestry):
+    """Write the guard's verdict beside the sha it belongs to."""
+    state[repo_name][f"{env}_tracking_ref"] = tracking_ref
+    state[repo_name][f"{env}_ancestry"] = ancestry
 
 
 # sync.py owns the sha256 manifest and the cross-agent deploy lock. It still
@@ -351,7 +623,27 @@ def run_cmd(cmd, cwd=None):
         sys.exit(1)
     return result.stdout.strip()
 
-USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] [--gate-lock-timeout MINUTES] [--allow-no-sync]
+USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] [--list-only]
+       [--gate-lock-timeout MINUTES] [--allow-no-sync] [--allow-non-ancestor "<reason>"]
+       [--wait-for-gate]
+
+  --list-only                  print the deployable set (A/M/D, one path per
+                               line) exactly as a real run would compute it,
+                               plus how many of those paths differ in content
+                               from the environment's tracking ref, then exit 0.
+                               Touches no FTP, no lock, no version file and no
+                               deploy_state.json.
+
+  --allow-non-ancestor "<why>" deploy even though HEAD does not contain the
+                               environment's tracking ref. The reason is printed
+                               and written into deploy_state.json. Without it
+                               such a deploy is REFUSED with exit 3.
+
+  --wait-for-gate              queue on the gate lock even when the holder is
+                               another deploy.py. Without it that case is
+                               REFUSED immediately with exit 4 (waiting on a
+                               deploy makes your tree stale while you wait).
+                               Ancestry is re-checked after the lock is taken.
 
   --allow-no-sync              deploy even if sync.py cannot be imported from the
                                v3 checkout (no DeployLock, no manifest update).
@@ -362,6 +654,15 @@ USAGE = """Usage: deploy.py <repo_dir> <environment (test|prod)> [--seed <sha>] 
                                (default 60; a prod deploy has taken ~50). On
                                timeout the deploy exits 75 having run and
                                uploaded nothing.
+
+Ancestry guard: before the gate lock is taken, deploy.py fetches the
+environment's tracking ref (TRACKING_REFS, e.g. newmexicoptg.org test ->
+origin/test, prod -> origin/main) and refuses unless HEAD CONTAINS it. A tree
+missing the environment's tip does not skip those commits -- their files appear
+in this deploy's diff as deletions and would be deleted off the server. A
+repo/env with no mapping prints "ancestry not checked" and continues. The check
+is re-run after the gate lock is acquired, because the environment can move
+while you wait.
 
 Gate lock: before the test gate runs, deploy.py takes ONE machine-wide flock
 (~/.cache/newmexicoptg-gate.lock, override $NEWMEXICOPTG_GATE_LOCK) shared by
@@ -378,44 +679,79 @@ The per-repo+env deploy lock (sync.DeployLock) is still taken afterwards for
 the FTP session, as before."""
 
 
+def _take_valued_flag(args, name):
+    """Remove `--name VALUE` or `--name=VALUE` from args; returns VALUE or None.
+
+    A VALUE that looks like another flag is an error, not a value: swallowing
+    the next flag would silently disarm it (e.g. --allow-non-ancestor
+    --wait-for-gate would have taken '--wait-for-gate' as the reason and then
+    never waited)."""
+    for i, a in enumerate(args):
+        if a == name:
+            if i + 1 >= len(args):
+                print(f'{name} needs a value, e.g. {name} "why this tree is right"')
+                sys.exit(1)
+            val = args[i + 1]
+            if val.startswith("--"):
+                print(f"{name} needs a value, but the next argument is the flag {val!r}")
+                sys.exit(1)
+            del args[i:i + 2]
+            return val
+        if a.startswith(name + "="):
+            val = a.split("=", 1)[1]
+            del args[i]
+            return val
+    return None
+
+
 def parse_args(argv):
-    """Returns (repo_dir, env, seed_sha, gate_lock_timeout_min, allow_no_sync).
+    """Returns a namespace: repo_dir, env, seed_sha, gate_lock_timeout_min,
+    allow_no_sync, allow_non_ancestor, wait_for_gate, list_only.
     Exits on bad input."""
     args = list(argv)
     if any(a in ("-h", "--help") for a in args):
         print(USAGE)
         sys.exit(0)
     allow_no_sync = "--allow-no-sync" in args
-    args = [a for a in args if a != "--allow-no-sync"]
+    wait_for_gate = "--wait-for-gate" in args
+    list_only = "--list-only" in args
+    args = [a for a in args
+            if a not in ("--allow-no-sync", "--wait-for-gate", "--list-only")]
+    allow_non_ancestor = _take_valued_flag(args, "--allow-non-ancestor")
+    if allow_non_ancestor is not None and not allow_non_ancestor.strip():
+        print('--allow-non-ancestor needs a REASON, e.g. '
+              '--allow-non-ancestor "hotfix branch, tip merged by hand and verified"')
+        sys.exit(1)
+    timeout_val = _take_valued_flag(args, "--gate-lock-timeout")
     timeout_min = gate_lock.DEFAULT_TIMEOUT_MIN
-    for i, a in enumerate(args):
-        if a == "--gate-lock-timeout" or a.startswith("--gate-lock-timeout="):
-            if "=" in a:
-                val = a.split("=", 1)[1]
-                del args[i]
-            else:
-                if i + 1 >= len(args):
-                    print(USAGE)
-                    sys.exit(1)
-                val = args[i + 1]
-                del args[i:i + 2]
-            try:
-                timeout_min = float(val)
-            except ValueError:
-                print(f"--gate-lock-timeout needs a number of minutes, got {val!r}")
-                sys.exit(1)
-            break
+    if timeout_val is not None:
+        try:
+            timeout_min = float(timeout_val)
+        except ValueError:
+            print(f"--gate-lock-timeout needs a number of minutes, got {timeout_val!r}")
+            sys.exit(1)
     if len(args) < 2:
         print(USAGE)
         sys.exit(1)
     seed_sha = None
     if len(args) == 4 and args[2] == "--seed":
         seed_sha = args[3]
-    return os.path.abspath(args[0]), args[1], seed_sha, timeout_min, allow_no_sync
+    return types.SimpleNamespace(
+        repo_dir=os.path.abspath(args[0]),
+        env=args[1],
+        seed_sha=seed_sha,
+        gate_lock_timeout_min=timeout_min,
+        allow_no_sync=allow_no_sync,
+        allow_non_ancestor=allow_non_ancestor,
+        wait_for_gate=wait_for_gate,
+        list_only=list_only,
+    )
 
 
 def main():
-    repo_dir, env, seed_sha, gate_lock_timeout_min, allow_no_sync = parse_args(sys.argv[1:])
+    opts = parse_args(sys.argv[1:])
+    repo_dir, env, seed_sha = opts.repo_dir, opts.env, opts.seed_sha
+    gate_lock_timeout_min, allow_no_sync = opts.gate_lock_timeout_min, opts.allow_no_sync
 
     repo_name = os.path.basename(repo_dir)
 
@@ -442,7 +778,10 @@ def main():
     ftp_dir, _, _ = ftp_var("DIR")
     ftp_dir = ftp_dir or "/"
 
-    if not all([host, user, passwd]):
+    # --list-only never opens a connection, so it must not require credentials:
+    # a preview you can only run on a machine configured to deploy is not a
+    # preview anyone will run.
+    if not all([host, user, passwd]) and not opts.list_only:
         print(f"Missing FTP credentials for {repo_name} {env}. "
               f"Set {host_specific}/FTP_USER_.../FTP_PASS_.../FTP_DIR_... "
               f"(or the generic {host_generic}/FTP_USER_.../FTP_PASS_...) in .env.")
@@ -471,7 +810,20 @@ def main():
         sys.exit(1)
 
     current_sha = run_cmd("git rev-parse HEAD", cwd=repo_dir)
-    
+
+    # --list-only answers "what would this deploy actually send?" without being
+    # a deploy. It comes FIRST, before the ancestry guard, on purpose: the tree
+    # you most want to inspect is the one that would be refused.
+    if opts.list_only:
+        print_deployable_set(repo_dir, repo_name, env, last_sha, current_sha)
+        sys.exit(0)
+
+    # ANCESTRY GUARD -- before the gate lock, before the FTP session, before
+    # anything is bumped or committed. See TRACKING_REFS at the top of this file
+    # for why a non-containing tree is a deletion, not an omission.
+    tracking_ref, ancestry = check_ancestry(repo_dir, repo_name, env,
+                                            opts.allow_non_ancestor)
+
     if last_sha == current_sha:
         # "Up to date" is a claim about the DATABASE as well as the files. If
         # the last deploy's migration trigger failed, its exit 2 was loud --
@@ -496,29 +848,15 @@ def main():
         sys.exit(0)
 
     print(f"Deploying changes from {last_sha} to {current_sha}...")
-    diff_output = run_cmd(f"git diff --name-status {last_sha} {current_sha}", cwd=repo_dir)
-    
-    files_to_upload = []
-    files_to_delete = []
-    exclude_patterns, exclude_all_md, exclude_exact, md_allow_prefixes = get_repo_excludes(repo_name)
-
-    for line in diff_output.split("\n"):
-        if not line: continue
-        parts = line.split("\t")
-        status = parts[0]
-        filepath = parts[-1]
-
-        if should_exclude(filepath, exclude_patterns, exclude_all_md, exclude_exact, md_allow_prefixes):
-            continue
-            
-        if status.startswith("D"):
-            files_to_delete.append(filepath)
-        else:
-            files_to_upload.append(filepath)
+    # Same helper --list-only prints from, so the preview cannot drift from
+    # what is actually sent.
+    files_to_upload, files_to_delete, _entries = compute_deployable(
+        repo_dir, repo_name, last_sha, current_sha)
 
     if not files_to_upload and not files_to_delete:
         print("No deployable files changed. Updating state.")
         state[repo_name][env] = current_sha
+        record_ancestry(state, repo_name, env, tracking_ref, ancestry)
         with open(state_file, "w") as f:
             json.dump(state, f, indent=2)
         sys.exit(0)
@@ -539,8 +877,19 @@ def main():
     sync = require_sync(allow_no_sync)
     _gate_lock = None
     if find_test_suite(repo_dir):
+        # NO QUEUING BEHIND A DEPLOY (2026-09-25). Checked at the last possible
+        # moment -- immediately before we would start waiting -- because that is
+        # when the answer is most accurate. A suite holder is still waited on.
+        check_gate_not_queued(opts.wait_for_gate)
         _gate_lock = gate_lock.acquire_gate_lock(env, repo_dir, "deploy.py",
                                                  gate_lock_timeout_min)
+        # Acquiring may have taken an hour (a prod gate has run ~50 min), and a
+        # tree that contained the environment's tip when we started need not
+        # contain it now. Re-check with a fresh fetch before spending gate time
+        # or touching the server.
+        tracking_ref, ancestry = check_ancestry(
+            repo_dir, repo_name, env, opts.allow_non_ancestor,
+            when=" (re-checked after acquiring the gate lock)")
 
     print("Running test gate before deploy...")
     tests_passed, test_output, suite = run_test_gate(repo_dir, _gate_lock)
@@ -862,6 +1211,7 @@ def main():
     # decides the BANNER and the exit code instead -- the two things a human
     # or a calling script actually reads.
     state[repo_name][env] = current_sha
+    record_ancestry(state, repo_name, env, tracking_ref, ancestry)
     if migration_verdict in ("succeeded", "not_applicable"):
         state[repo_name].pop(f"{env}_migrations_pending", None)
     with open(state_file, "w") as f:

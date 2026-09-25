@@ -358,13 +358,19 @@ class DeployTests(Base):
 
 
     def test_deploy_cli_parses_flags(self):
+        # parse_args returns a namespace since the ancestry-guard flags landed
+        # (2026-09-25); it used to return a 5-tuple.
         import deploy
-        self.assertEqual(deploy.parse_args(["/r", "test"])[3], 60)
-        self.assertEqual(deploy.parse_args(["/r", "prod", "--gate-lock-timeout", "5"]),
-                         ("/r", "prod", None, 5.0, False))
-        self.assertEqual(
-            deploy.parse_args(["/r", "test", "--gate-lock-timeout=2", "--seed", "abc", "--allow-no-sync"]),
-            ("/r", "test", "abc", 2.0, True))
+        self.assertEqual(deploy.parse_args(["/r", "test"]).gate_lock_timeout_min, 60)
+        o = deploy.parse_args(["/r", "prod", "--gate-lock-timeout", "5"])
+        self.assertEqual((o.repo_dir, o.env, o.seed_sha, o.gate_lock_timeout_min,
+                          o.allow_no_sync), ("/r", "prod", None, 5.0, False))
+        self.assertEqual((o.allow_non_ancestor, o.wait_for_gate, o.list_only),
+                         (None, False, False))
+        o = deploy.parse_args(["/r", "test", "--gate-lock-timeout=2", "--seed", "abc",
+                               "--allow-no-sync"])
+        self.assertEqual((o.repo_dir, o.env, o.seed_sha, o.gate_lock_timeout_min,
+                          o.allow_no_sync), ("/r", "test", "abc", 2.0, True))
 
     def test_missing_sync_fails_closed(self):
         import deploy

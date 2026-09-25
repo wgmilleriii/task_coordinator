@@ -261,6 +261,22 @@ If you manually edit YAML files to fix mistakes, always run the linter to ensure
 
 ---
 
+### Deploys: three refusals before anything is uploaded
+
+`bin/deploy.py` ships the **diff** between the last deployed sha and HEAD, so a file that is missing from your tree is an FTP **deletion**, not an omission. Three flags and two refusals exist because of that:
+
+| | |
+|---|---|
+| `--list-only` | Print the deployable set (`A`/`M`/`D`, one path per line) exactly as a real run computes it, plus how many of those paths differ in content from the environment's tracking ref, then exit 0. Touches no FTP, no lock, no version file, no `deploy_state.json`, and needs no FTP credentials. Run it before every deploy. |
+| `--allow-non-ancestor "<reason>"` | Deploy although HEAD does not contain the environment's tip. The reason is printed and recorded in `deploy_state.json`. |
+| `--wait-for-gate` | Queue on the gate lock even when another **deploy.py** holds it. |
+
+**Refusal 1 — HEAD does not contain the environment's tip (exit 3).** Before the gate lock, deploy.py fetches the environment's tracking ref (`TRACKING_REFS` in `bin/deploy.py`: newmexicoptg.org `test → origin/test`, `prod → origin/main`; resources_was_pmtnm the same; intypiano `prod → origin/master`) and refuses unless `git merge-base --is-ancestor <ref> HEAD` passes, naming the ref and how many commits are missing. A ref that does not resolve is also a refusal — an unknown is not a pass. A repo/env with **no** mapping prints `no tracking ref configured for <repo>/<env>; ancestry not checked` and continues. The check is **re-run after the gate lock is acquired**, because a prod gate has held that lock ~50 minutes and the environment can move while you wait. When the worktree directory is not named after the repo (`leipzig-783`), the mapping is resolved through `origin`'s URL and deploy.py says which name it used.
+
+**Refusal 2 — another deploy.py holds the gate lock (exit 4).** deploy.py refuses to *queue behind a deploy* instead of waiting on it: the running deploy bumps the version and commits, so by the time the lock is free the waiting tree no longer contains the tip and its diff would delete what was just shipped. A holder whose lock record says `tool=` anything else (`run_suite`, `gate_lock.py run`, `sync.py`) moves no refs and is still waited on as before; an unreadable holder record is treated as a deploy.
+
+`deploy_state.json` records `<env>_tracking_ref` and `<env>_ancestry` (`verified` / `overridden: <reason>` / `not_configured`) beside the sha. Tests: `python3 bin/test_deploy_guards.py` (throwaway repo, fake remote, sockets blocked — never deploys anything).
+
 ### Deploys and the shared test-DB gate lock
 
 `bin/deploy.py` runs journalgpt's `run_suite.php` against the shared local MAMP DB `journal_ai_test` before uploading. Two gates on that DB at once corrupt each other's fixture rows, so deploy.py takes one machine-wide flock (`~/.cache/newmexicoptg-gate.lock`) before the gate, for test AND prod deploys, and holds it through upload and remote migrate. A second deploy waits (default 60 min, since a prod deploy has taken ~50; `--gate-lock-timeout MINUTES`), printing who holds it, and exits 75 on timeout having done nothing. The gate child holds the lock as well, so if deploy.py is killed mid-gate the orphaned suite (and any background worker it spawned) keeps the lock until it exits. That delays the next gate but never lets two overlap; if `status` shows HELD with a NOT RUNNING pid, find the orphan with `lsof ~/.cache/newmexicoptg-gate.lock`.

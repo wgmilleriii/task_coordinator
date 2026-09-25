@@ -102,7 +102,7 @@ class Fixture:
     def __init__(self):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
-        self.remote = root / "remote.git"
+        self.remote = root / "newmexicoptg.org.git"
         self.repo = root / "work" / "newmexicoptg.org"
         self.engine = root / "engine"
         self.pythonpath = root / "pypath"
@@ -244,6 +244,33 @@ class SocketBlockerTest(Base):
 
 
 class TrackingRefTests(Base):
+    def test_worktree_named_for_a_task_still_resolves_via_origin(self):
+        """Deploys run from worktrees named for the task (train-45,
+        leipzig-783). The basename has no mapping; origin's URL does."""
+        import io
+        buf = io.StringIO()
+        self.assertEqual(
+            deploy.resolve_repo_identity(self.fx.repo, "leipzig-783", buf),
+            "newmexicoptg.org")
+        self.assertIn("origin's URL says this is 'newmexicoptg.org'", buf.getvalue())
+        # A name that IS mapped is used as-is, with nothing printed.
+        buf = io.StringIO()
+        self.assertEqual(
+            deploy.resolve_repo_identity(self.fx.repo, "newmexicoptg.org", buf),
+            "newmexicoptg.org")
+        self.assertEqual(buf.getvalue(), "")
+
+    def test_unknown_repo_with_no_matching_origin_stays_unknown(self):
+        import io
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        git(tmp.name, "init", "-q", "unrelated")
+        buf = io.StringIO()
+        self.assertEqual(
+            deploy.resolve_repo_identity(Path(tmp.name) / "unrelated", "unrelated", buf),
+            "unrelated")
+        self.assertEqual(buf.getvalue(), "")
+
     def test_mapping_is_the_one_we_claim(self):
         self.assertEqual(deploy.get_tracking_ref("newmexicoptg.org", "test"),
                          ("origin", "test", "origin/test"))
@@ -305,7 +332,14 @@ class AncestryGuardTests(Base):
         self.assertIn("tip merged by hand", text)
 
     def test_unmapped_repo_says_so_and_continues(self):
-        out, text = self.capture(deploy.check_ancestry, self.fx.repo,
+        # A repo with no mapping AND no origin that resolves to one. (Against
+        # the fixture repo this would now resolve through origin's URL, which
+        # is the worktree case tested in TrackingRefTests.)
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        git(tmp.name, "init", "-q", "some-other-repo")
+        other = Path(tmp.name) / "some-other-repo"
+        out, text = self.capture(deploy.check_ancestry, other,
                                  "some-other-repo", "test")
         self.assertEqual(out, (None, "not_configured"))
         self.assertIn("no tracking ref configured for some-other-repo/test", text)

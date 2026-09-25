@@ -155,6 +155,36 @@ ANCESTRY_EXIT_CODE = 3   # HEAD does not contain the environment's tip
 GATE_BUSY_EXIT_CODE = 4  # another deploy.py holds the gate lock
 
 
+def resolve_repo_identity(repo_dir, repo_name, out=None):
+    """The name to look up in TRACKING_REFS.
+
+    deploy.py takes its repo name from the DIRECTORY BASENAME, and deploys are
+    increasingly run from worktrees named for the task rather than the repo
+    (train-45, leipzig-783). Keying the ancestry guard on the basename alone
+    would report "no tracking ref configured" for exactly the case the guard
+    exists to cover. So when the basename has no mapping, fall back to the
+    basename of origin's URL -- and say out loud which name was used, because
+    a guard that silently picks a different subject is worse than one that
+    does not run.
+
+    Only the ANCESTRY mapping is resolved this way. The deploy_state key and
+    the exclusion rules still come from the directory basename, unchanged."""
+    if repo_name in TRACKING_REFS:
+        return repo_name
+    r = _git("git remote get-url origin", repo_dir)
+    if r.returncode != 0:
+        return repo_name
+    cand = r.stdout.strip().rstrip("/").rsplit("/", 1)[-1].rsplit(":", 1)[-1]
+    if cand.endswith(".git"):
+        cand = cand[:-4]
+    if cand in TRACKING_REFS:
+        print(f"  directory is named {repo_name!r}, which has no tracking-ref mapping; "
+              f"origin's URL says this is {cand!r} -- using that mapping",
+              file=out or sys.stdout, flush=True)
+        return cand
+    return repo_name
+
+
 def get_tracking_ref(repo_name, env):
     """(remote, branch, 'remote/branch') for this repo+env, or None."""
     entry = TRACKING_REFS.get(repo_name, {}).get(env)
@@ -210,6 +240,7 @@ def check_ancestry(repo_dir, repo_name, env, allow_reason=None, fetch=True,
     'overridden: <reason>', 'not_configured' or 'REFUSED'. With enforce=True a
     refusal exits ANCESTRY_EXIT_CODE instead of returning it."""
     out = out or sys.stdout
+    repo_name = resolve_repo_identity(repo_dir, repo_name, out)
     mapping = get_tracking_ref(repo_name, env)
     if not mapping:
         print(f"  no tracking ref configured for {repo_name}/{env}; ancestry not checked",
@@ -356,7 +387,7 @@ def print_deployable_set(repo_dir, repo_name, env, last_sha, current_sha, out=No
     print(f"  {len(entries)} deployable path(s): {len(uploads)} upload, "
           f"{len(deletes)} DELETE.", file=out)
 
-    mapping = get_tracking_ref(repo_name, env)
+    mapping = get_tracking_ref(resolve_repo_identity(repo_dir, repo_name, out), env)
     if not mapping:
         print(f"  no tracking ref configured for {repo_name}/{env}; ancestry not checked",
               file=out)

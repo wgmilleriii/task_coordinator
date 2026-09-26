@@ -90,6 +90,13 @@ REPO_EXCLUDES = {
             # Agent working state for the article-cleanup pipeline (diffs,
             # ledgers, verdicts). 613 such files were pending on 2026-09-05.
             "journalgpt/corpus/qc_staging/",
+            # Cut maps (map.json, regions/*.txt, index_keys.json) are INPUTS to the
+            # local cutter (bin/cut_map.py, page_mode_ingest.py, pull_markups.py);
+            # no served PHP reads them (grep over journalgpt/*.php, lib/, api/ on
+            # 2026-09-25: zero hits). A Path C deploy was on course to spend ~8 h
+            # FTPing 12,000 region files the site never opens. Excluded by the COO
+            # under the deploy-process charter (Chip, 2026-09-25).
+            "journalgpt/corpus/cut_maps/",
         ],
         "exclude_all_md": True,
         "extra_exact": [],

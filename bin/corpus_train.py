@@ -288,11 +288,19 @@ def build_manifest(repo_dir, ref, changes, ftp, ftp_dir):
             if prod_size is None:
                 action = "upload"
             elif local_size is not None and local_size == prod_size:
-                # Size match is a floor, not identity (same caveat as
-                # deploy.py's own post-upload check) -- this tool is LIST-only
-                # by design, so this is as far as it can verify without an
-                # RETR/download the task explicitly rules out.
+                # Size match is a floor, not identity. 2026-09-26: the
+                # ASPT-1950-01 repair train carried a one-digit OCR fix
+                # (.80888 -> .80883) that left the file the same size, and
+                # this branch marked it skip-identical -- the fix would never
+                # have reached prod. So a size match now costs one RETR and a
+                # byte comparison; only a truly identical file is skipped. A
+                # fake ftp without retrbinary (tests) keeps the old floor.
                 action = "skip-identical"
+                if hasattr(ftp, "retrbinary") and local_path.exists():
+                    remote_bytes = bytearray()
+                    ftp.retrbinary(f"RETR {remote_path}", remote_bytes.extend)
+                    if bytes(remote_bytes) != local_path.read_bytes():
+                        action = "upload"
             else:
                 action = "upload"
 

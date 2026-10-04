@@ -571,5 +571,36 @@ class StateRecordTests(Base):
                                       "prod_ancestry": "verified"})
 
 
+class ExcludeIncomingTests(unittest.TestCase):
+    """journalgpt/corpus/incoming/ holds intake that no served PHP reads (T-PTG-971:
+    12 ChatGPT package zips and ~400 extracted files, all non-.md, were NOT excluded
+    and a deploy of that tree would have uploaded them). Calls the real
+    should_exclude() with the real newmexicoptg.org rules; no mocks."""
+
+    def excluded(self, path):
+        pat, all_md, exact, allow = deploy.get_repo_excludes("newmexicoptg.org")
+        return deploy.should_exclude(path, pat, all_md, exact, allow)
+
+    def test_incoming_non_md_files_are_excluded(self):
+        # .md is already excluded by exclude_all_md, so the probes must be non-.md
+        for p in ("journalgpt/corpus/incoming/AGPT-1913-chatgpt/AGPT-1913-01-article-package.zip",
+                  "journalgpt/corpus/incoming/AGPT-1913-chatgpt/extracted/AGPT-1913-01/x/manifest.json",
+                  "journalgpt/corpus/incoming/AGPT-1913-chatgpt/extracted/AGPT-1913-01/x/articles/01.txt",
+                  "journalgpt/corpus/incoming/AGPT-1913-chatgpt/extracted/AGPT-1913-01/x/figures/a.png"):
+            with self.subTest(path=p):
+                self.assertTrue(self.excluded(p))
+
+    def test_discriminates_served_paths_still_ship(self):
+        # a test that cannot fail proves nothing: these must stay deployable
+        for p in ("journalgpt/index.php", "journalgpt/corpus/articles_index.json",
+                  "journalgpt/corpus/csv_number_index.json"):
+            with self.subTest(path=p):
+                self.assertFalse(self.excluded(p))
+
+    def test_existing_neighbour_pattern_untouched(self):
+        self.assertTrue(self.excluded("journalgpt/corpus/cut_maps/x/map.json"))
+        self.assertTrue(self.excluded("journalgpt/corpus/qc_staging/x.jsonl"))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

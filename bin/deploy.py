@@ -97,6 +97,11 @@ REPO_EXCLUDES = {
             # FTPing 12,000 region files the site never opens. Excluded by the COO
             # under the deploy-process charter (Chip, 2026-09-25).
             "journalgpt/corpus/cut_maps/",
+            # Intake and provenance pins (e.g. the 12 ChatGPT 1913 package zips and
+            # their extraction, T-PTG-971): read by no served PHP, and a deploy ships
+            # a whole tree. Found by ansell 2026-10-04: 439 of 489 paths on
+            # review-1913-inventory were NOT excluded here (COO order R-101-4).
+            "journalgpt/corpus/incoming/",
         ],
         "exclude_all_md": True,
         "extra_exact": [],

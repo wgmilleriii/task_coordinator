@@ -20,6 +20,8 @@ import corpus_train as ct  # noqa: E402
 from test_corpus_train import FakeFTP, TinyGitRepo  # noqa: E402
 
 B = "journalgpt/corpus/article_html/"
+FRESH = '{"generated_at": "2099-01-01T00:00:00+00:00", "paragraphs": ["fixture"]}'
+OLD = '{"generated_at": "2000-01-01T00:00:00+00:00"}'
 MD = "journalgpt/corpus/articles/PTJ-2022-10/3825.md"
 
 
@@ -79,7 +81,7 @@ class ChangesTests(ScopeReset):
         self.repo = TinyGitRepo()
         self.addCleanup(self.repo.cleanup)
         for c in ("78", "215", "9"):
-            self.repo.write(f"{B}{c}.json", '{"c":%s}' % c)
+            self.repo.write(f"{B}{c}.json", FRESH)
         self.repo.write(MD, "x")
         self.repo.write("deploy.py", "x")
         self.sha = self.repo.commit("seed")
@@ -111,14 +113,101 @@ class ChangesTests(ScopeReset):
                             ["journalgpt/corpus/articles/PTJ-2022-10/nope.md"])
 
 
+GOOD_TEXT = "the quick brown fox jumps over the lazy dog while the band plays on and on tonight " * 5
+STALE_TEXT = GOOD_TEXT + " haedrich obituary memorial service will be held at the chapel on friday afternoon " * 4
+
+
+def bundle(text):
+    return json.dumps({"generated_at": "2026-01-01T00:00:00+00:00", "paragraphs": [text]})
+
+
+class StateDirTests(unittest.TestCase):
+    def test_worktree_resolves_to_the_root_not_itself(self):
+        repo = TinyGitRepo()
+        self.addCleanup(repo.cleanup)
+        repo.write("a", "x")
+        repo.commit("seed")
+        wt = Path(tempfile.mkdtemp(prefix="ct_wt_")) / "wt"
+        repo._run(f"git worktree add -q -b side {wt}")
+        self.addCleanup(lambda: __import__("shutil").rmtree(wt.parent, ignore_errors=True))
+        self.assertEqual(ct.resolve_state_dir(str(wt)).resolve(), Path(repo.dir).resolve())
+        self.assertEqual(ct.resolve_state_dir(repo.dir).resolve(), Path(repo.dir).resolve())
+
+    def test_unresolvable_root_refuses(self):
+        with self.assertRaises(SystemExit):
+            ct.resolve_state_dir(tempfile.mkdtemp(prefix="ct_nogit_"))
+
+    def test_override_wins(self):
+        ct.STATE_DIR_OVERRIDE = "/tmp/x"
+        self.addCleanup(lambda: setattr(ct, "STATE_DIR_OVERRIDE", None))
+        self.assertEqual(ct.resolve_state_dir(), Path("/tmp/x"))
+
+
+class StalenessTests(ScopeReset):
+    """R-132-9: a bundle holding text its .md no longer has must not ship."""
+    def setUp(self):
+        super().setUp()
+        self.repo = TinyGitRepo()
+        self.addCleanup(self.repo.cleanup)
+
+    def _seed(self, bundle_json, md_text=GOOD_TEXT, md_has_csv=True):
+        self.repo.write(f"{B}78.json", bundle_json)
+        if md_has_csv:
+            self.repo.write("journalgpt/corpus/articles/PTJ-1980-01/a.md",
+                            f"---\ncsv_number: 78\n---\n{md_text}")
+        return self.repo.commit("seed")
+
+    def test_bundle_with_text_the_md_lacks_is_refused(self):
+        sha = self._seed(bundle(STALE_TEXT))
+        stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")
+        self.assertTrue(stale, note)
+        with self.assertRaises(SystemExit):
+            ct.bundle_changes(self.repo.dir, sha, ["78"])
+
+    def test_matching_bundle_passes_and_note_states_the_number(self):
+        sha = self._seed(bundle(GOOD_TEXT))
+        stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")
+        self.assertFalse(stale, note)
+        self.assertIn("0.0%", note)
+        self.assertEqual(ct.bundle_changes(self.repo.dir, sha, ["78"]), [("A", f"{B}78.json")])
+
+    def test_old_generated_at_alone_does_not_refuse(self):
+        """The date proxy was discarded: bundles legitimately predate their md's commit."""
+        sha = self._seed(bundle(GOOD_TEXT))
+        self.assertFalse(ct.bundle_staleness(self.repo.dir, sha, "78")[0])
+
+    def test_unindexed_sibling_text_counts_when_it_carries_the_csv(self):
+        self.repo.write(f"{B}78.json", bundle(STALE_TEXT))
+        self.repo.write("journalgpt/corpus/articles/PTJ-1980-01/a.md", f"---\ncsv_number: 78\n---\n{GOOD_TEXT}")
+        self.repo.write("journalgpt/corpus/articles/PTJ-1980-01/a-unindexed-back-matter.md",
+                        f"---\ncsv_number: 78\n---\n{STALE_TEXT}")
+        sha = self.repo.commit("seed")
+        self.assertFalse(ct.bundle_staleness(self.repo.dir, sha, "78")[0])
+
+    def test_no_md_is_noted_not_refused(self):
+        sha = self._seed(bundle(STALE_TEXT), md_has_csv=False)
+        stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")
+        self.assertFalse(stale)
+        self.assertIn("not checkable", note)
+
+    def test_paths_mode_cannot_smuggle_a_stale_bundle(self):
+        sha = self._seed(bundle(STALE_TEXT))
+        with self.assertRaises(SystemExit):
+            ct.path_changes(self.repo.dir, sha, [f"{B}78.json"])
+
+    def test_bundle_without_paragraphs_refused(self):
+        sha = self._seed("{}")
+        self.assertTrue(ct.bundle_staleness(self.repo.dir, sha, "78")[0])
+
+
 class CallSiteNegativeControls(ScopeReset):
     """The upload loop itself must refuse a path no flag named."""
     def setUp(self):
         super().setUp()
         self.repo = TinyGitRepo()
         self.addCleanup(self.repo.cleanup)
-        self.repo.write(f"{B}78.json", "{}")
-        self.repo.write(f"{B}215.json", "{}")
+        self.repo.write(f"{B}78.json", FRESH)
+        self.repo.write(f"{B}215.json", FRESH)
         self.sha = self.repo.commit("seed")
 
     def test_build_manifest_refuses_unnamed_bundle(self):
@@ -182,7 +271,7 @@ class MainDryRunTests(ScopeReset):
         self.repo = TinyGitRepo()
         self.addCleanup(self.repo.cleanup)
         for c in ("78", "215", "9"):
-            self.repo.write(f"{B}{c}.json", "{}")
+            self.repo.write(f"{B}{c}.json", FRESH)
         self.sha = self.repo.commit("seed")
         self.ftp = FakeFTP()
         self._o2 = (ct.connect_ftp, ct.load_env, ct.ftp_credentials, sys.argv)
@@ -252,6 +341,15 @@ class MainDryRunTests(ScopeReset):
         code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test")
         self.assertEqual(code, 1)
         self.assertIn("working tree differs", out)
+        self.assertEqual(self.ftp.stored, {})
+
+    def test_second_file_dirty_refused(self):
+        """Reviewer's survivor mutation: a first-file-only tree check passes the first test."""
+        (Path(self.repo.dir) / f"{B}215.json").write_text('{"edited": true}')
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78,215", "--env", "test")
+        self.assertEqual(code, 1)
+        self.assertIn("working tree differs", out)
+        self.assertIn("215.json", out)
         self.assertEqual(self.ftp.stored, {})
 
     def test_range_refused_in_bundles_mode(self):

@@ -64,6 +64,11 @@ USAGE
   # never reached the server cannot otherwise ship). Never overwrites.
   corpus_train.py <repo_dir> <ref> --paths journalgpt/corpus/articles/PTJ-2022-10/3825.md
 
+NOTES. The ledger is written to the repo ROOT, not beside the script (a worktree
+run would otherwise strand it). A PARTIAL upload (some files stored, then a
+problem) is still ledgered as shipped and exits 1 -- pre-existing on the .md
+path; read the PROBLEMS list before trusting the ledger entry.
+
 reviews.json shape: a JSON list of {"reviewer": "...", "sha": "...",
 "verdict": "APPROVE"} objects. At least three DISTINCT reviewer names
 must APPROVE the exact SHA being executed.
@@ -245,9 +250,31 @@ def warn_if_csv_index_stale(repo_dir, ref):
     return True
 
 
+STATE_DIR_OVERRIDE = None  # --state-dir
+
+
+def resolve_state_dir(script_dir=None):
+    """Where the ledger lives: the REAL repo root, never a worktree's copy.
+    Review of kestrel-1012: the ledger was written beside the script, so a run
+    from a worktree stranded its record outside the root's corpus_deploy_state*.json
+    and the next bare-ref train would have diffed from a stale base. The root is
+    the parent of `git rev-parse --git-common-dir` (the same for every worktree
+    of the repo). Refuses (SystemExit) when it cannot be determined."""
+    if STATE_DIR_OVERRIDE:
+        return Path(STATE_DIR_OVERRIDE)
+    script_dir = script_dir or os.path.dirname(os.path.abspath(__file__))
+    r = subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                       cwd=script_dir, capture_output=True, text=True)
+    if r.returncode != 0 or not r.stdout.strip():
+        print("Refused: cannot resolve the task_coordinator repo root for the ledger; "
+              "pass --state-dir <dir>.")
+        sys.exit(1)
+    return Path(r.stdout.strip()).parent
+
+
 def state_file_path():
     name = STATE_FILE_NAME_TEST if ENV == "test" else STATE_FILE_NAME
-    return Path(os.path.dirname(__file__)).parent / name
+    return resolve_state_dir() / name
 
 
 def load_state():
@@ -408,6 +435,12 @@ def bundle_changes(repo_dir, ref, csvs):
         if not _blob_exists(repo_dir, ref, path):
             print(f"--bundles refused: {path} does not exist at {ref}.")
             sys.exit(1)
+        stale, note = bundle_staleness(repo_dir, ref, csv)
+        if stale:
+            print(f"--bundles refused: csv {csv}: {note}. Regenerate the bundle from the .md "
+                  f"the train ships first (R-132-9).")
+            sys.exit(1)
+        print(f"  stale-check csv {csv}: {note}")
         out.append(("A", path))
     return out
 
@@ -424,6 +457,12 @@ def path_changes(repo_dir, ref, paths):
         if not _blob_exists(repo_dir, ref, path):
             print(f"--paths refused: {path} does not exist at {ref}.")
             sys.exit(1)
+        m = _BUNDLE_RE.match(path)
+        if m:
+            stale, note = bundle_staleness(repo_dir, ref, m.group(1))
+            if stale:
+                print(f"--paths refused: {path}: {note}. Regenerate the bundle first (R-132-9).")
+                sys.exit(1)
         out.append(("P", path))
     return out
 
@@ -444,6 +483,61 @@ def verify_tree_matches_ref(repo_dir, ref, changes):
         print(f"Refused: working tree differs from {ref} for: {bad}. "
               f"Run from a clean worktree checked out at the ref.")
         sys.exit(1)
+
+
+DRIFT_LIMIT = 0.03  # unmatched share of the bundle's word 6-grams; good bundles measured 0.004-0.018
+
+
+def _words(text):
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _shingles(words, n=6):
+    return {" ".join(words[i:i + n]) for i in range(max(0, len(words) - n + 1))}
+
+
+def bundle_staleness(repo_dir, ref, csv):
+    """(stale, note). R-132-9: a bundle built from a .md that was later repaired
+    still carries the old text (csv 3829, PTJ-2022-10). Bundles record NO source
+    hash (0 of 3,874 at origin/test), so this is a CONTENT check instead:
+    the share of the bundle's word 6-grams that appear nowhere in the corpus .md
+    files carrying csv_number: <csv> at ref (the .md plus any -unindexed-back-
+    matter sibling that carries it). Above DRIFT_LIMIT the bundle holds text the
+    shipped .md no longer has -> refuse; the note always states the number.
+    A date proxy (bundle generated_at vs .md commit date) was tried and
+    discarded: it flagged the four bundles built 81 seconds before their own
+    .md was committed, all known good.
+    CANNOT catch: text the .md has but the bundle lacks (one-directional);
+    stale text smaller than ~DRIFT_LIMIT of the bundle (a few lines); a bundle
+    paragraph that is tables/markup the .md renders differently (the measured
+    floor for good bundles is 0.4-1.8%). A heuristic, not a hash."""
+    raw = subprocess.run(["git", "show", f"{ref}:{bundle_path(csv)}"], cwd=repo_dir,
+                         capture_output=True, text=True)
+    if raw.returncode != 0:
+        return True, f"cannot read bundle at {ref}"
+    try:
+        paragraphs = json.loads(raw.stdout)["paragraphs"]
+    except Exception as ex:
+        return True, f"bundle has no usable paragraphs ({ex})"
+    g = subprocess.run(["git", "grep", "-l", "-E", f"^csv_number: {csv}$", ref, "--", CORPUS_PREFIX],
+                       cwd=repo_dir, capture_output=True, text=True)
+    mds = [ln.split(":", 1)[1] for ln in g.stdout.splitlines() if ":" in ln and ln.endswith(".md")]
+    if not mds:
+        return False, "no corpus .md carries this csv_number at the ref; staleness not checkable"
+    md_text = " ".join(subprocess.run(["git", "show", f"{ref}:{md}"], cwd=repo_dir,
+                                      capture_output=True, text=True).stdout for md in mds)
+    bundle_sh = _shingles(_words(" ".join(p if isinstance(p, str) else json.dumps(p) for p in paragraphs)))
+    if not bundle_sh:
+        return False, "bundle has no text to compare"
+    drift = len(_shingles_minus(bundle_sh, _shingles(_words(md_text)))) / len(bundle_sh)
+    if drift > DRIFT_LIMIT:
+        return True, (f"{drift:.1%} of the bundle's text is absent from its .md {mds} "
+                      f"(limit {DRIFT_LIMIT:.0%}): built from a different .md")
+    return False, f"{drift:.1%} of bundle text absent from its .md (limit {DRIFT_LIMIT:.0%}; heuristic, one-directional)"
+
+
+def _shingles_minus(a, b):
+    return a - b
 
 
 def print_manifest(manifest):
@@ -619,13 +713,18 @@ def main():
                         help="Comma-separated corpus paths (corpus/articles/*.md or "
                              "corpus/article_html/<csv>.json) present at the ref but "
                              "ABSENT on the server; never overwrites (R-132-3).")
+    parser.add_argument("--state-dir",
+                        help="Directory holding corpus_deploy_state*.json. Default: the "
+                             "task_coordinator repo ROOT (git common dir's parent), so a "
+                             "run from a worktree still writes the root's ledger.")
     parser.add_argument("--seed-sha",
                          help="Record this sha as corpus_deploy_state.json's "
                               "base with no upload, so the next bare-ref run "
                               "has something to diff against.")
     args = parser.parse_args()
-    global ENV
+    global ENV, STATE_DIR_OVERRIDE
     ENV = args.env
+    STATE_DIR_OVERRIDE = args.state_dir
 
     repo_dir = os.path.abspath(args.repo_dir)
 

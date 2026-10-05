@@ -428,6 +428,24 @@ def path_changes(repo_dir, ref, paths):
     return out
 
 
+def verify_tree_matches_ref(repo_dir, ref, changes):
+    """The manifest compares, and execute() uploads, the WORKING-TREE file, while
+    the review gate and the ledger name the sha at ref. A dirty or stale checkout
+    would therefore ship bytes nobody reviewed. Refuse unless every named file's
+    working-tree content hashes to its blob at ref (run from a clean worktree)."""
+    bad = []
+    for _status, path in changes:
+        want = local_blob_sha(repo_dir, ref, path)
+        r = subprocess.run(["git", "hash-object", "--", path], cwd=repo_dir,
+                           capture_output=True, text=True)
+        if r.returncode != 0 or r.stdout.strip() != want:
+            bad.append(path)
+    if bad:
+        print(f"Refused: working tree differs from {ref} for: {bad}. "
+              f"Run from a clean worktree checked out at the ref.")
+        sys.exit(1)
+
+
 def print_manifest(manifest):
     print(f"{'ACTION':<15} {'PATH':<70} {'LOCAL SHA':<10} {'PROD SIZE':<10} PROD MDTM")
     for e in manifest:
@@ -633,6 +651,7 @@ def main():
         csvs = [c.strip() for c in (args.bundles or "").split(",") if c.strip()]
         plist = [p.strip() for p in (args.paths or "").split(",") if p.strip()]
         changes = bundle_changes(repo_dir, ref, csvs) + path_changes(repo_dir, ref, plist)
+        verify_tree_matches_ref(repo_dir, ref, changes)
         ALLOWED_BUNDLES = frozenset(csvs)
         ALLOWED_PATHS = frozenset(plist)
         ship_kind = "+".join(k for k, v in (("bundles", csvs), ("paths", plist)) if v)

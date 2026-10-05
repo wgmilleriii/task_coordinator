@@ -247,6 +247,13 @@ class MainDryRunTests(ScopeReset):
         self.assertEqual(code, 0, out)
         self.assertEqual(list(self.ftp.stored), [f"{B}78.json"])
 
+    def test_dirty_working_tree_refused(self):
+        (Path(self.repo.dir) / f"{B}78.json").write_text('{"edited": true}')
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test")
+        self.assertEqual(code, 1)
+        self.assertIn("working tree differs", out)
+        self.assertEqual(self.ftp.stored, {})
+
     def test_range_refused_in_bundles_mode(self):
         code, _ = self.run_main(self.repo.dir, "a..b", "--bundles", "78", "--env", "test")
         self.assertNotEqual(code, 0)

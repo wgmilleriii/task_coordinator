@@ -264,8 +264,8 @@ class ShipLedgerTests(ScopeReset):
         self.assertEqual([e["sha"] for e in st["ships"]], ["s1", "s2"])
 
 
-class MainDryRunTests(ScopeReset):
-    """main() end to end with a fake FTP: dry-run lists exactly the named files."""
+class MainHarness(ScopeReset):
+    """main() end to end with a fake FTP."""
     def setUp(self):
         super().setUp()
         self.repo = TinyGitRepo()
@@ -294,6 +294,9 @@ class MainDryRunTests(ScopeReset):
             code = e.code
         return code, out.getvalue()
 
+
+class MainDryRunTests(MainHarness):
+    """dry-run lists exactly the named files, and the gates hold."""
     def test_dry_run_lists_exactly_named_files_and_writes_nothing(self):
         code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78,215", "--env", "test")
         self.assertIn(f"{B}78.json", out)
@@ -359,6 +362,68 @@ class MainDryRunTests(ScopeReset):
     def test_bad_csv_refused_by_main(self):
         code, _ = self.run_main(self.repo.dir, self.sha, "--bundles", "78,../x", "--env", "test")
         self.assertNotEqual(code, 0)
+
+
+class AcceptDriftTests(MainHarness):
+    """R-132-11: a person who has READ a drifting bundle may override per csv;
+    the reason and the measurement travel in the ledger entry."""
+    def setUp(self):
+        super().setUp()
+        for c, text in (("78", STALE_TEXT), ("215", STALE_TEXT)):
+            self.repo.write(f"{B}{c}.json", bundle(text))
+            self.repo.write(f"journalgpt/corpus/articles/PTJ-1/{c}.md",
+                            f"---\ncsv_number: {c}\n---\n{GOOD_TEXT}")
+        self.sha = self.repo.commit("stale bundles")
+
+    def test_default_still_refuses_a_drifting_bundle(self):
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test", "--execute")
+        self.assertEqual(code, 1)
+        self.assertIn("--accept-drift 78:", out)
+        self.assertEqual(self.ftp.stored, {})
+
+    def test_accept_drift_ships_it_and_ledger_carries_reason_and_measurement(self):
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test", "--execute",
+                                  "--accept-drift", "78:read it; extra para is a real photo caption")
+        self.assertEqual(code, 0, out)
+        self.assertIn("ACCEPTED DRIFT csv 78", out)
+        self.assertEqual(list(self.ftp.stored), [f"{B}78.json"])
+        entry = json.loads(ct.state_file_path().read_text())["ships"][-1]
+        self.assertEqual(entry["accepted_drift"][0]["csv"], "78")
+        self.assertIn("read it", entry["accepted_drift"][0]["reason"])
+        self.assertIn("absent from its .md", entry["accepted_drift"][0]["measured"])
+
+    def test_accepting_one_csv_does_not_unlock_another(self):
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78,215", "--env", "test", "--execute",
+                                  "--accept-drift", "78:read it")
+        self.assertEqual(code, 1)
+        self.assertEqual(self.ftp.stored, {})  # refused before any upload, 215 not accepted
+
+    def test_accepting_a_csv_not_named_refuses(self):
+        code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test",
+                                  "--accept-drift", "999:typo")
+        self.assertEqual(code, 1)
+        self.assertIn("not named", out)
+
+    def test_accept_drift_needs_csv_and_a_reason(self):
+        for bad in ("78", "78:", "abc:reason", ":reason"):
+            code, out = self.run_main(self.repo.dir, self.sha, "--bundles", "78", "--env", "test",
+                                      "--accept-drift", bad)
+            self.assertEqual(code, 1, bad)
+
+    def test_clean_bundle_records_empty_accepted_drift(self):
+        self.repo.write(f"{B}9.json", bundle(GOOD_TEXT))
+        self.repo.write("journalgpt/corpus/articles/PTJ-1/9.md", f"---\ncsv_number: 9\n---\n{GOOD_TEXT}")
+        sha = self.repo.commit("clean")
+        code, out = self.run_main(self.repo.dir, sha, "--bundles", "9", "--env", "test", "--execute")
+        self.assertEqual(code, 0, out)
+        self.assertEqual(json.loads(ct.state_file_path().read_text())["ships"][-1]["accepted_drift"], [])
+
+    def test_paths_mode_honours_accept_drift_too(self):
+        code, out = self.run_main(self.repo.dir, self.sha, "--paths", f"{B}78.json", "--env", "test")
+        self.assertEqual(code, 1)
+        code, out = self.run_main(self.repo.dir, self.sha, "--paths", f"{B}78.json", "--env", "test",
+                                  "--accept-drift", "78:read it")
+        self.assertEqual(code, 0, out)
 
 
 if __name__ == "__main__":

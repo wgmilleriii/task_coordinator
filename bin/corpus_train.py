@@ -64,6 +64,12 @@ USAGE
   # never reached the server cannot otherwise ship). Never overwrites.
   corpus_train.py <repo_dir> <ref> --paths journalgpt/corpus/articles/PTJ-2022-10/3825.md
 
+  # A bundle whose text drifts >3% from its .md is REFUSED (R-132-9). After a
+  # person has READ it, override per csv; the reason is ledgered (accepted_drift):
+  corpus_train.py <repo_dir> <ref> --bundles 3823 --env test --accept-drift 3823:<why>
+  # Measured ranges (kestrel, 2026-10-05): good bundles 0.4-1.8%, freshly
+  # regenerated up to 5.2%, stale 4.3-15.9% -- the ranges OVERLAP, hence the override.
+
 NOTES. The ledger is written to the repo ROOT, not beside the script (a worktree
 run would otherwise strand it). A PARTIAL upload (some files stored, then a
 problem) is still ledgered as shipped and exits 1 -- pre-existing on the .md
@@ -422,7 +428,39 @@ def _blob_exists(repo_dir, ref, path):
     return local_blob_sha(repo_dir, ref, path) is not None
 
 
-def bundle_changes(repo_dir, ref, csvs):
+def parse_accept_drift(items):
+    """--accept-drift csv:reason (repeatable) -> {csv: reason}. A bad csv or an
+    empty reason refuses: an override must carry the reason it travels with."""
+    out = {}
+    for item in items or []:
+        csv, sep, reason = item.partition(":")
+        csv, reason = csv.strip(), reason.strip()
+        if not sep or not re.fullmatch(r"\d+", csv) or not reason:
+            print(f"--accept-drift refused: {item!r} must be <csv>:<reason>, csv numeric, reason non-empty.")
+            sys.exit(1)
+        out[csv] = reason
+    return out
+
+
+def _drift_gate(label, csv, path, repo_dir, ref, accepted, log):
+    """Apply the content-drift guard to one bundle. Refuses unless a person
+    accepted the drift for this csv; an accepted override is printed LOUDLY and
+    appended to `log` so write_ship_ledger records csv, reason and measurement."""
+    stale, note = bundle_staleness(repo_dir, ref, csv)
+    if not stale:
+        print(f"  drift-check csv {csv}: {note}")
+        return
+    if csv in accepted:
+        print(f"  *** ACCEPTED DRIFT csv {csv}: {accepted[csv]!r} -- measured: {note}")
+        if log is not None:
+            log.append({"csv": csv, "reason": accepted[csv], "measured": note})
+        return
+    print(f"{label} refused: csv {csv}: {note}. Regenerate the bundle from the .md the train "
+          f"ships (R-132-9), or, after READING the bundle, --accept-drift {csv}:<reason>.")
+    sys.exit(1)
+
+
+def bundle_changes(repo_dir, ref, csvs, accepted=None, log=None):
     """[("A", path)] for each named csv's bundle as it exists at ref. A csv that
     is not numeric, or whose bundle is absent at ref, refuses the whole run."""
     out = []
@@ -435,17 +473,12 @@ def bundle_changes(repo_dir, ref, csvs):
         if not _blob_exists(repo_dir, ref, path):
             print(f"--bundles refused: {path} does not exist at {ref}.")
             sys.exit(1)
-        stale, note = bundle_staleness(repo_dir, ref, csv)
-        if stale:
-            print(f"--bundles refused: csv {csv}: {note}. Regenerate the bundle from the .md "
-                  f"the train ships first (R-132-9).")
-            sys.exit(1)
-        print(f"  stale-check csv {csv}: {note}")
+        _drift_gate("--bundles", csv, path, repo_dir, ref, accepted or {}, log)
         out.append(("A", path))
     return out
 
 
-def path_changes(repo_dir, ref, paths):
+def path_changes(repo_dir, ref, paths, accepted=None, log=None):
     """[("P", path)] for each --paths entry. Refuses a path that is not a corpus
     .md or an article_html/<csv>.json, or that is absent from the tree at ref."""
     out = []
@@ -459,10 +492,7 @@ def path_changes(repo_dir, ref, paths):
             sys.exit(1)
         m = _BUNDLE_RE.match(path)
         if m:
-            stale, note = bundle_staleness(repo_dir, ref, m.group(1))
-            if stale:
-                print(f"--paths refused: {path}: {note}. Regenerate the bundle first (R-132-9).")
-                sys.exit(1)
+            _drift_gate("--paths", m.group(1), path, repo_dir, ref, accepted or {}, log)
         out.append(("P", path))
     return out
 
@@ -644,7 +674,7 @@ def write_ledger(sha, manifest, reviews):
     return state
 
 
-def write_ship_ledger(sha, kind, manifest, reviews):
+def write_ship_ledger(sha, kind, manifest, reviews, accepted_drift=None):
     """Ledger entry for a --bundles/--paths ship. Appended to state["ships"];
     state["sha"]/["files"] -- the .md diff base for the NEXT bare-ref train --
     are deliberately NOT touched: moving them would make the next .md train
@@ -658,6 +688,7 @@ def write_ship_ledger(sha, kind, manifest, reviews):
         "files": [e["path"] for e in manifest if e["action"] in ("upload", "delete")],
         "manifest": manifest,
         "reviewed_by": reviews,
+        "accepted_drift": accepted_drift or [],
     })
     with open(state_file_path(), "w") as f:
         json.dump(state, f, indent=2)
@@ -717,6 +748,11 @@ def main():
                         help="Directory holding corpus_deploy_state*.json. Default: the "
                              "task_coordinator repo ROOT (git common dir's parent), so a "
                              "run from a worktree still writes the root's ledger.")
+    parser.add_argument("--accept-drift", action="append", metavar="CSV:REASON",
+                        help="Let ONE named bundle past the content-drift guard after a person "
+                             "has read it. Repeatable. The csv must be named by --bundles/--paths "
+                             "in this run; csv, reason and the measurement are written to the "
+                             "ledger entry (accepted_drift).")
     parser.add_argument("--seed-sha",
                          help="Record this sha as corpus_deploy_state.json's "
                               "base with no upload, so the next bare-ref run "
@@ -741,6 +777,7 @@ def main():
 
     state = load_state()
     ship_kind = None
+    drift_log = []
     if args.bundles or args.paths:
         if ".." in args.git_range:
             parser.error("--bundles/--paths take a bare ref, not an A..B range")
@@ -749,7 +786,15 @@ def main():
         global ALLOWED_BUNDLES, ALLOWED_PATHS
         csvs = [c.strip() for c in (args.bundles or "").split(",") if c.strip()]
         plist = [p.strip() for p in (args.paths or "").split(",") if p.strip()]
-        changes = bundle_changes(repo_dir, ref, csvs) + path_changes(repo_dir, ref, plist)
+        accepted = parse_accept_drift(args.accept_drift)
+        named = set(csvs) | {m.group(1) for m in (_BUNDLE_RE.match(x) for x in plist) if m}
+        stray = sorted(set(accepted) - named)
+        if stray:
+            print(f"--accept-drift refused: csv {stray} not named by --bundles/--paths in this run.")
+            sys.exit(1)
+        drift_log = []
+        changes = (bundle_changes(repo_dir, ref, csvs, accepted, drift_log)
+                   + path_changes(repo_dir, ref, plist, accepted, drift_log))
         verify_tree_matches_ref(repo_dir, ref, changes)
         ALLOWED_BUNDLES = frozenset(csvs)
         ALLOWED_PATHS = frozenset(plist)
@@ -807,7 +852,7 @@ def main():
 
         uploaded, deleted, problems = execute(ftp, repo_dir, manifest)
         if ship_kind:
-            write_ship_ledger(target_sha, ship_kind, manifest, reviews)
+            write_ship_ledger(target_sha, ship_kind, manifest, reviews, drift_log)
         else:
             write_ledger(target_sha, manifest, reviews)
         print(f"Uploaded {len(uploaded)}, deleted {len(deleted)}.")

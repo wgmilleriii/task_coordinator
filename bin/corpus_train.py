@@ -53,6 +53,22 @@ USAGE
   # Execute, after three reviewers have approved the exact target SHA:
   corpus_train.py <repo_dir> <range> --reviewed-by reviews.json --execute
 
+  # T-PTG-1012: ship article_html bundles (the pages members READ) by csv.
+  # SCOPE-LOCKED to corpus/article_html/<csv>.json for exactly the csvs named;
+  # <ref> is a bare ref (no A..B): the files are read from that frozen tree.
+  corpus_train.py <repo_dir> <ref> --bundles 78,215 --env test [--execute]
+  corpus_train.py <repo_dir> <ref> --bundles 78,215 --reviewed-by r.json --execute  # prod
+
+  # T-PTG-1012 (R-132-3): ship files PRESENT in the frozen tree but ABSENT on
+  # the server (the tool ships git diffs, so an unchanged file whose directory
+  # never reached the server cannot otherwise ship). Never overwrites.
+  corpus_train.py <repo_dir> <ref> --paths journalgpt/corpus/articles/PTJ-2022-10/3825.md
+
+NOTES. The ledger is written to the repo ROOT, not beside the script (a worktree
+run would otherwise strand it). A PARTIAL upload (some files stored, then a
+problem) is still ledgered as shipped and exits 1 -- pre-existing on the .md
+path; read the PROBLEMS list before trusting the ledger entry.
+
 reviews.json shape: a JSON list of {"reviewer": "...", "sha": "...",
 "verdict": "APPROVE"} objects. At least three DISTINCT reviewer names
 must APPROVE the exact SHA being executed.
@@ -61,6 +77,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -70,6 +87,66 @@ STATE_FILE_NAME = "corpus_deploy_state.json"
 STATE_FILE_NAME_TEST = "corpus_deploy_state_test.json"
 ENV = "prod"  # set from --env; "test" uses FTP_*_TEST and its own ledger, no review gate
 REPO_KEY = "NEWMEXICOPTG_ORG"  # this tool only ever targets newmexicoptg.org's corpus
+
+
+BUNDLE_PREFIX = "journalgpt/corpus/article_html/"
+_BUNDLE_RE = re.compile(r"^journalgpt/corpus/article_html/(\d+)\.json$")
+# Set from --bundles / --paths in main(). Empty by default, so the upload loop
+# refuses every bundle path unless a flag named it.
+ALLOWED_BUNDLES = frozenset()   # csv numbers, as strings
+ALLOWED_PATHS = frozenset()     # exact paths named by --paths
+
+
+def _normalized_relative(path):
+    """normpath, or None if the path is absolute or escapes via '..'."""
+    normalized = os.path.normpath(path)
+    if os.path.isabs(normalized):
+        return None
+    if normalized == ".." or normalized.startswith(f"..{os.sep}"):
+        return None
+    if f"{os.sep}..{os.sep}" in normalized or normalized.endswith(f"{os.sep}.."):
+        return None
+    return normalized
+
+
+def bundle_path(csv):
+    """corpus/article_html/<csv>.json for a purely numeric csv, else ValueError."""
+    if not re.fullmatch(r"\d+", str(csv)):
+        raise ValueError(f"not a csv number: {csv!r}")
+    return f"{BUNDLE_PREFIX}{csv}.json"
+
+
+def is_bundle_in_scope(path, csvs):
+    """True only for journalgpt/corpus/article_html/<csv>.json where <csv> is
+    one of `csvs`. Normalized first, and the normalized form must equal the
+    input, so nothing that normpath would rewrite ever reaches STOR."""
+    normalized = _normalized_relative(path)
+    if normalized is None or normalized != path:
+        return False
+    m = _BUNDLE_RE.match(normalized)
+    return bool(m) and m.group(1) in csvs
+
+
+def is_shippable(path):
+    """The scope every upload/delete call site asserts: a corpus .md, a bundle
+    named by --bundles, or a path named EXACTLY by --paths that is itself a
+    corpus .md or an article_html bundle. Nothing else, ever (deploy.py's own
+    exclusion stays untouched)."""
+    if is_in_scope(path):
+        return True
+    if is_bundle_in_scope(path, ALLOWED_BUNDLES):
+        return True
+    if path in ALLOWED_PATHS and path_class_ok(path):
+        return True
+    return False
+
+
+def path_class_ok(path):
+    """A --paths entry must be a corpus .md or ANY article_html/<csv>.json."""
+    if is_in_scope(path):
+        return True
+    normalized = _normalized_relative(path)
+    return normalized == path and bool(_BUNDLE_RE.match(normalized))
 
 
 def is_in_scope(path):
@@ -173,9 +250,31 @@ def warn_if_csv_index_stale(repo_dir, ref):
     return True
 
 
+STATE_DIR_OVERRIDE = None  # --state-dir
+
+
+def resolve_state_dir(script_dir=None):
+    """Where the ledger lives: the REAL repo root, never a worktree's copy.
+    Review of kestrel-1012: the ledger was written beside the script, so a run
+    from a worktree stranded its record outside the root's corpus_deploy_state*.json
+    and the next bare-ref train would have diffed from a stale base. The root is
+    the parent of `git rev-parse --git-common-dir` (the same for every worktree
+    of the repo). Refuses (SystemExit) when it cannot be determined."""
+    if STATE_DIR_OVERRIDE:
+        return Path(STATE_DIR_OVERRIDE)
+    script_dir = script_dir or os.path.dirname(os.path.abspath(__file__))
+    r = subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"],
+                       cwd=script_dir, capture_output=True, text=True)
+    if r.returncode != 0 or not r.stdout.strip():
+        print("Refused: cannot resolve the task_coordinator repo root for the ledger; "
+              "pass --state-dir <dir>.")
+        sys.exit(1)
+    return Path(r.stdout.strip()).parent
+
+
 def state_file_path():
     name = STATE_FILE_NAME_TEST if ENV == "test" else STATE_FILE_NAME
-    return Path(os.path.dirname(__file__)).parent / name
+    return resolve_state_dir() / name
 
 
 def load_state():
@@ -274,11 +373,15 @@ def build_manifest(repo_dir, ref, changes, ftp, ftp_dir):
     connection required to exercise this function."""
     manifest = []
     for status, path in changes:
-        assert is_in_scope(path), f"scope violation: {path}"
+        assert is_shippable(path), f"scope violation: {path}"
         remote_path = ftp_dir.rstrip("/") + "/" + path
         prod_size, prod_mdtm = ftp_stat(ftp, remote_path)
 
-        if status == "D":
+        if status == "P":
+            # --paths: ship ONLY what the server lacks; never overwrite.
+            local_sha = local_blob_sha(repo_dir, ref, path)
+            action = "upload" if prod_size is None else "skip-present"
+        elif status == "D":
             local_sha = None
             action = "delete" if prod_size is not None else "skip-absent"
         else:
@@ -313,6 +416,128 @@ def build_manifest(repo_dir, ref, changes, ftp, ftp_dir):
             "action": action,
         })
     return manifest
+
+
+def _blob_exists(repo_dir, ref, path):
+    return local_blob_sha(repo_dir, ref, path) is not None
+
+
+def bundle_changes(repo_dir, ref, csvs):
+    """[("A", path)] for each named csv's bundle as it exists at ref. A csv that
+    is not numeric, or whose bundle is absent at ref, refuses the whole run."""
+    out = []
+    for csv in csvs:
+        try:
+            path = bundle_path(csv)
+        except ValueError as ex:
+            print(f"--bundles refused: {ex}")
+            sys.exit(1)
+        if not _blob_exists(repo_dir, ref, path):
+            print(f"--bundles refused: {path} does not exist at {ref}.")
+            sys.exit(1)
+        stale, note = bundle_staleness(repo_dir, ref, csv)
+        if stale:
+            print(f"--bundles refused: csv {csv}: {note}. Regenerate the bundle from the .md "
+                  f"the train ships first (R-132-9).")
+            sys.exit(1)
+        print(f"  stale-check csv {csv}: {note}")
+        out.append(("A", path))
+    return out
+
+
+def path_changes(repo_dir, ref, paths):
+    """[("P", path)] for each --paths entry. Refuses a path that is not a corpus
+    .md or an article_html/<csv>.json, or that is absent from the tree at ref."""
+    out = []
+    for path in paths:
+        if not path_class_ok(path):
+            print(f"--paths refused: {path} is outside corpus/articles/*.md and "
+                  f"corpus/article_html/<csv>.json.")
+            sys.exit(1)
+        if not _blob_exists(repo_dir, ref, path):
+            print(f"--paths refused: {path} does not exist at {ref}.")
+            sys.exit(1)
+        m = _BUNDLE_RE.match(path)
+        if m:
+            stale, note = bundle_staleness(repo_dir, ref, m.group(1))
+            if stale:
+                print(f"--paths refused: {path}: {note}. Regenerate the bundle first (R-132-9).")
+                sys.exit(1)
+        out.append(("P", path))
+    return out
+
+
+def verify_tree_matches_ref(repo_dir, ref, changes):
+    """The manifest compares, and execute() uploads, the WORKING-TREE file, while
+    the review gate and the ledger name the sha at ref. A dirty or stale checkout
+    would therefore ship bytes nobody reviewed. Refuse unless every named file's
+    working-tree content hashes to its blob at ref (run from a clean worktree)."""
+    bad = []
+    for _status, path in changes:
+        want = local_blob_sha(repo_dir, ref, path)
+        r = subprocess.run(["git", "hash-object", "--", path], cwd=repo_dir,
+                           capture_output=True, text=True)
+        if r.returncode != 0 or r.stdout.strip() != want:
+            bad.append(path)
+    if bad:
+        print(f"Refused: working tree differs from {ref} for: {bad}. "
+              f"Run from a clean worktree checked out at the ref.")
+        sys.exit(1)
+
+
+DRIFT_LIMIT = 0.03  # unmatched share of the bundle's word 6-grams; good bundles measured 0.004-0.018
+
+
+def _words(text):
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _shingles(words, n=6):
+    return {" ".join(words[i:i + n]) for i in range(max(0, len(words) - n + 1))}
+
+
+def bundle_staleness(repo_dir, ref, csv):
+    """(stale, note). R-132-9: a bundle built from a .md that was later repaired
+    still carries the old text (csv 3829, PTJ-2022-10). Bundles record NO source
+    hash (0 of 3,874 at origin/test), so this is a CONTENT check instead:
+    the share of the bundle's word 6-grams that appear nowhere in the corpus .md
+    files carrying csv_number: <csv> at ref (the .md plus any -unindexed-back-
+    matter sibling that carries it). Above DRIFT_LIMIT the bundle holds text the
+    shipped .md no longer has -> refuse; the note always states the number.
+    A date proxy (bundle generated_at vs .md commit date) was tried and
+    discarded: it flagged the four bundles built 81 seconds before their own
+    .md was committed, all known good.
+    CANNOT catch: text the .md has but the bundle lacks (one-directional);
+    stale text smaller than ~DRIFT_LIMIT of the bundle (a few lines); a bundle
+    paragraph that is tables/markup the .md renders differently (the measured
+    floor for good bundles is 0.4-1.8%). A heuristic, not a hash."""
+    raw = subprocess.run(["git", "show", f"{ref}:{bundle_path(csv)}"], cwd=repo_dir,
+                         capture_output=True, text=True)
+    if raw.returncode != 0:
+        return True, f"cannot read bundle at {ref}"
+    try:
+        paragraphs = json.loads(raw.stdout)["paragraphs"]
+    except Exception as ex:
+        return True, f"bundle has no usable paragraphs ({ex})"
+    g = subprocess.run(["git", "grep", "-l", "-E", f"^csv_number: {csv}$", ref, "--", CORPUS_PREFIX],
+                       cwd=repo_dir, capture_output=True, text=True)
+    mds = [ln.split(":", 1)[1] for ln in g.stdout.splitlines() if ":" in ln and ln.endswith(".md")]
+    if not mds:
+        return False, "no corpus .md carries this csv_number at the ref; staleness not checkable"
+    md_text = " ".join(subprocess.run(["git", "show", f"{ref}:{md}"], cwd=repo_dir,
+                                      capture_output=True, text=True).stdout for md in mds)
+    bundle_sh = _shingles(_words(" ".join(p if isinstance(p, str) else json.dumps(p) for p in paragraphs)))
+    if not bundle_sh:
+        return False, "bundle has no text to compare"
+    drift = len(_shingles_minus(bundle_sh, _shingles(_words(md_text)))) / len(bundle_sh)
+    if drift > DRIFT_LIMIT:
+        return True, (f"{drift:.1%} of the bundle's text is absent from its .md {mds} "
+                      f"(limit {DRIFT_LIMIT:.0%}): built from a different .md")
+    return False, f"{drift:.1%} of bundle text absent from its .md (limit {DRIFT_LIMIT:.0%}; heuristic, one-directional)"
+
+
+def _shingles_minus(a, b):
+    return a - b
 
 
 def print_manifest(manifest):
@@ -368,7 +593,7 @@ def execute(ftp, repo_dir, manifest):
     uploaded, deleted, problems = [], [], []
     for e in manifest:
         path = e["path"]
-        assert is_in_scope(path), f"scope violation: {path}"
+        assert is_shippable(path), f"scope violation: {path}"
         if e["action"] == "delete":
             try:
                 ftp.delete(path)
@@ -419,6 +644,26 @@ def write_ledger(sha, manifest, reviews):
     return state
 
 
+def write_ship_ledger(sha, kind, manifest, reviews):
+    """Ledger entry for a --bundles/--paths ship. Appended to state["ships"];
+    state["sha"]/["files"] -- the .md diff base for the NEXT bare-ref train --
+    are deliberately NOT touched: moving them would make the next .md train
+    diff from a sha that never shipped its .md changes."""
+    state = load_state()
+    state.setdefault("ships", []).append({
+        "kind": kind,
+        "sha": sha,
+        "env": ENV,
+        "deployed_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "files": [e["path"] for e in manifest if e["action"] in ("upload", "delete")],
+        "manifest": manifest,
+        "reviewed_by": reviews,
+    })
+    with open(state_file_path(), "w") as f:
+        json.dump(state, f, indent=2)
+    return state
+
+
 def connect_ftp(host, user, passwd, ftp_dir):
     import ftplib
     ftp = ftplib.FTP(host)
@@ -459,13 +704,27 @@ def main():
                              "and needs no --reviewed-by: it exists so humans can judge "
                              "re-cut files on the test review page before a prod train. "
                              "'prod' (default) keeps the three-reviewer gate.")
+    parser.add_argument("--bundles",
+                        help="Comma-separated csv numbers: ship ONLY "
+                             "journalgpt/corpus/article_html/<csv>.json for those "
+                             "csvs, read from the bare ref given as git_range "
+                             "(T-PTG-1012). Same gate per env.")
+    parser.add_argument("--paths",
+                        help="Comma-separated corpus paths (corpus/articles/*.md or "
+                             "corpus/article_html/<csv>.json) present at the ref but "
+                             "ABSENT on the server; never overwrites (R-132-3).")
+    parser.add_argument("--state-dir",
+                        help="Directory holding corpus_deploy_state*.json. Default: the "
+                             "task_coordinator repo ROOT (git common dir's parent), so a "
+                             "run from a worktree still writes the root's ledger.")
     parser.add_argument("--seed-sha",
                          help="Record this sha as corpus_deploy_state.json's "
                               "base with no upload, so the next bare-ref run "
                               "has something to diff against.")
     args = parser.parse_args()
-    global ENV
+    global ENV, STATE_DIR_OVERRIDE
     ENV = args.env
+    STATE_DIR_OVERRIDE = args.state_dir
 
     repo_dir = os.path.abspath(args.repo_dir)
 
@@ -481,15 +740,33 @@ def main():
         parser.error("git_range is required unless --seed-sha is given")
 
     state = load_state()
-    git_range = resolve_range(args.git_range, state)
-    ref = target_ref(args.git_range)
-    target_sha = run_cmd(f"git rev-parse {ref}", cwd=repo_dir)
-    warn_if_csv_index_stale(repo_dir, ref)
+    ship_kind = None
+    if args.bundles or args.paths:
+        if ".." in args.git_range:
+            parser.error("--bundles/--paths take a bare ref, not an A..B range")
+        ref = args.git_range
+        target_sha = run_cmd(f"git rev-parse {ref}", cwd=repo_dir)
+        global ALLOWED_BUNDLES, ALLOWED_PATHS
+        csvs = [c.strip() for c in (args.bundles or "").split(",") if c.strip()]
+        plist = [p.strip() for p in (args.paths or "").split(",") if p.strip()]
+        changes = bundle_changes(repo_dir, ref, csvs) + path_changes(repo_dir, ref, plist)
+        verify_tree_matches_ref(repo_dir, ref, changes)
+        ALLOWED_BUNDLES = frozenset(csvs)
+        ALLOWED_PATHS = frozenset(plist)
+        ship_kind = "+".join(k for k, v in (("bundles", csvs), ("paths", plist)) if v)
+        if not changes:
+            print("--bundles/--paths named nothing.")
+            return
+    else:
+        git_range = resolve_range(args.git_range, state)
+        ref = target_ref(args.git_range)
+        target_sha = run_cmd(f"git rev-parse {ref}", cwd=repo_dir)
+        warn_if_csv_index_stale(repo_dir, ref)
 
-    changes = changed_corpus_files(repo_dir, git_range)
-    if not changes:
-        print(f"No {CORPUS_PREFIX}*.md changes in {git_range}.")
-        return
+        changes = changed_corpus_files(repo_dir, git_range)
+        if not changes:
+            print(f"No {CORPUS_PREFIX}*.md changes in {git_range}.")
+            return
 
     load_env()
     host, user, passwd, ftp_dir = ftp_credentials()
@@ -529,7 +806,10 @@ def main():
             print(f"Review gate passed: {reason}")
 
         uploaded, deleted, problems = execute(ftp, repo_dir, manifest)
-        write_ledger(target_sha, manifest, reviews)
+        if ship_kind:
+            write_ship_ledger(target_sha, ship_kind, manifest, reviews)
+        else:
+            write_ledger(target_sha, manifest, reviews)
         print(f"Uploaded {len(uploaded)}, deleted {len(deleted)}.")
         if problems:
             print("PROBLEMS:")

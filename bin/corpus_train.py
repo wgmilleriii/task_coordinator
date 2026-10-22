@@ -518,7 +518,7 @@ def verify_tree_matches_ref(repo_dir, ref, changes):
 DRIFT_LIMIT = 0.03  # unmatched share of the bundle's word 6-grams; good bundles measured 0.004-0.018
 
 
-PAGE_MARKER_RE = re.compile(r"\[\[page:[^\]\n]*\]\]")
+PAGE_MARKER_RE = re.compile(r"\[\[page:\d+\]\]")  # exactly the form ArticleHtmlBundleBuilder strips
 
 
 def _words(text):

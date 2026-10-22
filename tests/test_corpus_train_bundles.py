@@ -184,6 +184,26 @@ class StalenessTests(ScopeReset):
         sha = self.repo.commit("seed")
         self.assertFalse(ct.bundle_staleness(self.repo.dir, sha, "78")[0])
 
+    def test_page_marker_mid_sentence_is_not_drift(self):
+        """The .md carries [[page:N]] where a sentence turns the page; the bundle,
+        built from the same .md, does not. That is not drift (2026-10-22)."""
+        body = ("The hammer shanks were cast off and the old felts were removed with care, "
+                "then the whole set was replaced with a new one that the technician "
+                "regulated to the strings before the final voicing of the instrument.")
+        marked = body.replace("the whole set was", "the whole set\n\n[[page:9]]\n\nwas")
+        self.assertIn("[[page:9]]", marked)
+        sha = self._seed(bundle(body), md_text=marked)
+        stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")
+        self.assertFalse(stale, note)
+        self.assertIn("0.0%", note)
+
+    def test_page_marker_does_not_hide_real_drift(self):
+        """Stripping markers must not mask a bundle built from a different .md."""
+        marked = GOOD_TEXT.replace(" ", " [[page:3]] ", 1)
+        sha = self._seed(bundle(STALE_TEXT), md_text=marked)
+        stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")
+        self.assertTrue(stale, note)
+
     def test_no_md_is_noted_not_refused(self):
         sha = self._seed(bundle(STALE_TEXT), md_has_csv=False)
         stale, note = ct.bundle_staleness(self.repo.dir, sha, "78")

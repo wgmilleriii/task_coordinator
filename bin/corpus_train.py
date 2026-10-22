@@ -518,6 +518,9 @@ def verify_tree_matches_ref(repo_dir, ref, changes):
 DRIFT_LIMIT = 0.03  # unmatched share of the bundle's word 6-grams; good bundles measured 0.004-0.018
 
 
+PAGE_MARKER_RE = re.compile(r"\[\[page:[^\]\n]*\]\]")
+
+
 def _words(text):
     return re.findall(r"[a-z0-9]+", text.lower())
 
@@ -556,6 +559,11 @@ def bundle_staleness(repo_dir, ref, csv):
         return False, "no corpus .md carries this csv_number at the ref; staleness not checkable"
     md_text = " ".join(subprocess.run(["git", "show", f"{ref}:{md}"], cwd=repo_dir,
                                       capture_output=True, text=True).stdout for md in mds)
+    # A [[page:N]] marker is navigation, not text: the bundle builder drops it, so
+    # left in, its words ("page", "N") break every 6-gram that spans a page turn
+    # mid-sentence and a faithful bundle reads as drift (nine false refusals,
+    # 2026-10-21/22, each proven by bundle == faithful_paragraphs(md)).
+    md_text = PAGE_MARKER_RE.sub(" ", md_text)
     bundle_sh = _shingles(_words(" ".join(p if isinstance(p, str) else json.dumps(p) for p in paragraphs)))
     if not bundle_sh:
         return False, "bundle has no text to compare"

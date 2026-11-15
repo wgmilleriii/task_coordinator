@@ -488,3 +488,67 @@ class CsvIndexStalenessTest(unittest.TestCase):
         self.run("git", "commit", "-q", "-m", "c")
         self.assertIsNone(ct.csv_index_staleness(self.repo, "HEAD"))
         self.assertFalse(ct.warn_if_csv_index_stale(self.repo, "HEAD"))
+
+
+class ListingFTP(FakeFTP):
+    """FakeFTP plus MLSD: dirs = {remote_dir: {name: size}}; a dir not in dirs raises 550.
+    Counts listings and per-file probes so the tests prove one listing per directory."""
+    def __init__(self, dirs, **kw):
+        super().__init__(**kw)
+        self.dirs = dirs
+        self.listed = []
+        self.size_calls = 0
+
+    def mlsd(self, path, facts=None):
+        self.listed.append(path)
+        if path not in self.dirs:
+            raise Exception(f"550 {path}: No such directory")
+        for name, sz in self.dirs[path].items():
+            yield name, {"type": "file", "size": str(sz)}
+
+    def size(self, path):
+        self.size_calls += 1
+        return super().size(path)
+
+
+class PathsModeListingTests(unittest.TestCase):
+    """Chip 2026-11-15: --paths checks each directory once, not each file."""
+    def setUp(self):
+        self.repo = TinyGitRepo()
+        self.addCleanup(self.repo.cleanup)
+        self.paths = []
+        for i in range(3):
+            p = f"journalgpt/corpus/articles/PTJ-1985-04/art-{i}.md"
+            self.repo.write(p, f"---\ncsv_number: {i}\n---\n\nbody {i}\n")
+            self.paths.append(p)
+        self.sha = self.repo.commit("add")
+
+    def test_one_listing_per_directory_and_no_per_file_probes(self):
+        ftp = ListingFTP({"/journalgpt/corpus/articles/PTJ-1985-04": {}})
+        m = ct.build_manifest(self.repo.dir, self.sha, [("P", p) for p in self.paths], ftp, "/")
+        self.assertEqual([x["action"] for x in m], ["upload"] * 3)
+        self.assertEqual(ftp.listed, ["/journalgpt/corpus/articles/PTJ-1985-04"])
+        self.assertEqual(ftp.size_calls, 0)
+
+    def test_file_already_on_server_is_never_overwritten(self):
+        # negative control: the listing must still catch a present file
+        ftp = ListingFTP({"/journalgpt/corpus/articles/PTJ-1985-04": {"art-1.md": 120}})
+        m = ct.build_manifest(self.repo.dir, self.sha, [("P", p) for p in self.paths], ftp, "/")
+        self.assertEqual([x["action"] for x in m], ["upload", "skip-present", "upload"])
+        self.assertEqual(m[1]["prod_size"], 120)
+
+    def test_missing_directory_means_every_file_uploads(self):
+        ftp = ListingFTP({})
+        m = ct.build_manifest(self.repo.dir, self.sha, [("P", p) for p in self.paths], ftp, "/")
+        self.assertEqual([x["action"] for x in m], ["upload"] * 3)
+        self.assertEqual(len(ftp.listed), 1)
+
+    def test_server_that_cannot_list_falls_back_to_per_file_probe(self):
+        class Broken(ListingFTP):
+            def mlsd(self, path, facts=None):
+                raise Exception("500 MLSD not understood")
+        remote = "/" + self.paths[0]
+        ftp = Broken({}, sizes={remote: 50})
+        m = ct.build_manifest(self.repo.dir, self.sha, [("P", p) for p in self.paths], ftp, "/")
+        self.assertEqual([x["action"] for x in m], ["skip-present", "upload", "upload"])
+        self.assertEqual(ftp.size_calls, 3)

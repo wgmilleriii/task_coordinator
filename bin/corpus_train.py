@@ -373,15 +373,55 @@ def ftp_stat(ftp, remote_path):
     return size, mdtm
 
 
+def dir_listing(ftp, remote_dir, cache):
+    """One MLSD (fallback NLST) per remote directory, cached: {name: size|None}.
+    A missing directory lists as {}. Returns None when the server/fake can't
+    list at all, so the caller falls back to per-file ftp_stat.
+    Chip 2026-11-15: per-file SIZE+MDTM made a 646-path train ~1,300 round
+    trips; --paths only needs to know which files the server already has."""
+    if remote_dir in cache:
+        return cache[remote_dir]
+    listing = None
+    if hasattr(ftp, "mlsd"):
+        try:
+            listing = {}
+            for name, facts in ftp.mlsd(remote_dir, facts=["type", "size"]):
+                if facts.get("type", "file") == "file":
+                    sz = facts.get("size")
+                    listing[name] = int(sz) if sz and sz.isdigit() else None
+        except Exception as e:
+            msg = str(e)
+            listing = {} if msg.startswith("550") else None
+    if listing is None and hasattr(ftp, "nlst"):
+        try:
+            listing = {n.rsplit("/", 1)[-1]: None for n in ftp.nlst(remote_dir)}
+        except Exception as e:
+            listing = {} if str(e).startswith("550") else None
+    cache[remote_dir] = listing
+    return listing
+
+
 def build_manifest(repo_dir, ref, changes, ftp, ftp_dir):
-    """The only network calls here are ftp_stat's, so a fake ftp object
-    exposing .size()/.sendcmd()/.voidcmd() is all a test needs -- no real
-    connection required to exercise this function."""
+    """Network calls: dir_listing (one per directory, --paths mode) or
+    ftp_stat's per file. A fake ftp exposing .size()/.sendcmd()/.voidcmd()
+    (and optionally .mlsd()/.nlst()) is all a test needs."""
     manifest = []
+    listings = {}
     for status, path in changes:
         assert is_shippable(path), f"scope violation: {path}"
         remote_path = ftp_dir.rstrip("/") + "/" + path
-        prod_size, prod_mdtm = ftp_stat(ftp, remote_path)
+        listing = None
+        if status == "P":
+            rdir, name = remote_path.rsplit("/", 1)
+            listing = dir_listing(ftp, rdir, listings)
+        if listing is not None:
+            prod_mdtm = None
+            if name not in listing:
+                prod_size = None
+            else:
+                prod_size = listing[name] if listing[name] is not None else -1  # -1: present, size unreported
+        else:
+            prod_size, prod_mdtm = ftp_stat(ftp, remote_path)
 
         if status == "P":
             # --paths: ship ONLY what the server lacks; never overwrite.

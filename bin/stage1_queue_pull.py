@@ -16,6 +16,8 @@ Repo output (append-only JSONL, one object per line):
   journalgpt/corpus/qc_staging/human_review/<env>/verdicts.jsonl
   journalgpt/corpus/qc_staging/human_review/<env>/proposals.jsonl   (batches and
   proposals interleaved, each with "kind": "batch" | "proposal")
+  journalgpt/corpus/qc_staging/human_review/<env>/review_answers.jsonl  (conversion review
+  answers from api/conversion_review_export.php; "kind" there is the marker kind)
 
 Apply step (only when journalgpt/cli/stage1_apply_batch.php exists in the worktree):
 for every batch that has approved, unapplied proposals and no applied_commit_sha,
@@ -239,6 +241,35 @@ def pull_decisions(env, site, token, st):
     return fresh, adv
 
 
+def pull_review_answers(env, site, token, st):
+    """Conversion review answers (prue-review-ui, 2026-11-14): a reviewer's answer to an
+    "under review" marker, from api/conversion_review_export.php. A row keeps its id when
+    its answer is replaced (answer_revision) or applied (status), so every run re-reads from
+    since_id=0 (paged by 500) and keeps only rows whose (id, revision, status, sha) is new --
+    the decisions stream's approach. 404 = the export is not deployed on that site yet."""
+    rows, since = [], 0
+    while True:
+        try:
+            body = api(f"{site}/journalgpt/api/conversion_review_export.php?since_id={since}", token)
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return [], {}
+            raise
+        page = body.get("answers", [])
+        rows += page
+        if len(page) < 500 or max(r["id"] for r in page) <= since:
+            break                                   # last page, or a server that ignores the cursor
+        since = max(r["id"] for r in page)
+    seen = set(st.get("review_answer_keys", []))
+    fresh = []
+    for r in rows:
+        key = f"{r.get('id')}|{r.get('answer_revision')}|{r.get('status')}|{r.get('applied_commit_sha')}"
+        if key in seen:
+            continue
+        fresh.append({"env": env, **r}); seen.add(key)
+    return fresh, {"review_answer_keys": sorted(seen)[-5000:]}
+
+
 def main():
     token = TOKEN_FILE.read_text().strip()
     state = json.loads(STATE_FILE.read_text()) if STATE_FILE.exists() else {}
@@ -260,7 +291,14 @@ def main():
             drecs, dadv = pull_decisions(env, site, token, {**st, "decision_since_id": 0})
         except Exception as e:
             log(f"{env}: decisions pull failed: {type(e).__name__}: {str(e)[:120]}"); drecs, dadv = [], {}
-        log(f"{env}: {len(vrecs)} new verdict(s), {len(precs)} new proposal record(s), {len(drecs)} new decision record(s)")
+        try:
+            arecs, aadv = pull_review_answers(env, site, token, st)
+        except Exception as e:
+            log(f"{env}: review answers pull failed: {type(e).__name__}: {str(e)[:120]}"); arecs, aadv = [], {}
+        log(f"{env}: {len(vrecs)} new verdict(s), {len(precs)} new proposal record(s), {len(drecs)} new decision record(s), {len(arecs)} new review answer record(s)")
+        if arecs:
+            append_jsonl(f"{OUT_PREFIX}/{env}/review_answers.jsonl", arecs); touched.append(f"{OUT_PREFIX}/{env}/review_answers.jsonl")
+        padv = {**padv, **aadv}
         if drecs:
             append_jsonl(f"{OUT_PREFIX}/{env}/decisions.jsonl", drecs); touched.append(f"{OUT_PREFIX}/{env}/decisions.jsonl")
         padv = {**padv, **{k: v for k, v in dadv.items() if k != "decision_since_id"}}
@@ -273,7 +311,7 @@ def main():
         if DRY:
             log("dry-run: " + run(["git", "status", "--short", "--", OUT_PREFIX], cwd=WT).stdout.strip())
         else:
-            sha = commit_and_push(sorted(set(touched)), "human-review: pull verdicts/proposals/decisions\n\nPulled by stage1_queue_pull.py (T-PTG-663) from the site exports; append-only JSONL.")
+            sha = commit_and_push(sorted(set(touched)), "human-review: pull verdicts/proposals/decisions/review answers\n\nPulled by stage1_queue_pull.py (T-PTG-663) from the site exports; append-only JSONL.")
             if sha and sha != "nochange":
                 for env, adv in pending_adv.items():
                     state[env].update(adv); state[env]["last_push"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")

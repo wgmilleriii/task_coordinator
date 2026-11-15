@@ -241,6 +241,26 @@ def pull_decisions(env, site, token, st):
     return fresh, adv
 
 
+# Conversion review answers are committed to git, so they are ALLOWLISTED, not passed
+# through: only these fields are ever written, whatever the export returns. "id" is the
+# answer row's own number (the since_id cursor and the dedupe key), not an account id.
+REVIEW_ANSWER_FIELDS = ("id", "record_id", "issue", "csv_number", "answer_kind", "answer_text", "note",
+                        "reviewer_name", "answered_at", "answer_revision", "status", "applied_commit_sha")
+EMAIL_WITHHELD = "[withheld: email-shaped text]"   # brackets: the converter's apply_answer refuses it (fail closed)
+
+
+def review_answer_record(env, row):
+    """The JSONL record for one export row: allowlisted fields only, and ANY string value
+    containing '@' replaced (reviewer_name -> "reviewer", anything else -> EMAIL_WITHHELD)."""
+    out = {"env": env}
+    for k in REVIEW_ANSWER_FIELDS:
+        v = row.get(k)
+        if isinstance(v, str) and "@" in v:
+            v = "reviewer" if k == "reviewer_name" else EMAIL_WITHHELD
+        out[k] = v
+    return out
+
+
 def pull_review_answers(env, site, token, st):
     """Conversion review answers (prue-review-ui, 2026-11-14): a reviewer's answer to an
     "under review" marker, from api/conversion_review_export.php. A row keeps its id when
@@ -266,7 +286,7 @@ def pull_review_answers(env, site, token, st):
         key = f"{r.get('id')}|{r.get('answer_revision')}|{r.get('status')}|{r.get('applied_commit_sha')}"
         if key in seen:
             continue
-        fresh.append({"env": env, **r}); seen.add(key)
+        fresh.append(review_answer_record(env, r)); seen.add(key)
     return fresh, {"review_answer_keys": sorted(seen)[-5000:]}
 
 
